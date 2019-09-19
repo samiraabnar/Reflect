@@ -60,9 +60,9 @@ def get_causal_mask(q):
     """
     batch, length = q.size()
     tt = torch.cuda if q.is_cuda else torch
-    mask = tt.BoolTensor(length, length).fill_(1).triu_(1)
+    mask = tt.ByteTensor(length, length).fill_(1).triu_(1)
     causal_mask = mask.unsqueeze(0).expand(batch, length, length)
-    return causal_mask
+    return causal_mask.bool()
 
 
 class SubLayer(nn.Module):
