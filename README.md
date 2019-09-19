@@ -1,0 +1,2 @@
+# InDist
+Distilling Inductive Bias
