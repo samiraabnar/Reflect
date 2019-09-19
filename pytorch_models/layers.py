@@ -48,7 +48,7 @@ def get_padding_mask(q, k):
     """
 
     masked_pads = k.data.eq(0)
-    return masked_pads[:, None, :].expand(k.size(0), q.size(1), k.size(1))
+    return masked_pads[:, None, :].expand(k.size(0), q.size(1), k.size(1)).bool()
 
 
 def get_causal_mask(q):
@@ -60,7 +60,7 @@ def get_causal_mask(q):
     """
     batch, length = q.size()
     tt = torch.cuda if q.is_cuda else torch
-    mask = tt.ByteTensor(length, length).fill_(1).triu_(1)
+    mask = tt.BoolTensor(length, length).fill_(1).triu_(1)
     causal_mask = mask.unsqueeze(0).expand(batch, length, length)
     return causal_mask
 
