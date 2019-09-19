@@ -1,0 +1,4 @@
+python3.7
+pandas
+statsmodels
+pytorch
