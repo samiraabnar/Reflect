@@ -4,14 +4,11 @@ import errno
 import random
 from util.text_util import deps_from_tsv, deps_to_tsv
 
-# for reproducibility
-random.seed(42)
+def make_splits(fname, expr_dir, prop_train=0.1, prop_valid=0.01):
 
-prop_train = 0.1  # proportion of the data used for training
-prop_valid = 0.01
+    # for reproducibility
+    random.seed(42)
 
-
-def prepare(fname, expr_dir):
     print('| read in the data')
     data = deps_from_tsv(fname)
     print('| shuffling')
@@ -36,4 +33,4 @@ def prepare(fname, expr_dir):
 
 
 if __name__ == '__main__':
-    prepare(sys.argv[1], sys.argv[2])
+    make_splits(sys.argv[1], sys.argv[2])

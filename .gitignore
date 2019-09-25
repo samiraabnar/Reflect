@@ -12,3 +12,4 @@ data/*
 envname
 *.pyc
 .spyproject
+tmp
