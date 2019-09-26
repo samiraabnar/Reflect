@@ -64,7 +64,7 @@ def cosine_decay_with_warmup(global_step,
 
 
 @tf.function
-def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task):
+def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_steps=100):
   for examples in dataset:
     feature_dic = task.convert_examples(examples)
     x, y = feature_dic['inputs'], feature_dic['targets']
@@ -72,6 +72,10 @@ def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task):
       inputs_mask = tf.cast(tf.not_equal(x, 0), dtype=tf.float32)
       logits = model(x)
       loss = loss_fn(logits, y, inputs_mask)
+      if (optimizer.iterations % inter_log_steps) == 0:
+        tf.print("eager loss is: ", loss)
+        tf.summary.scalar('eager_loss', loss, step=optimizer.iterations)
+        tf.summary.scalar('learning_rate', optimizer.learning_rate, step=optimizer.iterations)
       for metric in avg_metric_dic:
         avg_metric_dic[metric].update_state(task.metrics[metric](logits, y, inputs_mask))
 

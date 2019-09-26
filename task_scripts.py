@@ -1,23 +1,43 @@
+from typing import NamedTuple
+
 from pipeline.tasks import SvAgreementLM
 from pipeline.trainer import Trainer
 from tf2_models.lm_lstm import LmLSTM
 
 
-def get_task_params():
-  class task_params(object):
-    batch_size = 64
+class TrainParams:
+  learning_rate = 0.001
+  n_epochs = 30
+  warmpup_steps = 10000
+  hold_base_rate_steps = 1000
+  total_training_steps = 60000
 
+
+class TaskParams:
+  batch_size = 64
+
+
+class ModelParams:
+  hidden_dim=256
+  input_dim=None
+  output_dim=None
+  depth=2
+  hidden_dropout_rate=0.5
+  input_dropout_rate=0.2
+
+
+def get_train_params():
+  train_params = TrainParams()
+  return train_params
+
+def get_task_params():
+  task_params = TaskParams()
   return task_params
 
 def get_model_params(task):
-  class model_params(object):
-    hidden_dim=32
-    input_dim=task.databuilder.vocab_size()
-    output_dim=task.databuilder.vocab_size()
-    depth=2
-    hidden_dropout_rate=0.5
-    input_dropout_rate=0.2
-
+  model_params = ModelParams()
+  model_params.input_dim = task.databuilder.vocab_size()
+  model_params.output_dim = task.databuilder.vocab_size()
   return model_params
 
 if __name__ == '__main__':
@@ -29,5 +49,5 @@ if __name__ == '__main__':
   lm_lstm = LmLSTM(hparams=get_model_params(task))
 
   # Create the Trainer
-  trainer = Trainer(model=lm_lstm, task=task, train_params=None)
+  trainer = Trainer(model=lm_lstm, task=task, train_params=get_train_params())
   trainer.train()
