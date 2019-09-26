@@ -46,9 +46,12 @@ if __name__ == '__main__':
   # Create the Task
   task = SvAgreementLM(get_task_params())
 
-  # Create the Model
-  lm_lstm = LmLSTM(hparams=get_model_params(task))
+  with tf.device('/gpu:0'):
+    # Create the Model
+    lm_lstm = LmLSTM(hparams=get_model_params(task))
 
-  # Create the Trainer
-  trainer = Trainer(model=lm_lstm, task=task, train_params=get_train_params())
-  trainer.train()
+    # Create the Trainer
+    trainer = Trainer(model=lm_lstm, task=task, train_params=get_train_params())
+
+    #Train
+    trainer.train()

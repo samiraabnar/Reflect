@@ -1,3 +1,4 @@
+import tensorflow as tf
 from tf2_models.metrics import masked_sequence_loss
 from tf2_models import metrics
 from tfds_data.tal_agreement import SVAgreement
@@ -16,9 +17,10 @@ class SvAgreementLM(task):
     super(SvAgreementLM, self).__init__(task_params, name)
     self.databuilder = SVAgreement(data_dir='data')
 
-    self.valid_dataset = self.databuilder.as_dataset(split="validation", batch_size=self.task_params.batch_size)
-    self.test_dataset = self.databuilder.as_dataset(split="test", batch_size=self.task_params.batch_size)
-    self.train_dataset = self.databuilder.as_dataset(split="train", batch_size=self.task_params.batch_size)
+    with tf.device('/cpu:0'):
+      self.valid_dataset = self.databuilder.as_dataset(split="validation", batch_size=self.task_params.batch_size)
+      self.test_dataset = self.databuilder.as_dataset(split="test", batch_size=self.task_params.batch_size)
+      self.train_dataset = self.databuilder.as_dataset(split="train", batch_size=self.task_params.batch_size)
 
   def convert_examples(self, examples):
     return {'inputs': examples['sentence'][:,:-1],
