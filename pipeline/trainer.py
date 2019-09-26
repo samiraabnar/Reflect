@@ -35,6 +35,7 @@ class Trainer(object):
     t_loss = train_utils.train(self.model, self.task.train_dataset,
                                self.optimizer, self.task.get_loss_fn(),
                                avg_metric_dic=self.train_avg_metric_dic, task=self.task)
+
     with self.train_summary_writer.as_default():
       for metric in self.train_avg_metric_dic:
         tf.summary.scalar('loss', self.train_avg_metric_dic[metric].result(), step=self.optimizer.iterations)
