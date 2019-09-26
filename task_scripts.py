@@ -1,4 +1,6 @@
 import tensorflow as tf
+import numpy as np
+import os
 from pipeline.tasks import SvAgreementLM
 from pipeline.trainer import Trainer
 from tf2_models.lm_lstm import LmLSTM
@@ -48,10 +50,27 @@ if __name__ == '__main__':
 
   with tf.device('/gpu:0'):
     # Create the Model
-    lm_lstm = LmLSTM(hparams=get_model_params(task))
+    model = LmLSTM(hparams=get_model_params(task))
 
     # Create the Trainer
-    trainer = Trainer(model=lm_lstm, task=task, train_params=get_train_params())
+    trainer = Trainer(model=model, task=task, train_params=get_train_params())
 
     #Train
-    trainer.train()
+    ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=trainer.optimizer, net=trainer.model)
+    chpt_path = os.path.join('tf_ckpts', trainer.task.name, trainer.model.model_name)
+    manager = tf.train.CheckpointManager(ckpt,
+                                         chpt_path,
+                                         max_to_keep=3)
+    ckpt.restore(manager.latest_checkpoint)
+    if manager.latest_checkpoint:
+      print("Restored from {}".format(manager.latest_checkpoint))
+    else:
+      print("Initializing from scratch.")
+      print("Saving params")
+      if not os.path.exists(chpt_path):
+        os.makedirs(chpt_path)
+      np.save(os.path.join(chpt_path, 'task_params'), task.task_params)
+      np.save(os.path.join(chpt_path, 'model_params'), model.hparams)
+      np.save(os.path.join(chpt_path, 'train_params'), trainer.train_params)
+
+    trainer.train(ckpt, manager)

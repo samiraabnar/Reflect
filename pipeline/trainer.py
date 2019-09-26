@@ -31,24 +31,7 @@ class Trainer(object):
       self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
 
   @tf.function
-  def train(self):
-    ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
-    chpt_path = os.path.join('tf_ckpts', self.task.name, self.model.model_name)
-    manager = tf.train.CheckpointManager(ckpt,
-                                         chpt_path,
-                                         max_to_keep=3)
-    ckpt.restore(manager.latest_checkpoint)
-    if manager.latest_checkpoint:
-      print("Restored from {}".format(manager.latest_checkpoint))
-    else:
-      print("Initializing from scratch.")
-      print("Saving params")
-      if not os.path.exists(chpt_path):
-        os.makedirs(chpt_path)
-      np.save(os.path.join(chpt_path, 'task_params'), self.task.task_params)
-      np.save(os.path.join(chpt_path, 'model_params'), self.model.hparams)
-      np.save(os.path.join(chpt_path, 'train_params'), self.train_params)
-
+  def train(self, ckpt, manager):
     summary_path = os.path.join('logs', self.task.name, self.model.model_name)
     train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
     eval_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'eval'))
