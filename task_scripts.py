@@ -15,7 +15,8 @@ def get_model_params(task):
     input_dim=task.databuilder.vocab_size()
     output_dim=task.databuilder.vocab_size()
     depth=2
-    hidden_dropout_rate=0.1
+    hidden_dropout_rate=0.5
+    input_dropout_rate=0.2
 
   return model_params
 

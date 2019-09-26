@@ -42,11 +42,11 @@ class Trainer(object):
       with train_summary_writer.as_default():
         t_loss = train_utils.train(self.model, self.task.train_dataset,
                        self.optimizer, self.task.get_loss_fn(),
-                       metric_dic=train_avg_metric_dic, task=self.task)
+                       avg_metric_dic=train_avg_metric_dic, task=self.task)
       with eval_summary_writer.as_default():
         train_utils.eval(self.model,
              self.task.valid_dataset, self.task.get_loss_fn(),
-             metric_dic=eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
+             avg_metric_dic=eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
 
       ckpt.step.assign_add(1)
       if int(ckpt.step) % 10 == 0:
