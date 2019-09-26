@@ -1,13 +1,23 @@
 import tensorflow as tf
 import os
 from pipeline import  train_utils
+from pipeline.train_utils import cosine_decay_with_warmup
 
 
 class Trainer(object):
   def __init__(self, model, task, train_params):
     self.n_epochs = 10
+    self.learning_rate_base = 0.001
+    self.total_training_steps = 600000
     self.model = model
     self.task = task
+    self.learning_rate = cosine_decay_with_warmup(tf.get_global_step(),
+                                                  self.learning_rate_base,
+                                                  total_steps=self.total_training_steps,
+                                                  warmup_learning_rate=0.0,
+                                                  warmup_steps=10000,
+                                                  hold_base_rate_steps=1000)
+
     self.optimizer =  tf.optimizers.Adam(learning_rate=0.001,
                                         beta_1=0.9,
                                         beta_2=0.999,
@@ -39,6 +49,7 @@ class Trainer(object):
 
 
     for i in range(self.n_epochs):
+      print("Start training ...")
       with train_summary_writer.as_default():
         t_loss = train_utils.train(self.model, self.task.train_dataset,
                        self.optimizer, self.task.get_loss_fn(),
