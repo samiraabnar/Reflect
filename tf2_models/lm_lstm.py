@@ -28,6 +28,9 @@ class LmLSTM(tf.keras.Model):
                                                      dropout=self.hparams.hidden_dropout_rate
                                                     ))
 
+    self.build(input_shape=(None, None))
+    self.summary()
+
 
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding(inputs)
@@ -53,7 +56,10 @@ if __name__ == '__main__':
 
   lm_lstm = LmLSTM(hparams=hparams)
   inputs = np.int64(np.flip(np.sort(np.random.uniform(0,3,size=(2,5)))))
+  inputs_mask = tf.equal(inputs, 0)
+  print(inputs_mask)
   lm_lstm.build(input_shape=(None,None))
   lm_lstm.summary()
+
   print(inputs)
   print(lm_lstm(inputs))
