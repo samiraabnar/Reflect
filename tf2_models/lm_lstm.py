@@ -46,7 +46,6 @@ class LmLSTM(tf.keras.Model):
                                                     recurrent_dropout=self.hparams.hidden_dropout_rate,
                                                     dropout=self.hparams.hidden_dropout_rate
                                                     ))
-  @tf.function
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
     rnn_outputs = embedded_input
