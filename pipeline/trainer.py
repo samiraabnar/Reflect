@@ -30,11 +30,10 @@ class Trainer(object):
                                           name='Adam')
       self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
 
-    with tf.device('/cpu:0'):
-      summary_path = os.path.join('logs', self.task.name, self.model.model_name)
+    summary_path = os.path.join('logs', self.task.name, self.model.model_name)
 
-      self.train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
-      self.eval_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'eval'))
+    self.train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
+    self.eval_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'eval'))
 
     self.train_avg_metric_dic = {}
     for metric in self.task.metrics:
@@ -68,8 +67,8 @@ class Trainer(object):
 
   @tf.function
   def train(self, ckpt, manager):
-    print("Start training ... ")
-    print("initial learning rate is ", self.optimizer.learning_rate)
+    tf.print("Start training ... ")
+    tf.print("initial learning rate is ", self.optimizer.learning_rate)
 
     for i in range(self.n_epochs):
       t_loss = self.train_step()
@@ -78,8 +77,8 @@ class Trainer(object):
       if int(ckpt.step) % 10 == 0:
         #save_path = manager.save()
         save_path = tf.py_function(manager.save, [], [tf.string])
-        print("Saved checkpoint for step {}: {}".format(int(ckpt.step), save_path))
-        print("loss@epoch%d:" % i, t_loss)
+        tf.print("Saved checkpoint for step {}: {}".format(int(ckpt.step), save_path))
+        tf.print("loss@epoch%d:" % i, t_loss)
 
 
 
