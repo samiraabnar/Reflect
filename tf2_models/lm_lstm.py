@@ -16,9 +16,16 @@ class LmLSTM(tf.keras.Model):
 
 
 
+    self.create_vars()
+
+    self.build(input_shape=(None, None))
+    self.summary()
+
+  @tf.function
+  def create_vars(self):
     self.input_embedding = tf.compat.v2.keras.layers.Embedding(input_dim=self.hparams.input_dim,
                                                                output_dim=self.hparams.hidden_dim,
-                                                               input_shape=(None,None),
+                                                               input_shape=(None, None),
                                                                mask_zero=True,
                                                                name='input_embedding')
     self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
@@ -30,20 +37,16 @@ class LmLSTM(tf.keras.Model):
     self.stacked_rnns = []
     for _ in np.arange(self.hparams.depth):
       self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
-                                                     return_sequences=True,
-                                                     return_state=True,
-                                                     go_backwards=False,
-                                                     stateful=False,
-                                                     unroll=False,
-                                                     time_major=False,
-                                                     recurrent_dropout=self.hparams.hidden_dropout_rate,
-                                                     dropout=self.hparams.hidden_dropout_rate
+                                                    return_sequences=True,
+                                                    return_state=True,
+                                                    go_backwards=False,
+                                                    stateful=False,
+                                                    unroll=False,
+                                                    time_major=False,
+                                                    recurrent_dropout=self.hparams.hidden_dropout_rate,
+                                                    dropout=self.hparams.hidden_dropout_rate
                                                     ))
-
-    self.build(input_shape=(None, None))
-    self.summary()
-
-
+  @tf.function
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
     rnn_outputs = embedded_input

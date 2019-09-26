@@ -30,7 +30,6 @@ class Trainer(object):
       print(metric)
       self.eval_avg_metric_dic[metric] = tf.keras.metrics.Mean(name=metric, dtype=tf.float32)
 
-  @tf.function
   def train_step(self):
     t_loss = train_utils.train(self.model, self.task.train_dataset,
                                self.optimizer, self.task.get_loss_fn(),
