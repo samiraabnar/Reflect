@@ -67,8 +67,6 @@ def cosine_decay_with_warmup(global_step,
 @tf.function
 def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_steps=1000):
   for x, y in dataset:
-    #feature_dic = task.convert_examples(examples)
-    #x, y = feature_dic['inputs'], feature_dic['targets']
     inputs_mask = tf.cast(tf.not_equal(x, 0), dtype=tf.float32)
     @tf.function
     def update():
