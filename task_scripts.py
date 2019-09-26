@@ -1,5 +1,4 @@
-from typing import NamedTuple
-
+import tensorflow as tf
 from pipeline.tasks import SvAgreementLM
 from pipeline.trainer import Trainer
 from tf2_models.lm_lstm import LmLSTM
@@ -41,6 +40,8 @@ def get_model_params(task):
   return model_params
 
 if __name__ == '__main__':
+  tf.debugging.set_log_device_placement(True)
+
 
   # Create the Task
   task = SvAgreementLM(get_task_params())
