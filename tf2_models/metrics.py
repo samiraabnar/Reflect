@@ -1,19 +1,23 @@
 import tensorflow as tf
 
+@tf.function
 def masked_sequence_loss(logits, targets, sequence_mask):
   return tf.reduce_mean(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=logits,
                                                                   labels=targets,
                                                                   name='loss') * sequence_mask)
-
+@tf.function
 def accuracy(logits, targets, sequence_mask):
   return accuracy_topk(logits, targets, sequence_mask, topk=1)
 
+@tf.function
 def accuracy_top2(logits, targets, sequence_mask):
   return accuracy_topk(logits, targets, sequence_mask, topk=2)
 
+@tf.function
 def accuracy_top5(logits, targets, sequence_mask):
   return accuracy_topk(logits, targets, sequence_mask, topk=5)
 
+@tf.function
 def accuracy_topk(logits, targets, sequence_mask, topk):
   orig_shape = tf.shape(logits)
   last_dim = orig_shape[-1]

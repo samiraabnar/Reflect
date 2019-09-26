@@ -23,11 +23,11 @@ class SvAgreementLM(task):
     #with tf.device('/cpu:0'):
 
     self.valid_dataset = self.databuilder.as_dataset(split="validation", batch_size=self.task_params.batch_size, in_memory=True)
-    self.valid_dataset = self.valid_dataset.prefetch(1000)
+    self.valid_dataset = self.valid_dataset.prefetch(10000)
     #self.test_dataset = self.databuilder.as_dataset(split="test", batch_size=self.task_params.batch_size)
     self.train_dataset = self.databuilder.as_dataset(split="train", batch_size=self.task_params.batch_size, in_memory=True)
     self.train_dataset = self.train_dataset.shuffle(1000000)
-    self.train_dataset = self.train_dataset.prefetch(1000)
+    self.train_dataset = self.train_dataset.prefetch(100000)
 
   @tf.function
   def convert_examples(self, examples):

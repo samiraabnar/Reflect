@@ -14,22 +14,6 @@ class Trainer(object):
     self.model = model
     self.task = task
 
-    with tf.device('/gpu:0'):
-      self.learning_rate = cosine_decay_with_warmup(tf.compat.v1.train.get_or_create_global_step(),
-                                                    self.learning_rate_base,
-                                                    total_steps=self.total_training_steps,
-                                                    warmup_learning_rate=0.0,
-                                                    warmup_steps=train_params.warmpup_steps,
-                                                    hold_base_rate_steps=train_params.hold_base_rate_steps)
-
-      self.optimizer = tf.optimizers.Adam(learning_rate=self.learning_rate,
-                                          beta_1=0.9,
-                                          beta_2=0.999,
-                                          epsilon=1e-07,
-                                          amsgrad=False,
-                                          name='Adam')
-      self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
-
     summary_path = os.path.join('logs', self.task.name, self.model.model_name)
 
     self.train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
@@ -67,6 +51,22 @@ class Trainer(object):
 
   @tf.function
   def train(self, ckpt, manager):
+    with tf.device('/gpu:0'):
+      self.learning_rate = cosine_decay_with_warmup(tf.compat.v1.train.get_or_create_global_step(),
+                                                    self.learning_rate_base,
+                                                    total_steps=self.total_training_steps,
+                                                    warmup_learning_rate=0.0,
+                                                    warmup_steps=self.train_params.warmpup_steps,
+                                                    hold_base_rate_steps=self.train_params.hold_base_rate_steps)
+
+      self.optimizer = tf.optimizers.Adam(learning_rate=self.learning_rate,
+                                          beta_1=0.9,
+                                          beta_2=0.999,
+                                          epsilon=1e-07,
+                                          amsgrad=False,
+                                          name='Adam')
+      self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
+
     tf.print("Start training ... ")
     tf.print("initial learning rate is ", self.optimizer.learning_rate)
 
