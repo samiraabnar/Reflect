@@ -36,16 +36,16 @@ class LmLSTM(tf.keras.Model):
 
     self.stacked_rnns = []
     for _ in np.arange(self.hparams.depth):
-      self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
-                                                    return_sequences=True,
-                                                    return_state=True,
-                                                    go_backwards=False,
-                                                    stateful=False,
-                                                    unroll=False,
-                                                    time_major=False,
-                                                    recurrent_dropout=self.hparams.hidden_dropout_rate,
-                                                    dropout=self.hparams.hidden_dropout_rate
-                                                    ))
+      self.stacked_rnns.append(tf.keras.layers.CuDNNLSTM(units=self.hparams.hidden_dim,
+                                                          return_sequences=True,
+                                                          return_state=True,
+                                                          go_backwards=False,
+                                                          stateful=False,
+                                                          unroll=False,
+                                                          time_major=False,
+                                                          recurrent_dropout=self.hparams.hidden_dropout_rate,
+                                                          dropout=self.hparams.hidden_dropout_rate
+                                                          ))
   @tf.function
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
