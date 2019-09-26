@@ -94,7 +94,3 @@ def eval(model, dataset, avg_metric_dic, task, step_num):
     logits = model(x)
     for metric in avg_metric_dic:
       avg_metric_dic[metric].update_state(task.metrics[metric](logits, y, inputs_mask))
-
-  for metric in avg_metric_dic:
-    tf.summary.scalar('loss', avg_metric_dic[metric].result(), step=step_num)
-    avg_metric_dic[metric].reset_states()

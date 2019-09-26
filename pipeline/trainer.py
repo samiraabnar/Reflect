@@ -36,10 +36,17 @@ class Trainer(object):
       self.train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
       self.eval_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'eval'))
 
+    self.train_avg_metric_dic = {}
+    for metric in self.task.metrics:
+      self.train_avg_metric_dic[metric] = tf.keras.metrics.Mean(name=metric, dtype=tf.float32)
+
+    self.eval_avg_metric_dic = {}
+    for metric in self.task.metrics:
+      print(metric)
+      self.eval_avg_metric_dic[metric] = tf.keras.metrics.Mean(name=metric, dtype=tf.float32)
+
   @tf.function
   def train_step(self):
-
-
     t_loss = train_utils.train(self.model, self.task.train_dataset,
                                self.optimizer, self.task.get_loss_fn(),
                                avg_metric_dic=self.train_avg_metric_dic, task=self.task)
@@ -47,6 +54,7 @@ class Trainer(object):
       for metric in self.train_avg_metric_dic:
         tf.summary.scalar('loss', self.train_avg_metric_dic[metric].result(), step=self.optimizer.iterations)
         self.train_avg_metric_dic[metric].reset_states()
+
     train_utils.eval(self.model,
                      self.task.valid_dataset,
                      avg_metric_dic=self.eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
@@ -58,18 +66,10 @@ class Trainer(object):
 
     return t_loss
 
+  @tf.function
   def train(self, ckpt, manager):
     print("Start training ... ")
     print("initial learning rate is ", self.optimizer.learning_rate)
-
-    self.train_avg_metric_dic = {}
-    for metric in self.task.metrics:
-      self.train_avg_metric_dic[metric] = tf.keras.metrics.Mean(name=metric, dtype=tf.float32)
-
-    self.eval_avg_metric_dic = {}
-    for metric in self.task.metrics:
-      print(metric)
-      self.eval_avg_metric_dic[metric] = tf.keras.metrics.Mean(name=metric, dtype=tf.float32)
 
     for i in range(self.n_epochs):
       t_loss = self.train_step()

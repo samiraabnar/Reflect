@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 class LmLSTM(tf.keras.Model):
+
   def __init__(self, hparams, scope="lm_lstm"):
     super(LmLSTM, self).__init__()
     self.hparams = hparams
@@ -43,6 +44,7 @@ class LmLSTM(tf.keras.Model):
     self.summary()
 
 
+  @tf.function
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
     rnn_outputs = embedded_input
