@@ -69,8 +69,7 @@ def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_st
   for examples in dataset:
     feature_dic = task.convert_examples(examples)
     x, y = feature_dic['inputs'], feature_dic['targets']
-    inputs_mask = tf.cast(tf.not_equal(x, 0), dtype=tf.float32)
-
+    inputs_mask = tf.function(tf.cast(tf.not_equal(x, 0), dtype=tf.float32))
     @tf.function
     def update():
       with tf.GradientTape() as tape:
@@ -88,10 +87,10 @@ def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_st
       tf.print("eager loss is: ", loss)
       tf.summary.scalar('eager_loss', loss, step=optimizer.iterations)
       tf.summary.scalar('learning_rate', optimizer.learning_rate, step=optimizer.iterations)
-      #for metric in avg_metric_dic:
-      #  avg_metric_dic[metric].update_state(task.metrics[metric](logits, y, inputs_mask))
+      for metric in avg_metric_dic:
+        avg_metric_dic[metric].update_state(task.metrics[metric](logits, y, inputs_mask))
 
-  t_loss = loss#avg_metric_dic['loss'].result()
+  t_loss = avg_metric_dic['loss'].result()
   return t_loss
 
 @tf.function
