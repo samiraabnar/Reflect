@@ -51,6 +51,13 @@ if __name__ == '__main__':
   # Create the Model
   model = LmLSTM(hparams=get_model_params(task))
 
+
+  def loss(labels, logits):
+    return tf.keras.losses.sparse_categorical_crossentropy(labels, logits, from_logits=True)
+
+  model.compile(optimizer='adam', loss=loss)
+  history = model.fit(task.train_dataset, epochs=5)
+
   # Create the Trainer
   trainer = Trainer(model=model, task=task, train_params=get_train_params())
 
