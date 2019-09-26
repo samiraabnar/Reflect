@@ -30,6 +30,7 @@ class Trainer(object):
                                           name='Adam')
       self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
 
+  @tf.function
   def train(self):
     ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
     chpt_path = os.path.join('tf_ckpts', self.task.name, self.model.model_name)
