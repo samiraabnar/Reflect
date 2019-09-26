@@ -17,7 +17,10 @@ class SvAgreementLM(task):
     super(SvAgreementLM, self).__init__(task_params, name)
 
     self.databuilder = SVAgreement(data_dir='data')
+    self.info = self.databuilder.info
+    self.n_train_batches = int(self.info.splits['train'].num_examples / task_params.batch_size)
     self.setup_datasets()
+
 
   def setup_datasets(self):
     #with tf.device('/cpu:0'):
@@ -30,7 +33,7 @@ class SvAgreementLM(task):
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=2)
     self.train_dataset = self.train_dataset.shuffle(1000000)
     self.train_dataset = self.train_dataset.prefetch(1)
-    self.train_dataset = self.train_dataset.cache()
+    #self.train_dataset = self.train_dataset.cache()
 
   @tf.function
   def convert_examples(self, examples):

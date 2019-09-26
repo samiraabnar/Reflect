@@ -66,6 +66,7 @@ def cosine_decay_with_warmup(global_step,
 
 @tf.function
 def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_steps=1000):
+
   for x, y in dataset:
     inputs_mask = tf.cast(tf.not_equal(x, 0), dtype=tf.float32)
     @tf.function
@@ -101,3 +102,21 @@ def eval(model, dataset, avg_metric_dic, task, step_num):
 
     for metric in avg_metric_dic:
       avg_metric_dic[metric].update_state(task.metrics[metric](logits, y, inputs_mask))
+
+
+def train_step(examples, model, optimizer, loss_fn):
+  x, y = examples
+  trainable_vars = model.trainable_variables
+  with tf.GradientTape() as tape:
+    logits = model(x)
+    loss = loss_fn(x,y)
+
+  grads = tape.gradient(loss, trainable_vars)
+  none_grads = np.array([g is None for g in grads])
+  if np.any(none_grads):
+    none_grad_vars = np.asarray(trainable_vars)[none_grads]
+    tf.print(none_grad_vars)
+
+  optimizer.apply_gradients(zip(grads, trainable_vars))
+
+  return loss

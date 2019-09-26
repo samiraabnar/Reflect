@@ -59,12 +59,8 @@ class Trainer(object):
                                                   warmup_steps=self.train_params.warmpup_steps,
                                                   hold_base_rate_steps=self.train_params.hold_base_rate_steps)
 
-    self.optimizer = tf.optimizers.Adam(learning_rate=self.learning_rate,
-                                        beta_1=0.9,
-                                        beta_2=0.999,
-                                        epsilon=1e-07,
-                                        amsgrad=False,
-                                        name='Adam')
+    self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
+
     self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
 
   @tf.function

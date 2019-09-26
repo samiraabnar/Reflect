@@ -43,6 +43,8 @@ def get_model_params(task):
 
 if __name__ == '__main__':
   # tf.debugging.set_log_device_placement(True)
+  tf.enable_v2_behavior()
+
 
 
   # Create the Task
@@ -55,36 +57,36 @@ if __name__ == '__main__':
 
 
 
-  # Instantiate an optimizer to train the model.
-  optimizer = tf.keras.optimizers.SGD(learning_rate=1e-3)
-  # Instantiate a loss function.
-  loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
-
-
-
-
-  model.compile(loss=loss_fn, optimizer=optimizer)
-  history = model.fit(task.train_dataset, epochs=5)
-
-  # # Create the Trainer
-  # trainer = Trainer(model=model, task=task, train_params=get_train_params())
+  # # Instantiate an optimizer to train the model.
+  # optimizer = tf.keras.optimizers.SGD(learning_rate=1e-3)
+  # # Instantiate a loss function.
+  # loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
   #
+  #
+  #
+  #
+  # model.compile(loss=loss_fn, optimizer=optimizer)
+  # history = model.fit(task.train_dataset, epochs=5)
+
+  # Create the Trainer
+  trainer = Trainer(model=model, task=task, train_params=get_train_params())
+
   # #Train
-  # ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=trainer.optimizer, net=trainer.model)
-  # chpt_path = os.path.join('tf_ckpts', trainer.task.name, trainer.model.model_name)
-  # manager = tf.train.CheckpointManager(ckpt,
-  #                                      chpt_path,
-  #                                      max_to_keep=3)
-  # ckpt.restore(manager.latest_checkpoint)
-  # if manager.latest_checkpoint:
-  #   print("Restored from {}".format(manager.latest_checkpoint))
-  # else:
-  #   print("Initializing from scratch.")
-  #   print("Saving params")
-  #   if not os.path.exists(chpt_path):
-  #     os.makedirs(chpt_path)
-  #   np.save(os.path.join(chpt_path, 'task_params'), task.task_params)
-  #   np.save(os.path.join(chpt_path, 'model_params'), model.hparams)
-  #   np.save(os.path.join(chpt_path, 'train_params'), trainer.train_params)
-  #
-  #   trainer.train(ckpt, manager)
+  ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=trainer.optimizer, net=trainer.model)
+  chpt_path = os.path.join('tf_ckpts', trainer.task.name, trainer.model.model_name)
+  manager = tf.train.CheckpointManager(ckpt,
+                                       chpt_path,
+                                       max_to_keep=3)
+  ckpt.restore(manager.latest_checkpoint)
+  if manager.latest_checkpoint:
+    print("Restored from {}".format(manager.latest_checkpoint))
+  else:
+    print("Initializing from scratch.")
+    print("Saving params")
+    if not os.path.exists(chpt_path):
+      os.makedirs(chpt_path)
+    np.save(os.path.join(chpt_path, 'task_params'), task.task_params)
+    np.save(os.path.join(chpt_path, 'model_params'), model.hparams)
+    np.save(os.path.join(chpt_path, 'train_params'), trainer.train_params)
+
+    trainer.train(ckpt, manager)
