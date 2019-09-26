@@ -60,46 +60,11 @@ if __name__ == '__main__':
   # Instantiate a loss function.
   loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
 
-  # Prepare the metrics.
-  train_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
-  val_acc_metric = tf.keras.metrics.SparseCategoricalAccuracy()
 
-  # Iterate over epochs.
-  for epoch in range(3):
-    print('Start of epoch %d' % (epoch,))
 
-    # Iterate over the batches of the dataset.
-    for step, (x_batch_train, y_batch_train) in enumerate(task.train_dataset):
-      with tf.GradientTape() as tape:
-        logits = model(x_batch_train)
-        loss_value = loss_fn(y_batch_train, logits)
-      grads = tape.gradient(loss_value, model.trainable_weights)
-      optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
-      # Update training metric.
-      train_acc_metric(y_batch_train, logits)
-
-      # Log every 200 batches.
-      if step % 200 == 0:
-        print('Training loss (for one batch) at step %s: %s' % (step, float(loss_value)))
-        print('Seen so far: %s samples' % ((step + 1) * 64))
-
-    # Display metrics at the end of each epoch.
-    train_acc = train_acc_metric.result()
-    print('Training acc over epoch: %s' % (float(train_acc),))
-    # Reset training metrics at the end of each epoch
-    train_acc_metric.reset_states()
-
-    # Run a validation loop at the end of each epoch.
-    for x_batch_val, y_batch_val in task.valid_dataset:
-      val_logits = model(x_batch_val)
-      # Update val metrics
-      val_acc_metric(y_batch_val, val_logits)
-    val_acc = val_acc_metric.result()
-    val_acc_metric.reset_states()
-    print('Validation acc: %s' % (float(val_acc),))
-
-  #history = model.fit(task.train_dataset, epochs=5)
+  model.compile(loss=loss_fn, optimizer=optimizer)
+  history = model.fit(task.train_dataset, epochs=5)
 
   # # Create the Trainer
   # trainer = Trainer(model=model, task=task, train_params=get_train_params())
