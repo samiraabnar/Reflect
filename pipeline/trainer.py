@@ -31,8 +31,9 @@ class Trainer(object):
       self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
 
   @tf.function
-  def train(self, ckpt, manager):
+  def train_step(self):
     summary_path = os.path.join('logs', self.task.name, self.model.model_name)
+
     train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
     eval_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'eval'))
 
@@ -45,17 +46,22 @@ class Trainer(object):
       print(metric)
       eval_avg_metric_dic[metric] = tf.keras.metrics.Mean(name=metric, dtype=tf.float32)
 
+    with train_summary_writer.as_default():
+      t_loss = train_utils.train(self.model, self.task.train_dataset,
+                                 self.optimizer, self.task.get_loss_fn(),
+                                 avg_metric_dic=train_avg_metric_dic, task=self.task)
+    with eval_summary_writer.as_default():
+      train_utils.eval(self.model,
+                       self.task.valid_dataset,
+                       avg_metric_dic=eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
+
+    return t_loss
+
+  def train(self, ckpt, manager):
     print("Start training ... ")
     print("initial learning rate is ", self.optimizer.learning_rate)
     for i in range(self.n_epochs):
-      with train_summary_writer.as_default():
-        t_loss = train_utils.train(self.model, self.task.train_dataset,
-                       self.optimizer, self.task.get_loss_fn(),
-                       avg_metric_dic=train_avg_metric_dic, task=self.task)
-      with eval_summary_writer.as_default():
-        train_utils.eval(self.model,
-             self.task.valid_dataset,
-             avg_metric_dic=eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
+      t_loss = self.train_step()
 
       ckpt.step.assign_add(1)
       if int(ckpt.step) % 10 == 0:
