@@ -69,7 +69,7 @@ def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_st
   for examples in dataset:
     feature_dic = task.convert_examples(examples)
     x, y = feature_dic['inputs'], feature_dic['targets']
-    inputs_mask = tf.function(tf.cast(tf.not_equal(x, 0), dtype=tf.float32))
+    inputs_mask = tf.cast(tf.not_equal(x, 0), dtype=tf.float32)
     @tf.function
     def update():
       with tf.GradientTape() as tape:
