@@ -63,7 +63,8 @@ def cosine_decay_with_warmup(global_step,
     return eager_decay_rate()
 
 
-def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_steps=100):
+@tf.function
+def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_steps=1000):
   for examples in dataset:
     feature_dic = task.convert_examples(examples)
     x, y = feature_dic['inputs'], feature_dic['targets']
@@ -88,6 +89,7 @@ def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_st
 
   return t_loss
 
+@tf.function
 def eval(model, dataset, avg_metric_dic, task, step_num):
   for examples in dataset:
     feature_dic = task.convert_examples(examples)
