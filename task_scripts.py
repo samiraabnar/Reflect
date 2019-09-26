@@ -13,7 +13,7 @@ class TrainParams:
 
 
 class TaskParams:
-  batch_size = 64
+  batch_size = 128
 
 
 class ModelParams:

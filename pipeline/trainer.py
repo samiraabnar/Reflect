@@ -68,7 +68,7 @@ class Trainer(object):
                        avg_metric_dic=train_avg_metric_dic, task=self.task)
       with eval_summary_writer.as_default():
         train_utils.eval(self.model,
-             self.task.valid_dataset, self.task.get_loss_fn(),
+             self.task.valid_dataset,
              avg_metric_dic=eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
 
       ckpt.step.assign_add(1)
