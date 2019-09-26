@@ -76,7 +76,8 @@ class Trainer(object):
 
       ckpt.step.assign_add(1)
       if int(ckpt.step) % 10 == 0:
-        save_path = manager.save()
+        #save_path = manager.save()
+        save_path = tf.py_function(manager.save, [], [tf.string])
         print("Saved checkpoint for step {}: {}".format(int(ckpt.step), save_path))
         print("loss@epoch%d:" % i, t_loss)
 
