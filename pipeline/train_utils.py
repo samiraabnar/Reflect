@@ -83,10 +83,6 @@ def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_st
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
   t_loss = avg_metric_dic['loss'].result()
-  for metric in avg_metric_dic:
-    tf.summary.scalar('loss', avg_metric_dic[metric].result(), step=optimizer.iterations)
-    avg_metric_dic[metric].reset_states()
-
   return t_loss
 
 @tf.function

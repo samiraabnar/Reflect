@@ -30,21 +30,31 @@ class Trainer(object):
                                           name='Adam')
       self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
 
+    with tf.device('/cpu:0'):
+      summary_path = os.path.join('logs', self.task.name, self.model.model_name)
+
+      self.train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
+      self.eval_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'eval'))
+
   @tf.function
   def train_step(self):
-    summary_path = os.path.join('logs', self.task.name, self.model.model_name)
 
-    train_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'train'))
-    eval_summary_writer = tf.summary.create_file_writer(os.path.join(summary_path, 'eval'))
 
-    with train_summary_writer.as_default():
-      t_loss = train_utils.train(self.model, self.task.train_dataset,
-                                 self.optimizer, self.task.get_loss_fn(),
-                                 avg_metric_dic=self.train_avg_metric_dic, task=self.task)
-    with eval_summary_writer.as_default():
-      train_utils.eval(self.model,
-                       self.task.valid_dataset,
-                       avg_metric_dic=self.eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
+    t_loss = train_utils.train(self.model, self.task.train_dataset,
+                               self.optimizer, self.task.get_loss_fn(),
+                               avg_metric_dic=self.train_avg_metric_dic, task=self.task)
+    with self.train_summary_writer.as_default():
+      for metric in self.train_avg_metric_dic:
+        tf.summary.scalar('loss', self.train_avg_metric_dic[metric].result(), step=self.optimizer.iterations)
+        self.train_avg_metric_dic[metric].reset_states()
+    train_utils.eval(self.model,
+                     self.task.valid_dataset,
+                     avg_metric_dic=self.eval_avg_metric_dic, task=self.task, step_num=self.optimizer.iterations)
+
+    with self.eval_summary_writer.as_default():
+      for metric in self.eval_avg_metric_dic:
+        tf.summary.scalar('loss', self.eval_avg_metric_dic[metric].result(), step=self.optimizer.iterations)
+        self.eval_avg_metric_dic[metric].reset_states()
 
     return t_loss
 
