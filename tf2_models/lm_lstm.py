@@ -8,10 +8,10 @@ class LmLSTM(tf.keras.Model):
     self.scope = scope
 
     self.model_name = '_'.join(self.scope,
-                         'h-'+self.hparams.hidden_dim,
-                         'd-'+self.hparams.depth,
-                         'hdrop-'+self.hparams.hidden_dropout_rate,
-                         'indrop-'+self.hparams.input_dropout_rate)
+                         'h-'+str(self.hparams.hidden_dim),
+                         'd-'+str(self.hparams.depth),
+                         'hdrop-'+str(self.hparams.hidden_dropout_rate),
+                         'indrop-'+str(self.hparams.input_dropout_rate))
 
 
 
