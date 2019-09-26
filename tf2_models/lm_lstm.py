@@ -44,7 +44,6 @@ class LmLSTM(tf.keras.Model):
     self.summary()
 
 
-  @tf.function
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
     rnn_outputs = embedded_input
