@@ -86,12 +86,12 @@ def train(model, dataset, optimizer, loss_fn, avg_metric_dic, task, inter_log_st
 
     if (optimizer.iterations % inter_log_steps) == 0:
       tf.print("eager loss is: ", loss)
-      # tf.summary.scalar('eager_loss', loss, step=optimizer.iterations)
-      # tf.summary.scalar('learning_rate', optimizer.learning_rate, step=optimizer.iterations)
-      for metric in avg_metric_dic:
-        avg_metric_dic[metric].update_state(task.metrics[metric](logits, y, inputs_mask))
+      tf.summary.scalar('eager_loss', loss, step=optimizer.iterations)
+      tf.summary.scalar('learning_rate', optimizer.learning_rate, step=optimizer.iterations)
+      #for metric in avg_metric_dic:
+      #  avg_metric_dic[metric].update_state(task.metrics[metric](logits, y, inputs_mask))
 
-  t_loss = avg_metric_dic['loss'].result()
+  t_loss = loss#avg_metric_dic['loss'].result()
   return t_loss
 
 @tf.function
