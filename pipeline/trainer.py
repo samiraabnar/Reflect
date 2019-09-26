@@ -13,20 +13,22 @@ class Trainer(object):
     self.train_params = train_params
     self.model = model
     self.task = task
-    self.learning_rate = cosine_decay_with_warmup(tf.compat.v1.train.get_or_create_global_step(),
-                                                  self.learning_rate_base,
-                                                  total_steps=self.total_training_steps,
-                                                  warmup_learning_rate=0.0,
-                                                  warmup_steps=train_params.warmpup_steps,
-                                                  hold_base_rate_steps=train_params.hold_base_rate_steps)
 
-    self.optimizer = tf.optimizers.Adam(learning_rate=self.learning_rate,
-                                        beta_1=0.9,
-                                        beta_2=0.999,
-                                        epsilon=1e-07,
-                                        amsgrad=False,
-                                        name='Adam')
-    self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
+    with tf.device('/gpu:0'):
+      self.learning_rate = cosine_decay_with_warmup(tf.compat.v1.train.get_or_create_global_step(),
+                                                    self.learning_rate_base,
+                                                    total_steps=self.total_training_steps,
+                                                    warmup_learning_rate=0.0,
+                                                    warmup_steps=train_params.warmpup_steps,
+                                                    hold_base_rate_steps=train_params.hold_base_rate_steps)
+
+      self.optimizer = tf.optimizers.Adam(learning_rate=self.learning_rate,
+                                          beta_1=0.9,
+                                          beta_2=0.999,
+                                          epsilon=1e-07,
+                                          amsgrad=False,
+                                          name='Adam')
+      self.optimizer.iterations = tf.compat.v1.train.get_or_create_global_step()
 
   def train(self):
     ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
