@@ -40,8 +40,7 @@ if __name__ == '__main__':
 
   model.compile(
     optimizer=optimizer,
-    loss=tf.losses.sparse_categorical_crossentropy,
-    metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+    loss=tf.losses.sparse_categorical_crossentropy)
 
 
 
