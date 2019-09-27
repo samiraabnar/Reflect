@@ -75,4 +75,6 @@ if __name__ == '__main__':
   with summary_writer.as_default():
     model.fit(task.train_dataset,
               epochs=3,
-              callbacks=[ckpt_callback])
+              callbacks=[ckpt_callback],
+              validation_data=task.valid_dataset,
+              )
