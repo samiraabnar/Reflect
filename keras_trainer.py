@@ -1,4 +1,5 @@
 import tensorflow as tf
+import os
 from absl import app
 from absl import flags
 from absl import logging
@@ -21,9 +22,13 @@ class CheckpointCallback(tf.keras.callbacks.Callback):
     print("Epoch %d: " %epoch)
     print("Saved checkpoint for step {}: {}".format(int(ckpt.step), save_path))
 
-
+class ValidationCallback(tf.keras.callbacks.Callback):
+  def __init__(self, summary_writer):
+    self.summary_writer = summary_writer
 
 if __name__ == '__main__':
+  log_dir = "logs/test"
+
   task = SvAgreementLM(get_task_params())
 
   # Create the Model
@@ -61,14 +66,13 @@ if __name__ == '__main__':
   else:
     print("Initializing from scratch.")
 
-  tb_callback = tf.keras.callbacks.TensorBoard(
-    log_dir='logs/test',
-    histogram_freq=0,  # How often to log histogram visualizations
-    embeddings_freq=0,  # How often to log embedding visualizations
-    update_freq='epoch')  # How often to write logs (default: once per epoch)
+  summary_dir = os.path.join(log_dir, 'summaries')
+  tf.io.gfile.makedirs(log_dir)
+  summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(summary_dir, 'train'))
 
   ckpt_callback = CheckpointCallback(manager=manager, ckpt=ckpt)
 
-  model.fit(task.train_dataset,
-            epochs=3,
-            callbacks=[ckpt_callback])
+  with summary_writer.as_default():
+    model.fit(task.train_dataset,
+              epochs=3,
+              callbacks=[ckpt_callback])
