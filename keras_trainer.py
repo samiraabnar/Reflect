@@ -37,10 +37,11 @@ if __name__ == '__main__':
     staircase=True)
 
   optimizer = tf.keras.optimizers.RMSprop(lr_schedule)
+
   model.compile(
     optimizer=optimizer,
-    loss=tf.keras.losses.CategoricalCrossentropy(),
-    metrics=[tf.keras.metrics.CategoricalAccuracy()])
+    loss=tf.losses.sparse_categorical_crossentropy,
+    metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
 
 
 
@@ -71,4 +72,5 @@ if __name__ == '__main__':
 
   model.fit(task.train_dataset,
             epochs=3,
+            verbose=0,
             callbacks=[tb_callback, ckpt_callback])
