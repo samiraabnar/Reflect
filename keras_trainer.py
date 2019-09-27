@@ -71,4 +71,4 @@ if __name__ == '__main__':
 
   model.fit(task.train_dataset,
             epochs=3,
-            callbacks=[tb_callback, ckpt_callback])
+            callbacks=[ckpt_callback])
