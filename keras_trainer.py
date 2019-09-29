@@ -31,14 +31,13 @@ class CheckpointCallback(tf.keras.callbacks.Callback):
     print("Saved checkpoint for step {}: {}".format(int(ckpt.step), save_path))
 
 class SummaryCallback(tf.keras.callbacks.Callback):
-  def __init__(self, summary_writer, optimizer):
+  def __init__(self, summary_writer):
     self.summary_writer = summary_writer
-    self.optimizer = optimizer
 
   def on_batch_end(self, batch, logs=None):
-    if (self.optimizer.iterations % 200) == 0:
+    if (self.model.optimizer.iterations % 200) == 0:
       # Log LR
-      log_summary(log_name='learning_rate', log_value=self.optimizer.learning_rate, summary_scope='train')
+      log_summary(log_name='learning_rate', log_value=self.model.optimizer.lr, summary_scope='train')
 
   def on_train_epoch_end(self, epoch, logs=None):
     # Log loss
@@ -95,7 +94,7 @@ if __name__ == '__main__':
   summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(summary_dir, 'train'))
 
   ckpt_callback = CheckpointCallback(manager=manager, ckpt=ckpt)
-  summary_callback = SummaryCallback(summary_writer=summary_writer, optimizer=optimizer)
+  summary_callback = SummaryCallback(summary_writer=summary_writer)
 
   with summary_writer.as_default():
     model.fit(task.train_dataset,

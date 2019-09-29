@@ -31,7 +31,7 @@ class SvAgreementLM(task):
     #self.test_dataset = self.databuilder.as_dataset(split="test", batch_size=self.task_params.batch_size)
     self.train_dataset = self.databuilder.as_dataset(split="train", batch_size=self.task_params.batch_size)
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=2)
-    self.train_dataset = self.train_dataset.shuffle(1000000)
+    self.train_dataset = self.train_dataset.shuffle(self.info.splits['train'].num_examples)
     self.train_dataset = self.train_dataset.prefetch(1)
     #self.train_dataset = self.train_dataset.cache()
 
