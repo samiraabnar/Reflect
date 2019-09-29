@@ -37,7 +37,7 @@ class SummaryCallback(tf.keras.callbacks.Callback):
   def on_batch_end(self, batch, logs=None):
     if (self.model.optimizer.iterations % 200) == 0:
       # Log LR
-      log_summary(log_name='learning_rate', log_value=tf.keras.backend.eval(self.model.optimizer.lr), summary_scope='train')
+      log_summary(log_name='learning_rate', log_value=self.model.optimizer.learning_rate( model.optimizer.iterations), summary_scope='train')
 
   def on_train_epoch_end(self, epoch, logs=None):
     # Log loss
@@ -97,6 +97,7 @@ if __name__ == '__main__':
   summary_callback = SummaryCallback(summary_writer=summary_writer)
 
   with summary_writer.as_default():
+    print("initial learning rate:", model.optimizer.learning_rate( model.optimizer.iterations))
     model.fit(task.train_dataset,
               epochs=3,
               steps_per_epoch=task.n_train_batches,
