@@ -105,5 +105,5 @@ if __name__ == '__main__':
               validation_steps=task.n_valid_batches,
               callbacks=[ckpt_callback, summary_callback],
               validation_data=task.valid_dataset,
-              verbos=2
+              verbose=2
               )
