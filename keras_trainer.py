@@ -9,6 +9,14 @@ from task_scripts import get_model_params, get_task_params
 from tf2_models.lm_lstm import LmLSTM
 
 
+@tf.function
+def log_summary(log_value, log_name, summary_scope):
+  """Produce scalar summaries."""
+  with tf.compat.v2.summary.experimental.summary_scope(summary_scope):
+    tf.compat.v2.summary.scalar(log_name, log_value)
+
+
+
 class CheckpointCallback(tf.keras.callbacks.Callback):
 
   def __init__(self, manager, ckpt):
@@ -22,9 +30,24 @@ class CheckpointCallback(tf.keras.callbacks.Callback):
     print("Epoch %d: " %epoch)
     print("Saved checkpoint for step {}: {}".format(int(ckpt.step), save_path))
 
-class ValidationCallback(tf.keras.callbacks.Callback):
+class SummaryCallback(tf.keras.callbacks.Callback):
   def __init__(self, summary_writer):
     self.summary_writer = summary_writer
+
+  def on_batch_end(self, batch, logs=None):
+    if (self.optimizer.iterations % 200) == 0:
+      # Log LR
+      log_summary('learning_rate', self.optimizer.learning_rate, 'train')
+
+  def on_train_epoch_end(self, epoch, logs=None):
+    # Log loss
+    log_summary('loss', logs['loss'], 'train')
+
+
+  def on_valid_epoch_end(self, epoch, logs=None):
+    # Log loss
+    log_summary('loss', logs['loss'], 'valid')
+
 
 if __name__ == '__main__':
   log_dir = "logs/test"
