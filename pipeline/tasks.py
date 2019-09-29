@@ -19,21 +19,26 @@ class SvAgreementLM(task):
     self.databuilder = SVAgreement(data_dir='data')
     self.info = self.databuilder.info
     self.n_train_batches = int(self.info.splits['train'].num_examples / task_params.batch_size)
+    self.n_valid_batches = int(self.info.splits['validation'].num_examples / task_params.batch_size)
     self.setup_datasets()
 
 
   def setup_datasets(self):
     #with tf.device('/cpu:0'):
 
-    self.valid_dataset = self.databuilder.as_dataset(split="validation", batch_size=self.task_params.batch_size)
-    self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=2)
-    self.valid_dataset = self.valid_dataset.prefetch(1)
-    #self.test_dataset = self.databuilder.as_dataset(split="test", batch_size=self.task_params.batch_size)
-    self.train_dataset = self.databuilder.as_dataset(split="train", batch_size=self.task_params.batch_size)
-    self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=2)
+    self.valid_dataset = self.databuilder.as_dataset(split="validation")
+    self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.info.features.shape)
+    self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    self.valid_dataset = self.valid_dataset.cache()
+    self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
+
+    #self.test_dataset = self.databuilder.as_dataset(split="test")
+    self.train_dataset = self.databuilder.as_dataset(split="train")
+    self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.info.features.shape)
+    self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    self.train_dataset = self.train_dataset.cache()
     self.train_dataset = self.train_dataset.shuffle(self.info.splits['train'].num_examples)
-    self.train_dataset = self.train_dataset.prefetch(1)
-    #self.train_dataset = self.train_dataset.cache()
+    self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
   @tf.function
   def convert_examples(self, examples):
