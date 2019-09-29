@@ -92,6 +92,7 @@ if __name__ == '__main__':
   summary_dir = os.path.join(log_dir, 'summaries')
   tf.io.gfile.makedirs(log_dir)
   summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(summary_dir, 'train'))
+  tf.compat.v2.summary.experimental.experimental.set_step(optimizer.iterations)
 
   ckpt_callback = CheckpointCallback(manager=manager, ckpt=ckpt)
   summary_callback = SummaryCallback(summary_writer=summary_writer)
