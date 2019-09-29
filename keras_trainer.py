@@ -38,16 +38,16 @@ class SummaryCallback(tf.keras.callbacks.Callback):
   def on_batch_end(self, batch, logs=None):
     if (self.optimizer.iterations % 200) == 0:
       # Log LR
-      log_summary('learning_rate', self.optimizer.learning_rate, 'train')
+      log_summary(log_name='learning_rate', log_value=self.optimizer.learning_rate, summary_scope='train')
 
   def on_train_epoch_end(self, epoch, logs=None):
     # Log loss
-    log_summary('loss', logs['loss'], 'train')
+    log_summary(log_name='loss', log_value=logs['loss'], summary_scope='train')
 
 
   def on_valid_epoch_end(self, epoch, logs=None):
     # Log loss
-    log_summary('loss', logs['loss'], 'valid')
+    log_summary(log_name='loss', log_value=logs['loss'], summary_scope='valid')
 
 
 if __name__ == '__main__':
