@@ -94,10 +94,11 @@ if __name__ == '__main__':
   summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(summary_dir, 'train'))
 
   ckpt_callback = CheckpointCallback(manager=manager, ckpt=ckpt)
+  summary_callback = SummaryCallback(summary_writer)
 
   with summary_writer.as_default():
     model.fit(task.train_dataset,
               epochs=3,
-              callbacks=[ckpt_callback],
+              callbacks=[ckpt_callback, summary_callback],
               validation_data=task.valid_dataset,
               )
