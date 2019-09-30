@@ -1,20 +1,24 @@
 import tensorflow as tf
 
 @tf.function
-def masked_sequence_loss(logits, targets, sequence_mask):
-  return tf.reduce_mean(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=logits,
+def masked_sequence_loss(logits, targets, padding_symbol=0):
+  sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
+  return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=logits,
                                                                   labels=targets,
-                                                                  name='loss') * sequence_mask)
+                                                                  name='loss') * sequence_mask
 @tf.function
-def accuracy(logits, targets, sequence_mask):
+def accuracy(logits, targets, padding_symbol=0):
+  sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(logits, targets, sequence_mask, topk=1)
 
 @tf.function
-def accuracy_top2(logits, targets, sequence_mask):
+def accuracy_top2(logits, targets, padding_symbol=0):
+  sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(logits, targets, sequence_mask, topk=2)
 
 @tf.function
-def accuracy_top5(logits, targets, sequence_mask):
+def accuracy_top5(logits, targets, padding_symbol=0):
+  sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(logits, targets, sequence_mask, topk=5)
 
 @tf.function

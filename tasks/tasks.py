@@ -59,7 +59,7 @@ class SvAgreementLM(task):
            examples['sentence'][:,1:]
 
   def get_loss_fn(self):
-    return tf.losses.sparse_categorical_crossentropy
+    return masked_sequence_loss
 
   @property
   def metrics(self):

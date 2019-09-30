@@ -28,7 +28,7 @@ class Trainer(object):
 
     model.compile(
       optimizer=self.optimizer,
-      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+      loss=self.task.get_loss_fn(), #tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
       metrics=['accuracy'])
 
     summary_dir = os.path.join(log_dir, 'summaries')
