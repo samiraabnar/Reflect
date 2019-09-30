@@ -7,6 +7,7 @@ from absl import logging
 from pipeline.tasks import SvAgreementLM
 from task_scripts import get_model_params, get_task_params
 from tf2_models.lm_lstm import LmLSTM
+from tf2_models.train_utils import RectifiedAdam
 
 
 @tf.function
@@ -59,14 +60,14 @@ if __name__ == '__main__':
   # Create the Model
   model = LmLSTM(hparams=get_model_params(task))
 
-  initial_learning_rate = 0.1
+  initial_learning_rate = 0.001
   lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
     initial_learning_rate,
-    decay_steps=1000,
+    decay_steps=10000,
     decay_rate=0.96,
     staircase=True)
 
-  optimizer = tf.keras.optimizers.RMSprop(lr_schedule)
+  optimizer = RectifiedAdam(lr_schedule)
 
   model.compile(
     optimizer=optimizer,
