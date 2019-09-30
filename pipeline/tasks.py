@@ -27,8 +27,8 @@ class SvAgreementLM(task):
     #with tf.device('/cpu:0'):
 
     self.valid_dataset = self.databuilder.as_dataset(split="validation")
-    self.valid_dataset = self.valid_dataset.cache()
     self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.info.features.shape)
+    #self.valid_dataset = self.valid_dataset.cache()
     self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
@@ -37,8 +37,8 @@ class SvAgreementLM(task):
     #self.test_dataset = self.databuilder.as_dataset(split="test")
     self.train_dataset = self.databuilder.as_dataset(split="train")
     self.train_dataset = self.train_dataset.shuffle(self.info.splits['train'].num_examples)
-    self.train_dataset = self.train_dataset.cache()
     self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.info.features.shape)
+    #self.train_dataset = self.train_dataset.cache()
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.train_dataset = self.train_dataset.repeat()
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
