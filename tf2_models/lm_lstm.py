@@ -18,9 +18,6 @@ class LmLSTM(tf.keras.Model):
 
     self.create_vars()
 
-    self.build(input_shape=(None, None))
-    self.summary()
-
   @tf.function
   def create_vars(self):
     self.input_embedding = tf.compat.v2.keras.layers.Embedding(input_dim=self.hparams.input_dim,
@@ -51,11 +48,14 @@ class LmLSTM(tf.keras.Model):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
     rnn_outputs = embedded_input
 
+
+    input_mask = tf.cast(self.input_embedding.compute_mask(inputs), dtype=tf.float32)
     for i in np.arange(self.hparams.depth):
-      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs)
+      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask)
 
     rnn_outputs = self.output_embedding_dropout(rnn_outputs)
     logits = self.output_embedding(rnn_outputs)
+    logits = logits * input_mask[...,None]
 
     return logits
 

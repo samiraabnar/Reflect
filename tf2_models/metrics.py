@@ -1,28 +1,32 @@
 import tensorflow as tf
 
 @tf.function
-def masked_sequence_loss(logits, targets, padding_symbol=0):
-  sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
-  return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=logits,
-                                                                  labels=targets,
+def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
+  print(y_pred.shape)
+  print(y_true.shape)
+  y_true = tf.cast(tf.squeeze(y_true), tf.int32)
+  sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
+  print(sequence_mask.shape)
+  return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
+                                                                  labels=y_true,
                                                                   name='loss') * sequence_mask
 @tf.function
-def accuracy(logits, targets, padding_symbol=0):
+def accuracy(targets, logits, padding_symbol=0):
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
-  return accuracy_topk(logits, targets, sequence_mask, topk=1)
+  return accuracy_topk(targets, logits, sequence_mask, topk=1)
 
 @tf.function
-def accuracy_top2(logits, targets, padding_symbol=0):
+def accuracy_top2(targets, logits, padding_symbol=0):
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
-  return accuracy_topk(logits, targets, sequence_mask, topk=2)
+  return accuracy_topk(targets, logits, sequence_mask, topk=2)
 
 @tf.function
-def accuracy_top5(logits, targets, padding_symbol=0):
+def accuracy_top5(targets, logits, padding_symbol=0):
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
-  return accuracy_topk(logits, targets, sequence_mask, topk=5)
+  return accuracy_topk(targets, logits, sequence_mask, topk=5)
 
 @tf.function
-def accuracy_topk(logits, targets, sequence_mask, topk):
+def accuracy_topk(targets, logits, sequence_mask, topk):
   orig_shape = tf.shape(logits)
   last_dim = orig_shape[-1]
   logits = tf.reshape(logits, (-1,last_dim))

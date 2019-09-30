@@ -26,10 +26,16 @@ class Trainer(object):
     self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
     self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
 
+
+    x, y = iter(self.task.valid_dataset).next()
+    model(x)
+    model.summary()
+
     model.compile(
       optimizer=self.optimizer,
-      loss=self.task.get_loss_fn(), #tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
       metrics=['accuracy'])
+
 
     summary_dir = os.path.join(log_dir, 'summaries')
     tf.io.gfile.makedirs(log_dir)
