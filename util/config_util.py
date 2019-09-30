@@ -1,5 +1,5 @@
 class TrainParams:
-  learning_rate = 0.01
+  learning_rate = 0.001
   n_epochs = 30
   warmpup_steps = 10000
   hold_base_rate_steps = 1000
