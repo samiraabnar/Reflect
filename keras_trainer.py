@@ -42,15 +42,13 @@ class SummaryCallback(tf.keras.callbacks.Callback):
 
 
   def on_epoch_end(self, epoch, logs=None):
-    tf.print("train epoch ended")
-    # Log loss
+    tf.print("epoch ended")
+    # Log summary for test and train
     log_summary(log_name='loss', log_value=logs['loss'], summary_scope='train')
-
-
-  def on_epoch_end(self, epoch, logs=None):
-    tf.print("valid epoch ended")
-    # Log loss
+    log_summary(log_name='perolexity', log_value=tf.exp(logs['loss']), summary_scope='train')
     log_summary(log_name='loss', log_value=logs['val_loss'], summary_scope='valid')
+    log_summary(log_name='perplexity', log_value=tf.exp(logs['val_loss']), summary_scope='valid')
+
 
 
 if __name__ == '__main__':
