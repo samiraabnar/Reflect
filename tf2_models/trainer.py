@@ -49,7 +49,7 @@ class Trainer(object):
   def train(self):
     with self.summary_writer.as_default():
       print("initial learning rate:", self.model.optimizer.learning_rate(self.model.optimizer.iterations))
-      self.model.fit_generator(self.task.train_dataset,
+      self.model.fit(self.task.train_dataset,
                 epochs=self.train_params.num_train_epochs,
                 steps_per_epoch=self.task.n_train_batches,
                 validation_steps=self.task.n_valid_batches,
