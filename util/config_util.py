@@ -1,18 +1,18 @@
 class TrainParams:
-  learning_rate = 0.001
+  learning_rate = 0.01
   n_epochs = 30
   warmpup_steps = 10000
   hold_base_rate_steps = 1000
   total_training_steps = 60000
   num_train_epochs = 30
-  optimizer = 'radam'
+  optimizer = 'adam'
 
 class TaskParams:
   batch_size = 128
 
 
 class ModelParams:
-  hidden_dim=256
+  hidden_dim=512
   input_dim=None
   output_dim=None
   depth=2

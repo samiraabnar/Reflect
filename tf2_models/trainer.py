@@ -20,8 +20,8 @@ class Trainer(object):
     initial_learning_rate = self.train_params.learning_rate
     lr_schedule = ExponentialDecayWithWarmpUp(
       initial_learning_rate=initial_learning_rate,
-      decay_steps=100000,
-      decay_rate=0.98,
+      decay_steps=10000,
+      decay_rate=0.96,
       warmup_steps=10000)
 
     self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
