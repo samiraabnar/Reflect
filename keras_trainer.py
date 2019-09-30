@@ -40,11 +40,13 @@ class SummaryCallback(tf.keras.callbacks.Callback):
       log_summary(log_name='learning_rate', log_value=self.model.optimizer.learning_rate( model.optimizer.iterations), summary_scope='train')
 
   def on_train_epoch_end(self, epoch, logs=None):
+    tf.print("train epoch ended")
     # Log loss
     log_summary(log_name='loss', log_value=logs['loss'], summary_scope='train')
 
 
   def on_valid_epoch_end(self, epoch, logs=None):
+    tf.print("valid epoch ended")
     # Log loss
     log_summary(log_name='loss', log_value=logs['loss'], summary_scope='valid')
 
