@@ -1,10 +1,10 @@
 class TrainParams:
   learning_rate = 0.001
-  n_epochs = 30
+  n_epochs = 60
   warmpup_steps = 10000
   hold_base_rate_steps = 1000
   total_training_steps = 60000
-  num_train_epochs = 30
+  num_train_epochs = 60
   optimizer = 'adam'
 
 class TaskParams:

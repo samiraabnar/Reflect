@@ -7,8 +7,9 @@ from absl import app
 from absl import flags
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string('experiment_dir', 'logs', 'experiment directory')
+flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
 
+hparams = flags.FLAGS
 def run():
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
@@ -17,8 +18,8 @@ def run():
   # Create the Model
   model = LmLSTM(hparams=get_model_params(task))
 
-  log_dir = os.path.join(log_dir,task.name, model.model_name)
-  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name)
+  log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+hparams.exp_name)
+  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+hparams.exp_name)
 
   trainer = Trainer(task=task,
                     model=model,
