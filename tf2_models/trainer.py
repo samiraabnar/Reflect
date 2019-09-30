@@ -18,14 +18,16 @@ class Trainer(object):
       decay_rate=0.96,
       staircase=True)
 
-    self.optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
+    self.optimizer = RectifiedAdam(learning_rate=lr_schedule)
+    #tf.keras.optimizers.Adam(learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
     self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
     self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
 
     model.compile(
       optimizer=self.optimizer,
-      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True))
+      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+      metrics=['accuracy'])
 
     summary_dir = os.path.join(log_dir, 'summaries')
     tf.io.gfile.makedirs(log_dir)
