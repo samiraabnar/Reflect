@@ -1,8 +1,8 @@
 import tensorflow as tf
-from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
+from tensorflow.python.keras.optimizer_v2 import optimizer_v2
 
 
-class RectifiedAdam(OptimizerV2):
+class RectifiedAdam(optimizer_v2.OptimizerV2):
 
     def __init__(self,
                  learning_rate=0.001,
