@@ -34,6 +34,14 @@ class SvAgreementLM(task):
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
+    self.test_dataset = self.databuilder.as_dataset(split="test")
+    self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
+                                                         padded_shapes=self.info.features.shape)
+    # self.test_dataset = self.test_dataset.cache()
+    self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
+                                                num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    self.test_dataset = self.test_dataset.repeat()
+    self.test_dataset = self.test_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
     #self.test_dataset = self.databuilder.as_dataset(split="test")
     self.train_dataset = self.databuilder.as_dataset(split="train")
