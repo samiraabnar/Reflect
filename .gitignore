@@ -13,3 +13,5 @@ envname
 *.pyc
 .spyproject
 tmp
+tf_ckpts
+tf_ckpts/*
