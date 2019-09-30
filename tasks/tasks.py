@@ -17,7 +17,7 @@ class SvAgreementLM(task):
   def __init__(self, task_params, name='sv_agreement_lm', data_dir='data'):
     super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir='data')
 
-    self.databuilder = SVAgreement(data_dir='data')
+    self.databuilder = SVAgreement(data_dir=self.data_dir)
     self.info = self.databuilder.info
     self.n_train_batches = int(self.info.splits['train'].num_examples / task_params.batch_size)
     self.n_valid_batches = int(self.info.splits['validation'].num_examples / task_params.batch_size)
