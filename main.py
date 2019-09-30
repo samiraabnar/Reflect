@@ -10,7 +10,7 @@ import tensorflow.compat.v2.summary as summary
 
 import tqdm
 
-from pipeline.tasks import SvAgreementLM
+from tasks.tasks import SvAgreementLM
 from task_scripts import get_model_params, get_task_params
 from tf2_models.lm_lstm import LmLSTM
 

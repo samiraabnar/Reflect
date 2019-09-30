@@ -5,16 +5,17 @@ from tfds_data.tal_agreement import SVAgreement
 
 
 class task(object):
-  def __init__(self, task_params, name='abstract_task'):
+  def __init__(self, task_params, name='abstract_task', data_dir='data'):
     self.name = name
     self.task_params = task_params
+    self.data_dir = data_dir
 
   def convert_examples(self, examples):
     raise NotImplementedError
 
 class SvAgreementLM(task):
-  def __init__(self, task_params, name='sv_agreement_lm'):
-    super(SvAgreementLM, self).__init__(task_params, name)
+  def __init__(self, task_params, name='sv_agreement_lm', data_dir='data'):
+    super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir='data')
 
     self.databuilder = SVAgreement(data_dir='data')
     self.info = self.databuilder.info

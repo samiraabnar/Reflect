@@ -1,5 +1,5 @@
 import os
-from pipeline.tasks import SvAgreementLM
+from tasks.tasks import SvAgreementLM
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM
 from tf2_models.trainer import Trainer
