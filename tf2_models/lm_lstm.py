@@ -55,7 +55,7 @@ class LmLSTM(tf.keras.Model):
 
     rnn_outputs = self.output_embedding_dropout(rnn_outputs)
     logits = self.output_embedding(rnn_outputs)
-    logits = logits * input_mask[...,None]
+    logits = logits * input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - input_mask[...,None])
 
     return logits
 
