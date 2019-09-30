@@ -5,6 +5,7 @@ import os
 from tensorflow.python.keras.optimizer_v2.learning_rate_schedule import ExponentialDecay
 
 from tf2_models.keras_callbacks import CheckpointCallback, SummaryCallback
+from tf2_models.metrics import masked_sequence_loss
 from tf2_models.train_utils import RectifiedAdam, ExponentialDecayWithWarmpUp
 
 OPTIMIZER_DIC = {'adam': tf.keras.optimizers.Adam,
@@ -37,8 +38,8 @@ class Trainer(object):
 
     model.compile(
       optimizer=self.optimizer,
-      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-      metrics=['accuracy'])
+      loss=masked_sequence_loss)
+    #tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),)
 
 
     summary_dir = os.path.join(log_dir, 'summaries')

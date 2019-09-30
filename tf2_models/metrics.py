@@ -2,14 +2,12 @@ import tensorflow as tf
 
 @tf.function
 def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
-  print(y_pred.shape)
-  print(y_true.shape)
-  y_true = tf.cast(tf.squeeze(y_true), tf.int32)
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
   sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
-  print(sequence_mask.shape)
-  return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
+  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
+  return tf.reduce_sum(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
-                                                                  name='loss') * sequence_mask
+                                                                  name='loss') * sequence_mask)
 @tf.function
 def accuracy(targets, logits, padding_symbol=0):
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
