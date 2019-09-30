@@ -33,4 +33,4 @@ class SummaryCallback(tf.keras.callbacks.Callback):
     log_summary(log_name='perolexity', log_value=tf.exp(logs['loss']), summary_scope='train')
     log_summary(log_name='loss', log_value=logs['val_loss'], summary_scope='valid')
     log_summary(log_name='perplexity', log_value=tf.exp(logs['val_loss']), summary_scope='valid')
-    log_summary(log_name='accuracy', log_value=tf.exp(logs['val_acc']), summary_scope='valid')
+    log_summary(log_name='accuracy', log_value=tf.exp(logs['val_accu']), summary_scope='valid')
