@@ -15,7 +15,7 @@ class task(object):
 
 class SvAgreementLM(task):
   def __init__(self, task_params, name='sv_agreement_lm', data_dir='data'):
-    super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir='data')
+    super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir)
 
     self.databuilder = SVAgreement(data_dir=self.data_dir)
     self.info = self.databuilder.info
