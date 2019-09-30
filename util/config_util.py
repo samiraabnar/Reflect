@@ -5,6 +5,7 @@ class TrainParams:
   hold_base_rate_steps = 1000
   total_training_steps = 60000
   num_train_epochs = 30
+  optimizer = 'radam'
 
 class TaskParams:
   batch_size = 128

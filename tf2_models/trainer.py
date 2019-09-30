@@ -4,8 +4,11 @@ import os
 from tf2_models.keras_callbacks import CheckpointCallback, SummaryCallback
 from tf2_models.train_utils import RectifiedAdam
 
-
+OPTIMIZER_DIC = {'adam': tf.keras.optimizers.Adam,
+                 'radam': RectifiedAdam,
+}
 class Trainer(object):
+
   def __init__(self, model, task, train_params, log_dir, ckpt_dir):
     self.model = model
     self.task = task
@@ -18,8 +21,7 @@ class Trainer(object):
       decay_rate=0.96,
       staircase=True)
 
-    self.optimizer = RectifiedAdam(learning_rate=lr_schedule)
-    #tf.keras.optimizers.Adam(learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
+    self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
     self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
     self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
