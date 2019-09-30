@@ -1,8 +1,11 @@
+import absl
 import tensorflow as tf
 import os
 
+from tensorflow.python.keras.optimizer_v2.learning_rate_schedule import ExponentialDecay
+
 from tf2_models.keras_callbacks import CheckpointCallback, SummaryCallback
-from tf2_models.train_utils import RectifiedAdam
+from tf2_models.train_utils import RectifiedAdam, ExponentialDecayWithWarmpUp
 
 OPTIMIZER_DIC = {'adam': tf.keras.optimizers.Adam,
                  'radam': RectifiedAdam,
@@ -15,14 +18,15 @@ class Trainer(object):
     self.train_params = train_params
 
     initial_learning_rate = self.train_params.learning_rate
-    lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-      initial_learning_rate,
-      decay_steps=10000,
-      decay_rate=0.96,
-      staircase=True)
+    lr_schedule = ExponentialDecayWithWarmpUp(
+      initial_learning_rate=initial_learning_rate,
+      decay_steps=100000,
+      decay_rate=0.98,
+      warmup_steps=10000)
 
     self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
+    ExponentialDecay
     self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
     self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
 
