@@ -168,13 +168,14 @@ class WordSvAgreement(SVAgreement):
 
   CLASS_TO_CODE = {'VBZ': 0, 'VBP': 1}
   CODE_TO_CLASS = {x: y for y, x in CLASS_TO_CODE.items()}
-
+  VOCAB_DIR = 'tal_agreement/vocab'
   def __init__(self, data_dir, **kwargs):
+    self.vocab_dir = os.path.join(data_dir, self.VOCAB_DIR)
     super(WordSvAgreement, self).__init__(data_dir=data_dir, **kwargs)
 
 
   def _info(self):
-    vocab = list(np.load('data/tal_agreement/vocab', allow_pickle=True).item().keys())
+    vocab = list(np.load(self.vocab_dir, allow_pickle=True).item().keys())
     print("Vocab len: ", len(vocab))
     self.text_encoder_config = tfds.features.text.TextEncoderConfig(
       encoder=tfds.features.text.TokenTextEncoder(vocab))
