@@ -32,7 +32,7 @@ class SVAgreement(tfds.core.GeneratorBasedBuilder):
     self.text_encoder_config = tfds.features.text.TextEncoderConfig(
       encoder_cls=tfds.features.text.SubwordTextEncoder,
       vocab_size=2 ** 13)
-    
+
     return tfds.core.DatasetInfo(
       builder=self,
       # This is the description that will appear on the datasets page.
@@ -157,7 +157,7 @@ class SVAgreement(tfds.core.GeneratorBasedBuilder):
     """
     return self.info.features["sentence"].encoder.vocab_size
 
-class WordSVAgreement(SVAgreement):
+class WordSvAgreement(SVAgreement):
   """ This is the dataset for evaluating the ability of language models to learn syntax.
   Paper:
   Assessing the Ability of LSTMs to Learn Syntax-Sensitive Dependencies

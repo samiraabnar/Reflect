@@ -68,3 +68,8 @@ class SvAgreementLM(task):
             'accuracy_top2': metrics.accuracy_top2,
             'accuracy_top5': metrics.accuracy_top5
           }
+
+
+class WordSvAgreementLM(SvAgreementLM):
+  def __init__(self, task_params, name='word_sv_agreement_lm', data_dir='data'):
+    super(WordSvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir)

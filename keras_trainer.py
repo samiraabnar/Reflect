@@ -1,5 +1,5 @@
 import os
-from tasks.tasks import SvAgreementLM
+from tasks.tasks import SvAgreementLM, WordSvAgreementLM
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM
 from tf2_models.trainer import Trainer
@@ -8,13 +8,24 @@ from absl import flags
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
+flags.DEFINE_string('task', 'sv_agreement', 'sv_agreement | word_sv_agreement')
 
 hparams = flags.FLAGS
+
+
+
+
+TASKS = {
+  'sv_agreement': SvAgreementLM,
+  'word_sv_agreement': WordSvAgreementLM,
+}
 def run():
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
 
-  task = SvAgreementLM(get_task_params())
+  # Create task
+  task = TASKS[hparams.task](get_task_params())
+
   # Create the Model
   model = LmLSTM(hparams=get_model_params(task))
 
