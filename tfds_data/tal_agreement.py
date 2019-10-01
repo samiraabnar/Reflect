@@ -223,6 +223,8 @@ if __name__ == '__main__':
     print("decoded_sentence:", databuilder.sentence_encoder().decode(batch['sentence'][0]))
     print("verb class:", batch['verb_class'][0])
     print("verb position:",batch['verb_position'][0])
+    print("distance:",batch['distance'][0])
+
     break
 
   print(databuilder.vocab_size())

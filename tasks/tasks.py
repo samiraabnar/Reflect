@@ -1,23 +1,24 @@
 import tensorflow as tf
 from tf2_models.metrics import masked_sequence_loss
 from tf2_models import metrics
-from tfds_data.tal_agreement import SVAgreement
+from tfds_data.tal_agreement import SVAgreement, WordSvAgreement
 
 
 class task(object):
-  def __init__(self, task_params, name='abstract_task', data_dir='data'):
+  def __init__(self, task_params, builder_cls, name='abstract_task', data_dir='data'):
     self.name = name
     self.task_params = task_params
     self.data_dir = data_dir
+    self.builder_cls = builder_cls
 
   def convert_examples(self, examples):
     raise NotImplementedError
 
 class SvAgreementLM(task):
-  def __init__(self, task_params, name='sv_agreement_lm', data_dir='data'):
-    super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir)
+  def __init__(self, task_params, name='sv_agreement_lm', data_dir='data', builder_cls=SVAgreement):
+    super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
 
-    self.databuilder = SVAgreement(data_dir=self.data_dir)
+    self.databuilder = self.builder_cls(data_dir=self.data_dir)
     self.info = self.databuilder.info
     self.n_train_batches = int(self.info.splits['train'].num_examples / task_params.batch_size)
     self.n_valid_batches = int(self.info.splits['validation'].num_examples / task_params.batch_size)
@@ -71,5 +72,5 @@ class SvAgreementLM(task):
 
 
 class WordSvAgreementLM(SvAgreementLM):
-  def __init__(self, task_params, name='word_sv_agreement_lm', data_dir='data'):
-    super(WordSvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir)
+  def __init__(self, task_params, name='word_sv_agreement_lm', data_dir='data', builder_cls=WordSvAgreement):
+    super(WordSvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
