@@ -8,7 +8,7 @@ from absl import flags
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
-flags.DEFINE_string('task', 'sv_agreement', 'sv_agreement | word_sv_agreement')
+flags.DEFINE_string('task', 'sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement')
 
 hparams = flags.FLAGS
 
@@ -16,8 +16,8 @@ hparams = flags.FLAGS
 
 
 TASKS = {
-  'sv_agreement': SvAgreementLM,
-  'word_sv_agreement': WordSvAgreementLM,
+  'sv_agreement_lm': SvAgreementLM,
+  'word_sv_agreement_lm': WordSvAgreementLM,
 }
 def run():
   log_dir = "logs"
