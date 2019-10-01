@@ -1,3 +1,5 @@
+from collections import Counter
+
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import os
@@ -6,6 +8,7 @@ import numpy as np
 from prep_data.build_dictionary import build_and_save_dic
 from util import text_util, constants
 from util.text_util import deps_from_tsv, deps_to_tsv
+
 
 
 class SVAgreement(tfds.core.GeneratorBasedBuilder):
@@ -20,7 +23,16 @@ class SVAgreement(tfds.core.GeneratorBasedBuilder):
   CLASS_TO_CODE = {'VBZ': 0, 'VBP': 1}
   CODE_TO_CLASS = {x: y for y, x in CLASS_TO_CODE.items()}
 
+  def __init__(self, **kwargs):
+    super(SVAgreement, self).__init__(**kwargs)
+
+
+
   def _info(self):
+    self.text_encoder_config = tfds.features.text.TextEncoderConfig(
+      encoder_cls=tfds.features.text.SubwordTextEncoder,
+      vocab_size=2 ** 13)
+    
     return tfds.core.DatasetInfo(
       builder=self,
       # This is the description that will appear on the datasets page.
@@ -29,12 +41,14 @@ class SVAgreement(tfds.core.GeneratorBasedBuilder):
       # tfds.features.FeatureConnectors
       features=tfds.features.FeaturesDict({
         "sentence": tfds.features.Text(
-          encoder_config=tfds.features.text.TextEncoderConfig(
-          encoder_cls=tfds.features.text.SubwordTextEncoder,
-          vocab_size=2**13)),
+          encoder_config=self.text_encoder_config),
         # Here, labels can be of 5 distinct values.
         "verb_class": tfds.features.ClassLabel(names=["VBZ", "VBP"]),
         "verb_position": tf.int32,
+        "n_intervening": tf.int32,
+        "n_diff_intervening": tf.int32,
+        "distance": tf.int32,
+        "verb": tfds.features.Text()
       }),
       # If there's a common (input, target) tuple from the features,
       # specify them here. They'll be used if as_supervised=True in
@@ -124,7 +138,11 @@ class SVAgreement(tfds.core.GeneratorBasedBuilder):
       yield example_id, {
         "sentence": example['sentence'],
         "verb_class": example['verb_pos'],
-        "verb_position": int(example['verb_index']) - 1
+        "verb_position": int(example['verb_index']) - 1,
+        "n_intervening": example['n_intervening'],
+        "n_diff_intervening": example['n_diff_intervening'],
+        "distance": example['distance'],
+        "verb": example['verb']
       }
 
   def sentence_encoder(self):
@@ -139,9 +157,61 @@ class SVAgreement(tfds.core.GeneratorBasedBuilder):
     """
     return self.info.features["sentence"].encoder.vocab_size
 
+class WordSVAgreement(SVAgreement):
+  """ This is the dataset for evaluating the ability of language models to learn syntax.
+  Paper:
+  Assessing the Ability of LSTMs to Learn Syntax-Sensitive Dependencies
+  Tal Linzen, Emmanuel Dupoux, Yoav Goldberg
+  """
+
+  VERSION = tfds.core.Version('0.1.0')
+
+  CLASS_TO_CODE = {'VBZ': 0, 'VBP': 1}
+  CODE_TO_CLASS = {x: y for y, x in CLASS_TO_CODE.items()}
+
+  def __init__(self, data_dir, **kwargs):
+    super(WordSVAgreement, self).__init__(data_dir=data_dir, **kwargs)
+
+
+  def _info(self):
+    vocab = list(np.load('data/tal_agreement/vocab', allow_pickle=True).item().keys())
+    print("Vocab len: ", len(vocab))
+    self.text_encoder_config = tfds.features.text.TextEncoderConfig(
+      encoder=tfds.features.text.TokenTextEncoder(vocab))
+
+    return tfds.core.DatasetInfo(
+      builder=self,
+      # This is the description that will appear on the datasets page.
+      description=("This is the dataset for subject verb agreement "
+                   "to assess the ability of language models to learn syntax"),
+      # tfds.features.FeatureConnectors
+      features=tfds.features.FeaturesDict({
+        "sentence": tfds.features.Text(
+          encoder_config=self.text_encoder_config),
+        # Here, labels can be of 5 distinct values.
+        "verb_class": tfds.features.ClassLabel(names=["VBZ", "VBP"]),
+        "verb_position": tf.int32,
+        "n_intervening": tf.int32,
+        "n_diff_intervening": tf.int32,
+        "distance": tf.int32,
+        "verb": tfds.features.Text()
+      }),
+      # If there's a common (input, target) tuple from the features,
+      # specify them here. They'll be used if as_supervised=True in
+      # builder.as_dataset.
+      supervised_keys=("sentence", "verb_class"),
+      # Homepage of the dataset for documentation
+      urls=["https://github.com/TalLinzen/rnn_agreement"],
+      # Bibtex citation for the dataset
+      citation=r"""@article{my-awesome-dataset-2020,
+                                  author = {Linzen, Tal; Dupoux,Emmanuel; Goldberg, Yoav},"}""",
+    )
+
+
+
 if __name__ == '__main__':
 
-  databuilder = SVAgreement(data_dir='data')
+  databuilder = WordSVAgreement(data_dir='data')
   databuilder.download_and_prepare(download_dir='tmp/',
                                     download_config=tfds.download.DownloadConfig(register_checksums=True))
 
