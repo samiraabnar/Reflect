@@ -170,7 +170,7 @@ class WordSvAgreement(SVAgreement):
   CODE_TO_CLASS = {x: y for y, x in CLASS_TO_CODE.items()}
 
   def __init__(self, data_dir, **kwargs):
-    super(WordSVAgreement, self).__init__(data_dir=data_dir, **kwargs)
+    super(WordSvAgreement, self).__init__(data_dir=data_dir, **kwargs)
 
 
   def _info(self):
@@ -211,7 +211,7 @@ class WordSvAgreement(SVAgreement):
 
 if __name__ == '__main__':
 
-  databuilder = WordSVAgreement(data_dir='data')
+  databuilder = WordSvAgreement(data_dir='data')
   databuilder.download_and_prepare(download_dir='tmp/',
                                     download_config=tfds.download.DownloadConfig(register_checksums=True))
 
