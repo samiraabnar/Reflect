@@ -12,7 +12,7 @@ class TaskParams:
 
 
 class ModelParams:
-  hidden_dim=512
+  hidden_dim=1024
   input_dim=None
   output_dim=None
   depth=2
@@ -46,9 +46,9 @@ class GPT2Config(object):
         embedding_dim=512,
         depth=6,
         n_head=8,
-        resid_pdrop=0.1,
-        embd_pdrop=0.1,
-        attn_pdrop=0.1,
+        resid_pdrop=0.2,
+        embd_pdrop=0.2,
+        attn_pdrop=0.2,
         layer_norm_epsilon=1e-5,
         initializer_range=0.02,
         num_labels=1,
