@@ -1,9 +1,9 @@
 class ModelConfig(object):
   def __init__(self,
-               hidden_dim=1024,
+               hidden_dim=512,
                input_dim=None,
                output_dim=None,
-               depth=2,
+               depth=3,
                hidden_dropout_rate=0.5,
                input_dropout_rate=0.2):
     self.hidden_dim = hidden_dim
