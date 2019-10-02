@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=lm_lstm
+#SBATCH --job-name=lm_gpt2
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
@@ -23,6 +23,6 @@ DATA_DIR=$HEAD_DIR/data
 LOGS_DIR=$HEAD_DIR/logs
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
---model=lm_lstm \
+--model=lm_gpt2 \
 --task=word_sv_agreement_lm \
 --exp_name=tune1
