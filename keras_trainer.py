@@ -2,7 +2,7 @@ import os
 from tasks.tasks import SvAgreementLM, WordSvAgreementLM
 from tf2_models.lm_transformer import LmGPT2
 from util.config_util import get_model_params, get_task_params, get_train_params
-from tf2_models.lm_lstm import LmLSTM
+from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb
 from tf2_models.trainer import Trainer
 from absl import app
 from absl import flags
@@ -10,14 +10,15 @@ from absl import flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
 flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm')
-flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2')
+flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_lstm_shared_emb')
 
 
 hparams = flags.FLAGS
 
 
 MODELS = {"lm_lstm": LmLSTM,
-          "lm_gpt2": LmGPT2}
+          "lm_gpt2": LmGPT2,
+          "lm_lstm_shared_emb": LmLSTMSharedEmb}
 
 TASKS = {
   'sv_agreement_lm': SvAgreementLM,
@@ -33,8 +34,8 @@ def run():
   # Create the Model
   model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model))
 
-  log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+hparams.exp_name)
-  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+hparams.exp_name)
+  log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.learning_rate)+"_"+hparams.exp_name)
+  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.learning_rate)+"_"+hparams.exp_name)
 
   trainer = Trainer(task=task,
                     model=model,

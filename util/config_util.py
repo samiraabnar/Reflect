@@ -2,10 +2,11 @@ from util.model_configs import GPT2Config, ModelConfig
 
 
 class TrainParams:
-  learning_rate = 0.001
+  learning_rate = 0.0005
   n_epochs = 60
-  warmpup_steps = 1000
-  hold_base_rate_steps = 0
+  warmpup_steps = 5000
+  decay_steps = 10000
+  hold_base_rate_steps = 1000
   total_training_steps = 60000
   num_train_epochs = 60
   optimizer = 'adam'
