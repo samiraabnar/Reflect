@@ -26,7 +26,7 @@ class Distiller(object):
         logits = self.student_model(x)
         distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
 
-      grads = tape.gradient(loss_value, self.student_model.trainable_weights)
+      grads = tape.gradient(distill_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
       actual_loss = masked_sequence_loss(y_pred=logits, y_true=y_true)
       return distill_loss, actual_loss
@@ -35,7 +35,8 @@ class Distiller(object):
     valid_iter = iter(self.task.valid_dataset)
 
     step = 0
-    epochs = 1
+    epochs = 0
+    num_epochs = 3
     for (x, y) in train_iter:
       x = tf.convert_to_tensor(x, dtype=tf.int64)
       y = tf.convert_to_tensor(y, dtype=tf.int64)
@@ -53,6 +54,8 @@ class Distiller(object):
 
       if (step % self.task.n_train_batches) == 0:
         valid_step = 0
+        validation_actual_loss = tf.keras.metrics.Mean()
+        validation_distill_loss = tf.keras.metrics.Mean()
         while valid_step < self.task.n_valid_baches:
           v_x, v_y = next(valid_iter)
           v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
@@ -64,16 +67,25 @@ class Distiller(object):
                                            temperature=self.temperature)
 
           logits = self.student_model(x)
-          validation_distill_loss = self.student_model.loss(y_pred=logits, y_true=masked_teacher_probs)
-          validation_actual_loss = masked_sequence_loss(y_true=v_y, y_pred=logits)
+          validation_distill_loss.update_state(self.student_model.loss(y_pred=logits,
+                                                                       y_true=masked_teacher_probs))
+          validation_actual_loss.update_state(masked_sequence_loss(y_true=v_y,
+                                                                   y_pred=logits))
           valid_step += 1
 
         log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
         log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
         log_summary(log_name='perolexity', log_value=tf.exp(actual_loss), summary_scope='train')
-        log_summary(log_name='distill_loss', log_value=validation_distill_loss, summary_scope='valid')
-        log_summary(log_name='actual_loss', log_value=validation_actual_loss, summary_scope='valid')
-        log_summary(log_name='perplexity', log_value=tf.exp(validation_actual_loss), summary_scope='valid')
+        log_summary(log_name='distill_loss', log_value=validation_distill_loss.result(), summary_scope='valid')
+        log_summary(log_name='actual_loss', log_value=validation_actual_loss.result(), summary_scope='valid')
+        log_summary(log_name='perplexity', log_value=tf.exp(validation_actual_loss.result()), summary_scope='valid')
+
+        epochs += 1
+
+      step += 1
+
+      if epochs >= num_epochs:
+        break
 
   def run(self):
     raise NotImplementedError
