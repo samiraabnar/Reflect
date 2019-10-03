@@ -1,11 +1,13 @@
 class ModelConfig(object):
   def __init__(self,
                hidden_dim=1024,
+               embedding_dim=512,
                input_dim=None,
                output_dim=None,
                depth=3,
                hidden_dropout_rate=0.5,
                input_dropout_rate=0.2):
+    self.embedding_dim = embedding_dim
     self.hidden_dim = hidden_dim
     self.input_dim = input_dim
     self.output_dim = output_dim

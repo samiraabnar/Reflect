@@ -9,6 +9,7 @@ class LmLSTM(tf.keras.Model):
     self.scope = scope
 
     self.model_name = '_'.join([self.scope,
+                         'em-'+str(self.hparams.embedding_dim),
                          'h-'+str(self.hparams.hidden_dim),
                          'd-'+str(self.hparams.depth),
                          'hdrop-'+str(self.hparams.hidden_dropout_rate),
@@ -21,7 +22,7 @@ class LmLSTM(tf.keras.Model):
   @tf.function
   def create_vars(self):
     self.input_embedding = tf.compat.v2.keras.layers.Embedding(input_dim=self.hparams.input_dim,
-                                                               output_dim=self.hparams.hidden_dim,
+                                                               output_dim=self.hparams.embedding_dim,
                                                                input_shape=(None, None),
                                                                mask_zero=True,
                                                                embeddings_regularizer=self.regularizer,
@@ -50,6 +51,7 @@ class LmLSTM(tf.keras.Model):
                                                     bias_regularizer=self.regularizer,
 
                                                     ))
+  @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
     rnn_outputs = embedded_input

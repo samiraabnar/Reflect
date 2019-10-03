@@ -37,7 +37,8 @@ class Trainer(object):
 
     model.compile(
       optimizer=self.optimizer,
-      loss=masked_sequence_loss)
+      loss=masked_sequence_loss,
+      metrics=[masked_sequence_loss])
     #tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),)
 
 

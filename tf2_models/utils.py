@@ -1,6 +1,5 @@
 import tensorflow as tf
 
-@tf.function
 def log_summary(log_value, log_name, summary_scope):
   """Produce scalar summaries."""
   with tf.compat.v2.summary.experimental.summary_scope(summary_scope):
