@@ -7,11 +7,12 @@ class SharedEmbeddings(tf.keras.layers.Layer):
   """Construct shared token embeddings.
   """
 
-  def __init__(self, vocab_size, hidden_size, initializer_range=None, **kwargs):
+  def __init__(self, vocab_size, hidden_size, initializer_range=None, regularizer=None, **kwargs):
     super(SharedEmbeddings, self).__init__(**kwargs)
     self.vocab_size = vocab_size
     self.hidden_size = hidden_size
     self.initializer_range = hidden_size ** -0.5 if initializer_range is None else initializer_range
+    self.regularizer = regularizer
 
   def build(self, input_shape):
     """Build shared word embedding layer
@@ -21,7 +22,8 @@ class SharedEmbeddings(tf.keras.layers.Layer):
     self.weight = self.add_weight(
       "weight",
       shape=[self.vocab_size, self.hidden_size],
-      initializer=get_initializer(self.initializer_range))
+      initializer=get_initializer(self.initializer_range),
+      regularizer=self.regularizer)
     super(SharedEmbeddings, self).build(input_shape)
 
   def call(self, inputs, mode="embedding"):

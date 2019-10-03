@@ -4,25 +4,27 @@ from tf2_models.common_layers import get_initializer, shape_list, gelu
 
 
 class Attention(tf.keras.layers.Layer):
-  def __init__(self, hidden_dim, n_ctx, config, scale=False, **kwargs):
+  def __init__(self, hidden_dim, n_ctx, config, regularizer, scale=False, **kwargs):
     super(Attention, self).__init__(**kwargs)
     self.output_attentions = config.output_attentions
 
     n_state = hidden_dim
     assert n_state % config.n_head == 0
+
     self.n_ctx = n_ctx
     self.n_head = config.n_head
     self.split_size = n_state
     self.scale = scale
-
-    self.c_attn = Conv1D(n_state * 3, hidden_dim, initializer_range=config.initializer_range, name='c_attn')
-    self.c_proj = Conv1D(n_state, hidden_dim, initializer_range=config.initializer_range, name='c_proj')
+    self.regularizer = regularizer
+    self.c_attn = Conv1D(nf=n_state * 3, nx=hidden_dim,
+                         initializer_range=config.initializer_range,
+                         regularizer=self.regularizer, name='c_attn')
+    self.c_proj = Conv1D(nf=n_state, nx=hidden_dim,
+                         initializer_range=config.initializer_range,
+                         regularizer=self.regularizer,
+                         name='c_proj')
     self.attn_dropout = tf.keras.layers.Dropout(config.attn_pdrop)
     self.resid_dropout = tf.keras.layers.Dropout(config.resid_pdrop)
-    self.pruned_heads = set()
-
-  def prune_heads(self, heads):
-    pass
 
   @staticmethod
   def causal_attention_mask(nd, ns, dtype):
@@ -98,7 +100,7 @@ class Attention(tf.keras.layers.Layer):
 
 
 class Conv1D(tf.keras.layers.Layer):
-  def __init__(self, nf, nx, initializer_range=0.02, **kwargs):
+  def __init__(self, nf, nx, regularizer, initializer_range=0.02, **kwargs):
     """ TFConv1D layer as defined by Radford et al. for OpenAI GPT (and also used in GPT-2)
         Basically works like a Linear layer but the weights are transposed
     """
@@ -106,18 +108,21 @@ class Conv1D(tf.keras.layers.Layer):
     self.nf = nf
     self.nx = nx
     self.initializer_range = initializer_range
+    self.regularizer = regularizer
 
   def build(self, input_shape):
     self.weight = self.add_weight(
       "weight",
       shape=[self.nx, self.nf],
-      initializer=get_initializer(self.initializer_range))
+      initializer=get_initializer(self.initializer_range),
+      regularizer=self.regularizer)
     self.bias = self.add_weight(
       "bias",
       shape=[1, self.nf],
-      initializer=tf.zeros_initializer())
+      initializer=tf.zeros_initializer(),
+      regularizer=self.regularizer)
 
-  def call(self, x):
+  def call(self, x, **kwargs):
     bz, sl = shape_list(x)[:2]
 
     x = tf.reshape(x, [-1, self.nx])
@@ -129,13 +134,14 @@ class Conv1D(tf.keras.layers.Layer):
 
 
 class Block(tf.keras.layers.Layer):
-  def __init__(self, n_ctx, config, scale=False, **kwargs):
+  def __init__(self, n_ctx, config, regularizer, scale=False, **kwargs):
     super(Block, self).__init__(**kwargs)
+    self.regularizer = regularizer
     nx = config.embedding_dim
     self.ln_1 = tf.keras.layers.LayerNormalization(epsilon=config.layer_norm_epsilon, name='ln_1')
-    self.attn = Attention(nx, n_ctx, config, scale, name='attn')
+    self.attn = Attention(hidden_dim=nx, n_ctx=n_ctx, config=config, scale=scale, regularizer=self.regularizer, name='attn')
     self.ln_2 = tf.keras.layers.LayerNormalization(epsilon=config.layer_norm_epsilon, name='ln_2')
-    self.mlp = TransformerMLP(4 * nx, config, name='mlp')
+    self.mlp = TransformerMLP(4 * nx, config, regularizer=self.regularizer, name='mlp')
 
   def call(self, inputs, training=False):
     x, layer_past, attention_mask = inputs
@@ -154,11 +160,14 @@ class Block(tf.keras.layers.Layer):
 
 
 class TransformerMLP(tf.keras.layers.Layer):
-  def __init__(self, n_state, config, **kwargs):
+  def __init__(self, n_state, config, regularizer, **kwargs):
     super(TransformerMLP, self).__init__(**kwargs)
+    self.regularizer = regularizer
     nx = config.embedding_dim
-    self.c_fc = Conv1D(n_state, nx, initializer_range=config.initializer_range, name='c_fc')
-    self.c_proj = Conv1D(nx, n_state, initializer_range=config.initializer_range, name='c_proj')
+    self.c_fc = Conv1D(n_state, nx, initializer_range=config.initializer_range,
+                       regularizer=self.regularizer, name='c_fc')
+    self.c_proj = Conv1D(nx, n_state, initializer_range=config.initializer_range,
+                         regularizer=self.regularizer, name='c_proj')
     self.act = gelu
     self.dropout = tf.keras.layers.Dropout(config.resid_pdrop)
 

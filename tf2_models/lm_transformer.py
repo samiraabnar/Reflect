@@ -15,18 +15,23 @@ class GPT2(tf.keras.layers.Layer):
     self.num_hidden_layers = hparams.depth
     self.vocab_size = hparams.vocab_size
     self.embedding_dim = hparams.embedding_dim
+    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
+                                                   l2=0.0001)
 
     self.wte = SharedEmbeddings(self.vocab_size ,
                                 hparams.hidden_size,
                                 initializer_range=hparams.initializer_range,
+                                regularizer=self.regularizer,
                                 name='wte')
     self.wpe = tf.keras.layers.Embedding(hparams.n_positions,
                                          hparams.embedding_dim,
                                          embeddings_initializer=get_initializer(hparams.initializer_range),
+                                         embeddings_regularizer=self.regularizer,
                                          name='wpe')
     self.drop = tf.keras.layers.Dropout(hparams.embd_pdrop)
     self.h = [Block(hparams.n_ctx,
                       hparams,
+                      regularizer=self.regularizer,
                       scale=True,
                       name='h_._{}'.format(i)) for i in range(hparams.depth)]
     self.ln_f = tf.keras.layers.LayerNormalization(epsilon=hparams.layer_norm_epsilon, name='ln_f')
