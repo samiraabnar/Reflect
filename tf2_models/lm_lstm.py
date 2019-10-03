@@ -14,8 +14,8 @@ class LmLSTM(tf.keras.Model):
                          'hdrop-'+str(self.hparams.hidden_dropout_rate),
                          'indrop-'+str(self.hparams.input_dropout_rate)])
 
-
-
+    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
+                                                   l2=0.0001)
     self.create_vars()
 
   @tf.function
@@ -24,11 +24,14 @@ class LmLSTM(tf.keras.Model):
                                                                output_dim=self.hparams.hidden_dim,
                                                                input_shape=(None, None),
                                                                mask_zero=True,
+                                                               embeddings_regularizer=self.regularizer,
                                                                name='input_embedding')
     self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
     self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
 
     self.output_embedding = tf.compat.v2.keras.layers.Dense(units=self.hparams.output_dim,
+                                                            kernel_regularizer=self.regularizer,
+                                                            bias_regularizer=self.regularizer,
                                                             name='output_projection')
 
     self.stacked_rnns = []
@@ -41,7 +44,11 @@ class LmLSTM(tf.keras.Model):
                                                     unroll=False,
                                                     time_major=False,
                                                     recurrent_dropout=self.hparams.hidden_dropout_rate,
-                                                    dropout=self.hparams.hidden_dropout_rate
+                                                    dropout=self.hparams.hidden_dropout_rate,
+                                                    kernel_regularizer=self.regularizer,
+                                                    recurrent_regularizer=self.regularizer,
+                                                    bias_regularizer=self.regularizer,
+
                                                     ))
   def call(self, inputs, **kwargs):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))

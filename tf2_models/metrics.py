@@ -17,6 +17,7 @@ def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
   return tf.reduce_sum(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
                                                                   name='loss') * sequence_mask)
+
 @tf.function
 def accuracy(targets, logits, padding_symbol=0):
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)

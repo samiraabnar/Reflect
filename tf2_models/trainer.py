@@ -10,9 +10,6 @@ from tf2_models.train_utils import RectifiedAdam, ExponentialDecayWithWarmpUp
 
 OPTIMIZER_DIC = {'adam': tf.keras.optimizers.Adam,
                  'radam': RectifiedAdam,
-                 'adam_w': tf.contrib.opt.extend_with_weight_decay(
-                   tf.compat.v1.train.AdamOptimizer,
-                   weight_decay=0.0001)
                  }
 class Trainer(object):
 
