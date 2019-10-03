@@ -1,4 +1,4 @@
-from util.model_configs import GPT2Config, ModelConfig
+from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS
 
 
 class TrainParams:
@@ -30,11 +30,16 @@ def get_task_params():
   task_params = TaskParams()
   return task_params
 
-def get_model_params(task, config_name=''):
+def get_model_params(task, config_name='', model_config='base'):
+  if model_config in MODEL_CONFIGS:
+    model_cnfgs = MODEL_CONFIGS.get(model_config)
+  else:
+    model_cnfgs = MODEL_CONFIGS.get('base')
+
   if config_name == 'lm_gpt2':
-    return GPT2Config(vocab_size=task.databuilder.vocab_size())
+    return GPT2Config(vocab_size=task.databuilder.vocab_size(),**model_cnfgs)
   else:
     return ModelConfig(input_dim=task.databuilder.vocab_size(),
-                       output_dim=task.databuilder.vocab_size())
+                       output_dim=task.databuilder.vocab_size(),**model_cnfgs)
 
 

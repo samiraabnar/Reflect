@@ -112,3 +112,17 @@ class GPT2Config(object):
     @property
     def num_hidden_layers(self):
       return self.depth
+
+
+small_lstm = {
+  'hidden_dim': 256,
+  'embedding_dim': 256,
+  'depth': 2,
+  'hidden_dropout_rate': 0.25,
+  'input_dropout_rate': 0.2,
+}
+
+MODEL_CONFIGS = {
+  'base':{},
+  'small_lstm':small_lstm
+}

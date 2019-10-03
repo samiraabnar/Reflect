@@ -11,6 +11,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
 flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm')
 flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_lstm_shared_emb')
+flags.DEFINE_string('model_config', 'base', 'base | small_lstm ')
 
 
 hparams = flags.FLAGS
@@ -32,12 +33,12 @@ def run():
   task = TASKS[hparams.task](get_task_params())
 
   # Create the Model
-  model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model))
+  model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config))
 
   trainer_params = get_train_params()
 
-  log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
-  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
+  log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
+  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
 
   trainer = Trainer(task=task,
                     model=model,
