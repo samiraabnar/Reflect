@@ -27,7 +27,6 @@ class Trainer(object):
 
     self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
-    ExponentialDecay
     self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
     self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
 

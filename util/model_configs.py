@@ -1,6 +1,6 @@
 class ModelConfig(object):
   def __init__(self,
-               hidden_dim=512,
+               hidden_dim=1024,
                input_dim=None,
                output_dim=None,
                depth=3,

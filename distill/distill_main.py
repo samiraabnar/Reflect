@@ -1,17 +1,18 @@
 from distill.distiller import Distiller
-from util.config_util import get_task_params, get_model_params
+from util.config_util import get_task_params, get_model_params, get_distill_params
 import os
 from tasks.tasks import SvAgreementLM, WordSvAgreementLM
 from tf2_models.lm_transformer import LmGPT2
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM
 from absl import flags
+import sys
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm')
 
 
-flags.DEFINE_string('teacher_exp_name', 'trial1', 'experiment directory')
+flags.DEFINE_string('teacher_exp_name', 'trial4', 'experiment directory')
 flags.DEFINE_string('teacher_model', 'lm_lstm', 'lm_lstm | lm_gpt2')
 
 flags.DEFINE_string('student_exp_name', 'trial1', 'experiment directory')

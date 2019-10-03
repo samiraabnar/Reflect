@@ -107,7 +107,7 @@ class ExponentialDecayWithWarmpUp(LearningRateSchedule):
       global_step_recomp = math_ops.cast(step, dtype)
 
 
-      p = global_step_recomp / decay_steps
+      p = global_step_recomp / (decay_steps - warmup_steps)
       if self.staircase:
           p = math_ops.floor(p)
       learning_rate= math_ops.multiply(

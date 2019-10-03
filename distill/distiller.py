@@ -1,41 +1,79 @@
 import tensorflow as tf
 
+from distill.distill_util import get_probs
+from tf2_models.metrics import masked_sequence_loss
+from tf2_models.utils import log_summary
+
+
 class Distiller(object):
   def __init__(self, distill_params, teacher_model, student_model, task):
     self.teacher_model = teacher_model
     self.student_model = student_model
     self.task = task
     self.hparams = distill_params
+    self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
-  def get_loss(self, logits, labels, softmax_temp=1.0):
 
 
   def distill_loop(self, padding_symbol=0):
+    @tf.function(experimental_relax_shapes=True)
+    def get_logits(x):
+      return self.student_model(x)
 
-    # Load Data
-    examples = self.task.get_examples()
+    @tf.function(experimental_relax_shapes=True)
+    def train_step(x, y, y_true):
+      with tf.GradientTape() as tape:
+        logits = self.student_model(x)
+        distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
 
-    # Apply teacher and student
-    for x,y in self.task.train_data:
+      grads = tape.gradient(loss_value, self.student_model.trainable_weights)
+      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
+      actual_loss = masked_sequence_loss(y_pred=logits, y_true=y_true)
+      return distill_loss, actual_loss
+
+    train_iter = iter(self.task.train_dataset)
+    valid_iter = iter(self.task.valid_dataset)
+
+    step = 0
+    epochs = 1
+    for (x, y) in train_iter:
+      x = tf.convert_to_tensor(x, dtype=tf.int64)
+      y = tf.convert_to_tensor(y, dtype=tf.int64)
+
       teacher_logits = self.teacher_model(x)
-      teacher_probs = tf.nn.softmax(teacher_logits/self.hparams.distill_temp, axis=-1)
-      sequence_mask = tf.cast(y != 0, dtype=tf.float32)
-      teacher_probs = teacher_probs * sequence_mask[...,None] + tf.eye(teacher_logits.shape[-1])[0] * (1 - sequence_mask[...,None])
+      masked_teacher_probs = get_probs(logits=teacher_logits, labels=y, temperature=self.temperature)
 
+      distill_loss, actual_loss = train_step(x, masked_teacher_probs, y)
+      # Log every 200 batches.
+      if step % 200 == 0:
+        log_summary(log_name='learning_rate',
+                    log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+                    summary_scope='train')
+        log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
 
-      student_output_dic = self.student_model(teacher_output_dic['inputs'])
+      if (step % self.task.n_train_batches) == 0:
+        valid_step = 0
+        while valid_step < self.task.n_valid_baches:
+          v_x, v_y = next(valid_iter)
+          v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
+          v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
-    # Compute Loss for the student
-    student_distill_loss = self.get_loss(logits=student_output_dic['logits'],
-                                                 labels=teacher_output_dic['logits'],
-                                                 softmax_temp=self.hparams.distill_temp)
-    student_gold_loss = self.get_loss(logits=student_output_dic['logits'],
-                                      labels=student_output_dic['logits'])
+          teacher_logits = self.teacher_model(v_x)
+          masked_teacher_probs = get_probs(logits=teacher_logits,
+                                           labels=v_y,
+                                           temperature=self.temperature)
 
-    final_loss = self.hparams.student_distill_rate  * student_distill_loss + \
-                 self.hparams.student_gold_rate * student_gold_loss
+          logits = self.student_model(x)
+          validation_distill_loss = self.student_model.loss(y_pred=logits, y_true=masked_teacher_probs)
+          validation_actual_loss = masked_sequence_loss(y_true=v_y, y_pred=logits)
+          valid_step += 1
 
-    self.student_model.update(final_loss)
+        log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
+        log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
+        log_summary(log_name='perolexity', log_value=tf.exp(actual_loss), summary_scope='train')
+        log_summary(log_name='distill_loss', log_value=validation_distill_loss, summary_scope='valid')
+        log_summary(log_name='actual_loss', log_value=validation_actual_loss, summary_scope='valid')
+        log_summary(log_name='perplexity', log_value=tf.exp(validation_actual_loss), summary_scope='valid')
 
   def run(self):
     raise NotImplementedError
