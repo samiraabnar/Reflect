@@ -8,7 +8,7 @@ class TrainParams:
   hold_base_rate_steps = 0
   total_training_steps = 60000
   num_train_epochs = 60
-  optimizer = 'adam'
+  optimizer = 'adam_w'
 
 class DistillParams:
   distill_temp=1.0
