@@ -34,12 +34,14 @@ def run():
   # Create the Model
   model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model))
 
-  log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.learning_rate)+"_"+hparams.exp_name)
-  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.learning_rate)+"_"+hparams.exp_name)
+  trainer_params = get_train_params()
+
+  log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
+  ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
 
   trainer = Trainer(task=task,
                     model=model,
-                    train_params=get_train_params(),
+                    train_params=trainer_params,
                     log_dir=log_dir,
                     ckpt_dir=ckpt_dir)
 
