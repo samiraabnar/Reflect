@@ -47,19 +47,16 @@ if __name__ == '__main__':
   teacher_log_dir = os.path.join(log_dir, task.name, teacher_model.model_name + "_" + hparams.teacher_exp_name)
   teacher_ckpt_dir = os.path.join(chkpt_dir, task.name, teacher_model.model_name + "_" + hparams.teacher_exp_name)
 
-  student_model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=0.01),
-    loss=DistillLoss(tmp=1))
-
-  print(teacher_ckpt_dir)
-  teacher_ckpt = tf.train.Checkpoint(net=teacher_model)
-  teacher_manager = tf.train.CheckpointManager(teacher_ckpt, teacher_ckpt_dir, max_to_keep=2)
-  teacher_ckpt.restore(teacher_manager.latest_checkpoint)
-  if teacher_manager.latest_checkpoint:
-    print("Restored from {}".format(teacher_manager.latest_checkpoint))
-  else:
-    print("Initializing from scratch.")
+  student_log_dir = os.path.join(log_dir, task.name, student_model.model_name + "_" + hparams.teacher_exp_name)
+  student_ckpt_dir = os.path.join(chkpt_dir, task.name, student_model.model_name + "_" + hparams.student_exp_name)
 
 
-  distiller = Distiller(get_distill_params(), teacher_model, student_model, task)
+
+  distiller = Distiller(get_distill_params(), teacher_model, student_model, task,
+                        teacher_ckpt_dir=teacher_ckpt_dir,
+                        teacher_log_dir=teacher_log_dir,
+                        student_ckpt_dir=student_ckpt_dir,
+                        student_log_dir=student_log_dir,
+                        )
+  distiller.restore_teacher()
   distiller.distill_loop()

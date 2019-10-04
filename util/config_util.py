@@ -2,7 +2,7 @@ from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS
 
 
 class TrainParams:
-  learning_rate = 0.0005
+  learning_rate = 0.001
   n_epochs = 60
   warmup_steps = 5000
   decay_steps = 10000
@@ -12,9 +12,14 @@ class TrainParams:
   optimizer = 'adam'
 
 class DistillParams:
-  distill_temp=1.0
-  student_distill_rate=0.9
-  student_gold_rate=0.1
+  distill_temp = 1.0
+  student_distill_rate = 0.9
+  student_gold_rate = 0.1
+  student_learning_rate = 0.001
+  student_decay_steps = 10000
+  student_warmup_steps = 10000
+  student_optimizer = 'adam'
+  n_epochs = 30
 
 class TaskParams:
   batch_size = 128
