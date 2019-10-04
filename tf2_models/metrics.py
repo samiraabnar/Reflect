@@ -7,7 +7,7 @@ def masked_sequence_loss_with_probs(y_true, y_pred, padding_symbol=0):
   sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
   return tf.reduce_sum(tf.compat.v2.nn.softmax_cross_entropy_with_logits(logits=y_true,
                                                                   labels=y_pred,
-                                                                  name='loss') * sequence_mask[...,None])
+                                                                  name='loss') * sequence_mask)
 
 @tf.function
 def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
