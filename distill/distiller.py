@@ -32,7 +32,7 @@ class Distiller(object):
     self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
                                             optimizer=self.student_optimizer,
                                             net=self.student_model)
-    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, teacher_ckpt_dir, max_to_keep=2)
+    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
 
 
     x, y = iter(self.task.valid_dataset).next()

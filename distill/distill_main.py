@@ -44,11 +44,11 @@ if __name__ == '__main__':
   teacher_model = MODELS[hparams.teacher_model](hparams=get_model_params(task, hparams.teacher_model))
   student_model = MODELS[hparams.student_model](hparams=get_model_params(task, hparams.teacher_model))
 
-  teacher_log_dir = os.path.join(log_dir, task.name, teacher_model.model_name + "_" + hparams.teacher_exp_name)
+  teacher_log_dir = os.path.join(log_dir, task.name, "teacher_"+teacher_model.model_name + "_" + hparams.teacher_exp_name)
   teacher_ckpt_dir = os.path.join(chkpt_dir, task.name, teacher_model.model_name + "_" + hparams.teacher_exp_name)
 
-  student_log_dir = os.path.join(log_dir, task.name, student_model.model_name + "_" + hparams.teacher_exp_name)
-  student_ckpt_dir = os.path.join(chkpt_dir, task.name, student_model.model_name + "_" + hparams.student_exp_name)
+  student_log_dir = os.path.join(log_dir, task.name, "student_"+student_model.model_name + "_" + hparams.teacher_exp_name)
+  student_ckpt_dir = os.path.join(chkpt_dir, task.name, "student_"+student_model.model_name + "_" + hparams.student_exp_name)
 
 
 
