@@ -109,14 +109,19 @@ class Distiller(object):
         log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
 
       if (step % self.task.n_train_batches) == 0:
-        tf.print("epoch %d, distill loss:", epochs, distill_loss)
+        tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
         self.validate(actual_loss, distill_loss, valid_iter)
+        self.student_ckpt.step.assign_add(1)
+        save_path = self.student_manager.save()
+        print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
+
         epochs += 1
 
       step += 1
 
       if epochs >= num_epochs:
         break
+
 
   @tf.function(experimental_relax_shapes=True)
   def validate(self, actual_loss, distill_loss, valid_iter):
