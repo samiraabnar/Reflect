@@ -26,5 +26,5 @@ LOGS_DIR=$HEAD_DIR/logs
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=lm_lstm_shared_emb \
 --task=word_sv_agreement_lm \
---model_config=big_lstm \
+--model_config=lstm_simple \
 --exp_name=tune_withl2_2
