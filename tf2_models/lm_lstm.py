@@ -118,7 +118,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
 
                                                     ))
   @tf.function(experimental_relax_shapes=True)
-  def call(self, inputs, training, padding_symbol=0, **kwargs):
+  def call(self, inputs, padding_symbol=0, **kwargs):
+    training = kwargs['training']
     input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
     float_input_mask= tf.cast(input_mask, dtype=tf.float32)
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'), training=training)
