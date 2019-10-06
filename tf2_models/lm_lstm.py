@@ -19,7 +19,7 @@ class LmLSTM(tf.keras.Model):
                          'indrop-'+str(self.hparams.input_dropout_rate)])
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
-                                                   l2=0.00001)
+                                                   l2=0.00000)
     self.create_vars()
 
   @tf.function
@@ -55,16 +55,16 @@ class LmLSTM(tf.keras.Model):
 
                                                     ))
   @tf.function(experimental_relax_shapes=True)
-  def call(self, inputs, **kwargs):
-    embedded_input = self.input_embedding_dropout(self.input_embedding(inputs))
+  def call(self, inputs, training, **kwargs):
+    embedded_input = self.input_embedding_dropout(self.input_embedding(inputs),training=training)
     rnn_outputs = embedded_input
 
 
     input_mask = tf.cast(self.input_embedding.compute_mask(inputs), dtype=tf.float32)
     for i in np.arange(self.hparams.depth):
-      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask)
+      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask, training=training)
 
-    rnn_outputs = self.output_embedding_dropout(rnn_outputs)
+    rnn_outputs = self.output_embedding_dropout(rnn_outputs, training=training)
     logits = self.output_embedding(rnn_outputs)
     logits = logits * input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - input_mask[...,None])
 
@@ -118,15 +118,15 @@ class LmLSTMSharedEmb(tf.keras.Model):
 
                                                     ))
   @tf.function(experimental_relax_shapes=True)
-  def call(self, inputs, padding_symbol=0, **kwargs):
+  def call(self, inputs, training, padding_symbol=0, **kwargs):
     input_mask = tf.cast(inputs != padding_symbol, dtype=tf.float32)
-    embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'))
+    embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'), training=training)
     rnn_outputs = embedded_input
 
     for i in np.arange(self.hparams.depth):
-      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask)
+      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask, training=training)
 
-    rnn_outputs = self.output_embedding_dropout(rnn_outputs)
+    rnn_outputs = self.output_embedding_dropout(rnn_outputs, training=training)
     logits = self.input_embedding(rnn_outputs, mode='linear')
     logits = logits * input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - input_mask[...,None])
 
