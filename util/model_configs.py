@@ -142,5 +142,6 @@ lstm_simple = {
 MODEL_CONFIGS = {
   'base':{},
   'small_lstm':small_lstm,
-  'big_lstm':big_lstm
+  'big_lstm':big_lstm,
+  'lstm_simple': lstm_simple
 }

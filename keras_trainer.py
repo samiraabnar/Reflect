@@ -33,6 +33,9 @@ def run():
   task = TASKS[hparams.task](get_task_params())
 
   # Create the Model
+  model_params = get_model_params(task,hparams.model, hparams.model_config)
+  print("model_params: ", model_params.__dict__)
+
   model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config))
 
   trainer_params = get_train_params()

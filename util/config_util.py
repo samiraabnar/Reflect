@@ -36,11 +36,13 @@ def get_task_params():
   return task_params
 
 def get_model_params(task, config_name='', model_config='base'):
+  print("model config:", model_config)
   if model_config in MODEL_CONFIGS:
     model_cnfgs = MODEL_CONFIGS.get(model_config)
   else:
     model_cnfgs = MODEL_CONFIGS.get('base')
 
+  print(model_cnfgs)
   if config_name == 'lm_gpt2':
     return GPT2Config(vocab_size=task.databuilder.vocab_size(),**model_cnfgs)
   else:
