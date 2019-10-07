@@ -2,7 +2,7 @@ import absl
 import tensorflow as tf
 import os
 
-from tensorflow.python.keras.optimizer_v2.learning_rate_schedule import ExponentialDecay
+from tensorflow.python.keras.optimizer_v2.learning_rate_schedule import ExponentialDecay, LearningRateSchedule
 
 from tf2_models.keras_callbacks import CheckpointCallback, SummaryCallback
 from tf2_models.metrics import masked_sequence_loss
@@ -18,12 +18,21 @@ class Trainer(object):
     self.task = task
     self.train_params = train_params
 
-    initial_learning_rate = self.train_params.learning_rate
-    lr_schedule = ExponentialDecayWithWarmpUp(
-      initial_learning_rate=initial_learning_rate,
-      decay_steps=self.train_params.decay_steps,
-      decay_rate=0.96,
-      warmup_steps=self.train_params.warmup_steps)
+    if self.train_params.optimizer == 'radam':
+      class Constant(LearningRateSchedule):
+        def __init__(self, lr):
+          self.learning_rate = lr
+        def __call__(self, step):
+          return self.learning_rate
+
+      lr_schedule = Constant(self.train_params.learning_rate)
+    else:
+      initial_learning_rate = self.train_params.learning_rate
+      lr_schedule = ExponentialDecayWithWarmpUp(
+        initial_learning_rate=initial_learning_rate,
+        decay_steps=self.train_params.decay_steps,
+        decay_rate=0.96,
+        warmup_steps=self.train_params.warmup_steps)
 
     self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 

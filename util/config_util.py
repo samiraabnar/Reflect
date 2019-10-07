@@ -1,15 +1,25 @@
 from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS
 
 
-class TrainParams:
-  learning_rate = 0.001
-  n_epochs = 60
-  warmup_steps = 5000
-  decay_steps = 10000
-  hold_base_rate_steps = 1000
-  total_training_steps = 60000
-  num_train_epochs = 60
-  optimizer = 'adam'
+class TrainParams(object):
+  def __init__(self, optimizer,
+               learning_rate=0.001,
+                n_epochs=60,
+                warmup_steps=5000,
+                decay_steps=10000,
+                hold_base_rate_steps=1000,
+                total_training_steps=60000,
+                num_train_epochs=60,
+  ):
+    self.learning_rate = learning_rate
+    self.n_epochs = n_epochs
+    self.warmup_steps = warmup_steps
+    self.decay_steps = decay_steps
+    self.hold_base_rate_steps = hold_base_rate_steps
+    self.total_training_steps = total_training_steps
+    self.num_train_epochs = num_train_epochs
+    self.optimizer =  optimizer
+
 
 class DistillParams:
   distill_temp = 1.0
@@ -24,8 +34,9 @@ class DistillParams:
 class TaskParams:
   batch_size = 128
 
-def get_train_params():
-  train_params = TrainParams()
+def get_train_params(optimizer):
+  train_params = TrainParams(optimizer=optimizer)
+
   return train_params
 
 def get_distill_params():
