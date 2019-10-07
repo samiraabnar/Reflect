@@ -32,7 +32,7 @@ class Trainer(object):
 
 
     x, y = iter(self.task.valid_dataset).next()
-    model(x)
+    model(x, training=True)
     model.summary()
 
     model.compile(

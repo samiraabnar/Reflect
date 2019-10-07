@@ -126,7 +126,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
     rnn_outputs = embedded_input
 
     for i in np.arange(self.hparams.depth):
-      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask, training=training)
+      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask)
 
     rnn_outputs = self.output_embedding_dropout(rnn_outputs, training=training)
     logits = self.input_embedding(rnn_outputs, mode='linear')
