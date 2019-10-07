@@ -169,5 +169,6 @@ MODEL_CONFIGS = {
   'big_lstm':big_lstm,
   'lstm_simple': lstm_simple,
   'lstm_drop1': lstm_drop1,
-  'lstm_drop2': lstm_drop2
+  'lstm_drop2': lstm_drop2,
+  'lstm_drop12': lstm_drop12
 }
