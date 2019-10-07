@@ -55,7 +55,12 @@ class LmLSTM(tf.keras.Model):
 
                                                     ))
   @tf.function(experimental_relax_shapes=True)
-  def call(self, inputs, training, **kwargs):
+  def call(self, inputs, **kwargs):
+    if 'training' in kwargs:
+      training = kwargs['training']
+    else:
+      training = False
+
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs),training=training)
     rnn_outputs = embedded_input
 
@@ -117,7 +122,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     bias_regularizer=self.regularizer,
 
                                                     ))
-  #@tf.function(experimental_relax_shapes=True)
+
+  @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, padding_symbol=0, **kwargs):
     if 'training' in kwargs:
       training = kwargs['training']
