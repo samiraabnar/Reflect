@@ -1,4 +1,5 @@
 import os
+import tensorflow as tf
 from tasks.tasks import SvAgreementLM, WordSvAgreementLM
 from tf2_models.lm_transformer import LmGPT2
 from util.config_util import get_model_params, get_task_params, get_train_params
@@ -26,6 +27,10 @@ TASKS = {
   'word_sv_agreement_lm': WordSvAgreementLM,
 }
 def run():
+  config = tf.compat.v1.ConfigProto()
+  config.gpu_options.allow_growth = True
+  session = tf.compat.v1.Session(config=config)
+
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
 
