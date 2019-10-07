@@ -64,14 +64,14 @@ class LmLSTM(tf.keras.Model):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs),training=training)
     rnn_outputs = embedded_input
 
-
-    input_mask = tf.cast(self.input_embedding.compute_mask(inputs), dtype=tf.float32)
+    input_mask = self.input_embedding.compute_mask(inputs)
+    float_input_mask = tf.cast(input_mask, dtype=tf.float32)
     for i in np.arange(self.hparams.depth):
       rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask, training=training)
 
     rnn_outputs = self.output_embedding_dropout(rnn_outputs, training=training)
     logits = self.output_embedding(rnn_outputs)
-    logits = logits * input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - input_mask[...,None])
+    logits = logits * float_input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - float_input_mask[...,None])
 
     return logits
 
