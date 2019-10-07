@@ -87,7 +87,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
                          'indrop-'+str(self.hparams.input_dropout_rate)])
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
-                                                   l2=0.0001)
+                                                   l2=0.0000)
     self.create_vars()
 
   @tf.function
