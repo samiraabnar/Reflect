@@ -139,9 +139,27 @@ lstm_simple = {
   'input_dropout_rate': 0.0,
 }
 
+lstm_drop1 = {
+  'hidden_dim': 512,
+  'embedding_dim': 512,
+  'depth': 2,
+  'hidden_dropout_rate': 0.1,
+  'input_dropout_rate': 0.1,
+}
+
+lstm_drop2 = {
+  'hidden_dim': 512,
+  'embedding_dim': 512,
+  'depth': 2,
+  'hidden_dropout_rate': 0.2,
+  'input_dropout_rate': 0.2,
+}
+
 MODEL_CONFIGS = {
   'base':{},
   'small_lstm':small_lstm,
   'big_lstm':big_lstm,
-  'lstm_simple': lstm_simple
+  'lstm_simple': lstm_simple,
+  'lstm_drop1': lstm_drop1,
+  'lstm_drop2': lstm_drop2
 }

@@ -11,19 +11,14 @@ class task(object):
     self.data_dir = data_dir
     self.builder_cls = builder_cls
 
-  def convert_examples(self, examples):
-    raise NotImplementedError
-
-class SvAgreementLM(task):
-  def __init__(self, task_params, name='sv_agreement_lm', data_dir='data', builder_cls=SVAgreement):
-    super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
-
     self.databuilder = self.builder_cls(data_dir=self.data_dir)
     self.info = self.databuilder.info
     self.n_train_batches = int(self.info.splits['train'].num_examples / task_params.batch_size)
     self.n_valid_batches = int(self.info.splits['validation'].num_examples / task_params.batch_size)
     self.setup_datasets()
 
+  def convert_examples(self, examples):
+    raise NotImplementedError
 
   def setup_datasets(self):
     #with tf.device('/cpu:0'):
@@ -54,6 +49,11 @@ class SvAgreementLM(task):
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
 
+
+class SvAgreementLM(task):
+  def __init__(self, task_params, name='sv_agreement_lm', data_dir='data', builder_cls=SVAgreement):
+    super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
+
   @tf.function
   def convert_examples(self, examples):
     return examples['sentence'][:,:-1],\
@@ -74,3 +74,16 @@ class SvAgreementLM(task):
 class WordSvAgreementLM(SvAgreementLM):
   def __init__(self, task_params, name='word_sv_agreement_lm', data_dir='data', builder_cls=WordSvAgreement):
     super(WordSvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
+
+
+class WordSvAgreementVP(task):
+  def __init__(self, task_params, name='word_sv_agreement_vp', data_dir='data', builder_cls=WordSvAgreement):
+    super(WordSvAgreementVP, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
+
+  @tf.function
+  def convert_examples(self, examples):
+    return examples['sentence'][:, :-1], \
+           examples['verb_class']
+
+  def get_loss_fn(self):
+    return masked_sequence_loss
