@@ -117,7 +117,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     bias_regularizer=self.regularizer,
 
                                                     ))
-  @tf.function(experimental_relax_shapes=True)
+  #@tf.function(experimental_relax_shapes=True)
   def call(self, inputs, padding_symbol=0, **kwargs):
     #training = kwargs['training']
     input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)

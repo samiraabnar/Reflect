@@ -35,7 +35,7 @@ def run():
         tf.config.experimental.set_memory_growth(gpu, True)
     except RuntimeError as e:
       print(e)
-      
+
 
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
