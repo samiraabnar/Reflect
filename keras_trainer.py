@@ -27,9 +27,15 @@ TASKS = {
   'word_sv_agreement_lm': WordSvAgreementLM,
 }
 def run():
-  physical_devices = tf.config.experimental.list_physical_devices('GPU')
-  assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
-  tf.config.experimental.set_memory_growth(physical_devices[0], True)
+  gpus = tf.config.experimental.list_physical_devices('GPU')
+  if gpus:
+    # Currently, memory growth needs to be the same across GPUs
+    try:
+      for gpu in gpus:
+        tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+      print(e)
+      
 
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
