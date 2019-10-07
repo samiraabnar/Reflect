@@ -155,6 +155,14 @@ lstm_drop2 = {
   'input_dropout_rate': 0.2,
 }
 
+lstm_drop12 = {
+  'hidden_dim': 512,
+  'embedding_dim': 512,
+  'depth': 2,
+  'hidden_dropout_rate': 0.1,
+  'input_dropout_rate': 0.2,
+}
+
 MODEL_CONFIGS = {
   'base':{},
   'small_lstm':small_lstm,
