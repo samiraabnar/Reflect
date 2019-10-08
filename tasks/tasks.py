@@ -67,7 +67,7 @@ class SvAgreementLM(task):
     return masked_sequence_loss
 
   def vocab_size(self):
-    return task.databuilder.vocab_size()
+    return self.databuilder.vocab_size()
 
   def output_size(self):
     return self.vocab_size()
@@ -98,7 +98,7 @@ class WordSvAgreementVP(task):
            examples['verb_class']
 
   def vocab_size(self):
-    return task.databuilder.vocab_size()
+    return self.databuilder.vocab_size()
 
   def output_size(self):
     return 2
