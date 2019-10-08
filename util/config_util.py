@@ -55,9 +55,9 @@ def get_model_params(task, config_name='', model_config='base'):
 
   print(model_cnfgs)
   if config_name == 'lm_gpt2':
-    return GPT2Config(vocab_size=task.databuilder.vocab_size(),**model_cnfgs)
+    return GPT2Config(vocab_size=task.vocab_size(),**model_cnfgs)
   else:
-    return ModelConfig(input_dim=task.databuilder.vocab_size(),
-                       output_dim=task.databuilder.vocab_size(),**model_cnfgs)
+    return ModelConfig(input_dim=task.vocab_size(),
+                       output_dim=task.vocab_size(),**model_cnfgs)
 
 

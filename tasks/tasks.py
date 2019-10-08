@@ -18,6 +18,9 @@ class task(object):
     self.n_valid_batches = int(self.info.splits['validation'].num_examples / task_params.batch_size)
     self.setup_datasets()
 
+  def vocab_size(self):
+    raise NotImplementedError
+
   def convert_examples(self, examples):
     raise NotImplementedError
 
@@ -63,6 +66,12 @@ class SvAgreementLM(task):
   def get_loss_fn(self):
     return masked_sequence_loss
 
+  def vocab_size(self):
+    return task.databuilder.vocab_size()
+
+  def output_size(self):
+    return self.vocab_size()
+
   @property
   def metrics(self):
     return {'loss': self.get_loss_fn(),
@@ -87,6 +96,12 @@ class WordSvAgreementVP(task):
     mask = tf.cast(tf.sequence_mask(examples['verb_position'],maxlen=tf.shape(sentences)[1]), dtype=tf.int64)
     return sentences * mask, \
            examples['verb_class']
+
+  def vocab_size(self):
+    return task.databuilder.vocab_size()
+
+  def output_size(self):
+    return 2
 
   def get_loss_fn(self):
     return masked_sequence_loss
