@@ -115,7 +115,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     stateful=False,
                                                     unroll=False,
                                                     time_major=False,
-                                                    recurrent_dropout=self.hparams.hidden_dropout_rate,
+                                                    recurrent_dropout=0.0, #self.hparams.hidden_dropout_rate,
                                                     dropout=self.hparams.hidden_dropout_rate,
                                                     kernel_regularizer=self.regularizer,
                                                     recurrent_regularizer=self.regularizer,
