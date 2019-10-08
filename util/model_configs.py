@@ -146,6 +146,14 @@ bigger_lstm_v2 = {
   'input_dropout_rate': 0.2,
 }
 
+bigger_lstm_v4 = {
+  'hidden_dim': 728,
+  'embedding_dim': 256,
+  'depth': 2,
+  'hidden_dropout_rate': 0.5,
+  'input_dropout_rate': 0.2,
+}
+
 bigger_lstm_v3 = {
   'hidden_dim': 728,
   'embedding_dim': 256,
@@ -196,5 +204,6 @@ MODEL_CONFIGS = {
   'lstm_drop12': lstm_drop12,
   'big_lstm_v2': big_lstm_v2,
   'bigger_lstm_v2': bigger_lstm_v2,
-  'bigger_lstm_v3': bigger_lstm_v3
+  'bigger_lstm_v3': bigger_lstm_v3,
+  'bigger_lstm_v4': bigger_lstm_v4
 }
