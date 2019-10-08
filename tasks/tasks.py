@@ -2,6 +2,7 @@ import tensorflow as tf
 from tf2_models.metrics import masked_sequence_loss
 from tf2_models import metrics
 from tfds_data.tal_agreement import SVAgreement, WordSvAgreement
+from util.config_util import get_task_params
 
 
 class task(object):
@@ -82,8 +83,18 @@ class WordSvAgreementVP(task):
 
   @tf.function
   def convert_examples(self, examples):
-    return examples['sentence'][:, :-1], \
+    sentences = examples['sentence']
+    mask = tf.cast(tf.sequence_mask(examples['verb_position'],maxlen=tf.shape(sentences)[1]), dtype=tf.int64)
+    return sentences * mask, \
            examples['verb_class']
 
   def get_loss_fn(self):
     return masked_sequence_loss
+
+
+if __name__ == '__main__':
+    task = WordSvAgreementVP(get_task_params())
+
+    x, y = iter(task.valid_dataset).next()
+    print(x)
+    print(y)
