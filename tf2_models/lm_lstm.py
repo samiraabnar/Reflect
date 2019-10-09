@@ -95,32 +95,34 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                    l2=0.0000)
     self.create_vars()
 
+  @tf.function
   def create_vars(self):
+    self.depth = tf.constant(self.hparams.depth)
+
     self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim ,
                                 hidden_size=self.hparams.hidden_dim,
                                 initializer_range=self.hparams.initializer_range,
                                 regularizer=self.regularizer,
                                 name='embedding')
     self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
-    #self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
+    self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
 
-    rnn_cells = []
-    #for _ in np.arange(self.hparams.depth):
-    rnn_cells = [tf.keras.layers.LSTMCell(units=self.hparams.hidden_dim,
+    self.stacked_rnns = []
+    for _ in np.arange(self.hparams.depth):
+      self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
+                                                    return_sequences=True,
+                                                    return_state=True,
+                                                    go_backwards=False,
+                                                    stateful=False,
+                                                    unroll=False,
+                                                    time_major=False,
                                                     recurrent_dropout=0.0, #self.hparams.hidden_dropout_rate,
                                                     dropout=self.hparams.hidden_dropout_rate,
                                                     kernel_regularizer=self.regularizer,
                                                     recurrent_regularizer=self.regularizer,
                                                     bias_regularizer=self.regularizer,
-                                                    )]
 
-    self.stacked_rnns = tf.keras.layers.RNN(rnn_cells,return_sequences=True,
-                                                    return_state=True,
-                                                    go_backwards=False,
-                                                    stateful=False,
-                                                    unroll=False,
-                                                    time_major=False)
-
+                                                    ))
 
   @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, padding_symbol=0, **kwargs):
@@ -132,9 +134,12 @@ class LmLSTMSharedEmb(tf.keras.Model):
     float_input_mask= tf.cast(input_mask, dtype=tf.float32)
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'),
                                                   training=training)
+    rnn_outputs = embedded_input
 
-    rnn_outputs, states = self.stacked_rnns(embedded_input, mask=input_mask,
-                                                           training=training)
+    rnn_outputs, state_h, state_c = self.stacked_rnns[0](rnn_outputs, mask=input_mask,
+                                                         training=training)
+    rnn_outputs, state_h, state_c = self.stacked_rnns[1](rnn_outputs, mask=input_mask,
+                                                         training=training)
 
     #rnn_outputs = self.output_embedding_dropout(rnn_outputs,training=training)
     logits = self.input_embedding(rnn_outputs, mode='linear')
