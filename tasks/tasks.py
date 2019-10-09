@@ -3,6 +3,7 @@ import tensorflow_datasets as tfds
 from tf2_models.metrics import masked_sequence_loss
 from tf2_models import metrics
 from tfds_data.tal_agreement import SVAgreement, WordSvAgreement
+from util import constants
 from util.config_util import get_task_params
 
 
@@ -130,8 +131,15 @@ class SvAgreementLM(Task):
 
   @tf.function
   def convert_examples(self, examples):
-    return examples['sentence'][:,:-1],\
-           examples['sentence'][:,1:]
+    sentences = examples['sentence']
+    s_shape = tf.shape(sentences)
+    batch_size, length = s_shape[0], s_shape[1]
+    bos = tf.ones((batch_size,1), dtype=tf.int64) * self.databuilder.sentence_encoder().encode(constants.bos)
+    eos = tf.ones((batch_size,1), dtype=tf.int64) * self.databuilder.sentence_encoder().encode(constants.eos)
+
+    sentence = tf.concat([bos, sentences, eos], axis=1)
+    return sentence[:,:-1],\
+           sentence[:,1:]
 
   def get_loss_fn(self):
     return masked_sequence_loss
@@ -178,7 +186,7 @@ class WordSvAgreementVP(Task):
 
 
 if __name__ == '__main__':
-    task = Lm1B(get_task_params())
+    task = WordSvAgreementLM(get_task_params())
 
     x, y = iter(task.valid_dataset).next()
     print(x)
