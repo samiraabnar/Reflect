@@ -32,7 +32,7 @@ class DistillParams:
   n_epochs = 30
 
 class TaskParams:
-  batch_size = 128
+  batch_size = 64
 
 def get_train_params(optimizer):
   train_params = TrainParams(optimizer=optimizer)
