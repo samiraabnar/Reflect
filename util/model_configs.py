@@ -222,6 +222,15 @@ lstm_drop30 = {
   'input_dropout_rate': 0.0,
 }
 
+lstm_drop20 = {
+  'hidden_dim': 512,
+  'embedding_dim': 256,
+  'depth': 2,
+  'hidden_dropout_rate': 0.3,
+  'input_dropout_rate': 0.0,
+}
+
+
 big_lstm_drop5 = {
   'hidden_dim': 1024,
   'embedding_dim': 512,
@@ -247,5 +256,6 @@ MODEL_CONFIGS = {
   'lstm_drop30': lstm_drop30,
   'small_gpt': small_gpt,
   'big_gpt': big_gpt,
-  'very_big_gpt': very_big_gpt
+  'very_big_gpt': very_big_gpt,
+  'lstm_drop20': lstm_drop20,
 }
