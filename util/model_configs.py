@@ -114,6 +114,18 @@ class GPT2Config(object):
       return self.depth
 
 
+small_gpt = {
+  'embedding_dim': 128
+}
+
+big_gpt = {
+  'embedding_dim': 256
+}
+
+very_big_gpt = {
+  'embedding_dim': 512
+}
+
 small_lstm = {
   'hidden_dim': 256,
   'embedding_dim': 256,
@@ -232,5 +244,8 @@ MODEL_CONFIGS = {
   'bigger_lstm_v3': bigger_lstm_v3,
   'bigger_lstm_v4': bigger_lstm_v4,
   'big_lstm_drop5': big_lstm_drop5,
-  'lstm_drop30': lstm_drop30
+  'lstm_drop30': lstm_drop30,
+  'small_gpt': small_gpt,
+  'big_gpt': big_gpt,
+  'very_big_gpt': very_big_gpt
 }
