@@ -103,8 +103,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                 initializer_range=self.hparams.initializer_range,
                                 regularizer=self.regularizer,
                                 name='embedding')
-    self.input_embedding_dropout = tf.keras.layers.Dropout(0.0)#self.hparams.input_dropout_rate)
-    self.output_embedding_dropout = tf.keras.layers.Dropout(0.0)
+    self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
+    self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
     self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim)
 
     self.stacked_rnns = []
@@ -126,23 +126,17 @@ class LmLSTMSharedEmb(tf.keras.Model):
 
   @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, padding_symbol=0, **kwargs):
-    if 'training' in kwargs:
-      training = kwargs['training']
-    else:
-      training = False
     input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
     float_input_mask= tf.cast(input_mask, dtype=tf.float32)
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'),
-                                                  training=training)
+                                                  **kwargs)
     rnn_outputs = embedded_input
-
     for i in np.arange(self.hparams.depth):
       rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask,
-                                                           training=training)
+                                                           **kwargs)
 
-    rnn_outputs = self.output_projection(rnn_outputs)
-    
-    rnn_outputs = self.output_embedding_dropout(rnn_outputs,training=training)
+    rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
+    rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
     logits = self.input_embedding(rnn_outputs, mode='linear')
     logits = logits * float_input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - float_input_mask[...,None])
 
