@@ -45,7 +45,7 @@ class task(object):
 
     #self.test_dataset = self.databuilder.as_dataset(split="test")
     self.train_dataset = self.databuilder.as_dataset(split="train")
-    self.train_dataset = self.train_dataset.shuffle(self.info.splits['train'].num_examples)
+    self.train_dataset = self.train_dataset.shuffle(10000)
     self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.info.features.shape)
     #self.train_dataset = self.train_dataset.cache()
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)

@@ -99,13 +99,13 @@ class LmLSTMSharedEmb(tf.keras.Model):
   def create_vars(self):
 
     self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim ,
-                                hidden_size=self.hparams.hidden_dim,
+                                hidden_size=self.hparams.embedding_dim,
                                 initializer_range=self.hparams.initializer_range,
                                 regularizer=self.regularizer,
                                 name='embedding')
-    self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
+    self.input_embedding_dropout = tf.keras.layers.Dropout(0.0)#self.hparams.input_dropout_rate)
     self.output_embedding_dropout = tf.keras.layers.Dropout(0.0)
-
+    self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim)
 
     self.stacked_rnns = []
     for _ in np.arange(self.hparams.depth):
@@ -117,7 +117,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     unroll=False,
                                                     time_major=False,
                                                     recurrent_dropout=self.hparams.hidden_dropout_rate,
-                                                    dropout=0.0, #self.hparams.hidden_dropout_rate,
+                                                    dropout=self.hparams.hidden_dropout_rate,
                                                     kernel_regularizer=self.regularizer,
                                                     recurrent_regularizer=self.regularizer,
                                                     bias_regularizer=self.regularizer,
@@ -140,6 +140,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
       rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask,
                                                            training=training)
 
+    rnn_outputs = self.output_projection(rnn_outputs)
+    
     rnn_outputs = self.output_embedding_dropout(rnn_outputs,training=training)
     logits = self.input_embedding(rnn_outputs, mode='linear')
     logits = logits * float_input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - float_input_mask[...,None])
