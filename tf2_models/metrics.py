@@ -13,7 +13,7 @@ def masked_sequence_loss_with_probs(y_true, y_pred, padding_symbol=0):
 def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
   sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
-  # [batch_size, length]
+  # [batch_size, 1]
   sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)[...,None]
   return tf.reduce_mean(tf.reduce_sum(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
