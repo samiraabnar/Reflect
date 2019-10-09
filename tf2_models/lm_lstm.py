@@ -134,7 +134,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
     embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'),
                                                   training=training)
 
-    rnn_outputs, state_c, state_h = self.stacked_rnns(embedded_input, mask=input_mask,
+    rnn_outputs, states = self.stacked_rnns(embedded_input, mask=input_mask,
                                                            training=training)
 
     #rnn_outputs = self.output_embedding_dropout(rnn_outputs,training=training)
