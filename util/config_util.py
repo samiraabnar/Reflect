@@ -3,7 +3,7 @@ from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS
 
 class TrainParams(object):
   def __init__(self, optimizer,
-               learning_rate=0.001,
+               learning_rate=0.0001,
                 n_epochs=60,
                 warmup_steps=5000,
                 decay_steps=10000,
