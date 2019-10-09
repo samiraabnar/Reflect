@@ -186,6 +186,13 @@ lstm_drop2 = {
   'input_dropout_rate': 0.2,
 }
 
+lstm_drop12 = {
+  'hidden_dim': 512,
+  'embedding_dim': 512,
+  'depth': 2,
+  'hidden_dropout_rate': 0.1,
+  'input_dropout_rate': 0.2,
+}
 
 lstm_drop3 = {
   'hidden_dim': 512,
@@ -195,7 +202,7 @@ lstm_drop3 = {
   'input_dropout_rate': 0.3,
 }
 
-lstm_drop03 = {
+lstm_drop30 = {
   'hidden_dim': 512,
   'embedding_dim': 256,
   'depth': 2,
