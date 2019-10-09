@@ -224,5 +224,6 @@ MODEL_CONFIGS = {
   'bigger_lstm_v2': bigger_lstm_v2,
   'bigger_lstm_v3': bigger_lstm_v3,
   'bigger_lstm_v4': bigger_lstm_v4,
-  'big_lstm_drop5': big_lstm_drop5
+  'big_lstm_drop5': big_lstm_drop5,
+  'lstm_drop03': lstm_drop03
 }
