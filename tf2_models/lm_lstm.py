@@ -105,9 +105,9 @@ class LmLSTMSharedEmb(tf.keras.Model):
     self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
     #self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
 
-    self.rnn_cells = []
+    rnn_cells = []
     for _ in np.arange(self.hparams.depth):
-      self.rnn_cells.append(tf.keras.layers.LSTMCell(units=self.hparams.hidden_dim,
+      rnn_cells.append(tf.keras.layers.LSTMCell(units=self.hparams.hidden_dim,
                                                     #return_sequences=True,
                                                     #return_state=True,
                                                     #go_backwards=False,
@@ -121,7 +121,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     bias_regularizer=self.regularizer,
 
                                                     ))
-    self.stacked_rnns = tf.keras.layers.RNN(self.rnn_cells,return_sequences=True,
+    self.stacked_rnns = tf.keras.layers.RNN(rnn_cells,return_sequences=True,
                                                     return_state=True,
                                                     go_backwards=False,
                                                     stateful=False,
