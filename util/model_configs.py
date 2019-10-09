@@ -7,7 +7,7 @@ class ModelConfig(object):
                depth=3,
                hidden_dropout_rate=0.5,
                input_dropout_rate=0.2,
-               initializer_range=0.1):
+               initializer_range=0.5):
     self.embedding_dim = embedding_dim
     self.hidden_dim = hidden_dim
     self.input_dim = input_dim
