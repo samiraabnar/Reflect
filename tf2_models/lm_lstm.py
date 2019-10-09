@@ -95,7 +95,6 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                    l2=0.0000)
     self.create_vars()
 
-  @tf.function
   def create_vars(self):
     self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim ,
                                 hidden_size=self.hparams.hidden_dim,
