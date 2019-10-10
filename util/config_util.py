@@ -77,6 +77,6 @@ radam_fast = {
 'optimizer': 'radam'
 }
 
-TRAIN_PARAMS = {'raadam_slow': radam_slow,
+TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'radam_fast': radam_fast,
-                'adam_slow':adam_slow}
+                'adam_slow':  adam_slow}
