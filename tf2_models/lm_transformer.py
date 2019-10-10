@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from tasks.tasks import WordSvAgreementLM
+from tasks.tasks import WordSvAgreementLM, WordSvAgreementVP
 from tf2_models.common_layers import get_initializer, shape_list
 from tf2_models.embedding import SharedEmbeddings
 from tf2_models.transformer_layers import Block
@@ -135,9 +135,36 @@ class LmGPT2(tf.keras.Model):
     return lm_logits  # lm_logits, presents, (all hidden_states), (attentions)
 
 
+class ClassifierGPT2(tf.keras.Model):
+  def __init__(self, hparams, scope='lm_gpt2', *inputs, **kwargs):
+    super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
+    self.scope = scope
+    self.model_name = '_'.join([self.scope,
+                         'h-'+str(hparams.embedding_dim),
+                         'd-'+str(hparams.depth),
+                         'rdrop-'+str(hparams.resid_pdrop),
+                         'adrop-' + str(hparams.attn_pdrop),
+                         'indrop-'+str(hparams.embd_pdrop)])
+
+    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
+                                                   l2=0.0001)
+    self.transformer = GPT2(hparams, name='transformer')
+    self.e2c = tf.keras.layers.Dense(units=hparams.num_labels,
+                                     kernel_initializer=get_initializer(hparams.initializer_range),
+                                     name='e2c')
+
+  def call(self, inputs, **kwargs):
+    transformer_outputs = self.transformer(inputs, **kwargs)
+    hidden_states = transformer_outputs[0]
+
+    lm_logits = self.e2c(hidden_states)
+
+    return lm_logits
+
+
 if __name__ == '__main__':
-    task = WordSvAgreementLM(get_task_params())
-    model = LmGPT2(get_model_params(task, 'lm_gpt2'))
+    task = WordSvAgreementVP(get_task_params())
+    model = ClassifierGPT2(get_model_params(task, 'cl_gpt2'))
 
     for x, y in task.valid_dataset:
       model_y = model(x)

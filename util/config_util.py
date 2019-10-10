@@ -54,11 +54,12 @@ def get_model_params(task, config_name='', model_config='base'):
     model_cnfgs = MODEL_CONFIGS.get('base')
 
   print(model_cnfgs)
-  if config_name == 'lm_gpt2':
-    return GPT2Config(vocab_size=task.vocab_size(),**model_cnfgs)
+  if 'gpt' in config_name:
+    return GPT2Config(vocab_size=task.vocab_size(),
+                      output_dim=task.output_size(), **model_cnfgs)
   else:
     return ModelConfig(input_dim=task.vocab_size(),
-                       output_dim=task.vocab_size(),**model_cnfgs)
+                       output_dim=task.output_size(),**model_cnfgs)
 
 
 radam_slow = {

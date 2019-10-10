@@ -18,6 +18,36 @@ class Trainer(object):
     self.task = task
     self.train_params = train_params
 
+    lr_schedule = self.get_lr_schedule()
+
+    self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
+
+    self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
+    self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
+
+
+    x, y = iter(self.task.valid_dataset).next()
+    model(x)
+    model.summary()
+
+    model.compile(
+      optimizer=self.optimizer,
+      loss=self.task.get_loss_fn(),
+      metrics=task.metrics())#[self.task.get_loss_fn()])
+    #tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),)
+
+
+    summary_dir = os.path.join(log_dir, 'summaries')
+    tf.io.gfile.makedirs(log_dir)
+    self.summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(summary_dir, 'train'))
+    tf.compat.v2.summary.experimental.set_step(self.optimizer.iterations)
+
+    ckpt_callback = CheckpointCallback(manager=self.manager, ckpt=self.ckpt)
+    summary_callback = SummaryCallback(summary_writer=self.summary_writer)
+
+    self.callbacks = [ckpt_callback, summary_callback]
+
+  def get_lr_schedule(self):
     if self.train_params.optimizer == 'radam':
       initial_learning_rate = self.train_params.learning_rate
       lr_schedule = ExponentialDecayWithWarmpUp(
@@ -34,33 +64,7 @@ class Trainer(object):
         decay_steps=self.train_params.decay_steps,
         decay_rate=0.96,
         warmup_steps=self.train_params.warmup_steps)
-
-    self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
-
-    self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
-    self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
-
-
-    x, y = iter(self.task.valid_dataset).next()
-    model(x)
-    model.summary()
-
-    model.compile(
-      optimizer=self.optimizer,
-      loss=masked_sequence_loss,
-      metrics=[masked_sequence_loss])
-    #tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),)
-
-
-    summary_dir = os.path.join(log_dir, 'summaries')
-    tf.io.gfile.makedirs(log_dir)
-    self.summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(summary_dir, 'train'))
-    tf.compat.v2.summary.experimental.set_step(self.optimizer.iterations)
-
-    ckpt_callback = CheckpointCallback(manager=self.manager, ckpt=self.ckpt)
-    summary_callback = SummaryCallback(summary_writer=self.summary_writer)
-
-    self.callbacks = [ckpt_callback, summary_callback]
+    return lr_schedule
 
   def restore(self):
     self.ckpt.restore(self.manager.latest_checkpoint)

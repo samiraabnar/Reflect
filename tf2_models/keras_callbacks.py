@@ -36,3 +36,8 @@ class SummaryCallback(tf.keras.callbacks.Callback):
     log_summary(log_name='perolexity', log_value=tf.exp(logs['masked_sequence_loss']), summary_scope='train')
     log_summary(log_name='loss', log_value=logs['val_masked_sequence_loss'], summary_scope='valid')
     log_summary(log_name='perplexity', log_value=tf.exp(logs['val_masked_sequence_loss']), summary_scope='valid')
+
+    for key in logs.keys():
+      if 'loss' not in key and 'val' in key:
+        log_summary(log_name=key, log_value=logs[key], summary_scope='valid')
+

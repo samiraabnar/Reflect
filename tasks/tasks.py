@@ -184,6 +184,9 @@ class WordSvAgreementVP(Task):
   def get_loss_fn(self):
     return masked_sequence_loss
 
+  def metrics(self):
+    return [self.get_loss_fn(),
+            tf.keras.metrics.CategoricalAccuracy()]
 
 if __name__ == '__main__':
     task = WordSvAgreementLM(get_task_params())

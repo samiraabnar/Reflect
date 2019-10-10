@@ -281,5 +281,5 @@ MODEL_CONFIGS = {
   'lstm_drop20': lstm_drop20,
   'lstm3_drop20': lstm3_drop20,
   'very_big_gpt_v2': very_big_gpt_v2,
-  'small_gpt_v2': small_gpt_v2
+  'small_gpt_v2': small_gpt_v2,
 }
