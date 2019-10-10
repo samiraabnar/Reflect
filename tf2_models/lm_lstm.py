@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
+from tf2_models.common_layers import get_initializer
 from tf2_models.embedding import SharedEmbeddings
 
 
@@ -98,6 +99,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
   @tf.function
   def create_vars(self):
 
+
     self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim ,
                                 hidden_size=self.hparams.embedding_dim,
                                 initializer_range=self.hparams.initializer_range,
@@ -105,10 +107,12 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                 name='embedding')
     self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
     self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
-    self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim)
+    self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim, kernel_initializer=get_initializer(self.hparams.initializer_range))
 
     self.stacked_rnns = []
     for _ in np.arange(self.hparams.depth):
+      initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
+
       self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
                                                     return_sequences=True,
                                                     return_state=True,
@@ -121,7 +125,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     kernel_regularizer=self.regularizer,
                                                     recurrent_regularizer=self.regularizer,
                                                     bias_regularizer=self.regularizer,
-
+                                                    kernel_initializer=get_initializer(initializer_range),
+                                                    recurrent_initializer=get_initializer(initializer_range)
                                                     ))
 
   @tf.function(experimental_relax_shapes=True)
