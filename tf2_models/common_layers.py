@@ -3,8 +3,6 @@ import numpy as np
 from tensorflow.python.util import nest
 
 
-_state_size_with_prefix = tf.nn.rnn_cell._state_size_with_prefix
-
 def gelu(x):
   """Gaussian Error Linear Unit.
   This is a smoother version of the RELU.
@@ -74,12 +72,12 @@ def get_initial_cell_state(cell, initializer, batch_size, dtype):
   if nest.is_sequence(state_size):
     state_size_flat = nest.flatten(state_size)
     init_state_flat = [
-      initializer(_state_size_with_prefix(s), batch_size, dtype, i)
+      initializer(s, batch_size, dtype, i)
       for i, s in enumerate(state_size_flat)]
     init_state = nest.pack_sequence_as(structure=state_size,
                                        flat_sequence=init_state_flat)
   else:
-    init_state_size = _state_size_with_prefix(state_size)
+    init_state_size = state_size
     init_state = initializer(init_state_size, batch_size, dtype, None)
 
   return init_state
