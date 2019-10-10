@@ -194,7 +194,6 @@ class LmLSTMSharedEmb(tf.keras.Model):
     self.stacked_rnns = []
     for _ in np.arange(self.hparams.depth):
       initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
-
       self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
                                                     return_sequences=True,
                                                     return_state=True,
