@@ -133,6 +133,13 @@ very_big_gpt_v2 = {
   'attn_pdrop': 0.2
 }
 
+very_big_gpt_v3 = {
+  'embedding_dim': 512,
+  'resid_pdrop': 0.3,
+  'embd_pdrop': 0.3,
+  'attn_pdrop': 0.3
+}
+
 small_gpt_v2 = {
   'embedding_dim': 128,
   'resid_pdrop': 0.1,
@@ -282,4 +289,5 @@ MODEL_CONFIGS = {
   'lstm3_drop20': lstm3_drop20,
   'very_big_gpt_v2': very_big_gpt_v2,
   'small_gpt_v2': small_gpt_v2,
+  'very_big_gpt_v3': very_big_gpt_v3
 }
