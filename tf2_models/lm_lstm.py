@@ -55,6 +55,7 @@ class LmLSTM(tf.keras.Model):
                                                     bias_regularizer=self.regularizer,
 
                                                     ))
+
   @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, **kwargs):
     if 'training' in kwargs:
@@ -75,7 +76,6 @@ class LmLSTM(tf.keras.Model):
     logits = logits * float_input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - float_input_mask[...,None])
 
     return logits
-
 
 
 class LmLSTMSharedEmb(tf.keras.Model):
