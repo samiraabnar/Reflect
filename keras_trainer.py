@@ -1,6 +1,6 @@
 import os
 import tensorflow as tf
-from tasks.tasks import SvAgreementLM, WordSvAgreementLM
+from tasks.tasks import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
 from tf2_models.lm_transformer import LmGPT2
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb
@@ -13,7 +13,7 @@ flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
 flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm')
 flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_lstm_shared_emb')
 flags.DEFINE_string('model_config', 'base', 'base | small_lstm ')
-flags.DEFINE_string('optimizer', 'adam', 'adam | radam ')
+flags.DEFINE_string('train_config', 'radam_fast', 'radam_slow | radam_fast')
 
 
 hparams = flags.FLAGS
@@ -26,6 +26,7 @@ MODELS = {"lm_lstm": LmLSTM,
 TASKS = {
   'sv_agreement_lm': SvAgreementLM,
   'word_sv_agreement_lm': WordSvAgreementLM,
+  'word_sv_agreement_vp': WordSvAgreementVP
 }
 def run():
   gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -50,7 +51,7 @@ def run():
 
   model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config))
 
-  trainer_params = get_train_params(hparams.optimizer)
+  trainer_params = get_train_params(hparams.train_config)
 
   log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
   ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)

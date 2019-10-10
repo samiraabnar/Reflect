@@ -126,6 +126,20 @@ very_big_gpt = {
   'embedding_dim': 512
 }
 
+very_big_gpt_v2 = {
+  'embedding_dim': 512,
+  'resid_pdrop': 0.2,
+  'embd_pdrop': 0.2,
+  'attn_pdrop': 0.2
+}
+
+small_gpt_v2 = {
+  'embedding_dim': 128,
+  'resid_pdrop': 0.1,
+  'embd_pdrop': 0.0,
+  'attn_pdrop': 0.1
+}
+
 small_lstm = {
   'hidden_dim': 256,
   'embedding_dim': 256,
@@ -230,6 +244,13 @@ lstm_drop20 = {
   'input_dropout_rate': 0.0,
 }
 
+lstm3_drop20 = {
+  'hidden_dim': 128,
+  'embedding_dim': 256,
+  'depth': 3,
+  'hidden_dropout_rate': 0.2,
+  'input_dropout_rate': 0.0,
+}
 
 big_lstm_drop5 = {
   'hidden_dim': 1024,
@@ -258,4 +279,7 @@ MODEL_CONFIGS = {
   'big_gpt': big_gpt,
   'very_big_gpt': very_big_gpt,
   'lstm_drop20': lstm_drop20,
+  'lstm3_drop20': lstm3_drop20,
+  'very_big_gpt_v2': very_big_gpt_v2,
+  'small_gpt_v2': small_gpt_v2
 }

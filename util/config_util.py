@@ -4,12 +4,12 @@ from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS
 class TrainParams(object):
   def __init__(self, optimizer,
                learning_rate=0.0001,
-                n_epochs=60,
-                warmup_steps=5000,
-                decay_steps=10000,
-                hold_base_rate_steps=1000,
-                total_training_steps=60000,
-                num_train_epochs=60,
+               n_epochs=60,
+               warmup_steps=5000,
+               decay_steps=10000,
+               hold_base_rate_steps=1000,
+               total_training_steps=60000,
+               num_train_epochs=60,
   ):
     self.learning_rate = learning_rate
     self.n_epochs = n_epochs
@@ -34,8 +34,8 @@ class DistillParams:
 class TaskParams:
   batch_size = 64
 
-def get_train_params(optimizer):
-  train_params = TrainParams(optimizer=optimizer)
+def get_train_params(train_config):
+  train_params = TrainParams(**TRAIN_PARAMS[train_config])
 
   return train_params
 
@@ -61,3 +61,20 @@ def get_model_params(task, config_name='', model_config='base'):
                        output_dim=task.vocab_size(),**model_cnfgs)
 
 
+radam_slow = {
+'learning_rate': 0.0001,
+'optimizer': 'radam'
+}
+
+adam_slow = {
+'learning_rate': 0.0001,
+'optimizer': 'adam'
+}
+
+radam_fast = {
+'learning_rate': 0.001,
+'optimizer': 'radam'
+}
+
+TRAIN_PARAMS = {'raadam_slow': radam_slow,
+'radam_fast': radam_fast}
