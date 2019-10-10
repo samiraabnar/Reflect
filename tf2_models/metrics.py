@@ -54,7 +54,8 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
                                                y_pred=logits,
                                                k=topk)
 
-  return tf.reduce_mean(sequence_mask * unmasked_accuracies)
+  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
+  return tf.reduce_sum(sequence_mask * unmasked_accuracies)
 
 if __name__ == '__main__':
   import numpy as np
