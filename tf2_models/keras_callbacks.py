@@ -22,8 +22,10 @@ class SummaryCallback(tf.keras.callbacks.Callback):
 
   def on_train_batch_end(self, batch, logs=None):
     if (self.model.optimizer.iterations % 200) == 0:
-      log_summary(log_name='learning_rate', log_value=self.model.optimizer.learning_rate( self.model.optimizer.iterations), summary_scope='train')
-      log_summary(log_name='fine_total_loss', log_value=logs['loss'], summary_scope='train')
+      print(logs)
+      if 'loss' in logs.keys():
+        log_summary(log_name='learning_rate', log_value=self.model.optimizer.learning_rate( self.model.optimizer.iterations), summary_scope='train')
+        log_summary(log_name='fine_total_loss', log_value=logs['loss'], summary_scope='train')
       if 'masked_sequence_loss' in logs.keys():
         log_summary(log_name='fine_lm_loss', log_value=logs['masked_sequence_loss'], summary_scope='train')
       if 'sequence_loss' in logs.keys():

@@ -257,6 +257,7 @@ lstm3_drop20 = {
   'depth': 3,
   'hidden_dropout_rate': 0.2,
   'input_dropout_rate': 0.0,
+  'initializer_range': 0.1
 }
 
 big_lstm_drop5 = {
