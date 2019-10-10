@@ -77,4 +77,5 @@ radam_fast = {
 }
 
 TRAIN_PARAMS = {'raadam_slow': radam_slow,
-'radam_fast': radam_fast}
+                'radam_fast': radam_fast,
+                'adam_slow':adam_slow}
