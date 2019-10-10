@@ -150,7 +150,6 @@ class SvAgreementLM(Task):
   def output_size(self):
     return self.vocab_size()
 
-  @property
   def metrics(self):
     return [self.get_loss_fn(),
             metrics.accuracy,
