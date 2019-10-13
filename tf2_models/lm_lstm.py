@@ -1,3 +1,4 @@
+import absl
 import tensorflow as tf
 import numpy as np
 
@@ -176,10 +177,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                    l2=0.0000)
     self.create_vars()
 
-  @tf.function
   def create_vars(self):
-
-
     self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim ,
                                 hidden_size=self.hparams.embedding_dim,
                                 initializer_range=self.hparams.initializer_range,
@@ -192,6 +190,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                    kernel_initializer=get_initializer(initializer_range))
 
     self.stacked_rnns = []
+    self.rnn_initial_states = []
     for _ in np.arange(self.hparams.depth):
       initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
       self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
@@ -210,6 +209,11 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     recurrent_initializer=get_initializer(initializer_range)
                                                     ))
 
+      print(self.hparams.hidden_dim)
+      random_value = tf.random.normal(shape=(self.hparams.hidden_dim,), dtype=tf.float32)
+      self.rnn_initial_states.append(tf.Variable(initial_value=random_value))
+
+
   @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, padding_symbol=0, **kwargs):
     input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
@@ -218,7 +222,12 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                   **kwargs)
     rnn_outputs = embedded_input
     for i in np.arange(self.hparams.depth):
+      absl.logging.info(self.rnn_initial_states[i])
+      init_state = self.stacked_rnns[i].get_initial_state(rnn_outputs)
+      print(init_state)
+      #init_state = tf.multiply(init_state, self.rnn_initial_states[i])
       rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask,
+                                                           initial_state=init_state,
                                                            **kwargs)
 
     rnn_outputs = self.output_projection(rnn_outputs, **kwargs)

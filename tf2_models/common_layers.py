@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+from tensorflow.python.framework import tensor_shape
 from tensorflow.python.util import nest
 
 
@@ -81,3 +82,15 @@ def get_initial_cell_state(cell, initializer, batch_size, dtype):
     init_state = initializer(init_state_size, batch_size, dtype, None)
 
   return init_state
+
+def _generate_variable_state(batch_size_tensor, state_size, dtype):
+  """Generate a variable tensor with shape [batch_size, state_size]."""
+  def create_variable(unnested_state_size):
+    flat_dims = tensor_shape.as_shape(unnested_state_size).as_list()
+    init_state_size = [batch_size_tensor] + flat_dims
+    return tf.Variable(init_state_size, dtype=dtype)
+
+  if nest.is_sequence(state_size):
+    return nest.map_structure(create_variable, state_size)
+  else:
+    return create_variable(state_size)
