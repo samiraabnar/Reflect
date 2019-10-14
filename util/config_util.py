@@ -98,4 +98,5 @@ TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'radam_fast': radam_fast,
                 'adam_slow':  adam_slow,
                 'radam_fast_long': radam_fast_long,
-                'adam_mid': adam_mid}
+                'adam_mid': adam_mid,
+                'adam_midmid': adam_midmid}

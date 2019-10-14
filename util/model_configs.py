@@ -380,5 +380,6 @@ MODEL_CONFIGS = {
   'very_big_gpt_v7': very_big_gpt_v7,
   'lstm2_big_drop20_v2': lstm2_big_drop20_v2,
   'very_big_gpt_v8': very_big_gpt_v8,
-  'lstm2_big_drop30_v2': lstm2_big_drop30_v2
+  'lstm2_big_drop30_v2': lstm2_big_drop30_v2,
+  'lstm2_drop20': lstm2_drop20
 }
