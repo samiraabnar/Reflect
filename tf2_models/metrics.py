@@ -67,7 +67,6 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
   unmasked_accuracies = tf.metrics.top_k_categorical_accuracy(y_true=targets,
                                                y_pred=logits,
                                                k=topk)
-  tf.print(sequence_mask)
   return tf.reduce_sum(sequence_mask * unmasked_accuracies)
 
 if __name__ == '__main__':
