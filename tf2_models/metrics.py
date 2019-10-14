@@ -20,6 +20,16 @@ def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
                                                                   name='loss') * sequence_mask, axis=-1))
 
 @tf.function
+def masked_perplexity(y_true, y_pred, padding_symbol=0):
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+  sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
+  # [batch_size, 1]
+  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)[...,None]
+  return tf.reduce_mean(tf.exp(tf.reduce_sum(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
+                                                                  labels=y_true,
+                                                                  name='loss') * sequence_mask, axis=-1)))
+
+@tf.function
 def sequence_loss(y_true, y_pred):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
   return tf.reduce_mean(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
@@ -49,7 +59,7 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
   last_dim = orig_shape[-1]
   logits = tf.reshape(logits, (-1,last_dim))
   targets = tf.reshape(targets, (-1,1))
-  sequence_mask = tf.cast(tf.reshape(sequence_mask, (1,-1)), tf.float32)
+  sequence_mask = tf.cast(tf.reshape(sequence_mask, (-1,1)), tf.float32)
   unmasked_accuracies = tf.metrics.top_k_categorical_accuracy(y_true=targets,
                                                y_pred=logits,
                                                k=topk)
@@ -65,4 +75,4 @@ if __name__ == '__main__':
   print(a_mask)
   b = np.asarray([[0, 0],[1, 1]], dtype=np.int32)
 
-  print(accuracy_topk(a,b,a_mask,3))
+  print(accuracy_topk(logits=a,targets=b,sequence_mask=a_mask,topk=3))
