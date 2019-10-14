@@ -33,7 +33,7 @@ class Task(object):
 
     self.valid_dataset = self.databuilder.as_dataset(split="validation")
     self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.info.features.shape)
+    self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=([None],[None]))
     #self.valid_dataset = self.valid_dataset.cache()
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
@@ -42,7 +42,7 @@ class Task(object):
     self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
                                                 num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
-                                                         padded_shapes=self.info.features.shape)
+                                                         padded_shapes=([None],[None]))
     # self.test_dataset = self.test_dataset.cache()
 
     self.test_dataset = self.test_dataset.repeat()
@@ -52,7 +52,7 @@ class Task(object):
     self.train_dataset = self.databuilder.as_dataset(split="train")
     self.train_dataset = self.train_dataset.shuffle(10000)
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.info.features.shape)
+    self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=([None],[None]))
     #self.train_dataset = self.train_dataset.cache()
     self.train_dataset = self.train_dataset.repeat()
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
@@ -130,17 +130,29 @@ class SvAgreementLM(Task):
   def __init__(self, task_params, name='sv_agreement_lm', data_dir='data', builder_cls=SVAgreement):
     super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
 
+  # @tf.function
+  # def convert_examples(self, examples):
+  #   sentences = examples['sentence']
+  #   s_shape = tf.shape(sentences)
+  #   batch_size, length = s_shape[0], s_shape[1]
+  #   bos = tf.ones((batch_size,1), dtype=tf.int64) * self.databuilder.sentence_encoder().encode(constants.bos)
+  #   eos = tf.ones((batch_size,1), dtype=tf.int64) * self.databuilder.sentence_encoder().encode(constants.eos)
+  #
+  #   sentence = tf.concat([bos, sentences, eos], axis=1)
+  #   return sentence[:,:-1],\
+  #          sentence[:,1:]
+
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
     s_shape = tf.shape(sentences)
-    batch_size, length = s_shape[0], s_shape[1]
-    bos = tf.ones((batch_size,1), dtype=tf.int64) * self.databuilder.sentence_encoder().encode(constants.bos)
-    eos = tf.ones((batch_size,1), dtype=tf.int64) * self.databuilder.sentence_encoder().encode(constants.eos)
+    #batch_size, length = s_shape[0], s_shape[1]
+    bos =  self.databuilder.sentence_encoder().encode(constants.bos)
+    eos =  self.databuilder.sentence_encoder().encode(constants.eos)
 
-    sentence = tf.concat([bos, sentences, eos], axis=1)
-    return sentence[:,:-1],\
-           sentence[:,1:]
+    sentence = tf.concat([bos, sentences, eos], axis=-1)
+    return sentence[:-1],\
+           sentence[1:]
 
   def get_loss_fn(self):
     return masked_sequence_loss
