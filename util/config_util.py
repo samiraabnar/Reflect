@@ -72,6 +72,12 @@ adam_slow = {
 'optimizer': 'adam'
 }
 
+radam_fast_long = {
+'learning_rate': 0.001,
+'optimizer': 'radam',
+'warmup_steps': 1000000
+}
+
 radam_fast = {
 'learning_rate': 0.001,
 'optimizer': 'radam'
@@ -79,4 +85,5 @@ radam_fast = {
 
 TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'radam_fast': radam_fast,
-                'adam_slow':  adam_slow}
+                'adam_slow':  adam_slow,
+                'radam_fast_long': radam_fast_long}

@@ -305,7 +305,7 @@ lstm2_big_drop20 = {
   'depth': 2,
   'hidden_dropout_rate': 0.2,
   'input_dropout_rate': 0.0,
-  'initializer_range': 0.5
+  'initializer_range': 0.1
 }
 
 MODEL_CONFIGS = {
