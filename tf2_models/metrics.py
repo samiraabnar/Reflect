@@ -58,6 +58,8 @@ def accuracy_top5(targets, logits, padding_symbol=0):
 
 @tf.function
 def accuracy_topk(targets, logits, sequence_mask, topk):
+  tf.print(targets[0])
+  tf.print(logits[0])
   orig_shape = tf.shape(logits)
   last_dim = orig_shape[-1]
   logits = tf.reshape(logits, (-1,last_dim))
@@ -76,4 +78,4 @@ if __name__ == '__main__':
   print(a_mask)
   b = np.asarray([[0, 0],[1, 1]], dtype=np.int32)
 
-  print(accuracy_topk(logits=a,targets=b,sequence_mask=a_mask,topk=3))
+  print(accuracy_topk(logits=a,targets=b,sequence_mask=a_mask,topk=1))
