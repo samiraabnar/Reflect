@@ -62,12 +62,11 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
   last_dim = orig_shape[-1]
   logits = tf.reshape(logits, (-1,last_dim))
   targets = tf.reshape(targets, (-1,1))
-  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)[...,None]
   sequence_mask = tf.cast(tf.reshape(sequence_mask, (-1,1)), tf.float32)
   unmasked_accuracies = tf.metrics.top_k_categorical_accuracy(y_true=targets,
                                                y_pred=logits,
                                                k=topk)
-  return tf.reduce_sum(sequence_mask * unmasked_accuracies)
+  return tf.reduce_sum(sequence_mask * unmasked_accuracies, axis=-1)
 
 if __name__ == '__main__':
   import numpy as np
