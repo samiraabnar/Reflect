@@ -78,6 +78,11 @@ adam_mid = {
 'optimizer': 'adam'
 }
 
+adam_midmid = {
+'learning_rate': 0.0002,
+'optimizer': 'adam'
+}
+
 radam_fast_long = {
 'learning_rate': 0.001,
 'optimizer': 'radam',
