@@ -258,7 +258,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
     rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
     rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
     logits = self.input_embedding(rnn_outputs, mode='linear')
-    #logits = logits * float_input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - float_input_mask[...,None])
+    logits = logits * float_input_mask[...,None] + tf.eye(self.hparams.output_dim)[0] * (1 - float_input_mask[...,None])
 
     return logits
 
