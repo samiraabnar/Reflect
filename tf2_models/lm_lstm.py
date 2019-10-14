@@ -1,6 +1,9 @@
 import absl
 import tensorflow as tf
 import numpy as np
+from tensorboard.compat.tensorflow_stub import tensor_shape
+from tensorflow.python.ops import array_ops
+from tensorflow.python.util import nest
 
 from tf2_models.common_layers import get_initializer
 from tf2_models.embedding import SharedEmbeddings
@@ -191,7 +194,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
 
     self.stacked_rnns = []
     self.rnn_initial_states = []
-    for _ in np.arange(self.hparams.depth):
+    for i in np.arange(self.hparams.depth):
       initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
       self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
                                                     return_sequences=True,
@@ -209,9 +212,22 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     recurrent_initializer=get_initializer(initializer_range)
                                                     ))
 
-      print(self.hparams.hidden_dim)
-      random_value = tf.random.normal(shape=(self.hparams.hidden_dim,), dtype=tf.float32)
-      self.rnn_initial_states.append(tf.Variable(initial_value=random_value))
+      def create_init_var(unnested_state_size):
+        flat_dims = tensor_shape.as_shape(unnested_state_size).as_list()
+        init_state_size = [1] + flat_dims
+        return tf.Variable(shape=init_state_size, dtype=tf.float32,
+                           initial_value=tf.keras.initializers.TruncatedNormal(stddev=initializer_range)(shape=init_state_size),
+                           trainable=True,
+                           name="lstm_init_"+str(i))
+
+
+      state_size = self.stacked_rnns[-1].cell.state_size
+      if nest.is_sequence(state_size):
+        init_state = nest.map_structure(create_init_var, state_size)
+      else:
+        init_state = create_init_var(state_size)
+
+      self.rnn_initial_states.append(init_state)
 
 
   @tf.function(experimental_relax_shapes=True)
@@ -222,12 +238,20 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                   **kwargs)
     rnn_outputs = embedded_input
     for i in np.arange(self.hparams.depth):
+      batch_size_tensor = tf.shape(rnn_outputs)[0]
       absl.logging.info(self.rnn_initial_states[i])
-      init_state = self.stacked_rnns[i].get_initial_state(rnn_outputs)
-      print(init_state)
-      #init_state = tf.multiply(init_state, self.rnn_initial_states[i])
+
+      def tile_init(unnested_init_state):
+        return tf.tile(unnested_init_state, (batch_size_tensor, 1))
+
+      init_state = self.rnn_initial_states[i]
+      if nest.is_sequence(init_state):
+        init_for_batch = nest.map_structure(tile_init, init_state)
+      else:
+        init_for_batch = tile_init(init_state)
+
       rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask,
-                                                           initial_state=init_state,
+                                                           initial_state=init_for_batch,
                                                            **kwargs)
 
     rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
