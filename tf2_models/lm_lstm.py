@@ -250,6 +250,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
       else:
         init_for_batch = tile_init(init_state)
 
+
       rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask,
                                                            initial_state=init_for_batch,
                                                            **kwargs)
