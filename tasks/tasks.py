@@ -17,6 +17,10 @@ class Task(object):
 
     self.setup_datasets()
 
+  @property
+  def padded_shapes(self):
+    return ([None],[None])
+
   def vocab_size(self):
     raise NotImplementedError
 
@@ -33,7 +37,7 @@ class Task(object):
 
     self.valid_dataset = self.databuilder.as_dataset(split="validation")
     self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=([None],[None]))
+    self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.padded_shapes)
     #self.valid_dataset = self.valid_dataset.cache()
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
@@ -42,7 +46,7 @@ class Task(object):
     self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
                                                 num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
-                                                         padded_shapes=([None],[None]))
+                                                         padded_shapes=self.padded_shapes)
     # self.test_dataset = self.test_dataset.cache()
 
     self.test_dataset = self.test_dataset.repeat()
@@ -52,7 +56,7 @@ class Task(object):
     self.train_dataset = self.databuilder.as_dataset(split="train")
     self.train_dataset = self.train_dataset.shuffle(10000)
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=([None],[None]))
+    self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.padded_shapes)
     #self.train_dataset = self.train_dataset.cache()
     self.train_dataset = self.train_dataset.repeat()
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
@@ -181,10 +185,14 @@ class WordSvAgreementVP(Task):
   def __init__(self, task_params, name='word_sv_agreement_vp', data_dir='data', builder_cls=WordSvAgreement):
     super(WordSvAgreementVP, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
 
+  @property
+  def padded_shapes(self):
+    return ([None],[])
+
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
-    mask = tf.cast(tf.sequence_mask(examples['verb_position'],maxlen=tf.shape(sentences)[1]), dtype=tf.int64)
+    mask = tf.cast(tf.sequence_mask(examples['verb_position'],maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
     return sentences * mask, \
            examples['verb_class']
 
