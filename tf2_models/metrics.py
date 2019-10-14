@@ -40,16 +40,19 @@ def sequence_loss(y_true, y_pred):
 
 @tf.function
 def accuracy(targets, logits, padding_symbol=0):
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(targets, logits, sequence_mask, topk=1)
 
 @tf.function
 def accuracy_top2(targets, logits, padding_symbol=0):
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(targets, logits, sequence_mask, topk=2)
 
 @tf.function
 def accuracy_top5(targets, logits, padding_symbol=0):
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(targets, logits, sequence_mask, topk=5)
 
@@ -59,12 +62,12 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
   last_dim = orig_shape[-1]
   logits = tf.reshape(logits, (-1,last_dim))
   targets = tf.reshape(targets, (-1,1))
+  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)
   sequence_mask = tf.cast(tf.reshape(sequence_mask, (-1,1)), tf.float32)
   unmasked_accuracies = tf.metrics.top_k_categorical_accuracy(y_true=targets,
                                                y_pred=logits,
                                                k=topk)
-
-  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)
+  tf.print(sequence_mask)
   return tf.reduce_sum(sequence_mask * unmasked_accuracies)
 
 if __name__ == '__main__':
