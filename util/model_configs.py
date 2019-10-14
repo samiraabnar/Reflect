@@ -322,6 +322,15 @@ lstm2_big_drop20 = {
   'initializer_range': 0.1
 }
 
+lstm2_drop20 = {
+  'hidden_dim': 256,
+  'embedding_dim': 256,
+  'depth': 2,
+  'hidden_dropout_rate': 0.2,
+  'input_dropout_rate': 0.0,
+  'initializer_range': 0.1
+}
+
 lstm2_big_drop20_v2 = {
   'hidden_dim': 512,
   'embedding_dim': 512,
