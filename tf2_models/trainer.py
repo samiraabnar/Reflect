@@ -33,7 +33,7 @@ class Trainer(object):
     model.compile(
       optimizer=self.optimizer,
       loss=self.task.get_loss_fn(),
-      metrics=task.metrics())#[self.task.get_loss_fn()])
+      metrics=self.task.metrics())#[self.task.get_loss_fn()])
     #tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),)
 
 
