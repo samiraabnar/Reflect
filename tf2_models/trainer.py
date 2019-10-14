@@ -52,8 +52,8 @@ class Trainer(object):
       initial_learning_rate = self.train_params.learning_rate
       lr_schedule = ExponentialDecayWithWarmpUp(
         initial_learning_rate=initial_learning_rate,
-        decay_steps=1000,
-        hold_base_rate_steps=10000,
+        decay_steps=self.train_params.decay_steps,
+        hold_base_rate_steps=self.train_params.hold_base_rate_steps,
         decay_rate=0.96,
         warmup_steps=0.0)
 
@@ -63,6 +63,7 @@ class Trainer(object):
         initial_learning_rate=initial_learning_rate,
         decay_steps=self.train_params.decay_steps,
         decay_rate=0.96,
+        hold_base_rate_steps=self.train_params.hold_base_rate_steps,
         warmup_steps=self.train_params.warmup_steps)
     return lr_schedule
 

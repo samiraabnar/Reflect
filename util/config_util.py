@@ -64,34 +64,39 @@ def get_model_params(task, config_name='', model_config='base'):
 
 radam_slow = {
 'learning_rate': 0.0001,
-'optimizer': 'radam'
+'optimizer': 'radam',
+'hold_base_rate_steps': 0
 }
 
 adam_slow = {
 'learning_rate': 0.0001,
-'optimizer': 'adam'
+'optimizer': 'adam',
+'hold_base_rate_steps': 0
 }
 
 
 adam_mid = {
 'learning_rate': 0.0005,
-'optimizer': 'adam'
+'optimizer': 'adam',
+'hold_base_rate_steps': 0
 }
 
 adam_midmid = {
 'learning_rate': 0.0002,
-'optimizer': 'adam'
+'optimizer': 'adam',
+'hold_base_rate_steps': 0
 }
 
 radam_fast_long = {
 'learning_rate': 0.001,
 'optimizer': 'radam',
-'warmup_steps': 1000000
+'hold_base_rate_steps': 1000000
 }
 
 radam_fast = {
 'learning_rate': 0.001,
-'optimizer': 'radam'
+'optimizer': 'radam',
+'hold_base_rate_steps': 10000
 }
 
 TRAIN_PARAMS = {'radam_slow': radam_slow,
