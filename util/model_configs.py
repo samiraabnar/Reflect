@@ -189,8 +189,9 @@ small_lstm = {
   'hidden_dim': 256,
   'embedding_dim': 256,
   'depth': 2,
-  'hidden_dropout_rate': 0.25,
-  'input_dropout_rate': 0.2,
+  'hidden_dropout_rate': 0.2,
+  'input_dropout_rate': 0.0,
+  'initializer_range': 0.1
 }
 
 big_lstm = {
