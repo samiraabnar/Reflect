@@ -136,7 +136,7 @@ class LmGPT2(tf.keras.Model):
 
 
 class ClassifierGPT2(tf.keras.Model):
-  def __init__(self, hparams, scope='lm_gpt2', *inputs, **kwargs):
+  def __init__(self, hparams, scope='cl_gpt2', *inputs, **kwargs):
     super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
     self.scope = scope
     self.model_name = '_'.join([self.scope,
