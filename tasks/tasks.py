@@ -194,8 +194,10 @@ class WordSvAgreementVP(Task):
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
-    mask = tf.cast(tf.sequence_mask(examples['verb_position']-2,maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
-    return sentences * mask, \
+    mask = tf.cast(tf.sequence_mask(examples['verb_position']-1,maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
+    max_length = tf.reduce_max(examples['verb_position']-1)
+
+    return (sentences * mask)[:max_length], \
            examples['verb_class']
 
   def vocab_size(self):
@@ -215,5 +217,5 @@ if __name__ == '__main__':
     task = WordSvAgreementVP(get_task_params())
 
     x, y = iter(task.valid_dataset).next()
-    print(x)
-    print(y)
+    print(task.databuilder.sentence_encoder().decode(x[0]))
+    print(y[0])
