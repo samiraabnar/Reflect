@@ -26,6 +26,6 @@ LOGS_DIR=$HEAD_DIR/logs
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=cl_gpt2 \
 --task=word_sv_agreement_vp \
---model_config=very_big_gpt_v3 \
+--model_config=very_big_gpt_v7 \
 --train_config=adam_slow \
 --exp_name=tune_withl2_2
