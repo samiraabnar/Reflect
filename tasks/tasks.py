@@ -192,7 +192,7 @@ class WordSvAgreementVP(Task):
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
-    mask = tf.cast(tf.sequence_mask(examples['verb_position'],maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
+    mask = tf.cast(tf.sequence_mask(examples['verb_position']-2,maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
     return sentences * mask, \
            examples['verb_class']
 
@@ -207,10 +207,10 @@ class WordSvAgreementVP(Task):
 
   def metrics(self):
     return [self.get_loss_fn(),
-            tf.keras.metrics.CategoricalAccuracy()]
+            tf.keras.metrics.SparseCategoricalAccuracy()]
 
 if __name__ == '__main__':
-    task = WordSvAgreementLM(get_task_params())
+    task = WordSvAgreementVP(get_task_params())
 
     x, y = iter(task.valid_dataset).next()
     print(x)

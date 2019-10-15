@@ -45,10 +45,20 @@ def accuracy(targets, logits, padding_symbol=0):
   return accuracy_topk(targets, logits, sequence_mask, topk=1)
 
 @tf.function
+def unmasked_accuracy(targets, logits, ):
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  return unmasked_accuracy_topk(targets, logits, topk=1)
+
+@tf.function
 def accuracy_top2(targets, logits, padding_symbol=0):
   targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(targets, logits, sequence_mask, topk=2)
+
+@tf.function
+def unmasked_accuracy_top2(targets, logits, ):
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  return unmasked_accuracy_topk(targets, logits, topk=2)
 
 @tf.function
 def accuracy_top5(targets, logits, padding_symbol=0):
@@ -57,16 +67,32 @@ def accuracy_top5(targets, logits, padding_symbol=0):
   return accuracy_topk(targets, logits, sequence_mask, topk=5)
 
 @tf.function
+def unmasked_accuracy_top5(targets, logits, ):
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  return unmasked_accuracy_topk(targets, logits, topk=5)
+
+@tf.function
 def accuracy_topk(targets, logits, sequence_mask, topk):
   orig_shape = tf.shape(logits)
   last_dim = orig_shape[-1]
   logits = tf.reshape(logits, (-1,last_dim))
   targets = tf.reshape(targets, (-1,1))
   sequence_mask = tf.cast(tf.reshape(sequence_mask, (-1,1)), tf.float32)
-  unmasked_accuracies = tf.metrics.top_k_categorical_accuracy(y_true=targets,
+  unmasked_accuracies = tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true=targets,
                                                y_pred=logits,
                                                k=topk)
   return tf.reduce_mean(sequence_mask * unmasked_accuracies)
+
+@tf.function
+def unmasked_accuracy_topk(targets, logits, topk):
+  orig_shape = tf.shape(logits)
+  last_dim = orig_shape[-1]
+  logits = tf.reshape(logits, (-1,last_dim))
+  targets = tf.reshape(targets, (-1,1))
+  unmasked_accuracies = tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true=targets,
+                                               y_pred=logits,
+                                               k=topk)
+  return tf.reduce_mean(unmasked_accuracies)
 
 if __name__ == '__main__':
   import numpy as np
