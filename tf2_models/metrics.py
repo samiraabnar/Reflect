@@ -30,6 +30,17 @@ def masked_perplexity(y_true, y_pred, padding_symbol=0):
                                                                   name='loss') * sequence_mask, axis=-1)))
 
 @tf.function
+def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+  sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
+  # [batch_size, 1]
+  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
+  return tf.exp(tf.reduce_sum(sequence_mask * tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
+                                                                  labels=y_true,
+                                                                  name='loss')))
+
+
+@tf.function
 def sequence_loss(y_true, y_pred):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
   return tf.reduce_mean(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,

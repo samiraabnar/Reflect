@@ -1,6 +1,6 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from tf2_models.metrics import masked_sequence_loss, sequence_loss, masked_perplexity
+from tf2_models.metrics import masked_sequence_loss, sequence_loss, masked_perplexity, masked_batch_perplexity
 from tf2_models import metrics
 from tfds_data.tal_agreement import SVAgreement, WordSvAgreement
 from util import constants
@@ -169,6 +169,7 @@ class SvAgreementLM(Task):
 
   def metrics(self):
     return [self.get_loss_fn(),
+            masked_batch_perplexity,
             masked_perplexity,
             metrics.accuracy,
             metrics.accuracy_top2,
