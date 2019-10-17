@@ -170,7 +170,9 @@ class ClassifierGPT2(tf.keras.Model):
 
 
     transformer_outputs = self.transformer(inputs, **kwargs)
-    tf.print("transformer_outputs: ", transformer_outputs[0].shape, transformer_outputs[1].shape)
+    tf.print("transformer_outputs: ", transformer_outputs)
+    tf.print("transformer_outputs: ", transformer_outputs[0].shape)
+
     hidden_states = transformer_outputs[0][:,0]
     tf.print("output hidden_states: ",hidden_states.shape)
     cl_logits = self.e2c(hidden_states)
