@@ -170,8 +170,9 @@ class ClassifierGPT2(tf.keras.Model):
     inputs = tf.cast(inputs != 0, dtype=tf.int32)
     inputs_lengths = tf.reduce_sum(inputs, axis=-1)
 
+    tf.print(batch_size)
     batch_indices = tf.range(batch_size)
-    indices =  tf.concat([batch_indices, inputs_lengths], -1)
+    indices =  tf.concat([batch_indices, inputs_lengths], 1)
     tf.print("indices:", indices.shape)
     tf.print(indices)
     hidden_states = transformer_outputs[0][:,0]
