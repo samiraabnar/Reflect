@@ -167,7 +167,7 @@ class ClassifierGPT2(tf.keras.Model):
 
 
     transformer_outputs = self.transformer(inputs, **kwargs)
-    inputs = tf.cast(inputs != 0, dtype=tf.int64)
+    inputs = tf.cast(inputs != 0, dtype=tf.int32)
     inputs_lengths = tf.reduce_sum(inputs, axis=-1)
 
     batch_indices = tf.range(batch_size)
