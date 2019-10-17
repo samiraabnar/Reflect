@@ -206,6 +206,15 @@ tiny_lstm = {
   'initializer_range': 0.1
 }
 
+tiny_lstm_v2 = {
+  'hidden_dim': 128,
+  'embedding_dim': 128,
+  'depth': 2,
+  'hidden_dropout_rate': 0.2,
+  'input_dropout_rate': 0.0,
+  'initializer_range': 0.1
+}
+
 big_lstm = {
   'hidden_dim': 512,
   'embedding_dim': 512,
@@ -398,5 +407,6 @@ MODEL_CONFIGS = {
   'lstm2_big_drop20_v2': lstm2_big_drop20_v2,
   'very_big_gpt_v8': very_big_gpt_v8,
   'lstm2_big_drop30_v2': lstm2_big_drop30_v2,
-  'lstm2_drop20': lstm2_drop20
+  'lstm2_drop20': lstm2_drop20,
+  'tiny_lstm_v2': tiny_lstm_v2
 }
