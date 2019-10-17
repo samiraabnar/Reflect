@@ -166,7 +166,8 @@ class ClassifierLSTM(tf.keras.Model):
 
 class LmLSTMSharedEmb(tf.keras.Model):
 
-  def __init__(self, hparams, scope="lm_lstm_shared_emb"):
+  def __init__(self, hparams, scope="lm_lstm_shared_emb",*inputs, **kwargs):
+    del kwargs['cl_token']
     super(LmLSTMSharedEmb, self).__init__()
     self.hparams = hparams
     self.scope = scope
