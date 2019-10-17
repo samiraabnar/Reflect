@@ -12,6 +12,7 @@ from tf2_models.embedding import SharedEmbeddings
 class LmLSTM(tf.keras.Model):
 
   def __init__(self, hparams, scope="lm_lstm",*inputs, **kwargs):
+    del kwargs['cl_token']
     super(LmLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
@@ -85,6 +86,7 @@ class LmLSTM(tf.keras.Model):
 class ClassifierLSTM(tf.keras.Model):
 
   def __init__(self, hparams, scope="cl_lstm", *inputs, **kwargs):
+    del kwargs['cl_token']
     super(ClassifierLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
