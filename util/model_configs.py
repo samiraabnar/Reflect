@@ -197,6 +197,15 @@ small_lstm = {
   'initializer_range': 0.1
 }
 
+tiny_lstm = {
+  'hidden_dim': 128,
+  'embedding_dim': 128,
+  'depth': 2,
+  'hidden_dropout_rate': 0.1,
+  'input_dropout_rate': 0.0,
+  'initializer_range': 0.1
+}
+
 big_lstm = {
   'hidden_dim': 512,
   'embedding_dim': 512,
@@ -359,6 +368,7 @@ lstm2_big_drop30_v2 = {
 MODEL_CONFIGS = {
   'base':{},
   'small_lstm':small_lstm,
+  'tiny_lstm': tiny_lstm,
   'big_lstm':big_lstm,
   'lstm_simple': lstm_simple,
   'lstm_drop1': lstm_drop1,
