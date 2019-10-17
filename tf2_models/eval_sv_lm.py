@@ -21,7 +21,7 @@ log_dir = "logs"
 chkpt_dir = "tf_ckpts"
 exp_name = "nol2_batchsumloss"
 
-task = WordSvAgreementLM(task_params=get_task_params(),data_dir='../data')
+task = WordSvAgreementLM(task_params=get_task_params(),data_dir='data')
 
 
 model_config = 'lstm_drop30_v2'
