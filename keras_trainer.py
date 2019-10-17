@@ -2,6 +2,7 @@ import os
 import tensorflow as tf
 from tasks.tasks import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
 from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2
+from util import constants
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM
 from tf2_models.trainer import Trainer
@@ -51,7 +52,8 @@ def run():
   model_params = get_model_params(task,hparams.model, hparams.model_config)
   print("model_params: ", model_params.__dict__)
 
-  model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config))
+  cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+  model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config),cl_token=cl_token)
 
   trainer_params = get_train_params(hparams.train_config)
 

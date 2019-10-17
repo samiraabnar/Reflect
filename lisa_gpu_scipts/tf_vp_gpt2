@@ -28,4 +28,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --task=word_sv_agreement_vp \
 --model_config=small_gpt \
 --train_config=adam_slow \
---exp_name=tune_withl2_2
+--exp_name=tune_withl2_withcltoken

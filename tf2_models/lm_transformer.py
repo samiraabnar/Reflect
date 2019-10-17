@@ -4,6 +4,7 @@ from tasks.tasks import WordSvAgreementLM, WordSvAgreementVP
 from tf2_models.common_layers import get_initializer, shape_list
 from tf2_models.embedding import SharedEmbeddings
 from tf2_models.transformer_layers import Block
+from util import constants
 from util.config_util import get_task_params, get_model_params
 
 
@@ -136,9 +137,13 @@ class LmGPT2(tf.keras.Model):
 
 
 class ClassifierGPT2(tf.keras.Model):
-  def __init__(self, hparams, scope='cl_gpt2', *inputs, **kwargs):
+  def __init__(self, hparams, scope='cl_gpt2',*inputs, **kwargs):
+    self.cl_token = kwargs['cl_token']
+    del kwargs['cl_token']
     super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
+
     self.scope = scope
+
     self.model_name = '_'.join([self.scope,
                          'h-'+str(hparams.embedding_dim),
                          'd-'+str(hparams.depth),
@@ -154,12 +159,18 @@ class ClassifierGPT2(tf.keras.Model):
                                      name='e2c')
 
   def call(self, inputs, **kwargs):
+    # Add CL token:
+    batch_size = tf.shape(inputs)[0]
+    cl_token = tf.reshape(tf.convert_to_tensor(self.cl_token[0], dtype=tf.int64)[None], (-1,1))
+    cl_tokens = tf.tile(cl_token, (batch_size, 1))
+    inputs = tf.concat([cl_tokens, inputs], axis=-1)
+
     transformer_outputs = self.transformer(inputs, **kwargs)
-    hidden_states = transformer_outputs[0]
+    hidden_states = transformer_outputs[0][:,0]
 
-    lm_logits = self.e2c(hidden_states)
+    cl_logits = self.e2c(hidden_states)
 
-    return lm_logits
+    return cl_logits
 
 
 if __name__ == '__main__':
