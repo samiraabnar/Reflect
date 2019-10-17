@@ -115,7 +115,10 @@ class GPT2Config(object):
 
 
 small_gpt = {
-  'embedding_dim': 128
+  'embedding_dim': 128,
+  'resid_pdrop': 0.1,
+  'embd_pdrop': 0.1,
+  'attn_pdrop': 0.1
 }
 
 big_gpt_v2 = {
