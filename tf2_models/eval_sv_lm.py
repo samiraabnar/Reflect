@@ -4,7 +4,7 @@ from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM
 from tf2_models.trainer import Trainer
-
+import numpy as np
 from util import constants
 from collections import Counter
 from tqdm import tqdm
