@@ -163,11 +163,16 @@ class ClassifierGPT2(tf.keras.Model):
     batch_size = tf.shape(inputs)[0]
     cl_token = tf.reshape(tf.convert_to_tensor(self.cl_token[0], dtype=tf.int64)[None], (-1,1))
     cl_tokens = tf.tile(cl_token, (batch_size, 1))
+    tf.print("inputs 1: ", inputs.shape)
     inputs = tf.concat([cl_tokens, inputs], axis=-1)
+    tf.print("inputs 2: ", inputs.shape)
+    tf.print("inputs 3: ", inputs)
+
 
     transformer_outputs = self.transformer(inputs, **kwargs)
+    tf.print("transformer_outputs: ", transformer_outputs.shape)
     hidden_states = transformer_outputs[0][:,0]
-    tf.print("output hidden_states: ",hidden_states)
+    tf.print("output hidden_states: ",hidden_states.shape)
     cl_logits = self.e2c(hidden_states)
 
     return cl_logits
