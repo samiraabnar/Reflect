@@ -161,20 +161,20 @@ class ClassifierGPT2(tf.keras.Model):
   def call(self, inputs, **kwargs):
     # Add CL token:
     batch_size = tf.shape(inputs)[0]
-    cl_token = tf.reshape(tf.convert_to_tensor(self.cl_token[0], dtype=tf.int64)[None], (-1,1))
-    cl_tokens = tf.tile(cl_token, (batch_size, 1))
-    tf.print("inputs 1: ", inputs.shape)
-    inputs = tf.concat([cl_tokens, inputs], axis=-1)
-    tf.print("inputs 2: ", inputs.shape)
-    tf.print("inputs 3: ", inputs)
+    #cl_token = tf.reshape(tf.convert_to_tensor(self.cl_token[0], dtype=tf.int64)[None], (-1,1))
+    #cl_tokens = tf.tile(cl_token, (batch_size, 1))
+    #inputs = tf.concat([cl_tokens, inputs], axis=-1)
 
 
     transformer_outputs = self.transformer(inputs, **kwargs)
-    tf.print("transformer_outputs: ", transformer_outputs)
-    tf.print("transformer_outputs: ", transformer_outputs[0].shape)
+    inputs = tf.cast(inputs != 0, stype=tf.int64)
+    inputs_lengths = tf.reduce_sim(inputs, axis=-1)
 
+    batch_indices = tf.range(batch_size)
+    indices =  tf.concatenate([batch_indices, inputs_lengths], -1)
+    tf.print("indices:", indices.shape)
+    tf.print(indices)
     hidden_states = transformer_outputs[0][:,0]
-    tf.print("output hidden_states: ",hidden_states.shape)
     cl_logits = self.e2c(hidden_states)
 
     return cl_logits
