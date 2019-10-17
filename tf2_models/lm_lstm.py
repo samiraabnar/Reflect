@@ -99,7 +99,7 @@ class ClassifierLSTM(tf.keras.Model):
                          'indrop-'+str(self.hparams.input_dropout_rate)])
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
-                                                   l2=0.00000)
+                                                   l2=0.00001)
     self.create_vars()
 
   @tf.function
