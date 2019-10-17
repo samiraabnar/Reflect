@@ -91,7 +91,7 @@ dependency_fields = ['sentence', 'orig_sentence', 'pos_sentence',
                      'last_intervening', 'n_diff_intervening', 'distance',
                      'max_depth', 'all_nouns', 'nouns_up_to_verb']
 
-verb_infl, noun_infl = gen_inflect_from_vocab('wiki.vocab')
+verb_infl, noun_infl = gen_inflect_from_vocab('data/tal_agreement/wiki.vocab')
 
 distance_hits = Counter()
 distance_total = Counter()
