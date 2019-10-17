@@ -11,8 +11,8 @@ from tf2_models.embedding import SharedEmbeddings
 
 class LmLSTM(tf.keras.Model):
 
-  def __init__(self, hparams, scope="lm_lstm"):
-    super(LmLSTM, self).__init__()
+  def __init__(self, hparams, scope="lm_lstm",*inputs, **kwargs):
+    super(LmLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
 
