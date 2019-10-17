@@ -84,8 +84,8 @@ class LmLSTM(tf.keras.Model):
 
 class ClassifierLSTM(tf.keras.Model):
 
-  def __init__(self, hparams, scope="cl_lstm"):
-    super(ClassifierLSTM, self).__init__()
+  def __init__(self, hparams, scope="cl_lstm", *inputs, **kwargs):
+    super(ClassifierLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
 
