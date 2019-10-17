@@ -31,7 +31,8 @@ train_config ='radam_fast'
 model_params = get_model_params(task,model_name, model_config)
 print("model_params: ", model_params.__dict__)
 
-model = MODELS[model_name](hparams=get_model_params(task,model_name, model_config))
+cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+model = MODELS[model_name](hparams=get_model_params(task,model_name, model_config), cl_token=cl_token)
 
 trainer_params = get_train_params(train_config)
 
