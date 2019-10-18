@@ -114,6 +114,7 @@ class GPT2(tf.keras.layers.Layer):
 
 class LmGPT2(tf.keras.Model):
   def __init__(self, hparams, scope='lm_gpt2', *inputs, **kwargs):
+    del kwargs['cl_token']
     super(LmGPT2, self).__init__(hparams, *inputs, **kwargs)
     self.scope = scope
     self.model_name = '_'.join([self.scope,
