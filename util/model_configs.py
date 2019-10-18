@@ -121,6 +121,13 @@ small_gpt = {
   'attn_pdrop': 0.1
 }
 
+small_gpt_v3 = {
+  'embedding_dim': 128,
+  'resid_pdrop': 0.1,
+  'embd_pdrop': 0.2,
+  'attn_pdrop': 0.2
+}
+
 big_gpt_v2 = {
   'embedding_dim': 256,
   'resid_pdrop': 0.2,
