@@ -443,5 +443,6 @@ MODEL_CONFIGS = {
   'lstm2_drop20': lstm2_drop20,
   'tiny_lstm_v2': tiny_lstm_v2,
   'lstm3_drop30': lstm3_drop30,
-  'small_lstm_v2': small_lstm_v2
+  'small_lstm_v2': small_lstm_v2,
+  'lstm_drop30_v3': lstm_drop30_v3
 }
