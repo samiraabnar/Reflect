@@ -345,6 +345,15 @@ lstm_drop30_v3 = {
   'initializer_range': 0.1
 }
 
+lstm_drop30_v4 = {
+  'hidden_dim': 512,
+  'embedding_dim': 512,
+  'depth': 2,
+  'hidden_dropout_rate': 0.5,
+  'input_dropout_rate': 0.0,
+  'initializer_range': 0.05
+}
+
 lstm3_drop20 = {
   'hidden_dim': 128,
   'embedding_dim': 256,
