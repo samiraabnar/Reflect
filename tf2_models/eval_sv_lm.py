@@ -19,12 +19,12 @@ MODELS = {"lm_lstm": LmLSTM,
 
 log_dir = "logs"
 chkpt_dir = "tf_ckpts"
-exp_name = "nol2_batchsumloss"
+exp_name = "withl2_batchsumloss"
 
 task = WordSvAgreementLM(task_params=get_task_params(),data_dir='data')
 
 
-model_config = 'lstm_drop30_v2'
+model_config = 'lstm_drop30_v3'
 model_name = 'lm_lstm_shared_emb'
 train_config ='radam_fast'
 # Create the Model
