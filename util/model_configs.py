@@ -205,10 +205,10 @@ small_lstm = {
 }
 
 small_lstm_v2 = {
-  'hidden_dim': 128,
-  'embedding_dim': 256,
+  'hidden_dim': 256,
+  'embedding_dim': 128,
   'depth': 2,
-  'hidden_dropout_rate': 0.3,
+  'hidden_dropout_rate': 0.5,
   'input_dropout_rate': 0.0,
   'initializer_range': 0.1
 }
