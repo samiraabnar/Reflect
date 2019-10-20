@@ -142,6 +142,14 @@ big_gpt_v3 = {
   'attn_pdrop': 0.3
 }
 
+big_gpt_v4 = {
+  'embedding_dim': 256,
+  'resid_pdrop': 0.3,
+  'embd_pdrop': 0.2,
+  'attn_pdrop': 0.3,
+  'initializer_range': 0.05
+}
+
 very_big_gpt = {
   'embedding_dim': 512
 }
@@ -165,6 +173,14 @@ very_big_gpt_v4 = {
   'resid_pdrop': 0.3,
   'embd_pdrop': 0.3,
   'attn_pdrop': 0.4
+}
+
+very_big_gpt_v5 = {
+  'embedding_dim': 512,
+  'resid_pdrop': 0.3,
+  'embd_pdrop': 0.3,
+  'attn_pdrop': 0.4,
+  'initializer_range': 0.05
 }
 
 very_big_gpt_v5 = {
@@ -463,5 +479,6 @@ MODEL_CONFIGS = {
   'lstm_drop30_v3': lstm_drop30_v3,
   'lstm_drop30_v4': lstm_drop30_v4,
   'big_gpt_v3': big_gpt_v3,
-  'small_gpt_v3': small_gpt_v3
+  'small_gpt_v3': small_gpt_v3,
+  'big_gpt_v4': big_gpt_v4
 }
