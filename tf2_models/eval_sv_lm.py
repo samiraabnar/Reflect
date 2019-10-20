@@ -112,7 +112,7 @@ for example in tqdm(test_data):
 
   actual_verbs = example['verb']
   inflected_verbs = [verb_infl[v.decode("utf-8")] for v in actual_verbs.numpy()]
-  verb_indexes = example['verb_position'] - 1
+  verb_indexes = example['verb_position']
   distances = example['distance'].numpy()
   nz = example['n_intervening'].numpy()
   n_diffs = example['n_diff_intervening'].numpy()
