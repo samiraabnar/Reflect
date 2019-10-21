@@ -112,6 +112,36 @@ class GPT2(tf.keras.layers.Layer):
       outputs = outputs + (all_attentions,)
     return outputs  # last hidden state, presents, (all hidden_states), (attentions)
 
+class GPT2SharedWeights(GPT2):
+  def __init__(self, hparams, *inputs, **kwargs):
+    super(GPT2SharedWeights, self).__init__(hparams, *inputs, **kwargs)
+    self.output_hidden_states = hparams.output_hidden_states
+    self.output_attentions = hparams.output_attentions
+    self.num_hidden_layers = hparams.depth
+    self.vocab_size = hparams.vocab_size
+    self.embedding_dim = hparams.embedding_dim
+    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
+                                                   l2=0.0001)
+
+    self.wte = SharedEmbeddings(self.vocab_size ,
+                                hparams.hidden_size,
+                                initializer_range=hparams.initializer_range,
+                                regularizer=self.regularizer,
+                                name='wte')
+    self.wpe = tf.keras.layers.Embedding(hparams.n_positions,
+                                         hparams.embedding_dim,
+                                         embeddings_initializer=get_initializer(hparams.initializer_range),
+                                         embeddings_regularizer=self.regularizer,
+                                         name='wpe')
+    self.drop = tf.keras.layers.Dropout(hparams.embd_pdrop)
+    attention_block = Block(hparams.n_ctx,
+                      hparams,
+                      regularizer=self.regularizer,
+                      scale=True,
+                      name='h')
+    self.h = [attention_block for i in range(hparams.depth)]
+    self.ln_f = tf.keras.layers.LayerNormalization(epsilon=hparams.layer_norm_epsilon, name='ln_f')
+
 class LmGPT2(tf.keras.Model):
   def __init__(self, hparams, scope='lm_gpt2', *inputs, **kwargs):
     del kwargs['cl_token']
@@ -125,6 +155,29 @@ class LmGPT2(tf.keras.Model):
                          'indrop-'+str(hparams.embd_pdrop)])
 
     self.transformer = GPT2(hparams, name='transformer')
+
+  def call(self, inputs, **kwargs):
+    transformer_outputs = self.transformer(inputs, **kwargs)
+    hidden_states = transformer_outputs[0]
+
+    lm_logits = self.transformer.wte(hidden_states, mode="linear")
+
+    #outputs = (lm_logits,) + transformer_outputs[1:]
+
+    return lm_logits  # lm_logits, presents, (all hidden_states), (attentions)
+
+class LmGPT2SharedWeights(LmGPT2):
+  def __init__(self, hparams, scope='lm_gpt2_shared_weights', *inputs, **kwargs):
+    super(LmGPT2SharedWeights, self).__init__(hparams, *inputs, **kwargs)
+    self.scope = scope
+    self.model_name = '_'.join([self.scope,
+                         'h-'+str(hparams.embedding_dim),
+                         'd-'+str(hparams.depth),
+                         'rdrop-'+str(hparams.resid_pdrop),
+                         'adrop-' + str(hparams.attn_pdrop),
+                         'indrop-'+str(hparams.embd_pdrop)])
+
+    self.transformer = GPT2SharedWeights(hparams, name='shared_transformer')
 
   def call(self, inputs, **kwargs):
     transformer_outputs = self.transformer(inputs, **kwargs)

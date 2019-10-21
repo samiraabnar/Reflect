@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 from tasks.tasks import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
-from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2
+from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2, LmGPT2SharedWeights
 from util import constants
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM
@@ -12,7 +12,7 @@ from absl import flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
 flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm')
-flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_lstm_shared_emb | cl_gpt2 | cl_lstm')
+flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_gpt2_shared | lm_lstm_shared_emb | cl_gpt2 | cl_lstm')
 flags.DEFINE_string('model_config', 'base', 'base | small_lstm ')
 flags.DEFINE_string('train_config', 'radam_fast', 'radam_slow | radam_fast')
 
@@ -22,7 +22,9 @@ hparams = flags.FLAGS
 
 MODELS = {"lm_lstm": LmLSTM,
           "lm_gpt2": LmGPT2,
+          "lm_gpt2_shared": LmGPT2SharedWeights,
           "lm_lstm_shared_emb": LmLSTMSharedEmb,
+
           'cl_gpt2': ClassifierGPT2,
           'cl_lstm': ClassifierLSTM}
 
