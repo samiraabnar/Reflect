@@ -19,7 +19,7 @@ MODELS = {"lm_lstm": LmLSTM,
 
 log_dir = "logs"
 chkpt_dir = "tf_ckpts"
-exp_name = "_tune_withl2_6"
+exp_name = "tune_withl2_6"
 
 task = WordSvAgreementLM(task_params=get_task_params(),data_dir='data')
 
