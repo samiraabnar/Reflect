@@ -108,10 +108,18 @@ radam_fast = {
 'hold_base_rate_steps': 10000
 }
 
+
+radam_mid = {
+'learning_rate': 0.0005,
+'optimizer': 'radam',
+'hold_base_rate_steps': 10000
+}
+
 TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'radam_fast': radam_fast,
                 'adam_slow':  adam_slow,
                 'radam_fast_long': radam_fast_long,
                 'radam_slow_long': radam_slow_long,
                 'adam_mid': adam_mid,
-                'adam_midmid': adam_midmid}
+                'adam_midmid': adam_midmid,
+                'radam_mid': radam_mid}
