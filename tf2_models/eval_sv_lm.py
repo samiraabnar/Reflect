@@ -130,8 +130,8 @@ for example in tqdm(test_data):
 
   corrects = actual_scores > infelected_scores
   for i, c in enumerate(corrects):
-    if verb_indexes[i] == 10035:
-      continue
+    # if verb_indexes[i] == 10035:
+    #   continue
     if nz[i] > 4 or distances[i] > 16:
       continue
 

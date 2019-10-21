@@ -12,7 +12,7 @@ import sys
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm')
-
+flags.DEFINE_string('distill_config', 'base', ' distillation hparams set')
 
 flags.DEFINE_string('teacher_exp_name', 'trial4', 'experiment directory')
 flags.DEFINE_string('teacher_model', 'lm_lstm', 'lm_lstm | lm_gpt2')

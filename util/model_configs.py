@@ -446,6 +446,14 @@ lstm_drop31_v2 = {
   'input_dropout_rate': 0.2,
 }
 
+lstm_drop31_v3 = {
+  'hidden_dim': 512,
+  'embedding_dim': 512,
+  'depth': 2,
+  'hidden_dropout_rate': 0.4,
+  'input_dropout_rate': 0.2,
+}
+
 lstm3_drop30 = {
   'hidden_dim': 512,
   'embedding_dim': 256,
@@ -628,5 +636,6 @@ MODEL_CONFIGS = {
   'lstm3_drop50': lstm3_drop50,
   'lstm3_drop41': lstm3_drop41,
   'lstm_drop31_v2': lstm_drop31_v2,
-  'big_gpt_v5': big_gpt_v5
+  'big_gpt_v5': big_gpt_v5,
+  'lstm_drop31_v3': lstm_drop31_v3
 }
