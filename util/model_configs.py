@@ -204,6 +204,14 @@ big_gpt_v5 = {
   'initializer_range': 0.05
 }
 
+big_gpt_v6 = {
+  'embedding_dim': 256,
+  'resid_pdrop': 0.2,
+  'embd_pdrop': 0.2,
+  'attn_pdrop': 0.4,
+  'initializer_range': 0.05
+}
+
 very_big_gpt = {
   'embedding_dim': 512
 }
@@ -637,5 +645,6 @@ MODEL_CONFIGS = {
   'lstm3_drop41': lstm3_drop41,
   'lstm_drop31_v2': lstm_drop31_v2,
   'big_gpt_v5': big_gpt_v5,
-  'lstm_drop31_v3': lstm_drop31_v3
+  'lstm_drop31_v3': lstm_drop31_v3,
+  'big_gpt_v6': big_gpt_v6
 }
