@@ -267,6 +267,15 @@ small_lstm_v2 = {
   'initializer_range': 0.1
 }
 
+small_lstm_v3 = {
+  'hidden_dim': 256,
+  'embedding_dim': 128,
+  'depth': 2,
+  'hidden_dropout_rate': 0.8,
+  'input_dropout_rate': 0.0,
+  'initializer_range': 0.1
+}
+
 tiny_lstm = {
   'hidden_dim': 128,
   'embedding_dim': 128,
@@ -515,5 +524,6 @@ MODEL_CONFIGS = {
   'small_gpt_v4': small_gpt_v4,
   'small_gpt_v5': small_gpt_v5,
   'very_big_gpt_v9': very_big_gpt_v9,
-  'small_gpt_v6': small_gpt_v6
+  'small_gpt_v6': small_gpt_v6,
+  'small_lstm_v3': small_lstm_v3
 }
