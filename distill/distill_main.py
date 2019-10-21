@@ -24,12 +24,21 @@ FLAGS(sys.argv)
 hparams = flags.FLAGS
 
 
+hparams = flags.FLAGS
+
+
 MODELS = {"lm_lstm": LmLSTM,
-          "lm_gpt2": LmGPT2}
+          "lm_gpt2": LmGPT2,
+          "lm_gpt2_shared": LmGPT2SharedWeights,
+          "lm_lstm_shared_emb": LmLSTMSharedEmb,
+
+          'cl_gpt2': ClassifierGPT2,
+          'cl_lstm': ClassifierLSTM}
 
 TASKS = {
   'sv_agreement_lm': SvAgreementLM,
   'word_sv_agreement_lm': WordSvAgreementLM,
+  'word_sv_agreement_vp': WordSvAgreementVP
 }
 
 if __name__ == '__main__':
