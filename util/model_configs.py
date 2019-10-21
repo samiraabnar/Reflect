@@ -527,6 +527,16 @@ lstm3_drop50 = {
   'initializer_range': 0.05
 }
 
+
+lstm3_drop41 = {
+  'hidden_dim': 256,
+  'embedding_dim': 256,
+  'depth': 3,
+  'hidden_dropout_rate': 0.4,
+  'input_dropout_rate': 0.1,
+  'initializer_range': 0.05
+}
+
 lstm2_big_drop20_v2 = {
   'hidden_dim': 512,
   'embedding_dim': 512,
@@ -599,5 +609,6 @@ MODEL_CONFIGS = {
   'small_lstm_v4': small_lstm_v4,
   'big_gpt_v9': big_gpt_v9,
   'very_big_gpt_v10': very_big_gpt_v10,
-  'lstm3_drop50': lstm3_drop50
+  'lstm3_drop50': lstm3_drop50,
+  'lstm3_drop41': lstm3_drop41
 }

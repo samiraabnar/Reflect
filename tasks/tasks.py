@@ -207,7 +207,7 @@ class WordSvAgreementVP(Task):
     return 2
 
   def get_loss_fn(self):
-    return sequence_loss
+    return batch_masked_sequence_loss
 
   def metrics(self):
     return [self.get_loss_fn(),
