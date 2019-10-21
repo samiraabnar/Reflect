@@ -142,6 +142,15 @@ small_gpt_v5 = {
   'attn_pdrop': 0.3
 }
 
+small_gpt_v6 = {
+  'embedding_dim': 128,
+  'resid_pdrop': 0.3,
+  'embd_pdrop': 0.2,
+  'attn_pdrop': 0.5,
+  'initializer_range': 0.05
+
+}
+
 big_gpt_v2 = {
   'embedding_dim': 256,
   'resid_pdrop': 0.2,
@@ -223,6 +232,14 @@ very_big_gpt_v8 = {
   'resid_pdrop': 0.5,
   'embd_pdrop': 0.2,
   'attn_pdrop': 0.5
+}
+
+very_big_gpt_v9 = {
+  'embedding_dim': 512,
+  'resid_pdrop': 0.4,
+  'embd_pdrop': 0.2,
+  'attn_pdrop': 0.5,
+  'initializer_range': 0.05
 }
 
 small_gpt_v2 = {
@@ -496,5 +513,7 @@ MODEL_CONFIGS = {
   'small_gpt_v3': small_gpt_v3,
   'big_gpt_v4': big_gpt_v4,
   'small_gpt_v4': small_gpt_v4,
-  'small_gpt_v5': small_gpt_v5
+  'small_gpt_v5': small_gpt_v5,
+  'very_big_gpt_v9': very_big_gpt_v9,
+  'small_gpt_v6': small_gpt_v6
 }
