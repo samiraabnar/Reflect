@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
 
 
-  distiller = Distiller(get_distill_params(), teacher_model, student_model, task,
+  distiller = Distiller(get_distill_params(hparams.distill_config), teacher_model, student_model, task,
                         teacher_ckpt_dir=teacher_ckpt_dir,
                         teacher_log_dir=teacher_log_dir,
                         student_ckpt_dir=student_ckpt_dir,

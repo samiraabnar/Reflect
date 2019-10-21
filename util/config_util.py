@@ -22,14 +22,14 @@ class TrainParams(object):
 
 
 class DistillParams:
-  distill_temp = 1.0
+  distill_temp = 5.0
   student_distill_rate = 0.9
   student_gold_rate = 0.1
   student_learning_rate = 0.001
   student_decay_steps = 10000
   student_warmup_steps = 10000
   student_optimizer = 'adam'
-  n_epochs = 30
+  n_epochs = 60
 
 class TaskParams:
   batch_size = 64
@@ -39,7 +39,7 @@ def get_train_params(train_config):
 
   return train_params
 
-def get_distill_params():
+def get_distill_params(distill_config):
   return DistillParams()
 
 def get_task_params():

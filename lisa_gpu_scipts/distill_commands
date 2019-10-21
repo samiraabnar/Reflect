@@ -1,6 +1,6 @@
---task=
---teacher_model=
---teacher_exp_name=
---student_model=
---student_exp_name=
---distill_config=
+--task=word_sv_agreement_vp
+--teacher_model=cl_lstm
+--teacher_exp_name=small_lstm_v4_0.0001_withl2
+--student_model=cl_gpt2
+--student_exp_name=distilled0
+--distill_config='base'
