@@ -27,5 +27,5 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=lm_gpt2 \
 --task=word_sv_agreement_lm \
 --model_config=very_big_gpt_v9 \
---train_config=adam_slow \
+--train_config=adam_mid \
 --exp_name=tune_withl2_6
