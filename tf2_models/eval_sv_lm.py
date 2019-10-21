@@ -19,14 +19,14 @@ MODELS = {"lm_lstm": LmLSTM,
 
 log_dir = "logs"
 chkpt_dir = "tf_ckpts"
-exp_name = "withl2_batchsumloss"
+exp_name = "_tune_withl2_6"
 
 task = WordSvAgreementLM(task_params=get_task_params(),data_dir='data')
 
 
-model_config = 'lstm_drop30_v3'
-model_name = 'lm_lstm_shared_emb'
-train_config ='radam_fast'
+model_config = 'big_gpt_v4'
+model_name = 'lm_gpt2'
+train_config ='adam_slow'
 # Create the Model
 model_params = get_model_params(task,model_name, model_config)
 print("model_params: ", model_params.__dict__)
@@ -43,7 +43,7 @@ print(log_dir)
 
 trainer = Trainer(task=task,
                 model=model,
-                train_params=get_train_params('radam_fast'),
+                train_params=trainer_params,
                 log_dir=log_dir,
                 ckpt_dir=ckpt_dir)
 
