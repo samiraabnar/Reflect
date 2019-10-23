@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#SBATCH --job-name=lm_gpt2
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=20:00:00
+#SBATCH --partition=gpu_shared
+#SBATCH --gres=gpu:1
+
+module load surf-devel
+module load 2019
+module load Python/3.6.6-intel-2018b
+module load CUDA/10.0.130
+module load cuDNN/7.3.1-CUDA-10.0.130
+
+source ~/anaconda3/etc/profile.d/conda.sh
+conda init
+conda activate indist
+
+HEAD_DIR="/home/samigpu/Codes/InDist"
+CODE_DIR=$HEAD_DIR/
+DATA_DIR=$HEAD_DIR/data
+LOGS_DIR=$HEAD_DIR/logs
+
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
+--model=cl_gpt2 \
+--task=word_sv_agreement_vp \
+--model_config=small_gpt_v9 \
+--train_config=adam_slow \
+--exp_name=tune_withl2_withcltoken

@@ -103,6 +103,7 @@ class Distiller(object):
       distill_loss, actual_loss = train_step(x=x, y=masked_teacher_probs, y_true=y)
       # Log every 200 batches.
       if step % 200 == 0:
+        print("step:",step,distill_loss)
         log_summary(log_name='learning_rate',
                     log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
                     summary_scope='train')
@@ -122,7 +123,6 @@ class Distiller(object):
         break
 
 
-  @tf.function(experimental_relax_shapes=True)
   def validate(self, actual_loss, distill_loss, valid_iter):
     tf.print('Validating ...')
     valid_step = 0
@@ -131,16 +131,7 @@ class Distiller(object):
       v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
       v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
-      teacher_logits = self.teacher_model(v_x)
-      masked_teacher_probs = get_probs(logits=teacher_logits,
-                                       labels=v_y,
-                                       temperature=self.temperature)
-
-      logits = self.student_model(v_x)
-      self.validation_distill_loss.update_state(masked_sequence_loss_with_probs(y_pred=logits,
-                                                                           y_true=masked_teacher_probs))
-      self.validation_actual_loss.update_state(masked_sequence_loss(y_true=v_y,
-                                                               y_pred=logits))
+      self.validation_step(v_x, v_y)
       valid_step += 1
     log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
     log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
@@ -150,3 +141,15 @@ class Distiller(object):
     log_summary(log_name='perplexity', log_value=tf.exp(self.validation_actual_loss.result()), summary_scope='valid')
     self.validation_actual_loss.reset_states()
     self.validation_distill_loss.reset_states()
+
+  @tf.function(experimental_relax_shapes=True)
+  def validation_step(self, v_x, v_y):
+    teacher_logits = self.teacher_model(v_x)
+    masked_teacher_probs = get_probs(logits=teacher_logits,
+                                     labels=v_y,
+                                     temperature=self.temperature)
+    logits = self.student_model(v_x)
+    self.validation_distill_loss.update_state(masked_sequence_loss_with_probs(y_pred=logits,
+                                                                              y_true=masked_teacher_probs))
+    self.validation_actual_loss.update_state(masked_sequence_loss(y_true=v_y,
+                                                                  y_pred=logits))
