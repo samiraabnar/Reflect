@@ -69,7 +69,7 @@ class Distiller(object):
     if self.student_manager.latest_checkpoint:
       print("Restored student from {}".format(self.student_manager.latest_checkpoint))
     else:
-      print("Initializing teacher from scratch.")
+      print("Initializing student from scratch.")
 
   def distill_loop(self, padding_symbol=0):
     @tf.function(experimental_relax_shapes=True)
@@ -124,6 +124,7 @@ class Distiller(object):
 
   @tf.function(experimental_relax_shapes=True)
   def validate(self, actual_loss, distill_loss, valid_iter):
+    tf.print('Validating ...')
     valid_step = 0
     while valid_step < self.task.n_valid_batches:
       v_x, v_y = next(valid_iter)
