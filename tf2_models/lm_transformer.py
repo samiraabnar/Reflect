@@ -219,10 +219,9 @@ class ClassifierGPT2(tf.keras.Model):
     #cl_tokens = tf.tile(cl_token, (batch_size, 1))
     #inputs = tf.concat([cl_tokens, inputs], axis=-1)
 
-
     transformer_outputs = self.transformer(inputs, **kwargs)
-    inputs = tf.cast(inputs != 0, dtype=tf.int32)
-    inputs_lengths = tf.reduce_sum(inputs, axis=-1)
+    mask = tf.cast(inputs != 0, dtype=tf.int32)
+    inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
 
     batch_indices = tf.range(batch_size)
     indices =  tf.concat([batch_indices[...,None], inputs_lengths[...,None]], -1)

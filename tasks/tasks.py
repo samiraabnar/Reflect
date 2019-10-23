@@ -43,15 +43,13 @@ class Task(object):
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
-    self.test_dataset = self.databuilder.as_dataset(split="test")
-    self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
-                                                num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
-                                                         padded_shapes=self.padded_shapes)
-    # self.test_dataset = self.test_dataset.cache()
-
-    self.test_dataset = self.test_dataset.repeat()
-    self.test_dataset = self.test_dataset.prefetch(tf.data.experimental.AUTOTUNE)
+    # self.test_dataset = self.databuilder.as_dataset(split="test")
+    # self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
+    #                                             num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    # self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
+    #                                                      padded_shapes=self.padded_shapes)
+    # self.test_dataset = self.test_dataset.repeat()
+    # self.test_dataset = self.test_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
     #self.test_dataset = self.databuilder.as_dataset(split="test")
     self.train_dataset = self.databuilder.as_dataset(split="train")
@@ -194,10 +192,21 @@ class WordSvAgreementVP(Task):
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
-    mask = tf.cast(tf.sequence_mask(examples['verb_position']-1,maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
-    max_length = tf.reduce_max(examples['verb_position']-1)
+    bos = self.databuilder.sentence_encoder().encode(constants.bos)
+    eos = self.databuilder.sentence_encoder().encode(constants.eos)
 
-    return (sentences * mask)[:max_length], \
+    sentences = tf.concat([bos, sentences, eos], axis=-1)
+
+    verb_position = examples['verb_position']+1  #+1 because of adding bos.
+
+    # The verb it self is also masked
+    mask = tf.cast(tf.sequence_mask(verb_position,maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
+    max_length = tf.reduce_max(verb_position + 1)
+
+    last_index_mask = tf.eye(tf.shape(sentences)[0], dtype=tf.int64)[verb_position]
+    last_index_mask = last_index_mask * eos[0]
+
+    return (sentences * mask + last_index_mask)[:max_length], \
            examples['verb_class']
 
   def vocab_size(self):
@@ -217,5 +226,14 @@ if __name__ == '__main__':
     task = WordSvAgreementVP(get_task_params())
 
     x, y = iter(task.valid_dataset).next()
+    mask = tf.cast(x != 0, dtype=tf.int32)
+    inputs_lengths = tf.reduce_sum(mask, axis=-1)
+    print(inputs_lengths)
+    print(x)
     print(task.databuilder.sentence_encoder().decode(x[0]))
+    print(task.databuilder.sentence_encoder().decode(x[10]))
+    print(task.databuilder.sentence_encoder().decode(x[5]))
+    print(task.databuilder.sentence_encoder().decode(x[15]))
+    print(task.databuilder.sentence_encoder().decode(x[20]))
+
     print(y[0])

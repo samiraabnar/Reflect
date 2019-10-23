@@ -1,6 +1,7 @@
 import tensorflow as tf
 from distill.distill_util import DistillLoss
 from distill.distiller import Distiller
+from util import constants
 from util.config_util import get_task_params, get_model_params, get_distill_params
 import os
 from tasks.tasks import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
@@ -19,6 +20,10 @@ flags.DEFINE_string('teacher_model', 'lm_lstm', 'lm_lstm | lm_gpt2')
 
 flags.DEFINE_string('student_exp_name', 'trial1', 'experiment directory')
 flags.DEFINE_string('student_model', 'lm_lstm', 'lm_lstm | lm_gpt2')
+
+flags.DEFINE_string('student_config', 'base', 'base | small_lstm ')
+flags.DEFINE_string('teacher_config', 'base', 'base | small_lstm ')
+
 
 FLAGS(sys.argv)
 hparams = flags.FLAGS
@@ -50,8 +55,9 @@ if __name__ == '__main__':
   task = TASKS[hparams.task](get_task_params())
 
   # Create the Model
-  teacher_model = MODELS[hparams.teacher_model](hparams=get_model_params(task, hparams.teacher_model))
-  student_model = MODELS[hparams.student_model](hparams=get_model_params(task, hparams.teacher_model))
+  cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+  teacher_model = MODELS[hparams.teacher_model](hparams=get_model_params(task, hparams.teacher_model, hparams.teacher_config), cl_token=cl_token)
+  student_model = MODELS[hparams.student_model](hparams=get_model_params(task, hparams.student_model, hparams.student_config), cl_token=cl_token)
 
   teacher_log_dir = os.path.join(log_dir, task.name, "teacher_"+teacher_model.model_name + "_" + hparams.teacher_exp_name)
   teacher_ckpt_dir = os.path.join(chkpt_dir, task.name, teacher_model.model_name + "_" + hparams.teacher_exp_name)

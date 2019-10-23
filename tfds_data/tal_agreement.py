@@ -4,11 +4,13 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 import os
 import numpy as np
+from tensorflow_datasets.core.features.text import Tokenizer
+from tensorflow_datasets.core.features.text.text_encoder import write_lines_to_file, read_lines_from_file
 
 from prep_data.build_dictionary import build_and_save_dic
 from util import text_util, constants
 from util.text_util import deps_from_tsv, deps_to_tsv
-
+import string
 
 
 class SVAgreement(tfds.core.GeneratorBasedBuilder):
@@ -178,7 +180,12 @@ class WordSvAgreement(SVAgreement):
     vocab = list(np.load(self.vocab_dir, allow_pickle=True).item().keys())
     print("Vocab len: ", len(vocab))
     self.text_encoder_config = tfds.features.text.TextEncoderConfig(
-      encoder=tfds.features.text.TokenTextEncoder(vocab))
+      encoder=tfds.features.text.TokenTextEncoder(vocab_list=vocab,
+                                                  oov_token=constants.unk,
+                                                  lowercase=False, tokenizer=tfds.features.text.Tokenizer(
+          alphanum_only=True,
+          reserved_tokens=[a for a in string.punctuation if a not in ['<', '>']] + constants.all
+        )))
 
     return tfds.core.DatasetInfo(
       builder=self,
@@ -220,7 +227,7 @@ if __name__ == '__main__':
   dataset = databuilder.as_dataset(split="validation", batch_size=1000)
   dataset = tfds.as_numpy(dataset)
   for batch in dataset:
-    print("encoded_sentence:", batch['sentence'][0])
+    print("encoded_sentence:", batch['sentence'])
     print("decoded_sentence:", databuilder.sentence_encoder().decode(batch['sentence'][0]))
     print("verb class:", batch['verb_class'][0])
     print("verb position:",batch['verb_position'][0])
