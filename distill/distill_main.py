@@ -74,4 +74,5 @@ if __name__ == '__main__':
                         student_log_dir=student_log_dir,
                         )
   distiller.restore_teacher()
+  distiller.restore_student()
   distiller.distill_loop()

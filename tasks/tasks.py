@@ -3,6 +3,7 @@ import tensorflow_datasets as tfds
 from tf2_models.metrics import masked_sequence_loss, sequence_loss, masked_perplexity, masked_batch_perplexity, \
   batch_masked_sequence_loss
 from tf2_models import metrics
+from tfds_data.bowman_logic import BowmanLogic
 from tfds_data.tal_agreement import SVAgreement, WordSvAgreement
 from util import constants
 from util.config_util import get_task_params
@@ -43,15 +44,14 @@ class Task(object):
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
-    # self.test_dataset = self.databuilder.as_dataset(split="test")
-    # self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
-    #                                             num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    # self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
-    #                                                      padded_shapes=self.padded_shapes)
-    # self.test_dataset = self.test_dataset.repeat()
-    # self.test_dataset = self.test_dataset.prefetch(tf.data.experimental.AUTOTUNE)
+    self.test_dataset = self.databuilder.as_dataset(split="test")
+    self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
+                                                num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
+                                                         padded_shapes=self.padded_shapes)
+    self.test_dataset = self.test_dataset.repeat()
+    self.test_dataset = self.test_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
-    #self.test_dataset = self.databuilder.as_dataset(split="test")
     self.train_dataset = self.databuilder.as_dataset(split="train")
     self.train_dataset = self.train_dataset.shuffle(10000)
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -222,10 +222,46 @@ class WordSvAgreementVP(Task):
     return [self.get_loss_fn(),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
+
+class BowmanLogicConcat(Task):
+  def __init__(self, task_params, name='bowman_logic_task', data_dir='data', builder_cls=BowmanLogic):
+    super(BowmanLogicConcat, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
+
+  @tf.function
+  def convert_examples(self, examples):
+    statement_a = examples['statement_a']
+    statement_b = examples['statement_a']
+
+    bos =  self.databuilder.sentence_encoder().encode(constants.bos)
+    eos =  self.databuilder.sentence_encoder().encode(constants.eos)
+    tf.print(bos, eos)
+    sentence = tf.concat([bos, statement_a, bos, statement_b, eos], axis=-1)
+    return sentence,\
+           examples['relation']
+
+  @property
+  def padded_shapes(self):
+    return ([None],[])
+
+  def get_loss_fn(self):
+    return sequence_loss
+
+  def vocab_size(self):
+    return self.databuilder.vocab_size()
+
+  def output_size(self):
+    return self.vocab_size()
+
+  def metrics(self):
+    return [self.get_loss_fn(),
+            tf.keras.metrics.SparseCategoricalAccuracy()
+          ]
+
 if __name__ == '__main__':
-    task = WordSvAgreementVP(get_task_params())
+    task = BowmanLogicConcat(get_task_params())
 
     x, y = iter(task.valid_dataset).next()
-    print(x)
-    print(y)
-    print(task.databuilder.sentence_encoder().decode(x[0]))
+    print(x[0])
+    print(y[0])
+    print(task.databuilder.sentence_encoder().decode(x[0][:10]))
+    print(task.databuilder.info)
