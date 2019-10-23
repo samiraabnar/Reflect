@@ -53,9 +53,9 @@ class Distiller(object):
     tf.compat.v2.summary.experimental.set_step(self.student_optimizer.iterations)
 
 
-    self.validation_metrics = []
+    self.validation_metrics = {}
     for metric in self.task.metrics():
-      self.validation_metrics.append(tf.keras.metrics.Mean())
+      self.validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
 
 
   def restore_teacher(self):
