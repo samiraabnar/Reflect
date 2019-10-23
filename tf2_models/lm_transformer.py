@@ -252,7 +252,7 @@ class ClassifierGPT2SharedWeights(ClassifierGPT2):
 if __name__ == '__main__':
     task = WordSvAgreementVP(get_task_params())
     cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
-    model = classifierGPT2SharedWeights(get_model_params(task, 'cl_gpt2'), cl_token=cl_token)
+    model = ClassifierGPT2SharedWeights(get_model_params(task, 'cl_gpt2'), cl_token=cl_token)
 
     for x, y in task.valid_dataset:
       model_y = model(x)
