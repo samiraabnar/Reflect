@@ -103,7 +103,6 @@ class Distiller(object):
       distill_loss, actual_loss = train_step(x=x, y=masked_teacher_probs, y_true=y)
       # Log every 200 batches.
       if step % 200 == 0:
-        print("step:",step,distill_loss)
         log_summary(log_name='learning_rate',
                     log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
                     summary_scope='train')
