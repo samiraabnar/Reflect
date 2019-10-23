@@ -54,7 +54,7 @@ class Distiller(object):
 
 
     self.validation_metrics = []
-    for metric in self.task.metric():
+    for metric in self.task.metrics():
       self.validation_metrics.append(tf.keras.metrics.Mean())
 
 
