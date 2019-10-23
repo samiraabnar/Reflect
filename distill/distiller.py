@@ -67,7 +67,7 @@ class Distiller(object):
   def restore_student(self):
     self.student_ckpt.restore(self.student_manager.latest_checkpoint)
     if self.student_manager.latest_checkpoint:
-      print("Restored teacher from {}".format(self.student_manager.latest_checkpoint))
+      print("Restored student from {}".format(self.student_manager.latest_checkpoint))
     else:
       print("Initializing teacher from scratch.")
 
@@ -113,8 +113,7 @@ class Distiller(object):
         self.validate(actual_loss, distill_loss, valid_iter)
         self.student_ckpt.step.assign_add(1)
         save_path = self.student_manager.save()
-        print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
-
+        tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
         epochs += 1
 
       step += 1
