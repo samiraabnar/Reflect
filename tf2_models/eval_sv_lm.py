@@ -19,14 +19,14 @@ MODELS = {"lm_lstm": LmLSTM,
 
 log_dir = "logs"
 chkpt_dir = "tf_ckpts"
-exp_name = "tune_withl2_6"
+exp_name = "withl2_batchsumloss_withpunc"
 
 task = WordSvAgreementLM(task_params=get_task_params(),data_dir='data')
 
 
-model_config = 'big_gpt_v4'
-model_name = 'lm_gpt2'
-train_config ='adam_slow'
+model_config = 'lstm_drop31_v2'
+model_name = 'lm_lstm_shared_emb'
+train_config ='radam_fast'
 # Create the Model
 model_params = get_model_params(task,model_name, model_config)
 print("model_params: ", model_params.__dict__)
@@ -112,7 +112,7 @@ for example in tqdm(test_data):
 
   actual_verbs = example['verb']
   inflected_verbs = [verb_infl[v.decode("utf-8")] for v in actual_verbs.numpy()]
-  verb_indexes = example['verb_position'] - 1
+  verb_indexes = example['verb_position']
   distances = example['distance'].numpy()
   nz = example['n_intervening'].numpy()
   n_diffs = example['n_diff_intervening'].numpy()
