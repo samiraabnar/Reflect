@@ -25,7 +25,7 @@ exp_name = 'tune_withl2_withpunc'#"withl2_batchsumloss_withpunc"
 task = WordSvAgreementLM(task_params=get_task_params(),data_dir='data')
 
 
-model_config = 'very_big_gpt_v10' #'lstm_drop31_v2'
+model_config =  'big_gpt_v5'#'very_big_gpt_v10' #'lstm_drop31_v2'
 model_name = 'lm_gpt2' #'lm_lstm_shared_emb'
 train_config ='adam_slow'
 # Create the Model
