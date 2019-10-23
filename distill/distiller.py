@@ -4,7 +4,7 @@ from distill.distill_util import get_probs, DistillLoss
 from tf2_models.metrics import masked_sequence_loss, masked_sequence_loss_with_probs
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
-from tf2_models.utils import log_summary
+from tf2_models.utils import log_summary, camel2snake
 
 
 class Distiller(object):
@@ -53,8 +53,9 @@ class Distiller(object):
     tf.compat.v2.summary.experimental.set_step(self.student_optimizer.iterations)
 
 
-    self.validation_actual_loss = tf.keras.metrics.Mean()
-    self.validation_distill_loss = tf.keras.metrics.Mean()
+    self.validation_metrics = []
+    for metric in self.task.metric():
+      self.validation_metrics.append(tf.keras.metrics.Mean())
 
 
   def restore_teacher(self):
@@ -86,7 +87,7 @@ class Distiller(object):
 
         grads = tape.gradient(distill_loss, self.student_model.trainable_weights)
         self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
-        actual_loss = masked_sequence_loss(y_pred=logits, y_true=y_true)
+        actual_loss = self.task.get_loss_fn()(y_pred=logits, y_true=y_true)
         return distill_loss, actual_loss
 
       train_iter = iter(self.task.train_dataset)
@@ -136,12 +137,11 @@ class Distiller(object):
       valid_step += 1
     log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
     log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
-    log_summary(log_name='perolexity', log_value=tf.exp(actual_loss), summary_scope='train')
-    log_summary(log_name='distill_loss', log_value=self.validation_distill_loss.result(), summary_scope='valid')
-    log_summary(log_name='actual_loss', log_value=self.validation_actual_loss.result(), summary_scope='valid')
-    log_summary(log_name='perplexity', log_value=tf.exp(self.validation_actual_loss.result()), summary_scope='valid')
-    self.validation_actual_loss.reset_states()
-    self.validation_distill_loss.reset_states()
+
+    for metric in self.task.metrics():
+      metric_name = camel2snake(metric.__name__)
+      log_summary(log_name=metric_name, log_value=metric_name.result(), summary_scope='valid')
+      self.validation_metrics[metric_name].reset_states()
 
   @tf.function(experimental_relax_shapes=True)
   def validation_step(self, v_x, v_y):
@@ -150,7 +150,7 @@ class Distiller(object):
                                      labels=v_y,
                                      temperature=self.temperature)
     logits = self.student_model(v_x)
-    self.validation_distill_loss.update_state(masked_sequence_loss_with_probs(y_pred=logits,
-                                                                              y_true=masked_teacher_probs))
-    self.validation_actual_loss.update_state(masked_sequence_loss(y_true=v_y,
-                                                                  y_pred=logits))
+    for metric in self.task.metrics():
+      metric_name = camel2snake(metric.__name__)
+      self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
+                                                               y_true=masked_teacher_probs))
