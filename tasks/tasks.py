@@ -216,7 +216,7 @@ class WordSvAgreementVP(Task):
     return 2
 
   def get_loss_fn(self):
-    return batch_masked_sequence_loss
+    return sequence_loss
 
   def metrics(self):
     return [self.get_loss_fn(),
@@ -226,14 +226,6 @@ if __name__ == '__main__':
     task = WordSvAgreementVP(get_task_params())
 
     x, y = iter(task.valid_dataset).next()
-    mask = tf.cast(x != 0, dtype=tf.int32)
-    inputs_lengths = tf.reduce_sum(mask, axis=-1)
-    print(inputs_lengths)
     print(x)
+    print(y)
     print(task.databuilder.sentence_encoder().decode(x[0]))
-    print(task.databuilder.sentence_encoder().decode(x[10]))
-    print(task.databuilder.sentence_encoder().decode(x[5]))
-    print(task.databuilder.sentence_encoder().decode(x[15]))
-    print(task.databuilder.sentence_encoder().decode(x[20]))
-
-    print(y[0])
