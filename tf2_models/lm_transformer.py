@@ -231,9 +231,28 @@ class ClassifierGPT2(tf.keras.Model):
     return cl_logits
 
 
+class ClassifierGPT2SharedWeights(ClassifierGPT2):
+  def __init__(self, hparams, scope='cl_gpt2_shared_weights', *inputs, **kwargs):
+    super(ClassifierGPT2SharedWeights, self).__init__(hparams, *inputs, **kwargs)
+    self.scope = scope
+    self.model_name = '_'.join([self.scope,
+                         'h-'+str(hparams.embedding_dim),
+                         'd-'+str(hparams.depth),
+                         'rdrop-'+str(hparams.resid_pdrop),
+                         'adrop-' + str(hparams.attn_pdrop),
+                         'indrop-'+str(hparams.embd_pdrop)])
+
+    self.transformer = GPT2SharedWeights(hparams, name='shared_transformer')
+    self.e2c = tf.keras.layers.Dense(units=hparams.num_labels,
+                                     kernel_initializer=get_initializer(hparams.initializer_range),
+                                     name='e2c')
+
+
+
 if __name__ == '__main__':
     task = WordSvAgreementVP(get_task_params())
-    model = ClassifierGPT2(get_model_params(task, 'cl_gpt2'))
+    cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+    model = classifierGPT2SharedWeights(get_model_params(task, 'cl_gpt2'), cl_token=cl_token)
 
     for x, y in task.valid_dataset:
       model_y = model(x)
