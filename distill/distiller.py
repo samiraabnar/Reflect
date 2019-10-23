@@ -72,54 +72,56 @@ class Distiller(object):
       print("Initializing student from scratch.")
 
   def distill_loop(self, padding_symbol=0):
-    @tf.function(experimental_relax_shapes=True)
-    def get_logits(x):
-      return self.student_model(x)
+    with self.summary_writer.as_default():
 
-    @tf.function(experimental_relax_shapes=True)
-    def train_step(x, y, y_true):
-      with tf.GradientTape() as tape:
-        logits = self.student_model(x)
-        distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
+      @tf.function(experimental_relax_shapes=True)
+      def get_logits(x):
+        return self.student_model(x)
 
-      grads = tape.gradient(distill_loss, self.student_model.trainable_weights)
-      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
-      actual_loss = masked_sequence_loss(y_pred=logits, y_true=y_true)
-      return distill_loss, actual_loss
+      @tf.function(experimental_relax_shapes=True)
+      def train_step(x, y, y_true):
+        with tf.GradientTape() as tape:
+          logits = self.student_model(x)
+          distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
 
-    train_iter = iter(self.task.train_dataset)
-    valid_iter = iter(self.task.valid_dataset)
+        grads = tape.gradient(distill_loss, self.student_model.trainable_weights)
+        self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
+        actual_loss = masked_sequence_loss(y_pred=logits, y_true=y_true)
+        return distill_loss, actual_loss
 
-    step = 0
-    epochs = 0
-    num_epochs = self.distill_params.n_epochs
-    for (x, y) in train_iter:
-      x = tf.convert_to_tensor(x, dtype=tf.int64)
-      y = tf.convert_to_tensor(y, dtype=tf.int64)
+      train_iter = iter(self.task.train_dataset)
+      valid_iter = iter(self.task.valid_dataset)
 
-      teacher_logits = self.teacher_model(x)
-      masked_teacher_probs = get_probs(logits=teacher_logits, labels=y, temperature=self.temperature)
+      step = 0
+      epochs = 0
+      num_epochs = self.distill_params.n_epochs
+      for (x, y) in train_iter:
+        x = tf.convert_to_tensor(x, dtype=tf.int64)
+        y = tf.convert_to_tensor(y, dtype=tf.int64)
 
-      distill_loss, actual_loss = train_step(x=x, y=masked_teacher_probs, y_true=y)
-      # Log every 200 batches.
-      if step % 200 == 0:
-        log_summary(log_name='learning_rate',
-                    log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-                    summary_scope='train')
-        log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
+        teacher_logits = self.teacher_model(x)
+        masked_teacher_probs = get_probs(logits=teacher_logits, labels=y, temperature=self.temperature)
 
-      if (step % self.task.n_train_batches) == 0:
-        tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
-        self.validate(actual_loss, distill_loss, valid_iter)
-        self.student_ckpt.step.assign_add(1)
-        save_path = self.student_manager.save()
-        tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
-        epochs += 1
+        distill_loss, actual_loss = train_step(x=x, y=masked_teacher_probs, y_true=y)
+        # Log every 200 batches.
+        if step % 200 == 0:
+          log_summary(log_name='learning_rate',
+                      log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+                      summary_scope='train')
+          log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
 
-      step += 1
+        if (step % self.task.n_train_batches) == 0:
+          tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
+          self.validate(actual_loss, distill_loss, valid_iter)
+          self.student_ckpt.step.assign_add(1)
+          save_path = self.student_manager.save()
+          tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
+          epochs += 1
 
-      if epochs >= num_epochs:
-        break
+        step += 1
+
+        if epochs >= num_epochs:
+          break
 
 
   def validate(self, actual_loss, distill_loss, valid_iter):
