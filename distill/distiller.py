@@ -103,7 +103,7 @@ class Distiller(object):
         y = tf.convert_to_tensor(y, dtype=tf.int64)
 
         teacher_logits = self.teacher_model(x)
-        masked_teacher_probs = get_probs(logits=teacher_logits, labels=y, temperature=self.temperature)
+        masked_teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
 
         distill_loss, actual_loss = train_step(x=x, y=masked_teacher_probs, y_true=y)
         # Log every 200 batches.
@@ -127,7 +127,13 @@ class Distiller(object):
           break
 
 
+
   def validate(self, actual_loss, distill_loss, valid_iter):
+    @tf.function(experimental_relax_shapes=True)
+    def get_logits(x):
+      return self.student_model(x)
+
+
     tf.print('Validating ...')
     valid_step = 0
     while valid_step < self.task.n_valid_batches:
@@ -135,7 +141,10 @@ class Distiller(object):
       v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
       v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
-      logits, teacher_probs = self.validation_step(v_x, v_y)
+      teacher_logits = self.teacher_model(v_x)
+      teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
+      logits = get_logits(v_x)
+
       valid_step += 1
       for metric in self.task.metrics():
         if isfunction(metric):
@@ -146,7 +155,7 @@ class Distiller(object):
                                                                  y_true=v_y))
         self.validation_loss.update_state(
           self.task.get_distill_loss_fn(self.distill_params)(y_true=teacher_probs, y_pred=logits))
-        
+
     log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
     log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
 
@@ -161,12 +170,3 @@ class Distiller(object):
     log_summary(log_name="distill_loss", log_value=self.validation_loss.result(), summary_scope='valid')
     self.validation_loss.reset_states()
 
-  @tf.function(experimental_relax_shapes=True)
-  def validation_step(self, v_x, v_y):
-    teacher_logits = self.teacher_model(v_x)
-    teacher_probs = self.task.get_probs_fn()(logits=teacher_logits,
-                                     labels=v_y,
-                                     temperature=self.temperature)
-    logits = self.student_model(v_x)
-
-    return logits, teacher_probs
