@@ -4,7 +4,6 @@ from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM
 from tf2_models.trainer import Trainer
-import numpy as np
 from util import constants
 from collections import Counter
 from tqdm import tqdm
@@ -26,7 +25,7 @@ task = WordSvAgreementLM(task_params=get_task_params(),data_dir='data')
 
 
 model_config =  'big_gpt_v5'#'very_big_gpt_v10' #'lstm_drop31_v2'
-model_name = 'lm_gpt2' #'lm_lstm_shared_emb'
+model_name = 'lm_gpt2_shared'#'lm_gpt2' #'lm_lstm_shared_emb'
 train_config ='adam_slow'
 # Create the Model
 model_params = get_model_params(task,model_name, model_config)
