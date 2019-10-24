@@ -11,6 +11,7 @@ from tf2_models.metrics import *
 
 MODELS = {"lm_lstm": LmLSTM,
           "lm_gpt2": LmGPT2,
+          "lm_gpt2_shared": LMGPT2ShareWeights,
           "lm_lstm_shared_emb": LmLSTMSharedEmb,
           'cl_gpt2': ClassifierGPT2,
           'cl_lstm': ClassifierLSTM}
