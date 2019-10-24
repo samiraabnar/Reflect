@@ -1,6 +1,6 @@
 import os
 from tasks.tasks import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
-from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2
+from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2, LmGPT2SharedWeights
 from util.config_util import get_model_params, get_task_params, get_train_params
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM
 from tf2_models.trainer import Trainer
@@ -11,7 +11,7 @@ from tf2_models.metrics import *
 
 MODELS = {"lm_lstm": LmLSTM,
           "lm_gpt2": LmGPT2,
-          "lm_gpt2_shared": LMGPT2ShareWeights,
+          "lm_gpt2_shared": LmGPT2SharedWeights,
           "lm_lstm_shared_emb": LmLSTMSharedEmb,
           'cl_gpt2': ClassifierGPT2,
           'cl_lstm': ClassifierLSTM}
