@@ -135,8 +135,18 @@ class Distiller(object):
       v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
       v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
-      self.validation_step(v_x, v_y)
+      logits, teacher_probs = self.validation_step(v_x, v_y)
       valid_step += 1
+      for metric in self.task.metrics():
+        if isfunction(metric):
+          metric_name = camel2snake(metric.__name__)
+        else:
+          metric_name = camel2snake(metric.__class__.__name__)
+        self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
+                                                                 y_true=v_y))
+        self.validation_loss.update_state(
+          self.task.get_distill_loss_fn(self.distill_params)(y_true=teacher_probs, y_pred=logits))
+        
     log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
     log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
 
@@ -145,23 +155,18 @@ class Distiller(object):
         metric_name = camel2snake(metric.__name__)
       else:
         metric_name = camel2snake(metric.__class__.__name__)
-      log_summary(log_name=metric_name, log_value=metric_name.result(), summary_scope='valid')
+      log_summary(log_name=metric_name, log_value=self.validation_metrics[metric_name].result(), summary_scope='valid')
       self.validation_metrics[metric_name].reset_states()
 
     log_summary(log_name="distill_loss", log_value=self.validation_loss.result(), summary_scope='valid')
     self.validation_loss.reset_states()
 
+  @tf.function(experimental_relax_shapes=True)
   def validation_step(self, v_x, v_y):
     teacher_logits = self.teacher_model(v_x)
     teacher_probs = self.task.get_probs_fn()(logits=teacher_logits,
                                      labels=v_y,
                                      temperature=self.temperature)
     logits = self.student_model(v_x)
-    for metric in self.task.metrics():
-      if isfunction(metric):
-        metric_name = camel2snake(metric.__name__)
-      else:
-        metric_name = camel2snake(metric.__class__.__name__)
-      self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
-                                                               y_true=v_y))
-      self.validation_loss.update_state(self.task.get_distill_loss_fn(self.distill_params)(y_true=teacher_probs, y_pred=logits))
+
+    return logits, teacher_probs
