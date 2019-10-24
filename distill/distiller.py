@@ -78,10 +78,6 @@ class Distiller(object):
     with self.summary_writer.as_default():
 
       @tf.function(experimental_relax_shapes=True)
-      def get_logits(x):
-        return self.student_model(x)
-
-      @tf.function(experimental_relax_shapes=True)
       def train_step(x, y, y_true):
         with tf.GradientTape() as tape:
           logits = self.student_model(x)
@@ -103,9 +99,9 @@ class Distiller(object):
         y = tf.convert_to_tensor(y, dtype=tf.int64)
 
         teacher_logits = self.teacher_model(x)
-        masked_teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
+        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
+        distill_loss, actual_loss = train_step(x=x, y=teacher_probs, y_true=y)
 
-        distill_loss, actual_loss = train_step(x=x, y=masked_teacher_probs, y_true=y)
         # Log every 200 batches.
         if step % 200 == 0:
           log_summary(log_name='learning_rate',
@@ -136,8 +132,7 @@ class Distiller(object):
 
     tf.print('Validating ...')
     valid_step = 0
-    while valid_step < self.task.n_valid_batches:
-      v_x, v_y = next(valid_iter)
+    for v_x, v_y in valid_iter:
       v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
       v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
@@ -155,6 +150,9 @@ class Distiller(object):
                                                                  y_true=v_y))
         self.validation_loss.update_state(
           self.task.get_distill_loss_fn(self.distill_params)(y_true=teacher_probs, y_pred=logits))
+
+      if valid_step >= self.task.n_valid_batches:
+        break
 
     log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
     log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')

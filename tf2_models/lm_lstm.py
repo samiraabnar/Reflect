@@ -135,7 +135,6 @@ class ClassifierLSTM(tf.keras.Model):
 
                                                     ))
 
-  @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, **kwargs):
     if 'training' in kwargs:
       training = kwargs['training']
