@@ -5,7 +5,7 @@ from tf2_models.metrics import masked_sequence_loss, masked_sequence_loss_with_p
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
 from tf2_models.utils import log_summary, camel2snake
-
+from inspect import isfunction
 
 class Distiller(object):
   def __init__(self, distill_params, teacher_model, student_model, task,
@@ -15,7 +15,6 @@ class Distiller(object):
     self.task = task
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
-
     student_initial_learning_rate = self.distill_params.student_learning_rate
     lr_schedule = ExponentialDecayWithWarmpUp(
       initial_learning_rate=student_initial_learning_rate,
@@ -44,8 +43,8 @@ class Distiller(object):
 
     self.student_model.compile(
       optimizer=self.student_optimizer,
-      loss=DistillLoss(tmp=distill_params.distill_temp),
-      metrics=[DistillLoss(tmp=distill_params.distill_temp)])
+      loss=task.get_distill_loss_fn(distill_params),
+      metrics=[task.metrics()])
 
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
     tf.io.gfile.makedirs(student_log_dir)
@@ -55,8 +54,11 @@ class Distiller(object):
 
     self.validation_metrics = {}
     for metric in self.task.metrics():
-      self.validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
-
+      if isfunction(metric):
+        self.validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
+      else:
+        self.validation_metrics[camel2snake(metric.__class__.__name__)] = tf.keras.metrics.Mean()
+    self.validation_loss = tf.keras.metrics.Mean()
 
   def restore_teacher(self):
     self.teacher_ckpt.restore(self.teacher_manager.latest_checkpoint)
@@ -139,18 +141,27 @@ class Distiller(object):
     log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
 
     for metric in self.task.metrics():
-      metric_name = camel2snake(metric.__name__)
+      if isfunction(metric):
+        metric_name = camel2snake(metric.__name__)
+      else:
+        metric_name = camel2snake(metric.__class__.__name__)
       log_summary(log_name=metric_name, log_value=metric_name.result(), summary_scope='valid')
       self.validation_metrics[metric_name].reset_states()
 
-  @tf.function(experimental_relax_shapes=True)
+    log_summary(log_name="distill_loss", log_value=self.validation_loss.result(), summary_scope='valid')
+    self.validation_loss.reset_states()
+
   def validation_step(self, v_x, v_y):
     teacher_logits = self.teacher_model(v_x)
-    masked_teacher_probs = get_probs(logits=teacher_logits,
+    teacher_probs = self.task.get_probs_fn()(logits=teacher_logits,
                                      labels=v_y,
                                      temperature=self.temperature)
     logits = self.student_model(v_x)
     for metric in self.task.metrics():
-      metric_name = camel2snake(metric.__name__)
+      if isfunction(metric):
+        metric_name = camel2snake(metric.__name__)
+      else:
+        metric_name = camel2snake(metric.__class__.__name__)
       self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
-                                                               y_true=masked_teacher_probs))
+                                                               y_true=v_y))
+      self.validation_loss.update_state(self.task.get_distill_loss_fn(self.distill_params)(y_true=teacher_probs, y_pred=logits))

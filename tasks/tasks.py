@@ -1,5 +1,7 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
+
+from distill.distill_util import DistillLoss, get_probs, get_masked_probs
 from tf2_models.metrics import masked_sequence_loss, sequence_loss, masked_perplexity, masked_batch_perplexity, \
   batch_masked_sequence_loss
 from tf2_models import metrics
@@ -12,6 +14,7 @@ from util.config_util import get_task_params
 class Task(object):
   def __init__(self, task_params, builder_cls, name='abstract_task', data_dir='data'):
     self.name = name
+    self.output_padding_symbol = 0
     self.task_params = task_params
     self.data_dir = data_dir
     self.builder_cls = builder_cls
@@ -28,6 +31,9 @@ class Task(object):
 
   def convert_examples(self, examples):
     raise NotImplementedError
+
+  def get_probs_fn(self):
+    return get_masked_probs
 
   def setup_datasets(self):
     self.info = self.databuilder.info
@@ -184,7 +190,7 @@ class WordSvAgreementLM(SvAgreementLM):
 class WordSvAgreementVP(Task):
   def __init__(self, task_params, name='word_sv_agreement_vp', data_dir='data', builder_cls=WordSvAgreement):
     super(WordSvAgreementVP, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
-
+    self.output_padding_symbol = -1
   @property
   def padded_shapes(self):
     return ([None],[])
@@ -217,6 +223,9 @@ class WordSvAgreementVP(Task):
 
   def get_loss_fn(self):
     return sequence_loss
+
+  def get_distill_loss_fn(self, distill_params):
+    return DistillLoss(tmp=distill_params.distill_temp, padding_symbol=-1)
 
   def metrics(self):
     return [self.get_loss_fn(),
@@ -256,6 +265,9 @@ class BowmanLogicConcat(Task):
     return [self.get_loss_fn(),
             tf.keras.metrics.SparseCategoricalAccuracy()
           ]
+
+  def get_probs_fn(self):
+    return get_probs
 
 if __name__ == '__main__':
     task = BowmanLogicConcat(get_task_params())

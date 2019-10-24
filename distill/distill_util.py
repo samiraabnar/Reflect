@@ -3,14 +3,20 @@ import tensorflow as tf
 
 
 @tf.function(experimental_relax_shapes=True)
-def get_probs(logits, labels, temperature):
+def get_masked_probs(logits, labels, temperature, padding_symbol=0):
   teacher_probs = tf.nn.softmax(logits / temperature, axis=-1)
-  sequence_mask = tf.cast(labels != 0, dtype=tf.float32)
+  sequence_mask = tf.cast(labels != padding_symbol, dtype=tf.float32)
   masked_teacher_probs = teacher_probs * sequence_mask[..., None] + tf.eye(tf.shape(teacher_probs)[-1])[0] * (
       1 - sequence_mask[..., None])
 
   return masked_teacher_probs
 
+
+@tf.function(experimental_relax_shapes=True)
+def get_probs(logits, labels, temperature):
+  teacher_probs = tf.nn.softmax(logits / temperature, axis=-1)
+
+  return teacher_probs
 
 class DistillLoss(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0, tmp=1.0,
