@@ -111,7 +111,7 @@ class Distiller(object):
 
         if (step % self.task.n_train_batches) == 0:
           tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
-          self.validate(actual_loss, distill_loss, valid_iter)
+          #self.validate(actual_loss, distill_loss, valid_iter)
           self.student_ckpt.step.assign_add(1)
           save_path = self.student_manager.save()
           tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
