@@ -32,6 +32,7 @@ class Task(object):
   def convert_examples(self, examples):
     raise NotImplementedError
 
+  @tf.function()
   def get_probs_fn(self):
     return get_masked_probs
 
