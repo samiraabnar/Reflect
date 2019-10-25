@@ -8,6 +8,7 @@ from util import constants
 from collections import Counter
 from tqdm import tqdm
 from tf2_models.metrics import *
+import numpy as np
 
 MODELS = {"lm_lstm": LmLSTM,
           "lm_gpt2": LmGPT2,
