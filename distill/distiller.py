@@ -103,18 +103,18 @@ class Distiller(object):
         distill_loss, actual_loss = train_step(x=x, y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
-        if step % 200 == 0:
-          log_summary(log_name='learning_rate',
-                      log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-                      summary_scope='train')
-          log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
+        # if step % 200 == 0:
+        #   log_summary(log_name='learning_rate',
+        #               log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+        #               summary_scope='train')
+        #   log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
 
         if (step % self.task.n_train_batches) == 0:
-          tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
-          #self.validate(actual_loss, distill_loss, valid_iter)
-          self.student_ckpt.step.assign_add(1)
-          save_path = self.student_manager.save()
-          tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
+          # tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
+          # #self.validate(actual_loss, distill_loss, valid_iter)
+          # self.student_ckpt.step.assign_add(1)
+          # save_path = self.student_manager.save()
+          # tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
           epochs += 1
 
         step += 1
