@@ -99,7 +99,7 @@ class Distiller(object):
         y = tf.convert_to_tensor(y, dtype=tf.int64)
 
         teacher_logits = self.teacher_model(x)
-        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
+        teacher_probs = get_probs(logits=teacher_logits, labels=y, temperature=self.temperature)
         distill_loss, actual_loss = train_step(x=x, y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
