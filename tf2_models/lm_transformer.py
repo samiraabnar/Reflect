@@ -19,7 +19,12 @@ class GPT2(tf.keras.layers.Layer):
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.0001)
 
-    self.wte = SharedEmbeddings(self.vocab_size ,
+    self.create_vars(hparams)
+
+
+  @tf.function
+  def create_vars(self, hparams):
+    self.wte = SharedEmbeddings(self.vocab_size,
                                 hparams.hidden_size,
                                 initializer_range=hparams.initializer_range,
                                 regularizer=self.regularizer,
@@ -31,13 +36,13 @@ class GPT2(tf.keras.layers.Layer):
                                          name='wpe')
     self.drop = tf.keras.layers.Dropout(hparams.embd_pdrop)
     self.h = [Block(hparams.n_ctx,
-                      hparams,
-                      regularizer=self.regularizer,
-                      scale=True,
-                      name='h_._{}'.format(i)) for i in range(hparams.depth)]
+                    hparams,
+                    regularizer=self.regularizer,
+                    scale=True,
+                    name='h_._{}'.format(i)) for i in range(hparams.depth)]
     self.ln_f = tf.keras.layers.LayerNormalization(epsilon=hparams.layer_norm_epsilon, name='ln_f')
 
-
+  @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, past=None, attention_mask=None, token_type_ids=None, position_ids=None,
            training=False):
     if past is None:
@@ -224,14 +229,18 @@ class ClassifierGPT2(tf.keras.Model):
     #inputs = tf.concat([cl_tokens, inputs], axis=-1)
 
     transformer_outputs = self.transformer(inputs, **kwargs)
+    cl_logits = self._call(batch_size, inputs, transformer_outputs)
+
+    return cl_logits
+
+  @tf.function(experimental_relax_shapes=True)
+  def _call(self, batch_size, inputs, transformer_outputs):
     mask = tf.cast(inputs != 0, dtype=tf.int32)
     inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
-
     batch_indices = tf.range(batch_size)
-    indices =  tf.concat([batch_indices[...,None], inputs_lengths[...,None]], -1)
-    hidden_states = tf.gather_nd(transformer_outputs[0],indices)
+    indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
+    hidden_states = tf.gather_nd(transformer_outputs[0], indices)
     cl_logits = self.e2c(hidden_states)
-
     return cl_logits
 
 
