@@ -197,7 +197,7 @@ class ClassifierGPT2(tf.keras.Model):
     super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
 
     self.scope = scope
-
+    self.hparams = hparams
     self.model_name = '_'.join([self.scope,
                          'h-'+str(hparams.embedding_dim),
                          'd-'+str(hparams.depth),
@@ -207,9 +207,13 @@ class ClassifierGPT2(tf.keras.Model):
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.0001)
-    self.transformer = GPT2(hparams, name='transformer')
-    self.e2c = tf.keras.layers.Dense(units=hparams.num_labels,
-                                     kernel_initializer=get_initializer(hparams.initializer_range),
+    self.create_vars()
+
+  @tf.function
+  def create_vars(self):
+    self.transformer = GPT2(self.hparams, name='transformer')
+    self.e2c = tf.keras.layers.Dense(units=self.hparams.num_labels,
+                                     kernel_initializer=get_initializer(self.hparams.initializer_range),
                                      name='e2c')
 
   def call(self, inputs, **kwargs):
