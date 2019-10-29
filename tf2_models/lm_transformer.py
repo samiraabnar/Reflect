@@ -1,11 +1,7 @@
 import tensorflow as tf
-
-from tasks.tasks import WordSvAgreementLM, WordSvAgreementVP
 from tf2_models.common_layers import get_initializer, shape_list
 from tf2_models.embedding import SharedEmbeddings
 from tf2_models.transformer_layers import Block
-from util import constants
-from util.config_util import get_task_params, get_model_params
 
 
 class GPT2(tf.keras.layers.Layer):
@@ -259,17 +255,3 @@ class ClassifierGPT2SharedWeights(ClassifierGPT2):
     self.e2c = tf.keras.layers.Dense(units=hparams.num_labels,
                                      kernel_initializer=get_initializer(hparams.initializer_range),
                                      name='e2c')
-
-
-
-if __name__ == '__main__':
-    task = WordSvAgreementVP(get_task_params())
-    cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
-    model = ClassifierGPT2SharedWeights(get_model_params(task, 'cl_gpt2'), cl_token=cl_token)
-
-    for x, y in task.valid_dataset:
-      model_y = model(x)
-      print(y.shape)
-      print(x.shape)
-      print(model_y.shape)
-      break

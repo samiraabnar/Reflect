@@ -1,6 +1,7 @@
 from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS
 
 
+
 class TrainParams(object):
   def __init__(self, optimizer,
                learning_rate=0.0001,
@@ -29,6 +30,10 @@ class DistillParams:
   student_decay_steps = 10000
   student_warmup_steps = 10000
   student_optimizer = 'adam'
+  teacher_learning_rate = 0.0001
+  teacher_decay_steps = 10000
+  teacher_warmup_steps = 10000
+  teacher_optimizer = 'adam'
   n_epochs = 60
 
 class TaskParams:
@@ -42,9 +47,11 @@ def get_train_params(train_config):
 def get_distill_params(distill_config):
   return DistillParams()
 
+
 def get_task_params():
   task_params = TaskParams()
   return task_params
+
 
 def get_model_params(task, config_name='', model_config='base'):
   print("model config:", model_config)
@@ -101,13 +108,11 @@ radam_slow_long = {
 'hold_base_rate_steps': 1000000
 }
 
-
 radam_fast = {
 'learning_rate': 0.001,
 'optimizer': 'radam',
 'hold_base_rate_steps': 10000
 }
-
 
 radam_mid = {
 'learning_rate': 0.0005,
