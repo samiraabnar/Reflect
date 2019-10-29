@@ -16,6 +16,9 @@ class OnlineDistiller(Distiller):
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
+    self.distill_loss = self.task.get_distill_loss_fn(self.distill_params)
+    self.metrics = self.task.metrics()
+
     self.create_student_optimizer()
     self.create_teacher_optimizer()
 
@@ -23,6 +26,7 @@ class OnlineDistiller(Distiller):
     self.setup_models(distill_params, task)
     self.setup_loggings()
 
+  @tf.function
   def create_teacher_optimizer(self):
     teacher_initial_learning_rate = self.distill_params.teacher_learning_rate
     lr_schedule = ExponentialDecayWithWarmpUp(
@@ -35,7 +39,7 @@ class OnlineDistiller(Distiller):
 
   def setup_loggings(self):
     self.student_validation_metrics = {}
-    for metric in self.task.metrics():
+    for metric in self.metrics:
       if isfunction(metric):
         self.student_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
@@ -43,7 +47,7 @@ class OnlineDistiller(Distiller):
     self.student_validation_loss = tf.keras.metrics.Mean()
 
     self.teacher_validation_metrics = {}
-    for metric in self.task.metrics():
+    for metric in self.metrics:
       if isfunction(metric):
         self.teacher_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
@@ -58,40 +62,56 @@ class OnlineDistiller(Distiller):
 
     self.student_model.compile(
       optimizer=self.student_optimizer,
-      loss=task.get_distill_loss_fn(distill_params),
-      metrics=[task.metrics()])
+      loss=self.distill_loss,
+      metrics=[self.metrics])
 
     self.teacher_model.compile(
       optimizer=self.teacher_optimizer,
       loss=task.get_loss_fn(),
-      metrics=[task.metrics()])
-
-  @tf.function(experimental_relax_shapes=True)
-  def teacher_train_step(self, x, y_true):
-    with tf.GradientTape() as tape:
-      logits = self.teacher_model(x)
-      loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
-
-    grads = tape.gradient(loss, self.teacher_model.trainable_weights)
-    self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights))
-
-    return logits, loss
+      metrics=[self.metrics])
 
   def distill_loop(self, padding_symbol=0):
-    with self.summary_writer.as_default():
-      train_iter = iter(self.task.train_dataset)
-      valid_iter = iter(self.task.valid_dataset)
+    @tf.function(experimental_relax_shapes=True)
+    def teacher_train_step(x, y_true):
+      with tf.GradientTape() as tape:
+        logits = self.teacher_model(x)
+        loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
 
+      grads = tape.gradient(loss, self.teacher_model.trainable_weights)
+      self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights))
+
+      return logits, loss
+
+    @tf.function(experimental_relax_shapes=True)
+    def student_train_step(x, y, y_true):
+      ''' Training step for the student model (this is the only training step for offline distillation).
+
+      :param x: input
+      :param y: output of the teacher model, used to compute distill loss
+      :param y_true: actual outputs, used to compute actual loss
+      :return:
+      distill_loss
+      actual_loss
+      '''
+      with tf.GradientTape() as tape:
+        logits = self.student_model(x)
+        distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
+        actual_loss = self.task.get_loss_fn()(y_pred=logits, y_true=y_true)
+        final_loss = self.distill_params.student_distill_rate * distill_loss + \
+                     self.distill_params.student_gold_rate * actual_loss
+
+      grads = tape.gradient(final_loss, self.student_model.trainable_weights)
+      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
+      return distill_loss, actual_loss
+
+
+    @tf.function
+    def epoch_loop(train_iter, valid_iter):
       step = 0
-      epochs = 0
-      num_epochs = self.distill_params.n_epochs
       for (x, y) in train_iter:
-        x = tf.convert_to_tensor(x, dtype=tf.int64)
-        y = tf.convert_to_tensor(y, dtype=tf.int64)
-
-        teacher_logits, teacher_loss = self.teacher_train_step(x, y)
+        teacher_logits, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
-        distill_loss, actual_loss = self.student_train_step(x=x, y=teacher_probs, y_true=y)
+        distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
         if step % 200 == 0:
@@ -104,18 +124,21 @@ class OnlineDistiller(Distiller):
           log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
           log_summary(log_name='teacher_loss', log_value=teacher_loss, summary_scope='train')
 
+        step += 1
         # Checkpoint and log after each epoch
         if (step % self.task.n_train_batches) == 0:
-          tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
           self.validate(actual_loss, distill_loss, valid_iter)
-          self.save_student()
-          self.save_teacher()
-          epochs += 1
-
-        step += 1
-        # Stop, if reached the number of training epochs
-        if epochs >= num_epochs:
           break
+
+    with self.summary_writer.as_default():
+      train_iter = iter(self.task.train_dataset)
+      valid_iter = iter(self.task.valid_dataset)
+
+      num_epochs = self.distill_params.n_epochs
+      for _ in tf.range(num_epochs):
+        epoch_loop(train_iter, valid_iter)
+        self.save_student()
+        self.save_teacher()
 
   def save_teacher(self):
     self.teacher_ckpt.step.assign_add(1)
@@ -128,46 +151,49 @@ class OnlineDistiller(Distiller):
     '''
 
     tf.print('Validating ...')
-    valid_step = 0
-    for v_x, v_y in valid_iter:
-      v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
-      v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
+    @tf.function(experimental_relax_shapes=True)
+    def valid_fn():
+      valid_step = 0
+      for v_x, v_y in valid_iter:
+        v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
+        v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
-      teacher_logits = self.teacher_model(v_x)
-      teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-      logits = self.student_model(v_x)
+        teacher_logits = self.teacher_model(v_x)
+        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
+        logits = self.student_model(v_x)
 
-      valid_step += 1
-      for metric in self.task.metrics():
+        valid_step += 1
+        for metric in self.metrics:
+          if isfunction(metric):
+            metric_name = camel2snake(metric.__name__)
+          else:
+            metric_name = camel2snake(metric.__class__.__name__)
+          self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
+                                                                   y_true=v_y))
+          self.teacher_validation_metrics[metric_name].update_state(metric(y_pred=teacher_logits,
+                                                                           y_true=v_y))
+          self.student_validation_loss.update_state(
+            self.distill_loss(y_true=teacher_probs, y_pred=logits))
+
+        if valid_step >= self.task.n_valid_batches:
+          break
+
+      log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
+      log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
+
+      for metric in self.metrics:
         if isfunction(metric):
           metric_name = camel2snake(metric.__name__)
         else:
           metric_name = camel2snake(metric.__class__.__name__)
-        self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
-                                                                 y_true=v_y))
-        self.teacher_validation_metrics[metric_name].update_state(metric(y_pred=teacher_logits,
-                                                                         y_true=v_y))
-        self.student_validation_loss.update_state(
-          self.task.get_distill_loss_fn(self.distill_params)(y_true=teacher_probs, y_pred=logits))
+        log_summary(log_name=metric_name, log_value=self.student_validation_metrics[metric_name].result(), summary_scope='student_valid')
+        log_summary(log_name=metric_name, log_value=self.teacher_validation_metrics[metric_name].result(), summary_scope='student_valid')
 
-      if valid_step >= self.task.n_valid_batches:
-        break
-
-    log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
-    log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
-
-    for metric in self.task.metrics():
-      if isfunction(metric):
-        metric_name = camel2snake(metric.__name__)
-      else:
-        metric_name = camel2snake(metric.__class__.__name__)
-      log_summary(log_name=metric_name, log_value=self.student_validation_metrics[metric_name].result(), summary_scope='student_valid')
-      log_summary(log_name=metric_name, log_value=self.teacher_validation_metrics[metric_name].result(), summary_scope='student_valid')
-
-      self.student_validation_metrics[metric_name].reset_states()
-      self.teacher_validation_metrics[metric_name].reset_states()
+        self.student_validation_metrics[metric_name].reset_states()
+        self.teacher_validation_metrics[metric_name].reset_states()
 
 
-    log_summary(log_name="distill_loss", log_value=self.student_validation_loss.result(), summary_scope='student_valid')
-    self.student_validation_loss.reset_states()
+      log_summary(log_name="distill_loss", log_value=self.student_validation_loss.result(), summary_scope='student_valid')
+      self.student_validation_loss.reset_states()
 
+    valid_fn()
