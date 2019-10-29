@@ -123,40 +123,43 @@ class Distiller(object):
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
       return distill_loss, actual_loss
 
-    with self.summary_writer.as_default():
-      train_iter = iter(self.task.train_dataset)
-      valid_iter = iter(self.task.valid_dataset)
+    @tf.function
+    def train_loop():
+      with self.summary_writer.as_default():
+        train_iter = iter(self.task.train_dataset)
+        valid_iter = iter(self.task.valid_dataset)
 
-      step = 0
-      epochs = 0
-      num_epochs = self.distill_params.n_epochs
-      for (x, y) in train_iter:
-        x = tf.convert_to_tensor(x, dtype=tf.int64)
-        y = tf.convert_to_tensor(y, dtype=tf.int64)
+        step = 0
+        epochs = 0
+        num_epochs = self.distill_params.n_epochs
+        for (x, y) in train_iter:
+          x = tf.convert_to_tensor(x, dtype=tf.int64)
+          y = tf.convert_to_tensor(y, dtype=tf.int64)
 
-        teacher_logits = self.teacher_model(x)
-        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
-        distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
+          teacher_logits = self.teacher_model(x)
+          teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
+          distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
 
-        # Log every 200 batches.
-        if step % 200 == 0:
-          log_summary(log_name='learning_rate',
-                      log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-                      summary_scope='train')
-          log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
+          # Log every 200 batches.
+          if step % 200 == 0:
+            log_summary(log_name='learning_rate',
+                        log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+                        summary_scope='train')
+            log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
 
-        # Checkpoint and log after each epoch
-        if (step % self.task.n_train_batches) == 0:
-          tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
-          self.validate(actual_loss, distill_loss, valid_iter)
-          self.save_student()
-          epochs += 1
-        step += 1
+          # Checkpoint and log after each epoch
+          if (step % self.task.n_train_batches) == 0:
+            tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
+            self.validate(actual_loss, distill_loss, valid_iter)
+            self.save_student()
+            epochs += 1
+          step += 1
 
-        # Stop, if reached the number of training epochs
-        if epochs >= num_epochs:
-          break
+          # Stop, if reached the number of training epochs
+          if epochs >= num_epochs:
+            break
 
+    train_loop()
   def validate(self, actual_loss, distill_loss, valid_iter):
     tf.print('Validating ...')
 
