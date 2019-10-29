@@ -4,6 +4,7 @@ from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
 from tf2_models.utils import log_summary, camel2snake
 from inspect import isfunction
+from absl import logging
 
 class Distiller(object):
   ''' Pipeline for offline distillation.
@@ -149,7 +150,6 @@ class Distiller(object):
 
           # Checkpoint and log after each epoch
           if (step % self.task.n_train_batches) == 0:
-            tf.print("Epoch %d, distill loss:" %epochs, distill_loss)
             self.validate(actual_loss, distill_loss, valid_iter)
             self.save_student()
             epochs += 1
