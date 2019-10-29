@@ -177,11 +177,11 @@ class OnlineDistiller(Distiller):
         if valid_step >= self.task.n_valid_batches:
           break
 
-      with tf.summary.summary_scope("train"):
+      with tf.summary.experimental.summary_scope("train"):
         tf.summary.scalar('distill_loss', distill_loss)
         tf.summary.scalar('actual_loss', actual_loss)
 
-      with tf.summary.summary_scope("student_valid"):
+      with tf.summary.experimental.summary_scope("student_valid"):
         for metric in self.metrics:
           if isfunction(metric):
             metric_name = camel2snake(metric.__name__)
@@ -196,7 +196,7 @@ class OnlineDistiller(Distiller):
         tf.summary.scalar("distill_loss", self.student_validation_loss.result())
         self.student_validation_loss.reset_states()
 
-      with tf.summary.summary_scope("teacher_valid"):
+      with tf.summary.experimental.summary_scope("teacher_valid"):
         for metric in self.metrics:
           if isfunction(metric):
             metric_name = camel2snake(metric.__name__)
