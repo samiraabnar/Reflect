@@ -53,13 +53,13 @@ class Distiller(object):
     tf.compat.v2.summary.experimental.set_step(self.student_optimizer.iterations)
 
   def setup_loggings(self):
-    self.validation_metrics = {}
+    self.student_validation_metrics = {}
     for metric in self.metrics:
       if isfunction(metric):
-        self.validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
+        self.student_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
-        self.validation_metrics[camel2snake(metric.__class__.__name__)] = tf.keras.metrics.Mean()
-    self.validation_loss = tf.keras.metrics.Mean()
+        self.student_validation_metrics[camel2snake(metric.__class__.__name__)] = tf.keras.metrics.Mean()
+    self.student_validation_loss = tf.keras.metrics.Mean()
 
   def setup_models(self, distill_params, task):
     x, y = iter(self.task.valid_dataset).next()
@@ -175,29 +175,31 @@ class Distiller(object):
             metric_name = camel2snake(metric.__name__)
           else:
             metric_name = camel2snake(metric.__class__.__name__)
-          self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
+          self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
                                                                    y_true=v_y))
-          self.validation_loss.update_state(
+          self.student_validation_loss.update_state(
             self.distill_loss(y_true=teacher_probs, y_pred=logits))
 
         valid_step += 1
         if valid_step >= self.task.n_valid_batches:
           break
 
-      log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
-      log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
+      with tf.summary.summary_scope("train"):
+        tf.summary.scalar('distill_loss', distill_loss)
+        tf.summary.scalar('actual_loss', actual_loss)
 
-      for metric in self.metrics:
-        if isfunction(metric):
-          metric_name = camel2snake(metric.__name__)
-        else:
-          metric_name = camel2snake(metric.__class__.__name__)
-        log_summary(log_name=metric_name, log_value=self.validation_metrics[metric_name].result(),
-                    summary_scope='valid')
-        self.validation_metrics[metric_name].reset_states()
+      with tf.summary.summary_scope("student_valid"):
+        for metric in self.metrics:
+          if isfunction(metric):
+            metric_name = camel2snake(metric.__name__)
+          else:
+            metric_name = camel2snake(metric.__class__.__name__)
+          tf.summary.scalar(metric_name, log_value=self.student_validation_metrics[metric_name].result())
 
-      log_summary(log_name="distill_loss", log_value=self.validation_loss.result(), summary_scope='valid')
-      self.validation_loss.reset_states()
+          self.student_validation_metrics[metric_name].reset_states()
+
+        log_summary(log_name="distill_loss", log_value=self.student_validation_loss.result())
+        self.student_validation_loss.reset_states()
 
     valid_fn()
 
