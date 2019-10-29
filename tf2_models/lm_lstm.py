@@ -2,7 +2,6 @@ import absl
 import tensorflow as tf
 import numpy as np
 from tensorboard.compat.tensorflow_stub import tensor_shape
-from tensorflow.python.ops import array_ops
 from tensorflow.python.util import nest
 
 from tf2_models.common_layers import get_initializer
@@ -141,26 +140,28 @@ class ClassifierLSTM(tf.keras.Model):
     else:
       training = False
 
-    embedded_input = self.input_embedding_dropout(self.input_embedding(inputs),training=training)
-    rnn_outputs = embedded_input
+    def _call(inputs, training):
+      embedded_input = self.input_embedding_dropout(self.input_embedding(inputs),training=training)
+      rnn_outputs = embedded_input
 
-    input_mask = self.input_embedding.compute_mask(inputs)
-    inputs_length = tf.reduce_sum(tf.cast(input_mask, dtype=tf.int32), axis=-1)
+      input_mask = self.input_embedding.compute_mask(inputs)
+      inputs_length = tf.reduce_sum(tf.cast(input_mask, dtype=tf.int32), axis=-1)
 
-    for i in np.arange(self.hparams.depth):
-      rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask, training=training)
+      for i in np.arange(self.hparams.depth):
+        rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask, training=training)
 
-    rnn_outputs = self.output_embedding_dropout(rnn_outputs, training=training)
-    batch_size = tf.shape(rnn_outputs)[0]
-    bach_indices = tf.expand_dims(tf.range(batch_size), 1)
-    final_indexes = tf.concat([bach_indices, tf.expand_dims(tf.cast(inputs_length - 1, dtype=tf.int32), 1)], axis=-1)
+      rnn_outputs = self.output_embedding_dropout(rnn_outputs, training=training)
+      batch_size = tf.shape(rnn_outputs)[0]
+      bach_indices = tf.expand_dims(tf.range(batch_size), 1)
+      final_indexes = tf.concat([bach_indices, tf.expand_dims(tf.cast(inputs_length - 1, dtype=tf.int32), 1)], axis=-1)
 
 
-    final_rnn_outputs = tf.gather_nd(rnn_outputs, final_indexes)
+      final_rnn_outputs = tf.gather_nd(rnn_outputs, final_indexes)
 
-    logits = self.output_embedding(final_rnn_outputs)
+      logits = self.output_embedding(final_rnn_outputs)
+      return logits
 
-    return logits
+    return _call(inputs, training)
 
 
 class LmLSTMSharedEmb(tf.keras.Model):

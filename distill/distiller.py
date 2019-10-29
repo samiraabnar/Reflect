@@ -91,30 +91,34 @@ class Distiller(object):
     tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
 
 
-  @tf.function(experimental_relax_shapes=True)
-  def student_train_step(self, x, y, y_true):
-    ''' Training step for the student model (this is the only training step for offline distillation).
 
-    :param x: input
-    :param y: output of the teacher model, used to compute distill loss
-    :param y_true: actual outputs, used to compute actual loss
-    :return:
-    distill_loss
-    actual_loss
-    '''
-    with tf.GradientTape() as tape:
-      logits = self.student_model(x)
-      distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
-      actual_loss = self.task.get_loss_fn()(y_pred=logits, y_true=y_true)
-      final_loss = self.distill_params.distill_rate*distill_loss + self.distill_params.gold_rate(actual_loss)
-
-    grads = tape.gradient(final_loss, self.student_model.trainable_weights)
-    self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
-    return distill_loss, actual_loss
 
   def distill_loop(self):
     ''' Offline Distillation main loop.
     '''
+
+    @tf.function(experimental_relax_shapes=True)
+    def student_train_step(x, y, y_true):
+      ''' Training step for the student model (this is the only training step for offline distillation).
+
+      :param x: input
+      :param y: output of the teacher model, used to compute distill loss
+      :param y_true: actual outputs, used to compute actual loss
+      :return:
+      distill_loss
+      actual_loss
+      '''
+      with tf.GradientTape() as tape:
+        logits = self.student_model(x)
+        distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
+        actual_loss = self.task.get_loss_fn()(y_pred=logits, y_true=y_true)
+        final_loss = self.distill_params.student_distill_rate * distill_loss + \
+                     self.distill_params.student_gold_rate * actual_loss
+
+      grads = tape.gradient(final_loss, self.student_model.trainable_weights)
+      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
+      return distill_loss, actual_loss
+
     with self.summary_writer.as_default():
       train_iter = iter(self.task.train_dataset)
       valid_iter = iter(self.task.valid_dataset)
@@ -128,7 +132,7 @@ class Distiller(object):
 
         teacher_logits = self.teacher_model(x)
         teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
-        distill_loss, actual_loss = self.student_train_step(x=x, y=teacher_probs, y_true=y)
+        distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
         if step % 200 == 0:

@@ -1,19 +1,33 @@
+''' Code to apply the distillation process for a teacher and a student model.
+
+Run:
+python distill/distill_main.py \
+--task=word_sv_agreement_vp \
+--teacher_exp_name=small_lstm_v4_0.0001_withl2 \
+--teacher_model=cl_lstm \
+--teacher_config=small_lstm_v4 \
+--student_exp_name=distilled0 \
+--student_model=cl_gpt2 \
+--student_config=small_gpt_v9 \
+--distill_mode=offline
+'''
 from distill.distiller import Distiller
 from distill.online_distiller import OnlineDistiller
 from util import constants
-from util.config_util import get_distill_params, TASKS
+from util.config_util import get_distill_params
 import os
 from util.config_util import get_model_params, get_task_params, get_train_params
 from absl import flags
 import sys
 
-from util.model_configs import MODELS
+from util.models import MODELS
+from util.tasks import TASKS
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string('log_dir', 'logs', 'log dir')
+flags.DEFINE_string('logdir', 'logs', 'log dir')
 flags.DEFINE_string('chkpt_dir', 'tf_ckpts', 'checkpoint dir')
 
-flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm')
+flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
 flags.DEFINE_string('distill_config', 'base', ' distillation hparams set')
 
 flags.DEFINE_string('teacher_exp_name', 'trial4', 'experiment directory')
@@ -38,11 +52,11 @@ def create_and_load_models():
     hparams=get_model_params(task, hparams.teacher_model, hparams.teacher_config), cl_token=cl_token)
   student_model = MODELS[hparams.student_model](
     hparams=get_model_params(task, hparams.student_model, hparams.student_config), cl_token=cl_token)
-  teacher_log_dir = os.path.join(hparams.log_dir, task.name,
+  teacher_log_dir = os.path.join(hparams.logdir, task.name,
                                  "teacher_" + teacher_model.model_name + "_" + hparams.teacher_exp_name)
   teacher_ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
                                   teacher_model.model_name + "_" + hparams.teacher_exp_name)
-  student_log_dir = os.path.join(hparams.log_dir, task.name,
+  student_log_dir = os.path.join(hparams.logdir, task.name,
                                  "student_" + student_model.model_name + "_" + hparams.student_exp_name)
   student_ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
                                   "student_" + student_model.model_name + "_" + hparams.student_exp_name)

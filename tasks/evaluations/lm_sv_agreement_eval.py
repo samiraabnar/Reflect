@@ -92,7 +92,6 @@ def evaluate_vp(model, task):
     nz = example['n_intervening'].numpy()
     n_diffs = example['n_diff_intervening'].numpy()
 
-    sentence = task.databuilder.sentence_encoder().decode(encoded_sentences[0])
     actual_verb_indexes = [task.databuilder.sentence_encoder().encode(v)[0] for v in actual_verbs.numpy()]
     inflected_verb_indexes = [task.databuilder.sentence_encoder().encode(v)[0] for v in inflected_verbs]
 
