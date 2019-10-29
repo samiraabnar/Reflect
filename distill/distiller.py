@@ -16,10 +16,14 @@ class Distiller(object):
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
+    self.distill_loss = self.task.get_distill_loss_fn(self.distill_params)
+    self.metrics = self.task.metrics()
+
     self.create_student_optimizer()
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params, task)
     self.setup_loggings()
+
 
   def create_student_optimizer(self):
     student_initial_learning_rate = self.distill_params.student_learning_rate
@@ -49,7 +53,7 @@ class Distiller(object):
 
   def setup_loggings(self):
     self.validation_metrics = {}
-    for metric in self.task.metrics():
+    for metric in self.metrics:
       if isfunction(metric):
         self.validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
@@ -65,7 +69,7 @@ class Distiller(object):
     self.student_model.compile(
       optimizer=self.student_optimizer,
       loss=task.get_distill_loss_fn(distill_params),
-      metrics=[task.metrics()])
+      metrics=[self.metrics])
 
   def restore_teacher(self):
     ''' Restore the teacher model from its checkpoint.
@@ -156,16 +160,14 @@ class Distiller(object):
   def validate(self, actual_loss, distill_loss, valid_iter):
     tf.print('Validating ...')
     valid_step = 0
-    for v_x, v_y in valid_iter:
-      v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
-      v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
+    @tf.function(experimental_relax_shapes=True)
+    def valid_step_fn(v_x, v_y, ):
       teacher_logits = self.teacher_model(v_x)
       teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
       logits = self.student_model(v_x)
 
-      valid_step += 1
-      for metric in self.task.metrics():
+      for metric in self.metrics:
         if isfunction(metric):
           metric_name = camel2snake(metric.__name__)
         else:
@@ -173,15 +175,20 @@ class Distiller(object):
         self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
                                                                  y_true=v_y))
         self.validation_loss.update_state(
-          self.task.get_distill_loss_fn(self.distill_params)(y_true=teacher_probs, y_pred=logits))
+          self.distill_loss(y_true=teacher_probs, y_pred=logits))
 
+    for v_x, v_y in valid_iter:
+      v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
+      v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
+      valid_step_fn(v_x, v_y)
+      valid_step += 1
       if valid_step >= self.task.n_valid_batches:
         break
 
     log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
     log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
 
-    for metric in self.task.metrics():
+    for metric in self.metrics:
       if isfunction(metric):
         metric_name = camel2snake(metric.__name__)
       else:
