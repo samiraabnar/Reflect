@@ -199,7 +199,6 @@ class Distiller(object):
 
       log_summary(log_name="distill_loss", log_value=self.validation_loss.result(), summary_scope='valid')
       self.validation_loss.reset_states()
-
     valid_fn()
 
 
