@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+from tf2_models.metrics import distill_loss
 
 
 @tf.function(experimental_relax_shapes=True)
@@ -26,9 +27,4 @@ class DistillLoss(tf.keras.losses.Loss):
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
 
   def call(self, y_true, y_pred):
-    y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
-    sequence_mask = tf.cast(y_true[..., self.padding_symbol] != 1.0, dtype=tf.float32)
-    sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
-    return tf.reduce_sum(tf.compat.v2.nn.softmax_cross_entropy_with_logits(logits=y_pred / self.tmp,
-                                                                           labels=y_true,
-                                                                           name='loss') * sequence_mask)
+    return distill_loss(y_true, y_pred, self.padding_symbol, self.tmp)

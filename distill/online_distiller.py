@@ -1,10 +1,8 @@
 import tensorflow as tf
-import os
-
 from distill.distiller import Distiller
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
-from tf2_models.utils import log_summary, camel2snake
+from tf2_models.utils import camel2snake
 from inspect import isfunction
 
 class OnlineDistiller(Distiller):
@@ -40,6 +38,7 @@ class OnlineDistiller(Distiller):
   def setup_loggings(self):
     self.student_validation_metrics = {}
     for metric in self.metrics:
+      print("metric", metric)
       if isfunction(metric):
         self.student_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
@@ -115,14 +114,15 @@ class OnlineDistiller(Distiller):
 
         # Log every 200 batches.
         if step % 200 == 0:
-          log_summary(log_name='student_learning_rate',
-                      log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-                      summary_scope='train')
-          log_summary(log_name='teacher_learning_rate',
-                      log_value=self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations),
-                      summary_scope='train')
-          log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
-          log_summary(log_name='teacher_loss', log_value=teacher_loss, summary_scope='train')
+          with tf.summary.experimental.summary_scope("train"):
+            tf.summary.scalar('student_learning_rate',
+                        self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+                        )
+            tf.summary.scalar('teacher_learning_rate',
+                        self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations),
+                        )
+            tf.summary.scalar('fine_distill_loss', distill_loss, )
+            tf.summary.scalar('teacher_loss', teacher_loss)
 
         step += 1
         # Checkpoint and log after each epoch
@@ -149,7 +149,6 @@ class OnlineDistiller(Distiller):
   def validate(self, actual_loss, distill_loss, valid_iter):
     ''' Offline Distillation main loop.
     '''
-
     tf.print('Validating ...')
     @tf.function(experimental_relax_shapes=True)
     def valid_fn():
@@ -194,7 +193,7 @@ class OnlineDistiller(Distiller):
           self.student_validation_metrics[metric_name].reset_states()
           self.teacher_validation_metrics[metric_name].reset_states()
 
-        log_summary(log_name="distill_loss", log_value=self.student_validation_loss.result())
+        tf.summary.scalar("distill_loss", self.student_validation_loss.result())
         self.student_validation_loss.reset_states()
 
       with tf.summary.summary_scope("teacher_valid"):

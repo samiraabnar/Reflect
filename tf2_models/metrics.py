@@ -1,5 +1,15 @@
 import tensorflow as tf
 
+
+@tf.function
+def distill_loss(y_true, y_pred, padding_symbol, tmp):
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
+  sequence_mask = tf.cast(y_true[..., padding_symbol] != 1.0, dtype=tf.float32)
+  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
+  return tf.reduce_sum(tf.compat.v2.nn.softmax_cross_entropy_with_logits(logits=y_pred / tmp,
+                                                                         labels=y_true,
+                                                                         name='loss') * sequence_mask)
+
 @tf.function
 def masked_sequence_loss_with_probs(y_true, y_pred, padding_symbol=0):
   #y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
@@ -56,14 +66,12 @@ def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
                                                                   labels=y_true,
                                                                   name='loss')))
 
-
 @tf.function
 def sequence_loss(y_true, y_pred):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
   return tf.reduce_mean(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
                                                                   name='loss'))
-
 
 
 @tf.function
@@ -121,6 +129,16 @@ def unmasked_accuracy_topk(targets, logits, topk):
                                                y_pred=logits,
                                                k=topk)
   return tf.reduce_mean(unmasked_accuracies)
+
+
+class MaskedSequenceLoss(tf.keras.losses.Loss):
+  def __init__(self, padding_symbol=0,
+               **kwargs):
+    super(MaskedSequenceLoss, self).__init__(**kwargs)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+
+  def call(self, y_true, y_pred):
+    return batch_masked_sequence_loss(y_true, y_pred, self.padding_symbol)
 
 if __name__ == '__main__':
   import numpy as np
