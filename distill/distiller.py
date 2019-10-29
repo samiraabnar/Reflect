@@ -25,7 +25,7 @@ class Distiller(object):
     self.setup_models(distill_params, task)
     self.setup_loggings()
 
-
+  @tf.function
   def create_student_optimizer(self):
     student_initial_learning_rate = self.distill_params.student_learning_rate
     lr_schedule = ExponentialDecayWithWarmpUp(
@@ -96,8 +96,6 @@ class Distiller(object):
     tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
 
 
-
-
   def distill_loop(self):
     ''' Offline Distillation main loop.
     '''
@@ -125,14 +123,9 @@ class Distiller(object):
       return distill_loss, actual_loss
 
     @tf.function
-    def train_loop():
+    def epoch_loop(train_iter, valid_iter):
       with self.summary_writer.as_default():
-        train_iter = iter(self.task.train_dataset)
-        valid_iter = iter(self.task.valid_dataset)
-
         step = 0
-        epochs = 0
-        num_epochs = self.distill_params.n_epochs
         for (x, y) in train_iter:
           x = tf.convert_to_tensor(x, dtype=tf.int64)
           y = tf.convert_to_tensor(y, dtype=tf.int64)
@@ -148,18 +141,24 @@ class Distiller(object):
                         summary_scope='train')
             log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
 
-          # Checkpoint and log after each epoch
+          step += 1
+          # Stop at the end of the epoch
           if (step % self.task.n_train_batches) == 0:
             self.validate(actual_loss, distill_loss, valid_iter)
-            self.save_student()
-            epochs += 1
-          step += 1
-
-          # Stop, if reached the number of training epochs
-          if epochs >= num_epochs:
             break
 
-    train_loop()
+
+    train_iter = iter(self.task.train_dataset)
+    valid_iter = iter(self.task.valid_dataset)
+
+    num_epochs = self.distill_params.n_epochs
+    epochs = 0
+    while epochs < num_epochs:
+      epoch_loop(train_iter, valid_iter)
+      self.save_student()
+      epochs += 1
+
+
   def validate(self, actual_loss, distill_loss, valid_iter):
     tf.print('Validating ...')
 
