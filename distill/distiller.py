@@ -2,7 +2,7 @@ import tensorflow as tf
 import os
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
-from tf2_models.utils import log_summary, camel2snake
+from tf2_models.utils import camel2snake
 from inspect import isfunction
 from absl import logging
 
@@ -135,10 +135,12 @@ class Distiller(object):
 
         # Log every 200 batches.
         if step % 200 == 0:
-          log_summary(log_name='learning_rate',
-                      log_value=self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-                      summary_scope='train')
-          log_summary(log_name='fine_distill_loss', log_value=distill_loss, summary_scope='train')
+          with tf.summary.experimental.summary_scope("train"):
+            tf.summary.scalar('learning_rate',
+                        self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+                        )
+            tf.summary.scalar('fine_distill_loss',
+                              distill_loss)
 
         step += 1
         # Stop at the end of the epoch
@@ -184,21 +186,21 @@ class Distiller(object):
         if valid_step >= self.task.n_valid_batches:
           break
 
-      with tf.summary.summary_scope("train"):
+      with tf.summary.experimental.summary_scope("train"):
         tf.summary.scalar('distill_loss', distill_loss)
         tf.summary.scalar('actual_loss', actual_loss)
 
-      with tf.summary.summary_scope("student_valid"):
+      with tf.summary.experimental.summary_scope("student_valid"):
         for metric in self.metrics:
           if isfunction(metric):
             metric_name = camel2snake(metric.__name__)
           else:
             metric_name = camel2snake(metric.__class__.__name__)
-          tf.summary.scalar(metric_name, log_value=self.student_validation_metrics[metric_name].result())
+          tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
 
           self.student_validation_metrics[metric_name].reset_states()
 
-        log_summary(log_name="distill_loss", log_value=self.student_validation_loss.result())
+        tf.summary.scalar("distill_loss",self.student_validation_loss.result())
         self.student_validation_loss.reset_states()
 
     valid_fn()
