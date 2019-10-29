@@ -159,43 +159,46 @@ class Distiller(object):
 
   def validate(self, actual_loss, distill_loss, valid_iter):
     tf.print('Validating ...')
-    valid_step = 0
+
 
     @tf.function(experimental_relax_shapes=True)
-    def valid_step_fn(v_x, v_y, ):
-      teacher_logits = self.teacher_model(v_x)
-      teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-      logits = self.student_model(v_x)
+    def valid_fn():
+      valid_step = 0
+      for v_x, v_y in valid_iter:
+        teacher_logits = self.teacher_model(v_x)
+        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
+        logits = self.student_model(v_x)
+
+        for metric in self.metrics:
+          if isfunction(metric):
+            metric_name = camel2snake(metric.__name__)
+          else:
+            metric_name = camel2snake(metric.__class__.__name__)
+          self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
+                                                                   y_true=v_y))
+          self.validation_loss.update_state(
+            self.distill_loss(y_true=teacher_probs, y_pred=logits))
+
+        valid_step += 1
+        if valid_step >= self.task.n_valid_batches:
+          break
+
+      log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
+      log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
 
       for metric in self.metrics:
         if isfunction(metric):
           metric_name = camel2snake(metric.__name__)
         else:
           metric_name = camel2snake(metric.__class__.__name__)
-        self.validation_metrics[metric_name].update_state(metric(y_pred=logits,
-                                                                 y_true=v_y))
-        self.validation_loss.update_state(
-          self.distill_loss(y_true=teacher_probs, y_pred=logits))
+        log_summary(log_name=metric_name, log_value=self.validation_metrics[metric_name].result(),
+                    summary_scope='valid')
+        self.validation_metrics[metric_name].reset_states()
 
-    for v_x, v_y in valid_iter:
-      v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
-      v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
-      valid_step_fn(v_x, v_y)
-      valid_step += 1
-      if valid_step >= self.task.n_valid_batches:
-        break
+      log_summary(log_name="distill_loss", log_value=self.validation_loss.result(), summary_scope='valid')
+      self.validation_loss.reset_states()
 
-    log_summary(log_name='distill_loss', log_value=distill_loss, summary_scope='train')
-    log_summary(log_name='actual_loss', log_value=actual_loss, summary_scope='train')
+    self.valid_fn()
 
-    for metric in self.metrics:
-      if isfunction(metric):
-        metric_name = camel2snake(metric.__name__)
-      else:
-        metric_name = camel2snake(metric.__class__.__name__)
-      log_summary(log_name=metric_name, log_value=self.validation_metrics[metric_name].result(), summary_scope='valid')
-      self.validation_metrics[metric_name].reset_states()
 
-    log_summary(log_name="distill_loss", log_value=self.validation_loss.result(), summary_scope='valid')
-    self.validation_loss.reset_states()
 
