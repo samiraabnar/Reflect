@@ -26,7 +26,7 @@ class SvAgreementLM(Task):
            sentence[1:]
 
   def get_loss_fn(self):
-    return MaskedSequenceLoss()
+    return MaskedSequenceLoss(padding_symbol=0)
 
   def vocab_size(self):
     return self.databuilder.vocab_size()
@@ -35,7 +35,7 @@ class SvAgreementLM(Task):
     return self.vocab_size()
 
   def metrics(self):
-    return [self.get_loss_fn(),
+    return [MaskedSequenceLoss(padding_symbol=0),
             masked_batch_perplexity,
             masked_perplexity,
             metrics.accuracy,

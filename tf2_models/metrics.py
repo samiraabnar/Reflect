@@ -136,6 +136,7 @@ class MaskedSequenceLoss(tf.keras.losses.Loss):
                **kwargs):
     super(MaskedSequenceLoss, self).__init__(**kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.name = "batch_masked_sequence_loss"
 
   def call(self, y_true, y_pred):
     return batch_masked_sequence_loss(y_true, y_pred, self.padding_symbol)

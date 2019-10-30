@@ -1,11 +1,6 @@
-import absl
 import tensorflow as tf
 import os
-
-from tensorflow.python.keras.optimizer_v2.learning_rate_schedule import ExponentialDecay, LearningRateSchedule
-
 from tf2_models.keras_callbacks import CheckpointCallback, SummaryCallback
-from tf2_models.metrics import masked_sequence_loss
 from tf2_models.train_utils import RectifiedAdam, ExponentialDecayWithWarmpUp
 
 OPTIMIZER_DIC = {'adam': tf.keras.optimizers.Adam,
