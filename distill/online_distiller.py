@@ -1,4 +1,5 @@
 import tensorflow as tf
+import os
 from distill.distiller import Distiller
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
@@ -23,6 +24,26 @@ class OnlineDistiller(Distiller):
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params, task)
     self.setup_loggings()
+
+
+  def setup_ckp_and_summary(self, student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir):
+
+    # Init checkpoints
+    self.teacher_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
+                                            optimizer=self.teacher_optimizer,
+                                            net=self.teacher_model)
+    self.teacher_manager = tf.train.CheckpointManager(self.teacher_ckpt, teacher_ckpt_dir, max_to_keep=2)
+    self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
+                                            optimizer=self.student_optimizer,
+                                            net=self.student_model)
+    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
+
+    # Init summary
+    student_summary_dir = os.path.join(student_log_dir, 'summaries')
+    tf.io.gfile.makedirs(student_log_dir)
+    self.summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(student_summary_dir, 'train'))
+    tf.compat.v2.summary.experimental.set_step(self.student_optimizer.iterations)
+
 
   @tf.function
   def create_teacher_optimizer(self):
