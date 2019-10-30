@@ -24,7 +24,7 @@ DATA_DIR=$HEAD_DIR/data
 LOGS_DIR=$HEAD_DIR/logs
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
---model=lm_gpt2_shared \
+--model=cl_gpt2_shared \
 --task=word_sv_agreement_vp \
 --model_config=small_gpt_v9 \
 --train_config=adam_slow \

@@ -208,11 +208,9 @@ class OnlineDistiller(Distiller):
             metric_name = camel2snake(metric.__name__)
           else:
             metric_name = camel2snake(metric.__class__.__name__)
-          tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
-          tf.summary.scalar(metric_name, self.teacher_validation_metrics[metric_name].result())
 
+          tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
           self.student_validation_metrics[metric_name].reset_states()
-          self.teacher_validation_metrics[metric_name].reset_states()
 
         tf.summary.scalar("distill_loss", self.student_validation_loss.result())
         self.student_validation_loss.reset_states()
@@ -224,7 +222,6 @@ class OnlineDistiller(Distiller):
           else:
             metric_name = camel2snake(metric.__class__.__name__)
           tf.summary.scalar(metric_name, self.teacher_validation_metrics[metric_name].result())
-
           self.teacher_validation_metrics[metric_name].reset_states()
 
     valid_fn()

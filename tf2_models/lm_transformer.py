@@ -245,8 +245,8 @@ class ClassifierGPT2SharedWeights(ClassifierGPT2):
     super(ClassifierGPT2SharedWeights, self).__init__(hparams, *inputs, **kwargs)
 
   @tf.function
-  def create_vars(self, hparams):
-    self.transformer = GPT2SharedWeights(hparams, name='shared_transformer')
-    self.e2c = tf.keras.layers.Dense(units=hparams.num_labels,
-                                     kernel_initializer=get_initializer(hparams.initializer_range),
+  def create_vars(self):
+    self.transformer = GPT2SharedWeights(self.hparams, name='shared_transformer')
+    self.e2c = tf.keras.layers.Dense(units=self.hparams.num_labels,
+                                     kernel_initializer=get_initializer(self.hparams.initializer_range),
                                      name='e2c')
