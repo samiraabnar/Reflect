@@ -53,13 +53,16 @@ def create_and_load_models():
   student_model = MODELS[hparams.student_model](
     hparams=get_model_params(task, hparams.student_model, hparams.student_config), cl_token=cl_token)
   teacher_log_dir = os.path.join(hparams.logdir, task.name,
-                                 hparams.distill_mode+"_teacher_" + teacher_model.model_name + "_" + hparams.teacher_exp_name)
+                                 '_'.join([hparams.distill_mode,hparams.distill_config,
+                                          "teacher",teacher_model.model_name,hparams.teacher_exp_name]))
   teacher_ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
                                   teacher_model.model_name + "_" + hparams.teacher_exp_name)
   student_log_dir = os.path.join(hparams.logdir, task.name,
-                                 hparams.distill_mode+"_student_" + student_model.model_name + "_" + hparams.student_exp_name)
+                                 '_'.join([hparams.distill_mode,hparams.distill_config,
+                                          "student", student_model.model_name,hparams.student_exp_name]))
   student_ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
-                                  hparams.distill_mode+"_student_" + student_model.model_name + "_" + hparams.student_exp_name)
+                                  '_'.join([hparams.distill_mode,hparams.distill_config,
+                                           "student",student_model.model_name,hparams.student_exp_name]))
 
   return teacher_model, student_model, teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir
 
