@@ -1,13 +1,13 @@
 import os
 import tensorflow as tf
-from tasks.tasks import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
-from tf2_models.lm_transformer import LmGPT2, ClassifierGPT2, LmGPT2SharedWeights, ClassifierGPT2SharedWeights
 from util import constants
 from util.config_util import get_model_params, get_task_params, get_train_params
-from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM
 from tf2_models.trainer import Trainer
 from absl import app
 from absl import flags
+
+from util.models import MODELS
+from util.tasks import TASKS
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('exp_name', 'trial1', 'experiment directory')
@@ -20,20 +20,6 @@ flags.DEFINE_string('train_config', 'radam_fast', 'radam_slow | radam_fast')
 hparams = flags.FLAGS
 
 
-MODELS = {"lm_lstm": LmLSTM,
-          "lm_gpt2": LmGPT2,
-          "lm_gpt2_shared": LmGPT2SharedWeights,
-          'cl_gpt2_shared': ClassifierGPT2SharedWeights,
-          "lm_lstm_shared_emb": LmLSTMSharedEmb,
-
-          'cl_gpt2': ClassifierGPT2,
-          'cl_lstm': ClassifierLSTM}
-
-TASKS = {
-  'sv_agreement_lm': SvAgreementLM,
-  'word_sv_agreement_lm': WordSvAgreementLM,
-  'word_sv_agreement_vp': WordSvAgreementVP
-}
 def run():
   gpus = tf.config.experimental.list_physical_devices('GPU')
   if gpus:
