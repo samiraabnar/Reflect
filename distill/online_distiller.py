@@ -96,7 +96,7 @@ class OnlineDistiller(Distiller):
     @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
-        logits = self.teacher_model(x)
+        logits = self.teacher_model(x, training=True)
         loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
         reg_loss = tf.math.add_n(self.teacher_model.losses)
         final_loss = loss + reg_loss
@@ -121,7 +121,7 @@ class OnlineDistiller(Distiller):
       scale_distill_grads = np.math.pow(self.distill_params.distill_temp, 2)
 
       with tf.GradientTape() as tape:
-        logits = self.student_model(x)
+        logits = self.student_model(x, training=True)
         distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
         reg_loss = tf.math.add_n(self.student_model.losses)
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
@@ -188,9 +188,9 @@ class OnlineDistiller(Distiller):
         v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
         v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
-        teacher_logits = self.teacher_model(v_x)
+        teacher_logits = self.teacher_model(v_x, training=False)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-        logits = self.student_model(v_x)
+        logits = self.student_model(v_x, training=False)
 
         valid_step += 1
         for metric in self.metrics:
