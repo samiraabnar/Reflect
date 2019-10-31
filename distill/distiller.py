@@ -32,7 +32,8 @@ class Distiller(object):
       initial_learning_rate=student_initial_learning_rate,
       decay_steps=self.distill_params.student_decay_steps,
       decay_rate=0.96,
-      warmup_steps=self.distill_params.student_warmup_steps)
+      warmup_steps=self.distill_params.student_warmup_steps,
+      hold_base_rate_steps=self.distill_params.student_hold_base_rate_steps)
     self.student_optimizer = OPTIMIZER_DIC[self.distill_params.student_optimizer](
       learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 

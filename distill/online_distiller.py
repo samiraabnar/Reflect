@@ -52,7 +52,8 @@ class OnlineDistiller(Distiller):
       initial_learning_rate=teacher_initial_learning_rate,
       decay_steps=self.distill_params.teacher_decay_steps,
       decay_rate=0.96,
-      warmup_steps=self.distill_params.teacher_warmup_steps)
+      warmup_steps=self.distill_params.teacher_warmup_steps,
+      hold_base_rate_steps=self.distill_params.teacher_hold_base_rate_steps)
     self.teacher_optimizer = OPTIMIZER_DIC[self.distill_params.teacher_optimizer](
       learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
