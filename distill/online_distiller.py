@@ -140,6 +140,7 @@ class OnlineDistiller(Distiller):
       for (x, y) in train_iter:
         teacher_logits, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
+        teacher_probs = tf.stop_gradient(teacher_probs)
         distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
@@ -207,7 +208,8 @@ class OnlineDistiller(Distiller):
         if valid_step >= self.task.n_valid_batches:
           break
 
-      with tf.summary.experimental.summary_scope("train"):
+
+      with tf.summary.experimental.summary_scope("student_train"):
         tf.summary.scalar('distill_loss', distill_loss)
         tf.summary.scalar('actual_loss', actual_loss)
 
