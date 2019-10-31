@@ -67,9 +67,9 @@ def get_train_params(train_config):
 def get_distill_params(distill_config):
   if distill_config != 'base':
    return DistillParams(**DISTILL_PARAMS[distill_config])
-  else:
-    DistillParams()
-    
+
+  return DistillParams()
+
 
 def get_task_params():
   task_params = TaskParams()
