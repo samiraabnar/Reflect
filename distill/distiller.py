@@ -18,7 +18,9 @@ class Distiller(object):
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
     self.distill_loss = self.task.get_distill_loss_fn(self.distill_params)
+    self.task_loss = self.task.get_loss_fn()
     self.metrics = self.task.metrics()
+    self.task_probs_fn = self.task.get_probs_fn()
 
     self.create_student_optimizer()
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
@@ -70,7 +72,7 @@ class Distiller(object):
     self.teacher_model.summary()
     self.student_model.compile(
       optimizer=self.student_optimizer,
-      loss=task.get_distill_loss_fn(distill_params),
+      loss=self.distill_loss,
       metrics=[self.metrics])
 
   def restore_teacher(self):
@@ -115,9 +117,10 @@ class Distiller(object):
       with tf.GradientTape() as tape:
         logits = self.student_model(x)
         distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
-        actual_loss = self.task.get_loss_fn()(y_pred=logits, y_true=y_true)
+        reg_loss = tf.math.add_n(self.student_model.losses)
+        actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
         final_loss = self.distill_params.student_distill_rate * distill_loss + \
-                     self.distill_params.student_gold_rate * actual_loss
+                     self.distill_params.student_gold_rate * actual_loss + reg_loss
 
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
@@ -131,7 +134,7 @@ class Distiller(object):
         y = tf.convert_to_tensor(y, dtype=tf.int64)
 
         teacher_logits = self.teacher_model(x)
-        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
+        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
@@ -170,7 +173,7 @@ class Distiller(object):
       valid_step = 0
       for v_x, v_y in valid_iter:
         teacher_logits = self.teacher_model(v_x)
-        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
+        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
         logits = self.student_model(v_x)
 
         for metric in self.metrics:

@@ -340,6 +340,15 @@ small_lstm_v4 = {
   'initializer_range': 0.1
 }
 
+small_lstm_v5 = {
+  'hidden_dim': 256,
+  'embedding_dim': 256,
+  'depth': 2,
+  'hidden_dropout_rate': 0.6,
+  'input_dropout_rate': 0.2,
+  'initializer_range': 0.1
+}
+
 tiny_lstm = {
   'hidden_dim': 128,
   'embedding_dim': 128,
