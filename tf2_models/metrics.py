@@ -2,7 +2,14 @@ import tensorflow as tf
 
 
 @tf.function
-def distill_loss(y_true, y_pred, padding_symbol, tmp):
+def distill_loss(y_true, y_pred, tmp):
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
+  return tf.reduce_mean(tf.compat.v2.nn.softmax_cross_entropy_with_logits(logits=y_pred / tmp,
+                                                                         labels=y_true,
+                                                                         name='loss'))
+
+@tf.function
+def sequence_distill_loss(y_true, y_pred, padding_symbol, tmp):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
   sequence_mask = tf.cast(y_true[..., padding_symbol] != 1.0, dtype=tf.float32)
   sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
@@ -10,21 +17,6 @@ def distill_loss(y_true, y_pred, padding_symbol, tmp):
                                                                          labels=y_true,
                                                                          name='loss') * sequence_mask)
 
-@tf.function
-def masked_sequence_loss_with_probs(y_true, y_pred, padding_symbol=0):
-  #y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
-  sequence_mask = tf.cast(y_true[...,padding_symbol] != 1.0, dtype=tf.float32)
-  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)
-  return tf.reduce_mean(tf.reduce_sum(tf.compat.v2.nn.softmax_cross_entropy_with_logits(logits=y_true,
-                                                                  labels=y_pred,
-                                                                  name='loss') * sequence_mask, axis=-1))
-
-@tf.function
-def sequence_loss_with_probs(y_true, y_pred):
-  #y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
-  return tf.reduce_mean(tf.compat.v2.nn.softmax_cross_entropy_with_logits(logits=y_true,
-                                                                  labels=y_pred,
-                                                                  name='loss'))
 
 @tf.function
 def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
@@ -67,7 +59,7 @@ def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
                                                                   name='loss')))
 
 @tf.function
-def sequence_loss(y_true, y_pred):
+def classification_loss(y_true, y_pred):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
   return tf.reduce_mean(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
@@ -139,7 +131,18 @@ class MaskedSequenceLoss(tf.keras.losses.Loss):
     self.name = "batch_masked_sequence_loss"
 
   def call(self, y_true, y_pred):
-    return batch_masked_sequence_loss(y_true, y_pred, self.padding_symbol)
+    return batch_masked_sequence_loss(y_true=y_true, y_pred=y_pred, padding_symbol=self.padding_symbol)
+
+
+class ClassificationLoss(tf.keras.losses.Loss):
+  def __init__(self, padding_symbol=0,
+               **kwargs):
+    super(ClassificationLoss, self).__init__(**kwargs)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.name = "classification_loss"
+
+  def call(self, y_true, y_pred):
+    return classification_loss(y_true=y_true, y_pred=y_pred)
 
 if __name__ == '__main__':
   import numpy as np

@@ -3,8 +3,8 @@ from tasks.tasks import Task
 import tensorflow as tf
 
 from tf2_models import metrics
-from tf2_models.metrics import batch_masked_sequence_loss, masked_batch_perplexity, masked_perplexity, sequence_loss, \
-  MaskedSequenceLoss
+from tf2_models.metrics import masked_batch_perplexity, masked_perplexity, \
+  MaskedSequenceLoss, ClassificationLoss
 from tfds_data.tal_agreement import WordSvAgreement, SVAgreement
 from util import constants
 
@@ -84,7 +84,7 @@ class WordSvAgreementVP(Task):
     return 2
 
   def get_loss_fn(self):
-    return MaskedSequenceLoss(padding_symbol=-1)
+    return ClassificationLoss(padding_symbol=-1)
 
   def get_distill_loss_fn(self, distill_params):
     return DistillLoss(tmp=distill_params.distill_temp, padding_symbol=-1)
@@ -94,5 +94,5 @@ class WordSvAgreementVP(Task):
 
 
   def metrics(self):
-    return [MaskedSequenceLoss(padding_symbol=-1),
+    return [ClassificationLoss(padding_symbol=-1),
             tf.keras.metrics.SparseCategoricalAccuracy()]

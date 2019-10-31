@@ -48,7 +48,6 @@ class OnlineDistiller(Distiller):
     tf.compat.v2.summary.experimental.set_step(self.student_optimizer.iterations)
 
 
-  @tf.function
   def create_teacher_optimizer(self):
     teacher_initial_learning_rate = self.distill_params.teacher_learning_rate
     lr_schedule = ExponentialDecayWithWarmpUp(
@@ -63,7 +62,6 @@ class OnlineDistiller(Distiller):
   def setup_loggings(self):
     self.student_validation_metrics = {}
     for metric in self.metrics:
-      print("metric", metric)
       if isfunction(metric):
         self.student_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
@@ -104,7 +102,8 @@ class OnlineDistiller(Distiller):
         final_loss = loss + reg_loss
 
       grads = tape.gradient(final_loss, self.teacher_model.trainable_weights)
-      self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights))
+      self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights),
+                                                   name="teacher_optimizer")
 
       return logits, loss
 
@@ -129,7 +128,8 @@ class OnlineDistiller(Distiller):
         final_loss = scale_distill_grads * self.distill_params.student_distill_rate * distill_loss + \
                      self.distill_params.student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
-      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
+      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
+                                                   name="student_optimizer")
 
       return distill_loss, actual_loss
 
