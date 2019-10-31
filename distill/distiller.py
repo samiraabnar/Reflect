@@ -5,7 +5,7 @@ from tf2_models.trainer import OPTIMIZER_DIC
 from tf2_models.utils import camel2snake
 from inspect import isfunction
 from absl import logging
-
+import numpy as np
 class Distiller(object):
   ''' Pipeline for offline distillation.
   '''
@@ -114,19 +114,17 @@ class Distiller(object):
       distill_loss
       actual_loss
       '''
-      with tf.GradientTape(persistent=True) as tape:
+      scale_distill_grads = np.math.pow(self.distill_params.distill_temp, 2)
+
+      with tf.GradientTape() as tape:
         logits = self.student_model(x)
         distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
         reg_loss = tf.math.add_n(self.student_model.losses)
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
-
-      grads = tape.gradient(distill_loss, self.student_model.trainable_weights)
-      grads_actual = tape.gradient(actual_loss, self.student_model.trainable_weights)
-      grads_reg = tape.gradient(reg_loss, self.student_model.trainable_weights)
-      del tape
-      final_grad = tf.math.pow(self.distill_params.distill_temp, 2) * self.distill_params.student_distill_rate * grads + \
-                   self.distill_params.student_gold_rate * grads_actual + grads_reg
-      self.student_model.optimizer.apply_gradients(zip(final_grad, self.student_model.trainable_weights))
+        final_loss = scale_distill_grads * self.distill_params.student_distill_rate* distill_loss + \
+                    self.distill_params.student_gold_rate * actual_loss + reg_loss
+      grads = tape.gradient(final_loss, self.student_model.trainable_weights)
+      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights))
 
       return distill_loss, actual_loss
 
