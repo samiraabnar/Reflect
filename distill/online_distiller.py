@@ -17,7 +17,9 @@ class OnlineDistiller(Distiller):
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
     self.distill_loss = self.task.get_distill_loss_fn(self.distill_params)
+    self.task_loss = self.task.get_loss_fn()
     self.metrics = self.task.metrics()
+    self.task_probs_fn = self.task.get_probs_fn()
 
     self.create_student_optimizer()
     self.create_teacher_optimizer()
@@ -89,7 +91,7 @@ class OnlineDistiller(Distiller):
 
     self.teacher_model.compile(
       optimizer=self.teacher_optimizer,
-      loss=task.get_loss_fn(),
+      loss=self.task_loss,
       metrics=[self.metrics])
 
   def distill_loop(self, padding_symbol=0):
@@ -123,7 +125,7 @@ class OnlineDistiller(Distiller):
         logits = self.student_model(x)
         distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
         reg_loss = tf.math.add_n(self.student_model.losses)
-        actual_loss = self.task.get_loss_fn()(y_pred=logits, y_true=y_true)
+        actual_loss = self.task.task_loss(y_pred=logits, y_true=y_true)
         final_loss = scale_distill_grads * self.distill_params.student_distill_rate * distill_loss + \
                      self.distill_params.student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
@@ -137,7 +139,7 @@ class OnlineDistiller(Distiller):
       step = 0
       for (x, y) in train_iter:
         teacher_logits, teacher_loss = teacher_train_step(x, y)
-        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=y, temperature=self.temperature)
+        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
@@ -186,7 +188,7 @@ class OnlineDistiller(Distiller):
         v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
 
         teacher_logits = self.teacher_model(v_x)
-        teacher_probs = self.task.get_probs_fn()(logits=teacher_logits, labels=v_y, temperature=self.temperature)
+        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
         logits = self.student_model(v_x)
 
         valid_step += 1
