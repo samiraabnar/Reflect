@@ -45,7 +45,7 @@ class OnlineDistiller(Distiller):
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
     tf.io.gfile.makedirs(student_log_dir)
     self.summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(student_summary_dir, 'train'))
-    tf.compat.v2.summary.experimental.set_step(self.student_optimizer.iterations)
+    tf.compat.v2.summary.experimental.set_step(self.teacher_optimizer.iterations)
 
 
   def create_teacher_optimizer(self):
@@ -144,7 +144,7 @@ class OnlineDistiller(Distiller):
         distill_loss, actual_loss = 0,0 #student_train_step(x=x, y=soft_targets, y_true=y)
 
         # Log every 200 batches.
-        # if step % 200 == 0:
+        if step % 200 == 0:
         #   with tf.summary.experimental.summary_scope("train"):
         #     tf.summary.scalar('student_learning_rate',
         #                 self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
@@ -153,7 +153,7 @@ class OnlineDistiller(Distiller):
         #                 self.teacher_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
         #                 )
         #     tf.summary.scalar('fine_distill_loss', distill_loss, )
-        #     tf.summary.scalar('teacher_loss', teacher_loss)
+            tf.summary.scalar('teacher_loss', teacher_loss)
 
         step += 1
         # Checkpoint and log after each epoch
