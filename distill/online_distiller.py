@@ -168,7 +168,7 @@ class OnlineDistiller(Distiller):
       num_epochs = self.distill_params.n_epochs
       for _ in tf.range(num_epochs):
         epoch_loop(train_iter, valid_iter)
-        self.save_student()
+        #self.save_student()
         self.save_teacher()
 
   def save_teacher(self):
