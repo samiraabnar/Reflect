@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
   # Restore Models
   distiller.restore_teacher()
-  distiller.restore_student()
+  #distiller.restore_student()
 
   # Run the distillation loop
   distiller.distill_loop()
