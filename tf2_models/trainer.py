@@ -24,7 +24,6 @@ class Trainer(object):
     x, y = iter(self.task.valid_dataset).next()
     model(x)
     model.summary()
-    print(model.trainable_variables)
     model.compile(
       optimizer=self.optimizer,
       loss=self.task.get_loss_fn(),

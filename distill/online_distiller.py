@@ -45,7 +45,7 @@ class OnlineDistiller(Distiller):
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
     tf.io.gfile.makedirs(student_log_dir)
     self.summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(student_summary_dir, 'train'))
-    tf.compat.v2.summary.experimental.set_step(self.teacher_optimizer.iterations)
+    tf.compat.v2.summary.experimental.set_step(self.student_optimizer.iterations)
 
 
   def create_teacher_optimizer(self):
@@ -92,7 +92,7 @@ class OnlineDistiller(Distiller):
       loss=self.task_loss,
       metrics=[self.metrics])
 
-  def distill_loop(self, padding_symbol=0):
+  def distill_loop(self):
     @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
@@ -128,8 +128,8 @@ class OnlineDistiller(Distiller):
         final_loss = scale_distill_grads * self.distill_params.student_distill_rate * distill_loss + \
                      self.distill_params.student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
-      #self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
-      #                                             name="student_optimizer")
+      self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
+                                                   name="student_optimizer")
 
       return distill_loss, actual_loss
 
@@ -140,8 +140,8 @@ class OnlineDistiller(Distiller):
       for (x, y) in train_iter:
         teacher_logits, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
-        teacher_probs = tf.stop_gradient(teacher_probs)
-        distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
+        soft_targets = tf.stop_gradient(teacher_probs)
+        distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y)
 
         # Log every 200 batches.
         if step % 200 == 0:
@@ -150,7 +150,7 @@ class OnlineDistiller(Distiller):
                         self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
                         )
             tf.summary.scalar('teacher_learning_rate',
-                        self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations),
+                        self.teacher_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
                         )
             tf.summary.scalar('fine_distill_loss', distill_loss, )
             tf.summary.scalar('teacher_loss', teacher_loss)

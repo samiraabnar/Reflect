@@ -66,9 +66,9 @@ class Distiller(object):
 
   def setup_models(self, distill_params, task):
     x, y = iter(self.task.valid_dataset).next()
-    self.student_model(x)
+    self.student_model(x, training=True)
     self.student_model.summary()
-    self.teacher_model(x)
+    self.teacher_model(x, training=True)
     self.teacher_model.summary()
     self.student_model.compile(
       optimizer=self.student_optimizer,
@@ -117,7 +117,7 @@ class Distiller(object):
       scale_distill_grads = np.math.pow(self.distill_params.distill_temp, 2)
 
       with tf.GradientTape() as tape:
-        logits = self.student_model(x)
+        logits = self.student_model(x, training=True)
         distill_loss = self.student_model.loss(y_pred=logits, y_true=y)
         reg_loss = tf.math.add_n(self.student_model.losses)
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
@@ -137,7 +137,7 @@ class Distiller(object):
         x = tf.convert_to_tensor(x, dtype=tf.int64)
         y = tf.convert_to_tensor(y, dtype=tf.int64)
 
-        teacher_logits = self.teacher_model(x)
+        teacher_logits = self.teacher_model(x, training=True)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         distill_loss, actual_loss = student_train_step(x=x, y=teacher_probs, y_true=y)
 
@@ -176,9 +176,9 @@ class Distiller(object):
     def valid_fn():
       valid_step = 0
       for v_x, v_y in valid_iter:
-        teacher_logits = self.teacher_model(v_x)
+        teacher_logits = self.teacher_model(v_x, training=False)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-        logits = self.student_model(v_x)
+        logits = self.student_model(v_x, training=False)
 
         for metric in self.metrics:
           if isfunction(metric):
