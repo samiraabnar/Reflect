@@ -11,7 +11,7 @@ class OnlineDistiller(Distiller):
   def __init__(self, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     self.teacher_model = teacher_model
-    self.student_model = student_model
+    #self.student_model = student_model
     self.task = task
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
@@ -36,10 +36,10 @@ class OnlineDistiller(Distiller):
                                             optimizer=self.teacher_optimizer,
                                             net=self.teacher_model)
     self.teacher_manager = tf.train.CheckpointManager(self.teacher_ckpt, teacher_ckpt_dir, max_to_keep=2)
-    self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
-                                            optimizer=self.student_optimizer,
-                                            net=self.student_model)
-    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
+    # self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
+    #                                         optimizer=self.student_optimizer,
+    #                                         net=self.student_model)
+    # self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
 
     # Init summary
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
@@ -77,15 +77,15 @@ class OnlineDistiller(Distiller):
 
   def setup_models(self, distill_params, task):
     x, y = iter(self.task.valid_dataset).next()
-    self.student_model(x)
-    self.student_model.summary()
+    # self.student_model(x)
+    # self.student_model.summary()
     self.teacher_model(x)
     self.teacher_model.summary()
 
-    self.student_model.compile(
-      optimizer=self.student_optimizer,
-      loss=self.distill_loss,
-      metrics=[self.metrics])
+    # self.student_model.compile(
+    #   optimizer=self.student_optimizer,
+    #   loss=self.distill_loss,
+    #   metrics=[self.metrics])
 
     self.teacher_model.compile(
       optimizer=self.teacher_optimizer,
@@ -141,19 +141,19 @@ class OnlineDistiller(Distiller):
         teacher_logits, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         soft_targets = tf.stop_gradient(teacher_probs)
-        distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y)
+        distill_loss, actual_loss = 0,0 #student_train_step(x=x, y=soft_targets, y_true=y)
 
         # Log every 200 batches.
-        if step % 200 == 0:
-          with tf.summary.experimental.summary_scope("train"):
-            tf.summary.scalar('student_learning_rate',
-                        self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-                        )
-            tf.summary.scalar('teacher_learning_rate',
-                        self.teacher_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-                        )
-            tf.summary.scalar('fine_distill_loss', distill_loss, )
-            tf.summary.scalar('teacher_loss', teacher_loss)
+        # if step % 200 == 0:
+        #   with tf.summary.experimental.summary_scope("train"):
+        #     tf.summary.scalar('student_learning_rate',
+        #                 self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+        #                 )
+        #     tf.summary.scalar('teacher_learning_rate',
+        #                 self.teacher_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
+        #                 )
+        #     tf.summary.scalar('fine_distill_loss', distill_loss, )
+        #     tf.summary.scalar('teacher_loss', teacher_loss)
 
         step += 1
         # Checkpoint and log after each epoch
@@ -190,7 +190,7 @@ class OnlineDistiller(Distiller):
 
         teacher_logits = self.teacher_model(v_x, training=False)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-        logits = self.student_model(v_x, training=False)
+        logits = teacher_logits #self.student_model(v_x, training=False)
 
         valid_step += 1
         for metric in self.metrics:
