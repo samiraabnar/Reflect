@@ -93,13 +93,13 @@ class OnlineDistiller(Distiller):
       metrics=[self.metrics])
 
   def distill_loop(self):
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
         logits = self.teacher_model(x, training=True)
         loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
-        #reg_loss = tf.math.add_n(self.teacher_model.losses)
-        final_loss = loss #+ reg_loss
+        reg_loss = tf.math.add_n(self.teacher_model.losses)
+        final_loss = loss + reg_loss
 
       grads = tape.gradient(final_loss, self.teacher_model.trainable_weights)
       self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights),
@@ -137,7 +137,7 @@ class OnlineDistiller(Distiller):
     @tf.function
     def epoch_loop(train_iter, valid_iter):
       step = 0
-      for (x, y) in train_iter:
+      for (x, y) in self.task.train_dataset:
         teacher_logits, teacher_loss = teacher_train_step(x, y)
         #teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         #soft_targets = tf.stop_gradient(teacher_probs)
