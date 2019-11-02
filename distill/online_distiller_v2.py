@@ -133,7 +133,7 @@ class OnlineDistiller(Distiller):
 
         # Log every 200 batches.
         if step % 200 == 0:
-        #   with tf.summary.experimental.summary_scope("train"):
+          with tf.summary.experimental.summary_scope("train"):
         #     tf.summary.scalar('student_learning_rate',
         #                 self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
         #                 )
@@ -161,6 +161,7 @@ class OnlineDistiller(Distiller):
                                epochs=1,
                                steps_per_epoch=self.task.n_train_batches,
                                verbose=2)
+        self.teacher_model.evaluate(self.task.valid_dataset)
         epoch_loop(train_iter, valid_iter)
         #self.save_student()
         self.save_teacher()
@@ -207,18 +208,6 @@ class OnlineDistiller(Distiller):
         tf.summary.scalar('distill_loss', distill_loss)
         tf.summary.scalar('actual_loss', actual_loss)
 
-      # with tf.summary.experimental.summary_scope("student_valid"):
-      #   for metric in self.metrics:
-      #     if isfunction(metric):
-      #       metric_name = camel2snake(metric.__name__)
-      #     else:
-      #       metric_name = camel2snake(metric.__class__.__name__)
-      #
-      #     tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
-      #     self.student_validation_metrics[metric_name].reset_states()
-      #
-      #   tf.summary.scalar("distill_loss", self.student_validation_loss.result())
-      #   self.student_validation_loss.reset_states()
 
       with tf.summary.experimental.summary_scope("teacher_valid"):
         for metric in self.metrics:
