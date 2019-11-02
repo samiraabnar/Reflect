@@ -19,7 +19,6 @@ import os
 from util.config_util import get_model_params, get_task_params, get_train_params
 from absl import flags
 import sys
-å
 from util.models import MODELS
 from util.tasks import TASKS
 
