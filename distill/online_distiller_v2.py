@@ -123,10 +123,6 @@ class OnlineDistiller(Distiller):
 
     @tf.function
     def epoch_loop(train_iter, valid_iter):
-      self.teacher_model.fit(self.task.train_dataset,
-                epochs=1,
-                steps_per_epoch=self.task.n_train_batches,
-                verbose=2)
       step = 0
       for (x, y) in train_iter:
         teacher_logits = self.teacher_model(x, training=True)
@@ -161,6 +157,10 @@ class OnlineDistiller(Distiller):
 
       num_epochs = self.distill_params.n_epochs
       for _ in tf.range(num_epochs):
+        self.teacher_model.fit(self.task.train_dataset,
+                               epochs=1,
+                               steps_per_epoch=self.task.n_train_batches,
+                               verbose=2)
         epoch_loop(train_iter, valid_iter)
         #self.save_student()
         self.save_teacher()
