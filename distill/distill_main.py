@@ -12,7 +12,7 @@ python distill/distill_main.py \
 --distill_mode=offline
 '''
 from distill.distiller import Distiller
-from distill.online_distiller_v2 import OnlineDistiller
+from distill.online_distiller import OnlineDistiller
 from util import constants
 from util.config_util import get_distill_params
 import os
