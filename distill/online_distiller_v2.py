@@ -161,7 +161,7 @@ class OnlineDistiller(Distiller):
                               epochs=1,
                               steps_per_epoch=self.task.n_train_batches,
                               verbose=2)
-        self.teacher_model.evaluate(self.task.valid_dataset)
+        self.teacher_model.evaluate(self.task.valid_dataset, steps=self.task.n_valid_batches)
         epoch_loop(train_iter, valid_iter)
         #self.save_student()
         self.save_teacher()
