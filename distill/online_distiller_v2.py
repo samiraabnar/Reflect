@@ -158,9 +158,9 @@ class OnlineDistiller(Distiller):
       num_epochs = self.distill_params.n_epochs
       for _ in tf.range(num_epochs):
         self.teacher_model.fit(self.task.train_dataset,
-                               epochs=1,
-                               steps_per_epoch=self.task.n_train_batches,
-                               verbose=2)
+                              epochs=1,
+                              steps_per_epoch=self.task.n_train_batches,
+                              verbose=2)
         self.teacher_model.evaluate(self.task.valid_dataset)
         epoch_loop(train_iter, valid_iter)
         #self.save_student()
