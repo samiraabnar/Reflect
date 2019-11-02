@@ -157,10 +157,11 @@ class OnlineDistiller(Distiller):
 
         step += 1
         if step == self.task.n_train_batches:
+          # Validate at the end of the epoch
+          self.validate(actual_loss, distill_loss, valid_iter)
           break
 
-      # Validate at the end of the epoch
-      self.validate(actual_loss, distill_loss, valid_iter)
+      
 
     with self.summary_writer.as_default():
       train_iter = iter(self.task.train_dataset)
