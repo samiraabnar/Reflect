@@ -139,8 +139,8 @@ class OnlineDistiller(Distiller):
       step = 0
       for (x, y) in train_iter:
         teacher_logits, teacher_loss = teacher_train_step(x, y)
-        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
-        soft_targets = tf.stop_gradient(teacher_probs)
+        #teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
+        #soft_targets = tf.stop_gradient(teacher_probs)
         distill_loss, actual_loss = 0,0 #student_train_step(x=x, y=soft_targets, y_true=y)
 
         # Log every 200 batches.
@@ -149,17 +149,18 @@ class OnlineDistiller(Distiller):
         #     tf.summary.scalar('student_learning_rate',
         #                 self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
         #                 )
-        #     tf.summary.scalar('teacher_learning_rate',
-        #                 self.teacher_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-        #                 )
+            tf.summary.scalar('teacher_learning_rate',
+                        self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations),
+                        )
         #     tf.summary.scalar('fine_distill_loss', distill_loss, )
             tf.summary.scalar('teacher_loss', teacher_loss)
 
         step += 1
-        # Checkpoint and log after each epoch
-        if (step % self.task.n_train_batches) == 0:
-          self.validate(actual_loss, distill_loss, valid_iter)
+        if step == self.task.n_train_batches:
           break
+
+      # Validate at the end of the epoch
+      self.validate(actual_loss, distill_loss, valid_iter)
 
     with self.summary_writer.as_default():
       train_iter = iter(self.task.train_dataset)
@@ -198,12 +199,12 @@ class OnlineDistiller(Distiller):
             metric_name = camel2snake(metric.__name__)
           else:
             metric_name = camel2snake(metric.__class__.__name__)
-          self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
-                                                                   y_true=v_y))
+          # self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
+          #                                                          y_true=v_y))
           self.teacher_validation_metrics[metric_name].update_state(metric(y_pred=teacher_logits,
                                                                            y_true=v_y))
-          self.student_validation_loss.update_state(
-            self.distill_loss(y_true=teacher_probs, y_pred=logits))
+          # self.student_validation_loss.update_state(
+          #   self.distill_loss(y_true=teacher_probs, y_pred=logits))
 
         if valid_step >= self.task.n_valid_batches:
           break
@@ -213,18 +214,18 @@ class OnlineDistiller(Distiller):
         tf.summary.scalar('distill_loss', distill_loss)
         tf.summary.scalar('actual_loss', actual_loss)
 
-      with tf.summary.experimental.summary_scope("student_valid"):
-        for metric in self.metrics:
-          if isfunction(metric):
-            metric_name = camel2snake(metric.__name__)
-          else:
-            metric_name = camel2snake(metric.__class__.__name__)
-
-          tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
-          self.student_validation_metrics[metric_name].reset_states()
-
-        tf.summary.scalar("distill_loss", self.student_validation_loss.result())
-        self.student_validation_loss.reset_states()
+      # with tf.summary.experimental.summary_scope("student_valid"):
+      #   for metric in self.metrics:
+      #     if isfunction(metric):
+      #       metric_name = camel2snake(metric.__name__)
+      #     else:
+      #       metric_name = camel2snake(metric.__class__.__name__)
+      #
+      #     tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
+      #     self.student_validation_metrics[metric_name].reset_states()
+      #
+      #   tf.summary.scalar("distill_loss", self.student_validation_loss.result())
+      #   self.student_validation_loss.reset_states()
 
       with tf.summary.experimental.summary_scope("teacher_valid"):
         for metric in self.metrics:

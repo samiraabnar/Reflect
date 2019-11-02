@@ -37,7 +37,7 @@ class DistillParams(object):
                teacher_decay_steps=10000,
                teacher_warmup_steps=10000,
                teacher_hold_base_rate_steps=1000,
-               teacher_optimizer='adam',
+               teacher_optimizer='radam',
                n_epochs=60
   ):
     self.distill_temp = distill_temp
