@@ -123,7 +123,7 @@ class OnlineDistiller(Distiller):
 
     @tf.function
     def epoch_loop(train_iter, valid_iter):
-      self.teacher_model.fit(train_iter,
+      self.teacher_model.fit(self.task.train_dataset,
                 epochs=1,
                 steps_per_epoch=self.task.n_train_batches,
                 verbose=2)
