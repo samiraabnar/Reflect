@@ -126,7 +126,7 @@ class OnlineDistiller(Distiller):
       step = 0
       for (x, y) in train_iter:
         teacher_logits = self.teacher_model(x, training=True)
-        teacher_loss = self.teacher_model.loss(teacher_logits, y)
+        teacher_loss = self.teacher_model.loss(y_pred=teacher_logits,y_true=y)
         #teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         #soft_targets = tf.stop_gradient(teacher_probs)
         distill_loss, actual_loss = 0,0 #student_train_step(x=x, y=soft_targets, y_true=y)
