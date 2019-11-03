@@ -11,7 +11,7 @@ class OnlineDistiller(Distiller):
   def __init__(self, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     self.teacher_model = teacher_model
-    #self.student_model = student_model
+    self.student_model = student_model
     self.task = task
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
@@ -36,10 +36,10 @@ class OnlineDistiller(Distiller):
                                             optimizer=self.teacher_optimizer,
                                             net=self.teacher_model)
     self.teacher_manager = tf.train.CheckpointManager(self.teacher_ckpt, teacher_ckpt_dir, max_to_keep=2)
-    # self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
-    #                                         optimizer=self.student_optimizer,
-    #                                         net=self.student_model)
-    # self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
+    self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
+                                            optimizer=self.student_optimizer,
+                                            net=self.student_model)
+    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
 
     # Init summary
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
@@ -77,15 +77,15 @@ class OnlineDistiller(Distiller):
 
   def setup_models(self, distill_params, task):
     x, y = iter(self.task.valid_dataset).next()
-    # self.student_model(x)
-    # self.student_model.summary()
+    self.student_model(x)
+    self.student_model.summary()
     self.teacher_model(x)
     self.teacher_model.summary()
 
-    # self.student_model.compile(
-    #   optimizer=self.student_optimizer,
-    #   loss=self.distill_loss,
-    #   metrics=[self.metrics])
+    self.student_model.compile(
+      optimizer=self.student_optimizer,
+      loss=self.distill_loss,
+      metrics=[self.metrics])
 
     self.teacher_model.compile(
       optimizer=self.teacher_optimizer,
@@ -204,7 +204,7 @@ class OnlineDistiller(Distiller):
 
         teacher_logits = self.teacher_model(v_x, training=False)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-        logits = teacher_logits #self.student_model(v_x, training=False)
+        logits = self.student_model(v_x, training=False)
 
         valid_step += 1
         for metric in self.metrics:
@@ -212,12 +212,12 @@ class OnlineDistiller(Distiller):
             metric_name = camel2snake(metric.__name__)
           else:
             metric_name = camel2snake(metric.__class__.__name__)
-          # self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
-          #                                                          y_true=v_y))
+          self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
+                                                                   y_true=v_y))
           self.teacher_validation_metrics[metric_name].update_state(metric(y_pred=teacher_logits,
                                                                            y_true=v_y))
-          # self.student_validation_loss.update_state(
-          #   self.distill_loss(y_true=teacher_probs, y_pred=logits))
+          self.student_validation_loss.update_state(
+            self.distill_loss(y_true=teacher_probs, y_pred=logits))
 
         if valid_step >= self.task.n_valid_batches:
           break
@@ -225,18 +225,18 @@ class OnlineDistiller(Distiller):
 
 
 
-      # with tf.summary.experimental.summary_scope("student_valid"):
-      #   for metric in self.metrics:
-      #     if isfunction(metric):
-      #       metric_name = camel2snake(metric.__name__)
-      #     else:
-      #       metric_name = camel2snake(metric.__class__.__name__)
-      #
-      #     tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
-      #     self.student_validation_metrics[metric_name].reset_states()
-      #
-      #   tf.summary.scalar("distill_loss", self.student_validation_loss.result())
-      #   self.student_validation_loss.reset_states()
+      with tf.summary.experimental.summary_scope("student_valid"):
+        for metric in self.metrics:
+          if isfunction(metric):
+            metric_name = camel2snake(metric.__name__)
+          else:
+            metric_name = camel2snake(metric.__class__.__name__)
+
+          tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
+          self.student_validation_metrics[metric_name].reset_states()
+
+        tf.summary.scalar("distill_loss", self.student_validation_loss.result())
+        self.student_validation_loss.reset_states()
 
       with tf.summary.experimental.summary_scope("teacher_valid"):
         for metric in self.metrics:
