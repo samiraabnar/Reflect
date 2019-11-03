@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=lm_gpt2
+#SBATCH --job-name=online_distill_lm
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
@@ -33,7 +33,7 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_a
 --student_exp_name=distilled0 \
 --distill_config='base' \
 --teacher_config=lstm_drop31_v2 \
---student_config=very_big_gpt_v10
+--student_config=very_big_gpt_v10 \
 --distill_mode=online \
 --distill_config=pure_distill_2 \
 

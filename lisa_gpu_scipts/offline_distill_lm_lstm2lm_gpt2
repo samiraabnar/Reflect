@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=lm_gpt2
+#SBATCH --job-name=offline_distill_lm
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
