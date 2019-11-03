@@ -168,17 +168,17 @@ class OnlineDistiller(Distiller):
         teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
                                                    steps=self.task.n_valid_batches)
 
-        tf.print(len(teacher_eval_results), len(self.teacher_model.metric_names))
+        tf.print(len(teacher_eval_results), len(self.teacher_model.metrics_names))
         with tf.summary.experimental.summary_scope("eval_teacher"):
-          for i, m_name in enumerate(self.teacher_model.metric_names):
+          for i, m_name in enumerate(self.teacher_model.metrics_names):
             tf.summary.scalar(m_name, teacher_eval_results[i])
 
         student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
                                                            steps=self.task.n_valid_batches)
 
-        tf.print(len(student_eval_results), len(self.student_model.metric_names))
+        tf.print(len(student_eval_results), len(self.student_model.metrics_names))
         with tf.summary.experimental.summary_scope("eval_student"):
-          for i, m_name in enumerate(self.student_model.metric_names):
+          for i, m_name in enumerate(self.student_model.metrics_names):
             tf.summary.scalar(m_name, student_eval_results[i])
 
 
