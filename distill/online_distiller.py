@@ -93,7 +93,7 @@ class OnlineDistiller(Distiller):
       metrics=[self.metrics])
 
   def distill_loop(self):
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
         logits = self.teacher_model(x, training=True)
@@ -135,43 +135,54 @@ class OnlineDistiller(Distiller):
 
 
     @tf.function
-    def epoch_loop(train_iter, valid_iter):
+    def epoch_loop():
       step = 0
       for (x, y) in self.task.train_dataset:
         teacher_logits, teacher_loss = teacher_train_step(x, y)
-        #teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
-        #soft_targets = tf.stop_gradient(teacher_probs)
-        distill_loss, actual_loss = 0,0 #student_train_step(x=x, y=soft_targets, y_true=y)
+        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
+        soft_targets = tf.stop_gradient(teacher_probs)
+        distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y)
 
         # Log every 200 batches.
         if step % 200 == 0:
-        #   with tf.summary.experimental.summary_scope("train"):
-        #     tf.summary.scalar('student_learning_rate',
-        #                 self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations),
-        #                 )
-            tf.summary.scalar('teacher_learning_rate',
-                        self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations),
-                        )
-        #     tf.summary.scalar('fine_distill_loss', distill_loss, )
+          with tf.summary.experimental.summary_scope("student_train"):
+            tf.summary.scalar('student_learning_rate',
+                          self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
+            tf.summary.scalar('fine_distill_loss', distill_loss, )
+          with tf.summary.experimental.summary_scope("teacher_train"):
             tf.summary.scalar('teacher_loss', teacher_loss)
+            tf.summary.scalar('teacher_learning_rate',
+                              self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations))
 
         step += 1
         if step == self.task.n_train_batches:
-          # Validate at the end of the epoch
-          self.validate(actual_loss, distill_loss, valid_iter)
+          with tf.summary.experimental.summary_scope("student_train"):
+            tf.summary.scalar('distill_loss', distill_loss)
+            tf.summary.scalar('actual_loss', actual_loss)
           break
 
-
-
     with self.summary_writer.as_default():
-      train_iter = iter(self.task.train_dataset)
-      valid_iter = iter(self.task.valid_dataset)
-
       num_epochs = self.distill_params.n_epochs
       for _ in tf.range(num_epochs):
-        epoch_loop(train_iter, valid_iter)
-        self.teacher_model.evaluate(self.task.valid_dataset, steps=self.task.n_valid_batches)
-        #self.save_student()
+        epoch_loop()
+        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                   steps=self.task.n_valid_batches)
+
+        tf.print(len(teacher_eval_results), len(self.teacher_model.metric_names))
+        with tf.summary.experimental.summary_scope("eval_teacher"):
+          for i, m_name in enumerate(self.teacher_model.metric_names):
+            tf.summary.scalar(m_name, teacher_eval_results[i])
+
+        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
+
+        tf.print(len(student_eval_results), len(self.student_model.metric_names))
+        with tf.summary.experimental.summary_scope("eval_student"):
+          for i, m_name in enumerate(self.student_model.metric_names):
+            tf.summary.scalar(m_name, student_eval_results[i])
+
+
+        self.save_student()
         self.save_teacher()
 
   def save_teacher(self):
@@ -212,9 +223,7 @@ class OnlineDistiller(Distiller):
           break
 
 
-      with tf.summary.experimental.summary_scope("student_train"):
-        tf.summary.scalar('distill_loss', distill_loss)
-        tf.summary.scalar('actual_loss', actual_loss)
+
 
       # with tf.summary.experimental.summary_scope("student_valid"):
       #   for metric in self.metrics:
