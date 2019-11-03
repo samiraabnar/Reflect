@@ -33,7 +33,7 @@ class DistillLoss(tf.keras.losses.Loss):
 class SequenceDistillLoss(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0, tmp=1.0,
                **kwargs):
-    super(DistillLoss, self).__init__(**kwargs)
+    super(SequenceDistillLoss, self).__init__(**kwargs)
     self.tmp = tf.constant(tmp, dtype=tf.float32)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
 
