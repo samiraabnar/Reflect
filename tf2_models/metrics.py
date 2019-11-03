@@ -70,34 +70,34 @@ def classification_loss(y_true, y_pred):
 def accuracy(targets, logits, padding_symbol=0):
   targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
-  return accuracy_topk(targets, logits, sequence_mask, topk=1)
+  return accuracy_topk(targets, logits, sequence_mask, topk=tf.constant(1))
 
 @tf.function(experimental_relax_shapes=True)
 def unmasked_accuracy(targets, logits, ):
   targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
-  return unmasked_accuracy_topk(targets, logits, topk=1)
+  return unmasked_accuracy_topk(targets, logits, topk=tf.constant(1))
 
 @tf.function(experimental_relax_shapes=True)
 def accuracy_top2(targets, logits, padding_symbol=0):
   targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
-  return accuracy_topk(targets, logits, sequence_mask, topk=2)
+  return accuracy_topk(targets, logits, sequence_mask, topk=tf.constant(2))
 
 @tf.function(experimental_relax_shapes=True)
 def unmasked_accuracy_top2(targets, logits, ):
   targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
-  return unmasked_accuracy_topk(targets, logits, topk=2)
+  return unmasked_accuracy_topk(targets, logits, topk=tf.constant(2))
 
 @tf.function(experimental_relax_shapes=True)
 def accuracy_top5(targets, logits, padding_symbol=0):
   targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
-  return accuracy_topk(targets, logits, sequence_mask, topk=5)
+  return accuracy_topk(targets, logits, sequence_mask, topk=tf.constant(5))
 
 @tf.function(experimental_relax_shapes=True)
 def unmasked_accuracy_top5(targets, logits, ):
   targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
-  return unmasked_accuracy_topk(targets, logits, topk=5)
+  return unmasked_accuracy_topk(targets, logits, topk=tf.constant(5))
 
 @tf.function(experimental_relax_shapes=True)
 def accuracy_topk(targets, logits, sequence_mask, topk):
