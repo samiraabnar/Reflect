@@ -137,7 +137,7 @@ class OnlineDistiller(Distiller):
     @tf.function
     def epoch_loop():
       step = 0
-      for (x, y) in self.task.train_dataset:
+      for x, y in self.task.train_dataset:
         teacher_logits, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         soft_targets = tf.stop_gradient(teacher_probs)
