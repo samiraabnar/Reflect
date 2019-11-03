@@ -161,26 +161,27 @@ class OnlineDistiller(Distiller):
             tf.summary.scalar('actual_loss', actual_loss)
           break
 
+
+
     with self.summary_writer.as_default():
       num_epochs = self.distill_params.n_epochs
       for _ in tf.range(num_epochs):
         epoch_loop()
-        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                   steps=self.task.n_valid_batches)
 
-        tf.print(len(teacher_eval_results), len(self.teacher_model.metrics_names))
+        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
+
+        # Evaluate Teacher
         with tf.summary.experimental.summary_scope("eval_teacher"):
           for i, m_name in enumerate(self.teacher_model.metrics_names):
             tf.summary.scalar(m_name, teacher_eval_results[i])
 
+        # Evaluate Student
         student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
                                                            steps=self.task.n_valid_batches)
-
-        tf.print(len(student_eval_results), len(self.student_model.metrics_names))
         with tf.summary.experimental.summary_scope("eval_student"):
           for i, m_name in enumerate(self.student_model.metrics_names):
             tf.summary.scalar(m_name, student_eval_results[i])
-
 
         self.save_student()
         self.save_teacher()
@@ -191,60 +192,3 @@ class OnlineDistiller(Distiller):
     tf.print("Saved teacher checkpoint for step {}: {}".format(int(self.teacher_ckpt.step), save_path))
 
 
-  def validate(self, actual_loss, distill_loss, valid_iter):
-    ''' Offline Distillation main loop.
-    '''
-    tf.print('Validating ...')
-    @tf.function(experimental_relax_shapes=True)
-    def valid_fn():
-      valid_step = 0
-      for v_x, v_y in valid_iter:
-        v_x = tf.convert_to_tensor(v_x, dtype=tf.int64)
-        v_y = tf.convert_to_tensor(v_y, dtype=tf.int64)
-
-        teacher_logits = self.teacher_model(v_x, training=False)
-        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-        logits = self.student_model(v_x, training=False)
-
-        valid_step += 1
-        for metric in self.metrics:
-          if isfunction(metric):
-            metric_name = camel2snake(metric.__name__)
-          else:
-            metric_name = camel2snake(metric.__class__.__name__)
-          self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
-                                                                   y_true=v_y))
-          self.teacher_validation_metrics[metric_name].update_state(metric(y_pred=teacher_logits,
-                                                                           y_true=v_y))
-          self.student_validation_loss.update_state(
-            self.distill_loss(y_true=teacher_probs, y_pred=logits))
-
-        if valid_step >= self.task.n_valid_batches:
-          break
-
-
-
-
-      with tf.summary.experimental.summary_scope("student_valid"):
-        for metric in self.metrics:
-          if isfunction(metric):
-            metric_name = camel2snake(metric.__name__)
-          else:
-            metric_name = camel2snake(metric.__class__.__name__)
-
-          tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
-          self.student_validation_metrics[metric_name].reset_states()
-
-        tf.summary.scalar("distill_loss", self.student_validation_loss.result())
-        self.student_validation_loss.reset_states()
-
-      with tf.summary.experimental.summary_scope("teacher_valid"):
-        for metric in self.metrics:
-          if isfunction(metric):
-            metric_name = camel2snake(metric.__name__)
-          else:
-            metric_name = camel2snake(metric.__class__.__name__)
-          tf.summary.scalar(metric_name, self.teacher_validation_metrics[metric_name].result())
-          self.teacher_validation_metrics[metric_name].reset_states()
-
-    valid_fn()
