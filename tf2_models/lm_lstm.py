@@ -217,7 +217,6 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     recurrent_initializer=get_initializer(initializer_range)
                                                     ))
 
-      @tf.function
       def create_init_var(unnested_state_size):
         flat_dims = tensor_shape.as_shape(unnested_state_size).as_list()
         init_state_size = [1] + flat_dims
@@ -225,7 +224,6 @@ class LmLSTMSharedEmb(tf.keras.Model):
                            initial_value=tf.keras.initializers.TruncatedNormal(stddev=initializer_range)(shape=init_state_size),
                            trainable=True,
                            name="lstm_init_"+str(i))
-
 
       state_size = self.stacked_rnns[-1].cell.state_size
       if nest.is_sequence(state_size):
@@ -236,7 +234,9 @@ class LmLSTMSharedEmb(tf.keras.Model):
       self.rnn_initial_states.append(init_state)
 
 
+
   def call(self, inputs, padding_symbol=0, **kwargs):
+    @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
       input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
       embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'),
