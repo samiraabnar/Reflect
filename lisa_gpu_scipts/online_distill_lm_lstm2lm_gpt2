@@ -27,7 +27,7 @@ LOGS_DIR=$HEAD_DIR/logs
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
---teacher_model=lm_lstm \
+--teacher_model=lm_lstm_shared_emb \
 --teacher_exp_name=lstm_drop31_v2_0.0001_onlineteacher_distilled0 \
 --student_model=lm_gpt2 \
 --student_exp_name=distilled0 \
