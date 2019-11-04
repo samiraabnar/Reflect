@@ -6,6 +6,7 @@ from tensorflow.python.util import nest
 
 from tf2_models.common_layers import get_initializer
 from tf2_models.embedding import SharedEmbeddings
+from tf2_models.utils import create_init_var
 
 
 class LmLSTM(tf.keras.Model):
@@ -184,7 +185,6 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                    l2=0.0000)
     self.create_vars()
 
-  @tf.function
   def create_vars(self):
     self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim ,
                                 hidden_size=self.hparams.embedding_dim,
@@ -217,19 +217,12 @@ class LmLSTMSharedEmb(tf.keras.Model):
                                                     recurrent_initializer=get_initializer(initializer_range)
                                                     ))
 
-      def create_init_var(unnested_state_size):
-        flat_dims = tensor_shape.as_shape(unnested_state_size).as_list()
-        init_state_size = [1] + flat_dims
-        return tf.Variable(shape=init_state_size, dtype=tf.float32,
-                           initial_value=tf.keras.initializers.TruncatedNormal(stddev=initializer_range)(shape=init_state_size),
-                           trainable=True,
-                           name="lstm_init_"+str(i))
 
       state_size = self.stacked_rnns[-1].cell.state_size
       if nest.is_sequence(state_size):
-        init_state = nest.map_structure(create_init_var, state_size)
+        init_state = nest.map_structure(lambda x: create_init_var(x, i, initializer_range), state_size)
       else:
-        init_state = create_init_var(state_size)
+        init_state = create_init_var(state_size, i, initializer_range)
 
       self.rnn_initial_states.append(init_state)
 
