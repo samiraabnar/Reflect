@@ -186,39 +186,44 @@ class LmLSTMSharedEmb(tf.keras.Model):
     self.create_vars()
 
   def create_vars(self):
-    self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim ,
-                                hidden_size=self.hparams.embedding_dim,
-                                initializer_range=self.hparams.initializer_range,
-                                regularizer=self.regularizer,
-                                name='embedding')
-    self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
-    self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
-    initializer_range = self.hparams.embedding_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
-    self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim,
-                                                   kernel_initializer=get_initializer(initializer_range))
 
-    self.stacked_rnns = []
-    self.rnn_initial_states = []
+    @tf.function
+    def _create_vars():
+      self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim,
+                                              hidden_size=self.hparams.embedding_dim,
+                                              initializer_range=self.hparams.initializer_range,
+                                              regularizer=self.regularizer,
+                                              name='embedding')
+      self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
+      self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
+      initializer_range = self.hparams.embedding_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
+      self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim,
+                                                     kernel_initializer=get_initializer(initializer_range))
+
+      self.stacked_rnns = []
+      self.rnn_initial_states = []
+      for _ in np.arange(self.hparams.depth):
+        initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
+        self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
+                                                      return_sequences=True,
+                                                      return_state=True,
+                                                      go_backwards=False,
+                                                      stateful=False,
+                                                      unroll=False,
+                                                      time_major=False,
+                                                      recurrent_dropout=self.hparams.hidden_dropout_rate,
+                                                      dropout=self.hparams.hidden_dropout_rate,
+                                                      kernel_regularizer=self.regularizer,
+                                                      recurrent_regularizer=self.regularizer,
+                                                      bias_regularizer=self.regularizer,
+                                                      kernel_initializer=get_initializer(initializer_range),
+                                                      recurrent_initializer=get_initializer(initializer_range)
+                                                      ))
+
+    _create_vars()
+    initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
     for i in np.arange(self.hparams.depth):
-      initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
-      self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
-                                                    return_sequences=True,
-                                                    return_state=True,
-                                                    go_backwards=False,
-                                                    stateful=False,
-                                                    unroll=False,
-                                                    time_major=False,
-                                                    recurrent_dropout=self.hparams.hidden_dropout_rate,
-                                                    dropout=self.hparams.hidden_dropout_rate,
-                                                    kernel_regularizer=self.regularizer,
-                                                    recurrent_regularizer=self.regularizer,
-                                                    bias_regularizer=self.regularizer,
-                                                    kernel_initializer=get_initializer(initializer_range),
-                                                    recurrent_initializer=get_initializer(initializer_range)
-                                                    ))
-
-
-      state_size = self.stacked_rnns[-1].cell.state_size
+      state_size = self.stacked_rnns[i].cell.state_size
       if nest.is_sequence(state_size):
         init_state = nest.map_structure(lambda x: create_init_var(x, i, initializer_range), state_size)
       else:
