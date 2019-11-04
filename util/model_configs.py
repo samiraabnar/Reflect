@@ -471,6 +471,14 @@ lstm_drop31_v3 = {
   'input_dropout_rate': 0.2,
 }
 
+lstm_drop31_v4 = {
+  'hidden_dim': 512,
+  'embedding_dim': 512,
+  'depth': 2,
+  'hidden_dropout_rate': 0.4,
+  'input_dropout_rate': 0.2,
+}
+
 lstm3_drop30 = {
   'hidden_dim': 512,
   'embedding_dim': 256,
