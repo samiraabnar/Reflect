@@ -211,7 +211,7 @@ class ClassifierGPT2(tf.keras.Model):
                                                    l2=0.0001)
     self.create_vars()
 
-  @tf.function
+  #@tf.function
   def create_vars(self):
     self.transformer = GPT2(self.hparams, name='transformer')
     self.e2c = tf.keras.layers.Dense(units=self.hparams.num_labels,
@@ -219,7 +219,7 @@ class ClassifierGPT2(tf.keras.Model):
                                      name='e2c')
 
   def call(self, inputs, **kwargs):
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       mask = tf.cast(inputs != 0, dtype=tf.int32)
       inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
