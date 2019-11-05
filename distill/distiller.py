@@ -94,6 +94,8 @@ class Distiller(object):
   def distill_loop(self):
     ''' Offline Distillation main loop.
     '''
+    logging.info('Distribute strategy: mirrored.')
+    strategy = tf.distribute.MirroredStrategy()
 
     @tf.function(experimental_relax_shapes=True)
     def student_train_step(x, teacher_y, y_true):
@@ -147,25 +149,29 @@ class Distiller(object):
             tf.summary.scalar('actual_loss', actual_loss)
           break
 
-    with self.summary_writer.as_default():
-      for _ in np.arange(self.distill_params.n_epochs):
-        epoch_loop()
+    @tf.function
+    def summarize():
+      # Evaluate Teacher
+      teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                         steps=self.task.n_valid_batches)
+      with tf.summary.experimental.summary_scope("eval_teacher"):
+        for i, m_name in enumerate(self.teacher_model.metrics_names):
+          tf.summary.scalar(m_name, teacher_eval_results[i])
 
-        # Evaluate Teacher
-        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
-        with tf.summary.experimental.summary_scope("eval_teacher"):
-          for i, m_name in enumerate(self.teacher_model.metrics_names):
-            tf.summary.scalar(m_name, teacher_eval_results[i])
+      # Evaluate Student
+      student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                         steps=self.task.n_valid_batches)
+      with tf.summary.experimental.summary_scope("eval_student"):
+        for i, m_name in enumerate(self.student_model.metrics_names):
+          tf.summary.scalar(m_name, student_eval_results[i])
 
-        # Evaluate Student
-        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
-        with tf.summary.experimental.summary_scope("eval_student"):
-          for i, m_name in enumerate(self.student_model.metrics_names):
-            tf.summary.scalar(m_name, student_eval_results[i])
+    with strategy.scope():
+      with self.summary_writer.as_default():
+        for _ in np.arange(self.distill_params.n_epochs):
+          epoch_loop()
+          summarize()
 
-        self.save_student()
+          self.save_student()
 
   def validate(self, actual_loss, distill_loss, valid_iter):
     tf.print('Validating ...')
