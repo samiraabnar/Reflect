@@ -72,9 +72,6 @@ DISTILLER = {'offline': Distiller,
              'online': OnlineDistiller}
 
 if __name__ == '__main__':
-  logging.info('Enabling TF2.')
-  tf.enable_v2_behavior()
-
   # Create task
   task = TASKS[hparams.task](get_task_params())
 
