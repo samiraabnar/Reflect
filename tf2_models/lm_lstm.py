@@ -286,42 +286,38 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
                                                    l2=0.0000)
     self.create_vars()
 
+  @tf.function
   def create_vars(self):
+    self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim,
+                                            hidden_size=self.hparams.embedding_dim,
+                                            initializer_range=self.hparams.initializer_range,
+                                            regularizer=self.regularizer,
+                                            name='embedding')
+    self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
+    self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
+    initializer_range = self.hparams.embedding_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
+    self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim,
+                                                   kernel_initializer=get_initializer(initializer_range))
 
-    @tf.function
-    def _create_vars():
-      self.input_embedding = SharedEmbeddings(vocab_size=self.hparams.input_dim,
-                                              hidden_size=self.hparams.embedding_dim,
-                                              initializer_range=self.hparams.initializer_range,
-                                              regularizer=self.regularizer,
-                                              name='embedding')
-      self.input_embedding_dropout = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
-      self.output_embedding_dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
-      initializer_range = self.hparams.embedding_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
-      self.output_projection = tf.keras.layers.Dense(units=self.hparams.embedding_dim,
-                                                     kernel_initializer=get_initializer(initializer_range))
-
-      self.stacked_rnns = []
-      self.rnn_initial_states = []
-      for _ in np.arange(self.hparams.depth):
-        initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
-        self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
-                                                      return_sequences=True,
-                                                      return_state=True,
-                                                      go_backwards=False,
-                                                      stateful=False,
-                                                      unroll=False,
-                                                      time_major=False,
-                                                      recurrent_dropout=self.hparams.hidden_dropout_rate,
-                                                      dropout=self.hparams.hidden_dropout_rate,
-                                                      kernel_regularizer=self.regularizer,
-                                                      recurrent_regularizer=self.regularizer,
-                                                      bias_regularizer=self.regularizer,
-                                                      kernel_initializer=get_initializer(initializer_range),
-                                                      recurrent_initializer=get_initializer(initializer_range)
-                                                      ))
-
-    _create_vars()
+    self.stacked_rnns = []
+    self.rnn_initial_states = []
+    for _ in np.arange(self.hparams.depth):
+      initializer_range = self.hparams.hidden_dim ** -0.5 if self.hparams.initializer_range is None else self.hparams.initializer_range
+      self.stacked_rnns.append(tf.keras.layers.LSTM(units=self.hparams.hidden_dim,
+                                                    return_sequences=True,
+                                                    return_state=True,
+                                                    go_backwards=False,
+                                                    stateful=False,
+                                                    unroll=False,
+                                                    time_major=False,
+                                                    recurrent_dropout=self.hparams.hidden_dropout_rate,
+                                                    dropout=self.hparams.hidden_dropout_rate,
+                                                    kernel_regularizer=self.regularizer,
+                                                    recurrent_regularizer=self.regularizer,
+                                                    bias_regularizer=self.regularizer,
+                                                    kernel_initializer=get_initializer(initializer_range),
+                                                    recurrent_initializer=get_initializer(initializer_range)
+                                                    ))
 
 
   def call(self, inputs, padding_symbol=0, **kwargs):
