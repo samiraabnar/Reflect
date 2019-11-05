@@ -257,7 +257,6 @@ class RectifiedAdam(tf.keras.optimizers.Optimizer):
             weights = weights[:len(params)]
         super(RectifiedAdam, self).set_weights(weights)
 
-    @tf.function(experimental_relax_shapes=True)
     def _resource_apply_dense(self, grad, var):
         var_dtype = var.dtype.base_dtype
         lr_t = self._decayed_lr(var_dtype)
@@ -323,7 +322,6 @@ class RectifiedAdam(tf.keras.optimizers.Optimizer):
             updates.append(vhat_t)
         return tf.group(*updates)
 
-    @tf.function(experimental_relax_shapes=True)
     def _resource_apply_sparse(self, grad, var, indices):
         var_dtype = var.dtype.base_dtype
         lr_t = self._decayed_lr(var_dtype)
