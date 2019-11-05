@@ -219,7 +219,7 @@ class ClassifierGPT2(tf.keras.Model):
                                      name='e2c')
 
   def call(self, inputs, **kwargs):
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       mask = tf.cast(inputs != 0, dtype=tf.int32)
       inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
