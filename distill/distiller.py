@@ -98,7 +98,7 @@ class Distiller(object):
     # train_dataset = strategy.experimental_distribute_dataset(self.task.train_dataset)
     # valid_dataset = strategy.experimental_distribute_dataset(self.task.valid_dataset)
 
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def student_train_step(x, teacher_y, y_true):
       ''' Training step for the student model (this is the only training step for offline distillation).
 
