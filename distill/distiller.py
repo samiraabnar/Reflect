@@ -165,13 +165,12 @@ class Distiller(object):
         for i, m_name in enumerate(self.student_model.metrics_names):
           tf.summary.scalar(m_name, student_eval_results[i])
 
-    with strategy.scope():
-      with self.summary_writer.as_default():
-        for _ in np.arange(self.distill_params.n_epochs):
-          epoch_loop()
-          summarize()
+    with self.summary_writer.as_default():
+      for _ in np.arange(self.distill_params.n_epochs):
+        epoch_loop()
+        summarize()
 
-          self.save_student()
+        self.save_student()
 
   def validate(self, actual_loss, distill_loss, valid_iter):
     tf.print('Validating ...')
