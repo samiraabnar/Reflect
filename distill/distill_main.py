@@ -17,8 +17,9 @@ from util import constants
 from util.config_util import get_distill_params
 import os
 from util.config_util import get_model_params, get_task_params, get_train_params
-from absl import flags
+from absl import flags, logging
 import sys
+import tensorflow as tf
 from util.models import MODELS
 from util.tasks import TASKS
 
@@ -71,6 +72,8 @@ DISTILLER = {'offline': Distiller,
              'online': OnlineDistiller}
 
 if __name__ == '__main__':
+  logging.info('Enabling TF2.')
+  tf.enable_v2_behavior()
 
   # Create task
   task = TASKS[hparams.task](get_task_params())

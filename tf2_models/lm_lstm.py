@@ -28,7 +28,6 @@ class LmLSTM(tf.keras.Model):
                                                    l2=0.00001)
     self.create_vars()
 
-  @tf.function
   def create_vars(self):
     self.input_embedding = tf.compat.v2.keras.layers.Embedding(input_dim=self.hparams.input_dim,
                                                                output_dim=self.hparams.embedding_dim,
