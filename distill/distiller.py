@@ -26,7 +26,6 @@ class Distiller(object):
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params, task)
 
-  @tf.function
   def create_student_optimizer(self):
     student_initial_learning_rate = self.distill_params.student_learning_rate
     lr_schedule = ExponentialDecayWithWarmpUp(
@@ -94,8 +93,10 @@ class Distiller(object):
   def distill_loop(self):
     ''' Offline Distillation main loop.
     '''
-    logging.info('Distribute strategy: mirrored.')
-    strategy = tf.distribute.MirroredStrategy()
+    # logging.info('Distribute strategy: mirrored.')
+    # strategy = tf.distribute.MirroredStrategy()
+    # train_dataset = strategy.experimental_distribute_dataset(self.task.train_dataset)
+    # valid_dataset = strategy.experimental_distribute_dataset(self.task.valid_dataset)
 
     @tf.function(experimental_relax_shapes=True)
     def student_train_step(x, teacher_y, y_true):
@@ -171,51 +172,6 @@ class Distiller(object):
         summarize()
 
         self.save_student()
-
-  def validate(self, actual_loss, distill_loss, valid_iter):
-    tf.print('Validating ...')
-
-
-    @tf.function(experimental_relax_shapes=True)
-    def valid_fn():
-      valid_step = 0
-      for v_x, v_y in valid_iter:
-        teacher_logits = self.teacher_model(v_x, training=False)
-        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=v_y, temperature=self.temperature)
-        logits = self.student_model(v_x, training=False)
-
-        for metric in self.metrics:
-          if isfunction(metric):
-            metric_name = camel2snake(metric.__name__)
-          else:
-            metric_name = camel2snake(metric.__class__.__name__)
-          self.student_validation_metrics[metric_name].update_state(metric(y_pred=logits,
-                                                                   y_true=v_y))
-          self.student_validation_loss.update_state(
-            self.distill_loss(y_true=teacher_probs, y_pred=logits))
-
-        valid_step += 1
-        if valid_step >= self.task.n_valid_batches:
-          break
-
-      with tf.summary.experimental.summary_scope("train"):
-        tf.summary.scalar('distill_loss', distill_loss)
-        tf.summary.scalar('actual_loss', actual_loss)
-
-      with tf.summary.experimental.summary_scope("student_valid"):
-        for metric in self.metrics:
-          if isfunction(metric):
-            metric_name = camel2snake(metric.__name__)
-          else:
-            metric_name = camel2snake(metric.__class__.__name__)
-          tf.summary.scalar(metric_name, self.student_validation_metrics[metric_name].result())
-
-          self.student_validation_metrics[metric_name].reset_states()
-
-        tf.summary.scalar("distill_loss",self.student_validation_loss.result())
-        self.student_validation_loss.reset_states()
-
-    valid_fn()
 
 
 
