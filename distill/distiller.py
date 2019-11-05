@@ -152,16 +152,11 @@ class Distiller(object):
 
     @tf.function
     def summarize():
-      # Evaluate Teacher
-      teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                         steps=self.task.n_valid_batches)
       with tf.summary.experimental.summary_scope("eval_teacher"):
         for i, m_name in enumerate(self.teacher_model.metrics_names):
           tf.summary.scalar(m_name, teacher_eval_results[i])
 
-      # Evaluate Student
-      student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                         steps=self.task.n_valid_batches)
+
       with tf.summary.experimental.summary_scope("eval_student"):
         for i, m_name in enumerate(self.student_model.metrics_names):
           tf.summary.scalar(m_name, student_eval_results[i])
@@ -169,7 +164,13 @@ class Distiller(object):
     with self.summary_writer.as_default():
       for _ in np.arange(self.distill_params.n_epochs):
         epoch_loop()
-        summarize()
+        # Evaluate Teacher
+        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
+        # Evaluate Student
+        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
+        summarize(teacher_eval_results, student_eval_results)
 
         self.save_student()
 
