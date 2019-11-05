@@ -41,7 +41,7 @@ class Trainer(object):
 
     self.callbacks = [ckpt_callback, summary_callback]
 
-  @tf.funtion
+  @tf.function
   def get_lr_schedule(self):
     if self.train_params.optimizer == 'radam':
       initial_learning_rate = self.train_params.learning_rate
