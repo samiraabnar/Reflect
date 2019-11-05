@@ -3,7 +3,7 @@
 #SBATCH --job-name=offline_distill_lm
 #SBATCH --time=20:00:00
 #SBATCH --partition=gpu_shared
-#SBATCH --gres=gpu:titanv:1
+#SBATCH --gres=gpu:1
 #SBATCH --mem=60G
 
 module load 2019
