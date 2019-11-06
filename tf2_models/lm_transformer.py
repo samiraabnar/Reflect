@@ -249,10 +249,8 @@ class ClassifierGPT2(tf.keras.Model):
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits = _call(batch_size, inputs, transformer_outputs)
 
-    if self.transformer.output_attentions:
-      return cl_logits, transformer_outputs
-    else:
-      return cl_logits
+
+    return cl_logits
 
   def detailled_call(self, inputs, **kwargs):
     @tf.function(experimental_relax_shapes=True)
