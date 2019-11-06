@@ -148,7 +148,7 @@ class Block(tf.keras.layers.Layer):
 
     a = self.ln_1(x)
     output_attn = self.attn([a, layer_past, attention_mask], training=training)
-    a = output_attn # output_attn: a, present, (attentions)
+    a = output_attn[0] # output_attn: a, present, (attentions)
     x = x + a
 
     m = self.ln_2(x)
