@@ -96,6 +96,7 @@ class GPT2Config(object):
 
       self.output_attentions = kwargs.pop('output_attentions', False)
       self.output_hidden_states = kwargs.pop('output_hidden_states', False)
+      self.output_embeddings = kwargs.pop('output_embeddings', False)
 
     @property
     def max_position_embeddings(self):

@@ -6,16 +6,11 @@ from tf2_models.transformer_layers import Block
 
 class GPT2(tf.keras.layers.Layer):
   def __init__(self, hparams, *inputs, **kwargs):
-    self.output_hidden_states = kwargs.get('output_hidden_states', False)
-    self.output_attentions = kwargs.get('output_attentions', False)
-    if 'output_attentions' in kwargs:
-      del kwargs['output_attentions']
-    if 'output_hidden_states' in kwargs:
-      del kwargs['output_hidden_states']
-
     super(GPT2, self).__init__(hparams, *inputs, **kwargs)
 
-
+    self.output_hidden_states = hparams.output_hidden_states
+    self.output_attentions = hparams.output_attentions
+    self.output_embeddings = hparams.output_embeddings
 
     self.num_hidden_layers = hparams.depth
     self.vocab_size = hparams.vocab_size
@@ -117,6 +112,7 @@ class GPT2(tf.keras.layers.Layer):
         all_hidden_states = all_hidden_states + (hidden_states,)
 
       outputs = (hidden_states, presents)
+
       if self.output_hidden_states:
         outputs = outputs + (all_hidden_states,)
       if self.output_attentions:
@@ -124,6 +120,8 @@ class GPT2(tf.keras.layers.Layer):
         attention_output_shape = input_shape[:-1] + [-1] + shape_list(all_attentions[0])[-2:]
         all_attentions = tuple(tf.reshape(t, attention_output_shape) for t in all_attentions)
         outputs = outputs + (all_attentions,)
+      if self.output_embeddings:
+          outputs = outputs + (inputs_embeds,)
       return outputs  # last hidden state, presents, (all hidden_states), (attentions)
 
     return _call(inputs, past, attention_mask, token_type_ids, position_ids,
