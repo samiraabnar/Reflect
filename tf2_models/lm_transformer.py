@@ -6,9 +6,17 @@ from tf2_models.transformer_layers import Block
 
 class GPT2(tf.keras.layers.Layer):
   def __init__(self, hparams, *inputs, **kwargs):
-    super(GPT2, self).__init__(hparams, *inputs, **kwargs)
     self.output_hidden_states = kwargs.get('output_hidden_states', False)
     self.output_attentions = kwargs.get('output_attentions', False)
+    if 'output_attentions' in kwargs:
+      del kwargs['output_attentions']
+    if 'output_hidden_states' in kwargs:
+      del kwargs['output_hidden_states']
+      
+    super(GPT2, self).__init__(hparams, *inputs, **kwargs)
+
+
+
     self.num_hidden_layers = hparams.depth
     self.vocab_size = hparams.vocab_size
     self.embedding_dim = hparams.embedding_dim
@@ -240,7 +248,7 @@ class ClassifierGPT2(tf.keras.Model):
 
     if self.transformer.output_attentions:
       return cl_logits, transformer_outputs
-    else: 
+    else:
       return cl_logits
 
 class ClassifierGPT2SharedWeights(ClassifierGPT2):
