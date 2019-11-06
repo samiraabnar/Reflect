@@ -9,7 +9,6 @@
 #SBATCH --gres=gpu:1
 
 module load 2019
-module load Python/3.6.6-intel-2018b
 module load CUDA/10.0.130
 module load cuDNN/7.6.3-CUDA-10.0.130
 
