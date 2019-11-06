@@ -1,4 +1,4 @@
-from distill.distill_util import DistillLoss, get_probs, SequenceDistillLoss
+from distill.distill_util import DistillLoss, get_probs, SequenceDistillLoss, get_topk_masked_probs, get_masked_probs
 from tasks.tasks import Task
 import tensorflow as tf
 
@@ -38,7 +38,7 @@ class SvAgreementLM(Task):
     return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=0)
 
   def get_probs_fn(self):
-    return get_probs
+    return get_masked_probs
 
   def metrics(self):
     return [MaskedSequenceLoss(padding_symbol=0),

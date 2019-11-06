@@ -252,7 +252,7 @@ class ClassifierGPT2(tf.keras.Model):
 
     return cl_logits
 
-  def detailled_call(self, inputs, **kwargs):
+  def detailed_call(self, inputs, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       mask = tf.cast(inputs != 0, dtype=tf.int32)
