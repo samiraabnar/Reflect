@@ -12,7 +12,7 @@ class GPT2(tf.keras.layers.Layer):
       del kwargs['output_attentions']
     if 'output_hidden_states' in kwargs:
       del kwargs['output_hidden_states']
-      
+
     super(GPT2, self).__init__(hparams, *inputs, **kwargs)
 
 
@@ -204,6 +204,13 @@ class ClassifierGPT2(tf.keras.Model):
   def __init__(self, hparams, scope='cl_gpt2',*inputs, **kwargs):
     self.cl_token = kwargs['cl_token']
     del kwargs['cl_token']
+    output_hidden_states = kwargs.get('output_hidden_states', False)
+    output_attentions = kwargs.get('output_attentions', False)
+    if 'output_attentions' in kwargs:
+      del kwargs['output_attentions']
+    if 'output_hidden_states' in kwargs:
+      del kwargs['output_hidden_states']
+
     super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
 
     self.scope = scope
@@ -217,11 +224,14 @@ class ClassifierGPT2(tf.keras.Model):
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.0001)
-    self.create_vars(**kwargs)
+    self.create_vars(output_hidden_states=output_hidden_states, output_attentions=output_attentions, **kwargs)
 
   #@tf.function
-  def create_vars(self, **kwargs):
-    self.transformer = GPT2(self.hparams, name='transformer', **kwargs)
+  def create_vars(self, output_hidden_states=False, output_attentions=False, **kwargs):
+    self.transformer = GPT2(self.hparams, name='transformer',
+                            output_hidden_states=output_hidden_states,
+                            output_attentions=output_attentions,
+                            **kwargs)
     self.e2c = tf.keras.layers.Dense(units=self.hparams.num_labels,
                                      kernel_initializer=get_initializer(self.hparams.initializer_range),
                                      name='e2c')
