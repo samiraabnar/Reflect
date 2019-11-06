@@ -84,6 +84,7 @@ class GPT2(tf.keras.layers.Layer):
       else:
         token_type_embeds = 0
 
+      inputs_embeds = tf.Variable(inputs_embeds, trainable=False)
       hidden_states = inputs_embeds + position_embeds + token_type_embeds
       hidden_states = self.drop(hidden_states, training=training)
 
