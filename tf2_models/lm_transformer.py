@@ -209,11 +209,11 @@ class ClassifierGPT2(tf.keras.Model):
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.0001)
-    self.create_vars()
+    self.create_vars(**kwargs)
 
   #@tf.function
-  def create_vars(self):
-    self.transformer = GPT2(self.hparams, name='transformer')
+  def create_vars(self, **kwargs):
+    self.transformer = GPT2(self.hparams, name='transformer', **kwargs)
     self.e2c = tf.keras.layers.Dense(units=self.hparams.num_labels,
                                      kernel_initializer=get_initializer(self.hparams.initializer_range),
                                      name='e2c')
@@ -238,7 +238,10 @@ class ClassifierGPT2(tf.keras.Model):
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits = _call(batch_size, inputs, transformer_outputs)
 
-    return cl_logits
+    if self.transformer.output_attentions:
+      return cl_logits, transformer_outputs
+    else: 
+      return cl_logits
 
 class ClassifierGPT2SharedWeights(ClassifierGPT2):
   def __init__(self, hparams, scope='cl_gpt2_shared_weights', *inputs, **kwargs):
