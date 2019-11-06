@@ -217,7 +217,7 @@ class ClassifierGPT2(tf.keras.Model):
     output_attentions = hparams.output_attentions
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.0001)
-    self.create_vars(output_hidden_states=output_hidden_states, output_attentions=output_attentions, **kwargs)
+    self.create_vars(**kwargs)
 
   #@tf.function
   def create_vars(self,**kwargs):
