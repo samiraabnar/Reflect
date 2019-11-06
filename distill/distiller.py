@@ -151,7 +151,7 @@ class Distiller(object):
           break
 
     @tf.function
-    def summarize():
+    def summarize(teacher_eval_results, student_eval_results):
       with tf.summary.experimental.summary_scope("eval_teacher"):
         for i, m_name in enumerate(self.teacher_model.metrics_names):
           tf.summary.scalar(m_name, teacher_eval_results[i])
