@@ -28,6 +28,6 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=lm_lstm_shared_emb \
 --task=word_sv_agreement_lm \
---model_config=lstm_drop31_v5 \
+--model_config=lstm_drop31_v4 \
 --train_config=radam_fast \
 --exp_name=lisa_offlineteacher
