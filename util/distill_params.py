@@ -65,5 +65,6 @@ pure_distill_4 = {
 
 DISTILL_PARAMS = {'pure_distill_1' :  pure_distill_1,
                   'pure_distill_2' :  pure_distill_2,
-                  'pure_distill_3' :  pure_distill_3
+                  'pure_distill_3' :  pure_distill_3,
+                  'pure_distill_4': pure_distill_4
                   }
