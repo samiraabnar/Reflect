@@ -1,12 +1,10 @@
 #!/bin/bash
 
-#SBATCH --job-name=lm_gpt2
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --job-name=offline_distill_lm
 #SBATCH --time=20:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
+#SBATCH --mem=60G
 
 module load 2019
 module load CUDA/10.0.130
@@ -18,6 +16,7 @@ conda activate indist
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/sw/arch/Debian9/EB_production/2019/software/CUDA/10.0.130/extras/CUPTI/lib64/
 
+
 HEAD_DIR="/home/samigpu/Codes/InDist"
 CODE_DIR=$HEAD_DIR/
 DATA_DIR=$HEAD_DIR/data
@@ -25,9 +24,13 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
---model=cl_gpt2_shared \
---task=word_sv_agreement_vp \
---model_config=small_gpt_v9 \
---train_config=adam_slow \
---exp_name=offlineteacher_v1
+
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
+--teacher_model=cl_gpt2 \
+--teacher_exp_name=0.0001_offlineteacher_v1 \
+--student_model=cl_gpt2 \
+--student_exp_name=lisa_fd4 \
+--teacher_config=small_gpt_v9 \
+--student_config=small_gpt_v9 \
+--distill_mode=offline \
+--distill_config=pure_distill_2
