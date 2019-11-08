@@ -31,4 +31,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --task=word_sv_agreement_vp \
 --model_config=small_gpt_v9 \
 --train_config=adam_slow \
---exp_name=indep
+--exp_name=offlineteacher_v1
