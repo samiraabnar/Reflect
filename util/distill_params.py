@@ -49,8 +49,8 @@ pure_distill_3 = {
 
 pure_distill_4 = {
 'distill_temp' : 1.0,
-'student_distill_rate' : 0.9,
-'student_gold_rate' : 0.1,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
 'student_learning_rate' : 0.0001,
 'student_decay_steps' : 10000,
 'student_hold_base_rate_steps' :  1000,
