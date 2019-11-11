@@ -277,7 +277,7 @@ class ClassifierGPT2(tf.keras.Model):
 
 class ClassifierGPT2SharedWeights(ClassifierGPT2):
   def __init__(self, hparams, scope='cl_gpt2_shared_weights', *inputs, **kwargs):
-    super(ClassifierGPT2SharedWeights, self).__init__(hparams, *inputs, **kwargs)
+    super(ClassifierGPT2SharedWeights, self).__init__(hparams, scope=scope, *inputs, **kwargs)
 
   @tf.function
   def create_vars(self):
