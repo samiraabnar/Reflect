@@ -63,7 +63,7 @@ def create_and_load_models():
                                           "student", student_model.model_name,  str(hparams.student_config), hparams.student_exp_name]))
   student_ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
                                   '_'.join([hparams.distill_mode,hparams.distill_config,
-                                            "teacher", teacher_model.model_name, hparams.teacher_exp_name,
+                                            "teacher", teacher_model.model_name, str(hparams.teacher_config), hparams.teacher_exp_name,
                                            "student",student_model.model_name, str(hparams.student_config),hparams.student_exp_name]))
 
   return teacher_model, student_model, teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir
