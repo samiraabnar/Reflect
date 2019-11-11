@@ -4,11 +4,12 @@ Codes adapted from:
 
 Example Run:
 python tasks/evaluations/lm_sv_agreement_eval.py \
---exp_name=tune_withl2_withpunc \
+--exp_name=lisa_fd4 \
 --model_name=lm_gpt2 \
 --model_config=very_big_gpt_v10 \
 --train_config=adam_slow \
---prefix=
+--prefix=offline_pure_distill_2_teacher_lm_lstm_shared_emb_em-512_h-512_d-2_hdrop-0.3_indrop-0.2_0.001_lisa_offlineteacher_v1_student
+--withlr=False
 '''
 import os
 
@@ -34,6 +35,7 @@ flags.DEFINE_string('exp_name', 'tune_withl2_withpunc', 'tune_withl2_withpunc | 
 flags.DEFINE_string('model_config', 'very_big_gpt_v10', 'big_gpt_v5 | very_big_gpt_v10| lstm_drop31_v2')
 flags.DEFINE_string('model_name', 'lm_gpt2_shared', 'lm_gpt2_shared | lm_gpt1 | lm_lstm_shared_emb')
 flags.DEFINE_string('train_config', 'adam_slow', ' adam_slow | radam_fast')
+flags.DEFINE_boolean('withlr', True, 'True | False')
 
 hparams = flags.FLAGS
 
