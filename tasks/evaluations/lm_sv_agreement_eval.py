@@ -5,9 +5,10 @@ Codes adapted from:
 Example Run:
 python tasks/evaluations/lm_sv_agreement_eval.py \
 --exp_name=tune_withl2_withpunc \
---model_name=lm_gpt2_shared \
+--model_name=lm_gpt2 \
 --model_config=very_big_gpt_v10 \
---train_config=adam_slow
+--train_config=adam_slow \
+--prefix=
 '''
 import os
 
