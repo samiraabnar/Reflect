@@ -8,8 +8,10 @@ python tasks/evaluations/lm_sv_agreement_eval.py \
 --model_name=lm_gpt2 \
 --model_config=very_big_gpt_v10 \
 --train_config=adam_slow \
---prefix=offline_pure_distill_2_teacher_lm_lstm_shared_emb_em-512_h-512_d-2_hdrop-0.3_indrop-0.2_0.001_lisa_offlineteacher_v1_student
---withlr=False
+--prefix=offline_pure_distill_2_teacher_lm_lstm_shared_emb_em-512_h-512_d-2_hdrop-0.3_indrop-0.2_0.001_lisa_offlineteacher_v1_student \
+--withlr=False \
+--chkpt_dir=tf_ckpts \
+--logdir=logs
 '''
 import os
 
@@ -139,12 +141,14 @@ def main(argv):
                                      cl_token=cl_token)
 
   trainer_params = get_train_params(hparams.train_config)
-
+  if len(hparams.prefix) > 0:
+    hparams.prefix = hparams.prefix + "_"
+    
   log_dir = os.path.join(hparams.logdir, task.name,
-                         hparams.prefix+"_"+model.model_name + "_" + str(hparams.model_config) + "_" + str(
+                         hparams.prefix+model.model_name + "_" + str(hparams.model_config) + "_" + str(
                            trainer_params.learning_rate) + "_" + hparams.exp_name)
   ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
-                          hparams.prefix+"_"+model.model_name + "_" + str(hparams.model_config) + "_" + ((str(
+                          hparams.prefix+model.model_name + "_" + str(hparams.model_config) + "_" + ((str(
                             trainer_params.learning_rate) + "_") if hparams.withlr else '') + hparams.exp_name)
   print(ckpt_dir)
   trainer = Trainer(task=task,
