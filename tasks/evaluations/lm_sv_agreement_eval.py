@@ -28,6 +28,7 @@ from util.text_util import gen_inflect_from_vocab
 FLAGS = flags.FLAGS
 flags.DEFINE_string('logdir', 'logs', ' log dir path')
 flags.DEFINE_string('chkpt_dir', 'chkpt_dir', ' chkpt_dir path')
+flags.DEFINE_string('prefix', 'prefix', ' prefix')
 flags.DEFINE_string('exp_name', 'tune_withl2_withpunc', 'tune_withl2_withpunc | withl2_batchsumloss_withpunc')
 flags.DEFINE_string('model_config', 'very_big_gpt_v10', 'big_gpt_v5 | very_big_gpt_v10| lstm_drop31_v2')
 flags.DEFINE_string('model_name', 'lm_gpt2_shared', 'lm_gpt2_shared | lm_gpt1 | lm_lstm_shared_emb')
@@ -47,18 +48,25 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
   dis_acc = {}
   dis_acc = np.zeros(17)
   dif_acc = np.zeros(5)
+  total_nominator = 0.0
+  total_denominator = 0.0
   print('Accuracy by distance')
   for k in sorted(distance_hits.keys()):
     v = distance_hits[k]
     acc = v / distance_total[k]
     dis_acc[k] = acc
     print("%d | %.2f" % (k, acc), distance_total[k])
-  print('Accuracy by intervenings')
+    total_nominator += v
+    total_denominator += distance_total[k]
+
+  print('Accuracy by intervenings:')
   for k in sorted(diff_hits.keys()):
     v = diff_hits[k]
     acc = v * 1. / diff_total[k]
     print("%d | %.2f" % (k, acc), diff_total[k])
     dif_acc[k] = acc
+
+  print("Total accuracy:", total_nominator/total_nominator)
 
 def evaluate_vp(model, task):
   ''' Computes the accuracy statistics of the given model on the subject verb agreement task.
@@ -130,13 +138,12 @@ def main(argv):
   trainer_params = get_train_params(hparams.train_config)
 
   log_dir = os.path.join(hparams.logdir, task.name,
-                         model.model_name + "_" + str(hparams.model_config) + "_" + str(
+                         hparams.prefix+"_"+model.model_name + "_" + str(hparams.model_config) + "_" + str(
                            trainer_params.learning_rate) + "_" + hparams.exp_name)
   ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
-                          model.model_name + "_" + str(hparams.model_config) + "_" + str(
+                          hparams.prefix+"_"+model.model_name + "_" + str(hparams.model_config) + "_" + str(
                             trainer_params.learning_rate) + "_" + hparams.exp_name)
   print(log_dir)
-
   trainer = Trainer(task=task,
                     model=model,
                     train_params=trainer_params,
