@@ -144,9 +144,9 @@ def main(argv):
                          hparams.prefix+"_"+model.model_name + "_" + str(hparams.model_config) + "_" + str(
                            trainer_params.learning_rate) + "_" + hparams.exp_name)
   ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
-                          hparams.prefix+"_"+model.model_name + "_" + str(hparams.model_config) + "_" + str(
-                            trainer_params.learning_rate) if hparams.withlr else '' + "_" + hparams.exp_name)
-  print(log_dir)
+                          hparams.prefix+"_"+model.model_name + "_" + str(hparams.model_config) + "_" + ((str(
+                            trainer_params.learning_rate) + "_") if hparams.withlr else '') + hparams.exp_name)
+  print(ckpt_dir)
   trainer = Trainer(task=task,
                     model=model,
                     train_params=trainer_params,
