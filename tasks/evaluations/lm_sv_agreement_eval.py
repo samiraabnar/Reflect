@@ -143,7 +143,7 @@ def main(argv):
   trainer_params = get_train_params(hparams.train_config)
   if len(hparams.prefix) > 0:
     hparams.prefix = hparams.prefix + "_"
-    
+
   log_dir = os.path.join(hparams.logdir, task.name,
                          hparams.prefix+model.model_name + "_" + str(hparams.model_config) + "_" + str(
                            trainer_params.learning_rate) + "_" + hparams.exp_name)
