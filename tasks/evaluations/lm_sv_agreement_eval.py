@@ -64,14 +64,21 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
     total_nominator += v
     total_denominator += distance_total[k]
 
+  print("Total accuracy (distance):", total_nominator / total_denominator)
   print('Accuracy by intervenings:')
+  total_nominator = 0.0
+  total_denominator = 0.0
   for k in sorted(diff_hits.keys()):
     v = diff_hits[k]
     acc = v * 1. / diff_total[k]
     print("%d | %.2f" % (k, acc), diff_total[k])
     dif_acc[k] = acc
+    total_nominator += v
+    total_denominator += diff_total[k]
 
-  print("Total accuracy:", total_nominator/total_denominator)
+  print("Total accuracy (intervenings):", total_nominator / total_denominator)
+
+
 
 def evaluate_vp(model, task):
   ''' Computes the accuracy statistics of the given model on the subject verb agreement task.
