@@ -63,8 +63,25 @@ pure_distill_4 = {
 'teacher_optimizer' : 'radam'
 }
 
+pure_distill_4_radamfast = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 10000,
+'student_hold_base_rate_steps' :  1000,
+'student_warmup_steps' : 10000,
+'student_optimizer' : 'radam',
+'teacher_learning_rate' : 0.0001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'adam'
+}
+
 DISTILL_PARAMS = {'pure_distill_1' :  pure_distill_1,
                   'pure_distill_2' :  pure_distill_2,
                   'pure_distill_3' :  pure_distill_3,
-                  'pure_distill_4': pure_distill_4
+                  'pure_distill_4': pure_distill_4,
+                  'pure_distill_4_radamfast': pure_distill_4_radamfast
                   }
