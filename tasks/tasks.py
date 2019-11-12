@@ -30,6 +30,8 @@ class Task(object):
     self.info = self.databuilder.info
     self.n_train_batches = int(self.info.splits['train'].num_examples / self.task_params.batch_size)
     self.n_valid_batches = int(self.info.splits['validation'].num_examples / self.task_params.batch_size)
+    self.n_test_batches = int(self.info.splits['test'].num_examples / self.task_params.batch_size)
+
 
     self.valid_dataset = self.databuilder.as_dataset(split="validation")
     self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
