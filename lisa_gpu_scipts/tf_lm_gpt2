@@ -30,4 +30,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --task=word_sv_agreement_lm \
 --model_config=very_big_gpt_v10 \
 --train_config=adam_slow \
---exp_name=lisa_offlineteacher_v1
+--exp_name=lisa_offlineteacher_v2
