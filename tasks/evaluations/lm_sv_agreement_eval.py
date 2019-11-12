@@ -71,7 +71,7 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
     print("%d | %.2f" % (k, acc), diff_total[k])
     dif_acc[k] = acc
 
-  print("Total accuracy:", total_nominator/total_nominator)
+  print("Total accuracy:", total_nominator/total_denominator)
 
 def evaluate_vp(model, task):
   ''' Computes the accuracy statistics of the given model on the subject verb agreement task.
