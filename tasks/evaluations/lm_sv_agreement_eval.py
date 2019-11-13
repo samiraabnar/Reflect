@@ -37,6 +37,8 @@ flags.DEFINE_string('exp_name', 'tune_withl2_withpunc', 'tune_withl2_withpunc | 
 flags.DEFINE_string('model_config', 'very_big_gpt_v10', 'big_gpt_v5 | very_big_gpt_v10| lstm_drop31_v2')
 flags.DEFINE_string('model_name', 'lm_gpt2_shared', 'lm_gpt2_shared | lm_gpt1 | lm_lstm_shared_emb')
 flags.DEFINE_string('train_config', 'adam_slow', ' adam_slow | radam_fast')
+flags.DEFINE_string('split', 'test', ' valid | test | train')
+
 flags.DEFINE_boolean('withlr', True, 'True | False')
 
 hparams = flags.FLAGS
@@ -80,7 +82,7 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
 
 
 
-def evaluate_vp(model, task):
+def evaluate_vp(model, task, split='test'):
   ''' Computes the accuracy statistics of the given model on the subject verb agreement task.
 
   :param model: the models to be evaluated
@@ -95,7 +97,7 @@ def evaluate_vp(model, task):
   diff_hits = Counter()
   diff_total = Counter()
 
-  test_data = task.databuilder.as_dataset(split='test', batch_size=1000)
+  test_data = task.databuilder.as_dataset(split=split, batch_size=1000)
   for example in tqdm(test_data):
     encoded_sentences = example['sentence']
     s_shape = tf.shape(encoded_sentences)
@@ -165,7 +167,7 @@ def main(argv):
                     ckpt_dir=ckpt_dir)
   trainer.restore()
 
-  distance_hits, distance_total, diff_hits, diff_total = evaluate_vp(trainer.model, trainer.task)
+  distance_hits, distance_total, diff_hits, diff_total = evaluate_vp(trainer.model, trainer.task, hparams.split)
   compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_total)
 
 
