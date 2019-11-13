@@ -66,7 +66,9 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
     total_nominator += v
     total_denominator += distance_total[k]
 
-  print("Total accuracy (distance):", total_nominator / total_denominator)
+  print("Micro accuracy (distance):", total_nominator / total_denominator)
+  print("Macro accuracy (distance):", np.mean(dis_acc))
+
   print('Accuracy by intervenings:')
   total_nominator = 0.0
   total_denominator = 0.0
@@ -78,7 +80,8 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
     total_nominator += v
     total_denominator += diff_total[k]
 
-  print("Total accuracy (intervenings):", total_nominator / total_denominator)
+  print("Micro accuracy (intervenings):", total_nominator / total_denominator)
+  print("Macro accuracy (intervenings):", np.mean(dif_acc))
 
 
 
