@@ -19,7 +19,7 @@ def get_topk_mask(inputs, k):
   return mask
 
 @tf.function(experimental_relax_shapes=True)
-def get_topk_masked_probs(logits, labels, temperature, k=100, padding_symbol=0):
+def get_topk_masked_probs(logits, labels, temperature, k=1000, padding_symbol=0):
   topk_mask = (1 - tf.cast(get_topk_mask(logits, k), dtype=tf.float32)) * -10e8
   teacher_probs = tf.nn.softmax((logits + topk_mask) / temperature, axis=-1)
   sequence_mask = tf.cast(labels != padding_symbol, dtype=tf.float32)
