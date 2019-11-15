@@ -13,7 +13,7 @@ def get_topk_mask(inputs, k):
   values = tf.reshape(values, [-1])
 
   mask_vals = tf.ones_like(values)
-  inputs_shape = inputs.shape
+  inputs_shape = tf.shape(inputs)
   tf.print("inputs shape", inputs_shape)
   mask_st = tf.SparseTensor(indices=tf.cast(
     full_indices, dtype=tf.int64), values=mask_vals, dense_shape=inputs_shape)
