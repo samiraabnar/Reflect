@@ -17,7 +17,6 @@ def get_topk_mask(inputs, k):
   full_indices = tf.cast(
     full_indices, dtype=tf.int64)
   inputs_shape = tf.cast(inputs_shape, dtype=tf.int64)
-  tf.print("inputs shape", inputs_shape)
   mask_st = tf.SparseTensor(indices=full_indices, values=mask_vals, dense_shape=inputs_shape)
   mask = tf.sparse.to_dense(tf.sparse.reorder(mask_st))
 
