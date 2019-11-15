@@ -12,7 +12,7 @@ def get_topk_mask(inputs, k):
   full_indices = tf.reshape(temp_indices, [-1, inputs.get_shape().ndims])
   values = tf.reshape(values, [-1])
 
-  mask_vals = tf.ones_like(values, dtype=tf.int46)
+  mask_vals = tf.ones_like(values, dtype=tf.int64)
   inputs_shape = tf.shape(inputs)
   tf.print("inputs shape", inputs_shape)
   mask_st = tf.SparseTensor(indices=tf.cast(
