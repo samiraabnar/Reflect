@@ -6,7 +6,7 @@ from tf2_models.metrics import distill_loss, sequence_distill_loss
 def get_topk_mask(inputs, k):
   values, indices = tf.nn.top_k(inputs, k=k, sorted=False)
 
-  temp_indices = tf.meshgrid(*[tf.range(d, dtype=tf.int64) for d in (tf.unstack(
+  temp_indices = tf.meshgrid(*[tf.range(d) for d in (tf.unstack(
     tf.shape(inputs)[:(inputs.shape().ndims - 1)]) + [k])], indexing='ij')
   temp_indices = tf.stack(temp_indices[:-1] + [indices], axis=-1)
   full_indices = tf.reshape(temp_indices, [-1, inputs.get_shape().ndims])
@@ -15,8 +15,9 @@ def get_topk_mask(inputs, k):
   mask_vals = tf.ones_like(values, dtype=tf.int64)
   inputs_shape = tf.shape(inputs)
   tf.print("inputs shape", inputs_shape)
-  mask_st = tf.SparseTensor(indices=tf.cast(
-    full_indices, dtype=tf.int64), values=mask_vals, dense_shape=inputs_shape)
+  full_indices = tf.cast(
+    full_indices, dtype=tf.int64)
+  mask_st = tf.SparseTensor(indices=full_indices, values=mask_vals, dense_shape=inputs_shape)
   mask = tf.sparse.to_dense(tf.sparse.reorder(mask_st))
 
   return mask
