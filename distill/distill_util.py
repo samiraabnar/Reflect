@@ -5,7 +5,7 @@ from tf2_models.metrics import distill_loss, sequence_distill_loss
 @tf.function(experimental_relax_shapes=True)
 def get_topk_mask(inputs, k):
   values, indices = tf.nn.top_k(inputs, k=k, sorted=False)
-
+  indices = tf.cast(indices, dtype=tf.int64)
   temp_indices = tf.meshgrid(*[tf.range(d, dtype=tf.int64) for d in (tf.unstack(
     tf.shape(inputs)[:(inputs.get_shape().ndims - 1)]) + [k])], indexing='ij')
   temp_indices = tf.stack(temp_indices[:-1] + [indices], axis=-1)
