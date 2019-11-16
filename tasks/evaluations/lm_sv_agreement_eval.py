@@ -58,10 +58,9 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
   total_denominator = 0.0
   print('Accuracy by distance')
   for k in sorted(distance_hits.keys()):
-    k = k-1
     v = distance_hits[k]
     acc = v / distance_total[k]
-    dis_acc[k] = acc
+    dis_acc[k-1] = acc
     print("%d | %.2f" % (k, acc), distance_total[k])
     total_nominator += v
     total_denominator += distance_total[k]
