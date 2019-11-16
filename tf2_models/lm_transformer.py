@@ -180,6 +180,21 @@ class LmGPT2(tf.keras.Model):
 
     return lm_logits  # lm_logits, presents, (all hidden_states), (attentions)
 
+  def detailed_call(self, inputs, **kwargs):
+    transformer_outputs = self.transformer(inputs, **kwargs)
+    hidden_states = transformer_outputs[0]
+
+    lm_logits = self.transformer.wte(hidden_states, mode="linear")
+
+    if self.transformer.output_attentions:
+      outputs = (lm_logits,) + transformer_outputs[1:]
+    else:
+      outputs = lm_logits
+
+    return outputs  # lm_logits, presents, (all hidden_states), (attentions)
+
+
+
 class LmGPT2SharedWeights(LmGPT2):
   def __init__(self, hparams, scope='lm_gpt2_shared_weights', *inputs, **kwargs):
     super(LmGPT2SharedWeights, self).__init__(hparams, *inputs, **kwargs)
@@ -213,8 +228,6 @@ class ClassifierGPT2(tf.keras.Model):
                          'adrop-' + str(hparams.attn_pdrop),
                          'indrop-'+str(hparams.embd_pdrop)])
 
-    output_hidden_states = hparams.output_hidden_states
-    output_attentions = hparams.output_attentions
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.0001)
     self.create_vars(**kwargs)
