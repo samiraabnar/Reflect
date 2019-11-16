@@ -4,19 +4,23 @@ from tf2_models.metrics import distill_loss, sequence_distill_loss
 
 @tf.function(experimental_relax_shapes=True)
 def get_topk_mask(inputs, k):
+  inputs_shape = tf.shape(inputs)
+  inputs_shape = tf.cast(inputs_shape, dtype=tf.int64)
+  k = tf.cast(k, dtype=tf.int64)
+
   values, indices = tf.nn.top_k(inputs, k=k, sorted=False)
   indices = tf.cast(indices, dtype=tf.int64)
   temp_indices = tf.meshgrid(*[tf.range(d, dtype=tf.int64) for d in (tf.unstack(
-    tf.shape(inputs)[:(inputs.get_shape().ndims - 1)]) + [k])], indexing='ij')
+    inputs_shape[:(inputs.get_shape().ndims - 1)]) + [k])], indexing='ij')
   temp_indices = tf.stack(temp_indices[:-1] + [indices], axis=-1)
   full_indices = tf.reshape(temp_indices, [-1, inputs.get_shape().ndims])
   values = tf.reshape(values, [-1])
 
   mask_vals = tf.ones_like(values, dtype=tf.int64)
-  inputs_shape = tf.shape(inputs)
+
+
   full_indices = tf.cast(
     full_indices, dtype=tf.int64)
-  inputs_shape = tf.cast(inputs_shape, dtype=tf.int64)
   mask_st = tf.SparseTensor(indices=full_indices, values=mask_vals, dense_shape=inputs_shape)
   mask = tf.sparse.to_dense(tf.sparse.reorder(mask_st))
 
