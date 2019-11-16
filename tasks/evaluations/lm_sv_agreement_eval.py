@@ -52,7 +52,6 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
   :param diff_total:
   :return: None
   '''
-  dis_acc = {}
   dis_acc = np.zeros(17)
   dif_acc = np.zeros(5)
   total_nominator = 0.0
@@ -68,6 +67,7 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
 
   print("Micro accuracy (distance):", total_nominator / total_denominator)
   print("Macro accuracy (distance):", np.mean(dis_acc))
+  print(dis_acc)
 
   print('Accuracy by intervenings:')
   total_nominator = 0.0
