@@ -6,10 +6,10 @@ from tf2_models.metrics import distill_loss, sequence_distill_loss
 def get_topk_mask(inputs, k):
   inputs_shape = tf.shape(inputs)
   inputs_shape = tf.cast(inputs_shape, dtype=tf.int64)
-  k = tf.cast(k, dtype=tf.int64)
 
   values, indices = tf.nn.top_k(inputs, k=k, sorted=False)
   indices = tf.cast(indices, dtype=tf.int64)
+  k = tf.cast(k, dtype=tf.int64)
   temp_indices = tf.meshgrid(*[tf.range(d, dtype=tf.int64) for d in (tf.unstack(
     inputs_shape[:(inputs.get_shape().ndims - 1)]) + [k])], indexing='ij')
   temp_indices = tf.stack(temp_indices[:-1] + [indices], axis=-1)
