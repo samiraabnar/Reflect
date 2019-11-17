@@ -3,13 +3,14 @@ from distill.distill_util import get_masked_probs
 
 
 class Task(object):
-  def __init__(self, task_params, builder_cls, name='abstract_task', data_dir='data'):
+  def __init__(self, task_params, builder_cls=None, name='abstract_task', data_dir='data'):
     self.name = name
     self.output_padding_symbol = 0
     self.task_params = task_params
     self.data_dir = data_dir
     self.builder_cls = builder_cls
-    self.databuilder = self.builder_cls(data_dir=self.data_dir)
+    if builder_cls:
+      self.databuilder = self.builder_cls(data_dir=self.data_dir)
 
     self.setup_datasets()
 
@@ -27,6 +28,7 @@ class Task(object):
     return get_masked_probs
 
   def setup_datasets(self):
+    assert self.builder_cls
     self.info = self.databuilder.info
     self.n_train_batches = int(self.info.splits['train'].num_examples / self.task_params.batch_size)
     self.n_valid_batches = int(self.info.splits['validation'].num_examples / self.task_params.batch_size)
