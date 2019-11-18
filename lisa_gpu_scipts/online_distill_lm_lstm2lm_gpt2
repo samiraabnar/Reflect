@@ -30,8 +30,8 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_a
 --teacher_model=lm_lstm_shared_emb \
 --teacher_exp_name=0.001_lisa_onlineteacher_v3 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_topk_od0 \
+--student_exp_name=lisa_od0 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=pure_distill_2
+--distill_config=pure_distill_4
