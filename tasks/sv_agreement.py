@@ -38,7 +38,7 @@ class SvAgreementLM(Task):
     return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=0)
 
   def get_probs_fn(self):
-    return get_topk_masked_probs
+    return get_masked_probs
 
   def metrics(self):
     return [MaskedSequenceLoss(padding_symbol=0),
