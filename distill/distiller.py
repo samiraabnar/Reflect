@@ -28,12 +28,19 @@ class Distiller(object):
 
   def create_student_optimizer(self):
     student_initial_learning_rate = self.distill_params.student_learning_rate
-    lr_schedule = ExponentialDecayWithWarmpUp(
-      initial_learning_rate=student_initial_learning_rate,
-      decay_steps=self.distill_params.student_decay_steps,
-      decay_rate=0.96,
-      warmup_steps=self.distill_params.student_warmup_steps,
-      hold_base_rate_steps=self.distill_params.student_hold_base_rate_steps)
+
+    if self.distill_params.schedule == 'cosine_restart':
+      lr_schedule = (
+        tf.keras.experimental.CosineDecayRestarts(
+          student_initial_learning_rate,
+          self.distill_params.student_decay_steps))
+    else:
+      lr_schedule = ExponentialDecayWithWarmpUp(
+        initial_learning_rate=student_initial_learning_rate,
+        decay_steps=self.distill_params.student_decay_steps,
+        decay_rate=0.96,
+        warmup_steps=self.distill_params.student_warmup_steps,
+        hold_base_rate_steps=self.distill_params.student_hold_base_rate_steps)
     self.student_optimizer = OPTIMIZER_DIC[self.distill_params.student_optimizer](
       learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 

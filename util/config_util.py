@@ -40,7 +40,8 @@ class DistillParams(object):
                teacher_warmup_steps=10000,
                teacher_hold_base_rate_steps=1000,
                teacher_optimizer='radam',
-               n_epochs=60
+               n_epochs=60,
+               schedule=''
   ):
     self.distill_temp = distill_temp
     self.student_distill_rate = student_distill_rate
@@ -56,6 +57,7 @@ class DistillParams(object):
     self.teacher_optimizer = teacher_optimizer
     self.teacher_hold_base_rate_steps = teacher_hold_base_rate_steps
     self.n_epochs = n_epochs
+    self.schedule = schedule
 
 
 class TaskParams:
