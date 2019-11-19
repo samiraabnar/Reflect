@@ -42,7 +42,13 @@ class Trainer(object):
     self.callbacks = [ckpt_callback, summary_callback]
 
   def get_lr_schedule(self):
-    if self.train_params.optimizer == 'radam':
+    if self.train_params.schedule == 'cosine_restart':
+      initial_learning_rate = self.train_params.learning_rate
+      lr_schedule = (
+        tf.keras.experimental.CosineDecayRestarts(
+          initial_learning_rate,
+          self.train_params.decay_steps))
+    elif self.train_params.optimizer == 'radam':
       initial_learning_rate = self.train_params.learning_rate
       lr_schedule = ExponentialDecayWithWarmpUp(
         initial_learning_rate=initial_learning_rate,
@@ -50,7 +56,6 @@ class Trainer(object):
         hold_base_rate_steps=self.train_params.hold_base_rate_steps,
         decay_rate=0.96,
         warmup_steps=0.0)
-
     else:
       initial_learning_rate = self.train_params.learning_rate
       lr_schedule = ExponentialDecayWithWarmpUp(

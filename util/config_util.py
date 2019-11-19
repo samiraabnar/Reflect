@@ -12,6 +12,7 @@ class TrainParams(object):
                hold_base_rate_steps=1000,
                total_training_steps=60000,
                num_train_epochs=60,
+               schedule='',
   ):
     self.learning_rate = learning_rate
     self.n_epochs = n_epochs
@@ -21,6 +22,7 @@ class TrainParams(object):
     self.total_training_steps = total_training_steps
     self.num_train_epochs = num_train_epochs
     self.optimizer =  optimizer
+    self.schedule = schedule
 
 
 class DistillParams(object):

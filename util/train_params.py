@@ -47,6 +47,13 @@ radam_mid = {
 'hold_base_rate_steps': 10000
 }
 
+
+cosinerestart_fast = {
+'learning_rate': 0.001,
+'optimizer': 'radam',
+'decay_steps': 1000
+}
+
 TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'radam_fast': radam_fast,
                 'adam_slow':  adam_slow,
@@ -54,4 +61,5 @@ TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'radam_slow_long': radam_slow_long,
                 'adam_mid': adam_mid,
                 'adam_midmid': adam_midmid,
-                'radam_mid': radam_mid}
+                'radam_mid': radam_mid,
+                'cosinerestart_fast': cosinerestart_fast}
