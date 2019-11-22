@@ -29,7 +29,7 @@ class Distiller(object):
   def create_student_optimizer(self):
     student_initial_learning_rate = self.distill_params.student_learning_rate
 
-    if self.distill_params.schedule == 'cosine_restart':
+    if 'cosinerestart' in self.distill_params.schedule:
       lr_schedule = (
         tf.keras.experimental.CosineDecayRestarts(
           student_initial_learning_rate,
