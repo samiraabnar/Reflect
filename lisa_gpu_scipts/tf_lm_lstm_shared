@@ -29,5 +29,5 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=lm_lstm_shared_emb \
 --task=word_sv_agreement_lm \
 --model_config=biglstm_drop31_v2 \
---train_config=cosinerestart_slow \
---exp_name=lisa_cosinerestart_fast_offlineteacher_v7
+--train_config=cosinerestart_fast \
+--exp_name=lisa_cosinerestart_fast_offlineteacher_v8

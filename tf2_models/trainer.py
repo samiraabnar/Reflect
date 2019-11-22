@@ -47,7 +47,11 @@ class Trainer(object):
       lr_schedule = (
         tf.keras.experimental.CosineDecayRestarts(
           initial_learning_rate,
-          self.train_params.decay_steps))
+          self.train_params.decay_steps,
+          t_mul=10.0,
+          m_mul=0.9,
+          alpha=0.001,
+        ))
     elif self.train_params.optimizer == 'radam':
       initial_learning_rate = self.train_params.learning_rate
       lr_schedule = ExponentialDecayWithWarmpUp(
