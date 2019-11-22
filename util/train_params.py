@@ -50,7 +50,7 @@ radam_mid = {
 
 cosinerestart_fast = {
 'learning_rate': 0.001,
-'optimizer': 'radam',
+'optimizer': 'adam',
 'decay_steps': 1000,
 'schedule': 'cosinerestart_fast'
 }

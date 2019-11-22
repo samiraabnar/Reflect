@@ -42,7 +42,7 @@ class Trainer(object):
     self.callbacks = [ckpt_callback, summary_callback]
 
   def get_lr_schedule(self):
-    if self.train_params.schedule == 'cosine_restart':
+    if 'cosinerestart' in self.train_params.schedule:
       initial_learning_rate = self.train_params.learning_rate
       lr_schedule = (
         tf.keras.experimental.CosineDecayRestarts(
