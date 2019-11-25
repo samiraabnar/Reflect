@@ -48,7 +48,7 @@ class Trainer(object):
         tf.keras.experimental.CosineDecayRestarts(
           initial_learning_rate,
           self.train_params.decay_steps,
-          t_mul=10.0,
+          t_mul=2.0,
           m_mul=0.9,
           alpha=0.001,
         ))

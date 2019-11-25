@@ -33,7 +33,11 @@ class Distiller(object):
       lr_schedule = (
         tf.keras.experimental.CosineDecayRestarts(
           student_initial_learning_rate,
-          self.distill_params.student_decay_steps))
+          self.distill_params.student_decay_steps,
+          t_mul=2.0,
+          m_mul=0.9,
+          alpha=0.001,
+        ))
     else:
       lr_schedule = ExponentialDecayWithWarmpUp(
         initial_learning_rate=student_initial_learning_rate,
