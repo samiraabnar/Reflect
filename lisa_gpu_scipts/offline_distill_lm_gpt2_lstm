@@ -27,10 +27,10 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
---teacher_exp_name=0.0001_lisa_offlineteacher_v2 \
+--teacher_exp_name=0.0001_lisa_offlineteacher_v3 \
 --student_model=lm_lstm_shared_emb \
---student_exp_name=lisa_topk_fd33 \
---teacher_config=very_big_gpt_v10 \
+--student_exp_name=lisa_fd37 \
+--teacher_config=big_gpt_v5 \
 --student_config=biglstm_drop31_v2 \
 --distill_mode=offline \
 --distill_config=pure_distill_4_cosinerestart_slow
