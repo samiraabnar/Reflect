@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=lm_gpt2
+#SBATCH --job-name=lm_big_gpt2
 #SBATCH --time=20:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
@@ -25,6 +25,6 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=lm_gpt2 \
 --task=word_sv_agreement_lm \
---model_config=very_big_gpt_v5 \
+--model_config=big_gpt_v5 \
 --train_config=cosinerestart_slow_v2 \
 --exp_name=lisa_cosinerestart_slow_offlineteacher_v10
