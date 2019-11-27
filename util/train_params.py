@@ -62,6 +62,13 @@ cosinerestart_slow = {
 'schedule': 'cosinerestart_slow'
 }
 
+cosinerestart_slow_v2 = {
+'learning_rate': 0.0001,
+'optimizer': 'adam',
+'decay_steps': 10000,
+'schedule': 'cosinerestart_slow'
+}
+
 TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'radam_fast': radam_fast,
                 'adam_slow':  adam_slow,
@@ -71,4 +78,5 @@ TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'adam_midmid': adam_midmid,
                 'radam_mid': radam_mid,
                 'cosinerestart_fast': cosinerestart_fast,
-                'cosinerestart_slow': cosinerestart_slow}
+                'cosinerestart_slow': cosinerestart_slow,
+                'cosinerestart_slow_v2': cosinerestart_slow_v2}
