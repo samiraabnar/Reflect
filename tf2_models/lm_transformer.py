@@ -426,7 +426,7 @@ class ClassifierBERT(tf.keras.Model):
   def __init__(self, hparams, scope='cl_bert',*inputs, **kwargs):
     self.cl_token = kwargs['cl_token']
     del kwargs['cl_token']
-    super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
+    super(ClassifierBERT, self).__init__(hparams, *inputs, **kwargs)
 
     self.scope = scope
     self.hparams = hparams
