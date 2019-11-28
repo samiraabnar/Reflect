@@ -87,7 +87,7 @@ def get_model_params(task, config_name='', model_config='base'):
     model_cnfgs = MODEL_CONFIGS.get('base')
 
   print(model_cnfgs)
-  if 'gpt' in config_name:
+  if 'gpt' in config_name or 'bert' in config_name:
     return GPT2Config(vocab_size=task.vocab_size(),
                       output_dim=task.output_size(),
                       num_labels=task.output_size(),
