@@ -4,10 +4,10 @@ from tf2_models.common_layers import get_initializer, shape_list, gelu
 
 
 class Attention(tf.keras.layers.Layer):
-  def __init__(self, hidden_dim, n_ctx, config, regularizer, scale=False, **kwargs):
+  def __init__(self, hidden_dim, n_ctx, config, regularizer, casual_masking=True, scale=False, **kwargs):
     super(Attention, self).__init__(**kwargs)
     self.output_attentions = config.output_attentions
-
+    self.casual_masking = casual_masking
     n_state = hidden_dim
     assert n_state % config.n_head == 0
 
@@ -46,9 +46,10 @@ class Attention(tf.keras.layers.Layer):
 
     # w has shape [batch, heads, dst_sequence, src_sequence], where information flows from src to dst.
     _, _, nd, ns = shape_list(w)
-    b = self.causal_attention_mask(nd, ns, dtype=w.dtype)
-    b = tf.reshape(b, [1, 1, nd, ns])
-    w = w * b - 1e4 * (1 - b)
+    if self.casual_masking:
+      b = self.causal_attention_mask(nd, ns, dtype=w.dtype)
+      b = tf.reshape(b, [1, 1, nd, ns])
+      w = w * b - 1e4 * (1 - b)
 
     if attention_mask is not None:
       # Apply the attention mask
@@ -134,12 +135,14 @@ class Conv1D(tf.keras.layers.Layer):
 
 
 class Block(tf.keras.layers.Layer):
-  def __init__(self, n_ctx, config, regularizer, scale=False, **kwargs):
+  def __init__(self, n_ctx, config, regularizer, casual_masking=True, scale=False, **kwargs):
     super(Block, self).__init__(**kwargs)
     self.regularizer = regularizer
     nx = config.embedding_dim
     self.ln_1 = tf.keras.layers.LayerNormalization(epsilon=config.layer_norm_epsilon, name='ln_1')
-    self.attn = Attention(hidden_dim=nx, n_ctx=n_ctx, config=config, scale=scale, regularizer=self.regularizer, name='attn')
+    self.attn = Attention(hidden_dim=nx, n_ctx=n_ctx, config=config, scale=scale,
+                          regularizer=self.regularizer,
+                          casual_masking=casual_masking, name='attn')
     self.ln_2 = tf.keras.layers.LayerNormalization(epsilon=config.layer_norm_epsilon, name='ln_2')
     self.mlp = TransformerMLP(4 * nx, config, regularizer=self.regularizer, name='mlp')
 
@@ -157,6 +160,7 @@ class Block(tf.keras.layers.Layer):
 
     outputs = [x] + output_attn[1:]
     return outputs  # x, present, (attentions)
+
 
 
 class TransformerMLP(tf.keras.layers.Layer):
