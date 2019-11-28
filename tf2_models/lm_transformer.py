@@ -422,7 +422,7 @@ class ClassifierGPT2SharedWeights(ClassifierGPT2):
                                      name='e2c')
 
 
-class classifierBERT(tf.keras.Model):
+class ClassifierBERT(tf.keras.Model):
   def __init__(self, hparams, scope='cl_bert',*inputs, **kwargs):
     self.cl_token = kwargs['cl_token']
     del kwargs['cl_token']
