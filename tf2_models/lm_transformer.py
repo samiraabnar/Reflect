@@ -453,10 +453,10 @@ class ClassifierBERT(tf.keras.Model):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       mask = tf.cast(inputs != 0, dtype=tf.int32)
-      inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
-      batch_indices = tf.range(batch_size)
-      indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
-      hidden_states = tf.gather_nd(transformer_outputs[0], indices)
+      #inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
+      #batch_indices = tf.range(batch_size)
+      #indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
+      hidden_states = transformer_outputs[0][:,0]#tf.gather_nd(transformer_outputs[0], indices)
       cl_logits = self.e2c(hidden_states)
       return cl_logits
 
