@@ -452,7 +452,7 @@ class ClassifierBERT(tf.keras.Model):
   def call(self, inputs, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
-      mask = tf.cast(inputs != 0, dtype=tf.int32)
+      #mask = tf.cast(inputs != 0, dtype=tf.int32)
       #inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
       #batch_indices = tf.range(batch_size)
       #indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
@@ -475,19 +475,15 @@ class ClassifierBERT(tf.keras.Model):
   def detailed_call(self, inputs, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
-      mask = tf.cast(inputs != 0, dtype=tf.int32)
-      inputs_lengths = tf.reduce_sum(mask, axis=-1) - 1
-      batch_indices = tf.range(batch_size)
-      indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
-      hidden_states = tf.gather_nd(transformer_outputs[0], indices)
+      hidden_states = transformer_outputs[0][:, 0]
       cl_logits = self.e2c(hidden_states)
       return cl_logits
 
     # Add CL token:
     batch_size = tf.shape(inputs)[0]
-    #cl_token = tf.reshape(tf.convert_to_tensor(self.cl_token[0], dtype=tf.int64)[None], (-1,1))
-    #cl_tokens = tf.tile(cl_token, (batch_size, 1))
-    #inputs = tf.concat([cl_tokens, inputs], axis=-1)
+    cl_token = tf.reshape(tf.convert_to_tensor(self.cl_token[0], dtype=tf.int64)[None], (-1,1))
+    cl_tokens = tf.tile(cl_token, (batch_size, 1))
+    inputs = tf.concat([cl_tokens, inputs], axis=-1)
 
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits = _call(batch_size, inputs, transformer_outputs)
