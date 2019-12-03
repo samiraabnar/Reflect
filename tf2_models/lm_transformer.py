@@ -457,7 +457,7 @@ class ClassifierBERT(tf.keras.Model):
       #batch_indices = tf.range(batch_size)
       #indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
       hidden_states = transformer_outputs[0][:,0]#tf.gather_nd(transformer_outputs[0], indices)
-      cl_logits = self.e2c(hidden_states)
+      cl_logits = self.e2c(hidden_states, **kwargs)
       return cl_logits
 
     # Add CL token:

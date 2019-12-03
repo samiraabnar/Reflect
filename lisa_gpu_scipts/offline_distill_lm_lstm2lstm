@@ -29,8 +29,8 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_a
 --teacher_model=lm_lstm_shared_emb \
 --teacher_exp_name=0.001_lisa_cosinerestart_slow_offlineteacher_v10 \
 --student_model=lm_lstm_shared_emb \
---student_exp_name=lisa_fd52 \
---teacher_config=lstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
+--student_exp_name=lisa_fd53 \
+--teacher_config=biglstm_drop31_v2 \
+--student_config=biglstm_drop31_v2 \
 --distill_mode=offline \
 --distill_config=pure_distill_4_cosinerestart_slow
