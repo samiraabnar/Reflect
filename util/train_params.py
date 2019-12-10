@@ -48,25 +48,25 @@ radam_mid = {
 }
 
 
-cosinerestart_fast = {
+crs_fast = {
 'learning_rate': 0.001,
 'optimizer': 'adam',
 'decay_steps': 1000,
-'schedule': 'cosinerestart_fast'
+'schedule': 'crs_fast'
 }
 
-cosinerestart_slow = {
+crs_slow = {
 'learning_rate': 0.001,
 'optimizer': 'adam',
 'decay_steps': 10000,
-'schedule': 'cosinerestart_slow'
+'schedule': 'crs_slow'
 }
 
-cosinerestart_slow_v2 = {
+crs_slow_v2 = {
 'learning_rate': 0.0001,
 'optimizer': 'adam',
 'decay_steps': 10000,
-'schedule': 'cosinerestart_slow'
+'schedule': 'crs_slow'
 }
 
 TRAIN_PARAMS = {'radam_slow': radam_slow,
@@ -77,6 +77,6 @@ TRAIN_PARAMS = {'radam_slow': radam_slow,
                 'adam_mid': adam_mid,
                 'adam_midmid': adam_midmid,
                 'radam_mid': radam_mid,
-                'cosinerestart_fast': cosinerestart_fast,
-                'cosinerestart_slow': cosinerestart_slow,
-                'cosinerestart_slow_v2': cosinerestart_slow_v2}
+                'crs_fast': crs_fast,
+                'crs_slow': crs_slow,
+                'crs_slow_v2': crs_slow_v2}

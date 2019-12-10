@@ -13,6 +13,7 @@ python distill/distill_main.py \
 '''
 from distill.distiller import Distiller
 from distill.online_distiller import OnlineDistiller
+from distill.scheduled_distiller import ScheduledDistiller
 from util import constants
 from util.config_util import get_distill_params
 import os
@@ -39,7 +40,7 @@ flags.DEFINE_string('student_model', 'lm_lstm', 'lm_lstm | lm_gpt2')
 flags.DEFINE_string('student_config', 'base', 'base | small_lstm ')
 flags.DEFINE_string('teacher_config', 'base', 'base | small_lstm ')
 
-flags.DEFINE_string('distill_mode', 'offline', 'offline | online ')
+flags.DEFINE_string('distill_mode', 'offline', 'offline | online | off_schdld | on_schdld')
 
 
 FLAGS(sys.argv)
@@ -69,7 +70,8 @@ def create_and_load_models():
   return teacher_model, student_model, teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir
 
 DISTILLER = {'offline': Distiller,
-             'online': OnlineDistiller}
+             'online': OnlineDistiller,
+             'off_schdld': ScheduledDistiller}
 
 if __name__ == '__main__':
   # Create task
