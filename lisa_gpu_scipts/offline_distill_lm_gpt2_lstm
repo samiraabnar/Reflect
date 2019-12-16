@@ -33,4 +33,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_a
 --teacher_config=very_big_gpt_v10 \
 --student_config=biglstm_drop31_v2 \
 --distill_mode=offline \
---distill_config=pure_distill_6_cosinerestart_slow
+--distill_config=pure_dstl_4_crs_slw
