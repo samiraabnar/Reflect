@@ -1,10 +1,10 @@
-radam_slow = {
+radam_slw = {
 'learning_rate': 0.0001,
 'optimizer': 'radam',
 'hold_base_rate_steps': 0
 }
 
-adam_slow = {
+adam_slw = {
 'learning_rate': 0.0001,
 'optimizer': 'adam',
 'hold_base_rate_steps': 0
@@ -23,19 +23,19 @@ adam_midmid = {
 'hold_base_rate_steps': 0
 }
 
-radam_fast_long = {
+radam_fst_long = {
 'learning_rate': 0.001,
 'optimizer': 'radam',
 'hold_base_rate_steps': 1000000
 }
 
-radam_slow_long = {
+radam_slw_long = {
 'learning_rate': 0.0001,
 'optimizer': 'radam',
 'hold_base_rate_steps': 1000000
 }
 
-radam_fast = {
+radam_fst = {
 'learning_rate': 0.001,
 'optimizer': 'radam',
 'hold_base_rate_steps': 10000
@@ -48,35 +48,35 @@ radam_mid = {
 }
 
 
-crs_fast = {
+crs_fst = {
 'learning_rate': 0.001,
 'optimizer': 'adam',
 'decay_steps': 1000,
-'schedule': 'crs_fast'
+'schedule': 'crs_fst'
 }
 
-crs_slow = {
+crs_slw = {
 'learning_rate': 0.001,
 'optimizer': 'adam',
 'decay_steps': 10000,
-'schedule': 'crs_slow'
+'schedule': 'crs_slw'
 }
 
-crs_slow_v2 = {
+crs_slw_v2 = {
 'learning_rate': 0.0001,
 'optimizer': 'adam',
 'decay_steps': 10000,
-'schedule': 'crs_slow'
+'schedule': 'crs_slw'
 }
 
-TRAIN_PARAMS = {'radam_slow': radam_slow,
-                'radam_fast': radam_fast,
-                'adam_slow':  adam_slow,
-                'radam_fast_long': radam_fast_long,
-                'radam_slow_long': radam_slow_long,
+TRAIN_PARAMS = {'radam_slw': radam_slw,
+                'radam_fst': radam_fst,
+                'adam_slw':  adam_slw,
+                'radam_fst_long': radam_fst_long,
+                'radam_slw_long': radam_slw_long,
                 'adam_mid': adam_mid,
                 'adam_midmid': adam_midmid,
                 'radam_mid': radam_mid,
-                'crs_fast': crs_fast,
-                'crs_slow': crs_slow,
-                'crs_slow_v2': crs_slow_v2}
+                'crs_fst': crs_fst,
+                'crs_slw': crs_slw,
+                'crs_slw_v2': crs_slw_v2}

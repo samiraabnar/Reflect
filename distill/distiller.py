@@ -2,10 +2,9 @@ import tensorflow as tf
 import os
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
-from tf2_models.utils import camel2snake
-from inspect import isfunction
-from absl import logging
 import numpy as np
+
+
 class Distiller(object):
   ''' Pipeline for offline distillation.
   '''
@@ -29,7 +28,7 @@ class Distiller(object):
   def create_student_optimizer(self):
     student_initial_learning_rate = self.distill_params.student_learning_rate
 
-    if 'cosinerestart' in self.distill_params.schedule:
+    if 'crs' in self.distill_params.schedule:
       lr_schedule = (
         tf.keras.experimental.CosineDecayRestarts(
           student_initial_learning_rate,

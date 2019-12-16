@@ -1,4 +1,4 @@
-pure_distill_1 = {
+pure_dstl_1 = {
 'distill_temp' : 5.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -15,7 +15,7 @@ pure_distill_1 = {
 }
 
 
-pure_distill_2 = {
+pure_dstl_2 = {
 'distill_temp' : 5.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -31,7 +31,7 @@ pure_distill_2 = {
 'teacher_optimizer' : 'radam'
 }
 
-pure_distill_3 = {
+pure_dstl_3 = {
 'distill_temp' : 5.0,
 'student_distill_rate' : 0.9,
 'student_gold_rate' : 0.1,
@@ -47,7 +47,7 @@ pure_distill_3 = {
 'teacher_optimizer' : 'radam'
 }
 
-pure_distill_4 = {
+pure_dstl_4 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -63,7 +63,7 @@ pure_distill_4 = {
 'teacher_optimizer' : 'radam'
 }
 
-pure_distill_4_radamfast = {
+pure_dstl_4_radamfst = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -79,7 +79,7 @@ pure_distill_4_radamfast = {
 'teacher_optimizer' : 'adam'
 }
 
-pure_distill_4_crs_fast = {
+pure_dstl_4_crs_fst = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -97,7 +97,7 @@ pure_distill_4_crs_fast = {
 }
 
 
-pure_distill_4_crs_slow = {
+pure_dstl_4_crs_slw = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -114,7 +114,7 @@ pure_distill_4_crs_slow = {
 'schedule': 'crs'
 }
 
-distill_6_crs_slow = {
+dstl_6_crs_slw = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 0.9,
 'student_gold_rate' : 0.1,
@@ -131,7 +131,7 @@ distill_6_crs_slow = {
 'schedule': 'crs'
 }
 
-schdld_distill_6_crs_slow = {
+schdld_dstl_6_crs_slw = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 0.9,
 'student_gold_rate' : 0.1,
@@ -146,12 +146,12 @@ schdld_distill_6_crs_slow = {
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs',
-'distill_decay_steps': 10000,
-'distill_warmup_steps': 0,
-'hold_base_distillrate_steps': 10000,
+'dstl_decay_steps': 10000,
+'dstl_warmup_steps': 0,
+'hold_base_dstlrate_steps': 10000,
 }
 
-pure_distill_4_crs_vslow = {
+pure_dstl_4_crs_vslw = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -168,7 +168,7 @@ pure_distill_4_crs_vslow = {
 'schedule': 'crs'
 }
 
-pure_distill_5 = {
+pure_dstl_5 = {
 'distill_temp' : 2.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -184,7 +184,7 @@ pure_distill_5 = {
 'teacher_optimizer' : 'radam'
 }
 
-pure_distill_4_fastonline = {
+pure_dstl_4_fstonln = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
 'student_gold_rate' : 0.0,
@@ -200,15 +200,15 @@ pure_distill_4_fastonline = {
 'teacher_optimizer' : 'radam'
 }
 
-DISTILL_PARAMS = {'pure_distill_1' :  pure_distill_1,
-                  'pure_distill_2' :  pure_distill_2,
-                  'pure_distill_3' :  pure_distill_3,
-                  'pure_distill_4': pure_distill_4,
-                  'pure_distill_4_radamfast': pure_distill_4_radamfast,
-                  'pure_distill_5': pure_distill_5,
-                  'pure_distill_4_fastonline': pure_distill_4_fastonline,
-                  'pure_distill_4_crs_fast': pure_distill_4_crs_fast,
-                  'pure_distill_4_crs_slow': pure_distill_4_crs_slow,
-                  'pure_distill_4_crs_vslow': pure_distill_4_crs_vslow,
-                  'distill_6_crs_slow': distill_6_crs_slow
+dstl_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
+                  'pure_dstl_2' :  pure_dstl_2,
+                  'pure_dstl_3' :  pure_dstl_3,
+                  'pure_dstl_4': pure_dstl_4,
+                  'pure_dstl_4_radamfst': pure_dstl_4_radamfst,
+                  'pure_dstl_5': pure_dstl_5,
+                  'pure_dstl_4_fstonln': pure_dstl_4_fstonln,
+                  'pure_dstl_4_crs_fst': pure_dstl_4_crs_fst,
+                  'pure_dstl_4_crs_slw': pure_dstl_4_crs_slw,
+                  'pure_dstl_4_crs_vslw': pure_dstl_4_crs_vslw,
+                  'dstl_6_crs_slw': dstl_6_crs_slw
                   }
