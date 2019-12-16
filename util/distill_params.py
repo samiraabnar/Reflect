@@ -200,7 +200,7 @@ pure_dstl_4_fstonln = {
 'teacher_optimizer' : 'radam'
 }
 
-dstl_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
+DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'pure_dstl_2' :  pure_dstl_2,
                   'pure_dstl_3' :  pure_dstl_3,
                   'pure_dstl_4': pure_dstl_4,
