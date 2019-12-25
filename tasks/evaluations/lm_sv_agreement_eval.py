@@ -36,7 +36,7 @@ flags.DEFINE_string('prefix', 'prefix', ' prefix')
 flags.DEFINE_string('exp_name', 'tune_withl2_withpunc', 'tune_withl2_withpunc | withl2_batchsumloss_withpunc')
 flags.DEFINE_string('model_config', 'very_big_gpt_v10', 'big_gpt_v5 | very_big_gpt_v10| lstm_drop31_v2')
 flags.DEFINE_string('model_name', 'lm_gpt2_shared', 'lm_gpt2_shared | lm_gpt1 | lm_lstm_shared_emb')
-flags.DEFINE_string('train_config', 'adam_slow', ' adam_slow | radam_fast')
+flags.DEFINE_string('train_config', 'adam_slw', ' adam_slw | radam_fst')
 flags.DEFINE_string('split', 'test', ' valid | test | train')
 
 flags.DEFINE_boolean('withlr', True, 'True | False')
