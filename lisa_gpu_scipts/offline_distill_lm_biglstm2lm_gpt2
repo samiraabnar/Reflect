@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=fd_lm
+#SBATCH --job-name=fd_lm_big
 #SBATCH --time=20:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
@@ -24,14 +24,15 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
-# 105, 106, 107
-# 111, 112, 113
+# 100, 101, 102
+# 116, 117, 118
+
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --teacher_exp_name=0.001_lisa_crs_slw_offlineteacher_v10 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_fd105 \
---teacher_config=lstm_drop31_v2 \
+--student_exp_name=lisa_fd100 \
+--teacher_config=biglstm_drop31_v2 \
 --student_config=big_gpt_v5 \
 --distill_mode=offline \
 --distill_config=dstl_4_crs_slw
