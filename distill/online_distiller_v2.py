@@ -171,7 +171,6 @@ class OnlineDistiller(Distiller):
     save_path = self.teacher_manager.save()
     tf.print("Saved teacher checkpoint for step {}: {}".format(int(self.teacher_ckpt.step), save_path))
 
-
   def validate(self, actual_loss, distill_loss, valid_iter):
     ''' Offline Distillation main loop.
     '''
