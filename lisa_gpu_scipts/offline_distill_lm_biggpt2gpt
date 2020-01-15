@@ -24,13 +24,13 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
-# 140 141 142
-# 145 146 147
+# 180 181 182
+# 185 186 187
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
 --teacher_exp_name=0.0001_lisa_crs_slw_offlineteacher_v10 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_fd140 \
+--student_exp_name=lisa_fd180 \
 --teacher_config=very_big_gpt_v10 \
 --student_config=big_gpt_v5 \
 --distill_mode=offline \
