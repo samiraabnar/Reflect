@@ -28,4 +28,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --task=word_sv_agreement_lm \
 --model_config=biglstm_drop31_v2 \
 --train_config=crs_slw \
---exp_name=lisa_crs_slw_offlineteacher_v11
+--exp_name=lisa_crs_slw_offlineteacher_v12
