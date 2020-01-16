@@ -27,5 +27,5 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=lm_lstm_shared_emb \
 --task=word_sv_agreement_lm \
 --model_config=lstm_drop31_v2 \
---train_config=radam_fst \
---exp_name=lisa_offlineteacher_v3
+--train_config=crs_slw \
+--exp_name=lisa_crs_slw_offlineteacher_v12
