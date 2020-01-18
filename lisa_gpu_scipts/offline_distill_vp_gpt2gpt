@@ -25,7 +25,8 @@ LOGS_DIR=$HEAD_DIR/logs
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 # 120, 121, 122
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_vp \
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
+--task=word_sv_agreement_vp \
 --teacher_model=cl_gpt2 \
 --teacher_exp_name=0.001_samira_offlineteacher_v11 \
 --student_model=cl_gpt2 \
