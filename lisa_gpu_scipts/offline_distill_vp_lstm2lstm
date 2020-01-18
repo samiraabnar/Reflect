@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=offline_distill_lm
+#SBATCH --job-name=fd_lm
 #SBATCH --time=20:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
@@ -24,13 +24,13 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
-# 110, 111, 112
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_vp \
---teacher_model=cl_gpt2 \
+# 130, 131,132
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
+--teacher_model=cl_lstm \
 --teacher_exp_name=0.001_samira_offlineteacher_v11 \
 --student_model=cl_lstm \
---student_exp_name=lisa_fd110 \
---teacher_config=small_gpt_v9 \
+--student_exp_name=lisa_fd130 \
+--teacher_config=small_lstm_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=offline \
 --distill_config=pure_dstl_4_crs_slw
