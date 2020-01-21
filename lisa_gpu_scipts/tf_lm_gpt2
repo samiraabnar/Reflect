@@ -26,5 +26,5 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=lm_gpt2 \
 --task=word_sv_agreement_lm \
 --model_config=big_gpt_v5 \
---train_config=crs_slw \
+--train_config=crs_slw_v2 \
 --exp_name=lisa_crs_slw_offlineteacher_v12
