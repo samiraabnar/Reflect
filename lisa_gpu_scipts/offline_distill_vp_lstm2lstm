@@ -24,13 +24,16 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
-# 130, 131,132
+# 130, 131,132 0.001_samira_offlineteacher_v11
+# 135, 136,137 0.001_samira_offlineteacher_v5
+
+
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_lstm \
---teacher_exp_name=0.001_samira_offlineteacher_v11 \
+--teacher_exp_name=0.001_samira_offlineteacher_v5 \
 --student_model=cl_lstm \
---student_exp_name=lisa_fd132 \
+--student_exp_name=lisa_fd135 \
 --teacher_config=small_lstm_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=offline \
