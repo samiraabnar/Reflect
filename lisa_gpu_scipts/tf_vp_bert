@@ -1,13 +1,12 @@
 #!/bin/bash
 
-#SBATCH --job-name=lm_gpt2
+#SBATCH --job-name=cl_bert
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=20:00:00
+#SBATCH --time=10:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
-
 
 module load 2019
 module load CUDA/10.0.130
