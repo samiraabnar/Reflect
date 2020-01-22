@@ -26,5 +26,5 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=cl_bert \
 --task=word_sv_agreement_vp \
 --model_config=small_gpt_v9 \
---train_config=cls_slw \
---exp_name=lisa_cls_slw_offlineteacher_v12
+--train_config=crs_slw \
+--exp_name=lisa_crs_slw_offlineteacher_v11
