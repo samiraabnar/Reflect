@@ -36,4 +36,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
 --teacher_config=small_lstm_v4 \
 --student_config=small_gpt_v9 \
 --distill_mode=offline \
---distill_config=pure_dstl_4_crs_slw
+--distill_config=dstl_6_crs_slw
