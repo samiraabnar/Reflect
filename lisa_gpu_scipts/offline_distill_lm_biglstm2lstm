@@ -29,14 +29,19 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 # 200 201 292
 
 # 0.001_lisa_offlineteacher_v3
-# 220 221 222
-# 225, 226, 227
+# 220 221 222 small
+# 225, 226, 227 big
+
+# 0.001_lisa_crs_fst_offlineteacher_v20
+# 420 421 422 small
+# 425, 426, 427 big
+
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
---teacher_exp_name=0.001_lisa_offlineteacher_v3 \
+--teacher_exp_name=0.001_lisa_crs_fst_offlineteacher_v20 \
 --student_model=lm_lstm_shared_emb \
---student_exp_name=lisa_fd220 \
+--student_exp_name=lisa_fd425 \
 --teacher_config=biglstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
+--student_config=biglstm_drop31_v2 \
 --distill_mode=offline \
 --distill_config=pure_dstl_4_crs_slw
