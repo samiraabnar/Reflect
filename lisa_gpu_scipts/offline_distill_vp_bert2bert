@@ -24,13 +24,13 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
-# 190, 191,192 0.001_samira_offlineteacher_v12
-# 195, 196,197 0.001_samira_offlineteacher_v10
+# 190, 191,192 0.001_lisa_crs_slw_offlineteacher_v12
+# 195, 196,197 0.001_lisa_crs_slw_offlineteacher_v10
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
---teacher_exp_name=0.001_samira_offlineteacher_v12 \
+--teacher_exp_name=0.001_lisa_crs_slw_offlineteacher_v12 \
 --student_model=cl_bert \
 --student_exp_name=lisa_fd190 \
 --teacher_config=small_gpt_v9 \
