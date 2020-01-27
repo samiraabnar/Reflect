@@ -24,16 +24,27 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
+gpt2
 # 120, 121, 122 0.001_samira_offlineteacher_v11
 # 125, 126, 127 0.001_samira_offlineteacher_v5
 
+
+gpt2_shared to gpt2_shared
+# 170, 171, 172 0.001_samira_offlineteacher_v12
+# 175, 176, 177 0.001_samira_offlineteacher_v11
+
+
+gpt2_shared to gpt2
+# 180, 181, 182 0.001_samira_offlineteacher_v12
+# 185, 186, 187 0.001_samira_offlineteacher_v11
+
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
 --task=word_sv_agreement_vp \
---teacher_model=cl_gpt2 \
---teacher_exp_name=0.001_samira_offlineteacher_v5 \
---student_model=cl_gpt2 \
---student_exp_name=lisa_fd126 \
+--teacher_model=cl_gpt2_shared \
+--teacher_exp_name=0.001_samira_offlineteacher_v11 \
+--student_model=cl_gpt2_shared \
+--student_exp_name=lisa_fd185 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
 --distill_mode=offline \
---distill_config=dstl_6_crs_slw
+--distill_config=dstl_4_crs_slw
