@@ -29,8 +29,8 @@ gpt2
 # 115, 116, 117 0.001_samira_offlineteacher_v5
 
 gpt2_shared
-# 200, 201, 202 0.001_samira_offlineteacher_v10
-# 205, 206, 207 0.001_samira_offlineteacher_v11
+# 200, 201, 202 0.001_samira_offlineteacher_v11
+# 205, 206, 207 0.001_samira_offlineteacher_v12
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
 --task=word_sv_agreement_vp \
@@ -41,4 +41,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
 --teacher_config=small_gpt_v9 \
 --student_config=small_lstm_v4 \
 --distill_mode=offline \
---distill_config=dstl_6_crs_slw
+--distill_config=pure_dstl_4_crs_slw
