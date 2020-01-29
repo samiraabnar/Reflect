@@ -27,15 +27,15 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 # 180 181 182 small 0.0001_lisa_crs_slw_offlineteacher_v10
 # 185 186 187 big 0.0001_lisa_crs_slw_offlineteacher_v10
 
-# 310 311 312 big 0.0001_lisa_offlineteacher_v1
-# 315 316 317 small 0.0001_lisa_offlineteacher_v1
+# 310 311 312 small 0.0001_lisa_offlineteacher_v1
+# 315 316 317 big 0.0001_lisa_offlineteacher_v1
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
 --teacher_exp_name=0.0001_lisa_offlineteacher_v1 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_fd312 \
+--student_exp_name=lisa_fd315 \
 --teacher_config=very_big_gpt_v10 \
---student_config=big_gpt_v5 \
+--student_config=very_big_gpt_v10 \
 --distill_mode=offline \
 --distill_config=pure_dstl_4_crs_slw
