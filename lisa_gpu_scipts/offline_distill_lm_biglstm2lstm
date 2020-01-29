@@ -38,14 +38,14 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 
 # 0.001_lisa_crs_fst_offlineteacher_v22
-# 520 451 422 small
+# 520 551 522 small
 # 525, 526, 427 big
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --teacher_exp_name=0.001_lisa_crs_fst_offlineteacher_v22 \
 --student_model=lm_lstm_shared_emb \
---student_exp_name=lisa_fd525 \
+--student_exp_name=lisa_fd526 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=biglstm_drop31_v2 \
 --distill_mode=offline \
