@@ -24,11 +24,12 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
-# 150 151 152
-# 155 156 157
+# 0.001_lisa_crs_slw_offlineteacher_v20
+# 150 151 152 big
+# 155 156 157 small
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
---teacher_exp_name=0.0001_lisa_crs_slw_offlineteacher_v10 \
+--teacher_exp_name=0.001_lisa_crs_slw_offlineteacher_v20 \
 --student_model=lm_gpt2 \
 --student_exp_name=lisa_fd150 \
 --teacher_config=big_gpt_v5 \
