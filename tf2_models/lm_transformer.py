@@ -311,7 +311,7 @@ class LmGPT2(tf.keras.Model):
     lm_logits = self.transformer.wte(hidden_states, mode="linear")
 
     if self.transformer.output_attentions:
-      outputs = (lm_logits,) + transformer_outputs[1:]
+      outputs = (lm_logits,) + transformer_outputs
     else:
       outputs = lm_logits
 
