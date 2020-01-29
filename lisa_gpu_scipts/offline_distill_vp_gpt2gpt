@@ -38,12 +38,17 @@ gpt2_shared to gpt2_shared
 # 180, 181, 182 0.001_samira_offlineteacher_v11
 # 185, 186, 187 0.001_samira_offlineteacher_v12
 
+
+gpt2 to gpt2_shared
+# 210, 211, 212 0.001_samira_offlineteacher_v11
+# 215, 216, 217 0.001_samira_offlineteacher_v5
+
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
 --task=word_sv_agreement_vp \
---teacher_model=cl_gpt2_shared \
+--teacher_model=cl_gpt2 \
 --teacher_exp_name=0.001_samira_offlineteacher_v11 \
 --student_model=cl_gpt2_shared \
---student_exp_name=lisa_fd181 \
+--student_exp_name=lisa_fd215 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
 --distill_mode=offline \
