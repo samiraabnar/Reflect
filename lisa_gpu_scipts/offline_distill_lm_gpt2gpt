@@ -31,7 +31,7 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_a
 --teacher_model=lm_gpt2 \
 --teacher_exp_name=0.001_lisa_crs_fst_offlineteacher_v20 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_fd155 \
+--student_exp_name=lisa_fd156 \
 --teacher_config=big_gpt_v5 \
 --student_config=big_gpt_v5 \
 --distill_mode=offline \
