@@ -25,7 +25,7 @@ LOGS_DIR=$HEAD_DIR/logs
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 
-# 0.001_lisa_crs_slw_offlineteacher_v20
+# 0.001_lisa_crs_fst_offlineteacher_v20
 # 130 131 132 small
 # 135 136 137 big
 
