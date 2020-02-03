@@ -161,9 +161,47 @@ class ClassifierLSTM(tf.keras.Model):
       final_rnn_outputs = tf.gather_nd(rnn_outputs, final_indexes)
 
       logits = self.output_embedding(final_rnn_outputs)
+
       return logits
 
     return _call(inputs, training)
+
+  def detailed_call(self, inputs, **kwargs):
+    if 'training' in kwargs:
+      training = kwargs['training']
+    else:
+      training = False
+
+    @tf.function(experimental_relax_shapes=True)
+    def _call(inputs, training):
+      embedded_input = self.input_embedding_dropout(self.input_embedding(inputs), training=training)
+      rnn_outputs = embedded_input
+
+      input_mask = self.input_embedding.compute_mask(inputs)
+      inputs_length = tf.reduce_sum(tf.cast(input_mask, dtype=tf.int32), axis=-1)
+
+      hidden_activation = [embedded_input]
+      for i in np.arange(self.hparams.depth):
+        rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask, training=training)
+        hidden_activation.append(rnn_outputs)
+
+      rnn_outputs = self.output_embedding_dropout(rnn_outputs, training=training)
+      batch_size = tf.shape(rnn_outputs)[0]
+      bach_indices = tf.expand_dims(tf.range(batch_size), 1)
+      final_indexes = tf.concat([bach_indices, tf.expand_dims(tf.cast(inputs_length - 1, dtype=tf.int32), 1)], axis=-1)
+
+      final_rnn_outputs = tf.gather_nd(rnn_outputs, final_indexes)
+
+      logits = self.output_embedding(final_rnn_outputs)
+
+      out = logits
+      if self.output_hiddenstate:
+        out = (out, final_rnn_outputs, hidden_activation)
+
+      return out
+
+    return _call(inputs, training)
+
 
 
 class LmLSTMSharedEmb(tf.keras.Model):
@@ -232,7 +270,6 @@ class LmLSTMSharedEmb(tf.keras.Model):
       self.rnn_initial_states.append(init_state)
 
 
-
   def call(self, inputs, padding_symbol=0, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
@@ -263,6 +300,46 @@ class LmLSTMSharedEmb(tf.keras.Model):
       logits = self.input_embedding(rnn_outputs, mode='linear')
 
       return logits
+
+    return _call(inputs, padding_symbol, **kwargs)
+
+  def detailed_call(self, inputs, padding_symbol=0, **kwargs):
+
+    @tf.function(experimental_relax_shapes=True)
+    def _call(inputs, padding_symbol, **kwargs):
+      input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
+      embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'),
+                                                    **kwargs)
+      rnn_outputs = embedded_input
+      hidden_activation = [embedded_input]
+      for i in np.arange(self.hparams.depth):
+        batch_size_tensor = tf.shape(rnn_outputs)[0]
+        absl.logging.info(self.rnn_initial_states[i])
+
+        def tile_init(unnested_init_state):
+          return tf.tile(unnested_init_state, (batch_size_tensor, 1))
+
+        init_state = self.rnn_initial_states[i]
+        if nest.is_sequence(init_state):
+          init_for_batch = nest.map_structure(tile_init, init_state)
+        else:
+          init_for_batch = tile_init(init_state)
+
+
+        rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask,
+                                                             initial_state=init_for_batch,
+                                                             **kwargs)
+        hidden_activation.append(rnn_outputs)
+
+      rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
+      rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
+      logits = self.input_embedding(rnn_outputs, mode='linear')
+
+      out = logits
+      if self.output_hiddenstate:
+        out = (out,rnn_outputs, hidden_activation)
+
+      return out
 
     return _call(inputs, padding_symbol, **kwargs)
 
