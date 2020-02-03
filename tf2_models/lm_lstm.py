@@ -416,6 +416,30 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
 
     return _call(inputs, padding_symbol, **kwargs)
 
+  def detailed_call(self, inputs, padding_symbol=0, **kwargs):
+    @tf.function(experimental_relax_shapes=True)
+    def _call(inputs, padding_symbol, **kwargs):
+      input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
+      embedded_input = self.input_embedding_dropout(self.input_embedding(inputs, mode='embedding'),
+                                                    **kwargs)
+      rnn_outputs = embedded_input
+      hidden_activation = [embedded_input]
+      for i in np.arange(self.hparams.depth):
+        rnn_outputs, state_h, state_c = self.stacked_rnns[i](rnn_outputs, mask=input_mask,
+                                                             **kwargs)
+        hidden_activation.append(rnn_outputs)
+
+      rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
+      rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
+      logits = self.input_embedding(rnn_outputs, mode='linear')
+
+      out = logits
+      if self.output_hiddenstate:
+        out = (out, rnn_outputs, hidden_activation)
+
+      return out
+
+    return _call(inputs, padding_symbol, **kwargs)
 
 if __name__ == '__main__':
   class hparams(object):
