@@ -7,7 +7,8 @@ class ModelConfig(object):
                depth=3,
                hidden_dropout_rate=0.5,
                input_dropout_rate=0.2,
-               initializer_range=None):
+               initializer_range=None,
+               **kwargs):
     self.embedding_dim = embedding_dim
     self.hidden_dim = hidden_dim
     self.input_dim = input_dim
@@ -16,6 +17,9 @@ class ModelConfig(object):
     self.hidden_dropout_rate = hidden_dropout_rate
     self.input_dropout_rate = input_dropout_rate
     self.initializer_range = initializer_range
+
+    self.output_hidden_states = kwargs.pop('output_hidden_states', False)
+    self.output_embeddings = kwargs.pop('output_embeddings', False)
 
 class GPT2Config(object):
     """Configuration class to store the configuration of a `GPT2Model`.

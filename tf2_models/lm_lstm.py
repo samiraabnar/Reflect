@@ -195,7 +195,7 @@ class ClassifierLSTM(tf.keras.Model):
       logits = self.output_embedding(final_rnn_outputs)
 
       out = logits
-      if self.output_hiddenstate:
+      if self.hparams.output_hidden_states:
         out = (out, final_rnn_outputs, hidden_activation)
 
       return out
@@ -336,7 +336,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
       logits = self.input_embedding(rnn_outputs, mode='linear')
 
       out = logits
-      if self.output_hiddenstate:
+      if self.hparams.output_hidden_states:
         out = (out,rnn_outputs, hidden_activation)
 
       return out
@@ -434,7 +434,7 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
       logits = self.input_embedding(rnn_outputs, mode='linear')
 
       out = logits
-      if self.output_hiddenstate:
+      if self.hparams.output_hidden_states:
         out = (out, rnn_outputs, hidden_activation)
 
       return out
