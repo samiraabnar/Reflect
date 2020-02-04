@@ -15,6 +15,7 @@ flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_a
 flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_gpt2_shared | lm_lstm_shared_emb | cl_gpt2_shared | cl_gpt2 | cl_lstm')
 flags.DEFINE_string('model_config', 'base', 'base | small_lstm ')
 flags.DEFINE_string('train_config', 'radam_fast', 'radam_slow | radam_fast')
+flags.DEFINE_string('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
 
 
 hparams = flags.FLAGS
@@ -49,7 +50,8 @@ def run():
   log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
   ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
 
-  trainer = Trainer(task=task,
+  trainer = Trainer(hparams,
+                    task=task,
                     model=model,
                     train_params=trainer_params,
                     log_dir=log_dir,

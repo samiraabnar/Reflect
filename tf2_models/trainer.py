@@ -8,7 +8,8 @@ OPTIMIZER_DIC = {'adam': tf.keras.optimizers.Adam,
                  }
 class Trainer(object):
 
-  def __init__(self, model, task, train_params, log_dir, ckpt_dir):
+  def __init__(self, hparams, model, task, train_params, log_dir, ckpt_dir):
+    self.hparams = hparams
     self.model = model
     self.task = task
     self.train_params = train_params
@@ -18,7 +19,9 @@ class Trainer(object):
     self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
     self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
-    self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir, max_to_keep=2)
+    self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir,
+                                              keep_checkpoint_every_n_hours=self.hparams.keep_checkpoint_every_n_hours,
+                                              max_to_keep=2)
 
 
     x, y = iter(self.task.valid_dataset).next()
@@ -42,7 +45,7 @@ class Trainer(object):
     self.callbacks = [ckpt_callback, summary_callback]
 
   def get_lr_schedule(self):
-    if 'cosinerestart' in self.train_params.schedule:
+    if 'crs' in self.train_params.schedule:
       initial_learning_rate = self.train_params.learning_rate
       lr_schedule = (
         tf.keras.experimental.CosineDecayRestarts(

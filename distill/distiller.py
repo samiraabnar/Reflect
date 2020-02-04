@@ -8,7 +8,7 @@ import numpy as np
 class Distiller(object):
   ''' Pipeline for offline distillation.
   '''
-  def __init__(self, distill_params, teacher_model, student_model, task,
+  def __init__(self, hparams, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     self.teacher_model = teacher_model
     self.student_model = student_model
@@ -20,7 +20,7 @@ class Distiller(object):
     self.task_loss = self.task.get_loss_fn()
     self.metrics = self.task.metrics()
     self.task_probs_fn = self.task.get_probs_fn()
-
+    self.hparams = hparams
     self.create_student_optimizer()
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params, task)
@@ -55,7 +55,9 @@ class Distiller(object):
     self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
                                             optimizer=self.student_optimizer,
                                             net=self.student_model)
-    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
+    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir,
+                                                      keep_checkpoint_every_n_hours=self.hparams.keep_checkpoint_every_n_hours,
+                                                      max_to_keep=2)
 
     # Init summary
     student_summary_dir = os.path.join(student_log_dir, 'summaries')

@@ -1,10 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=lm_lstm
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --time=20:00:00
+#SBATCH --job-name=cl_bert
+#SBATCH --time=10:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
 
@@ -28,6 +25,7 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model=cl_lstm \
 --task=word_sv_agreement_vp \
---model_config=small_lstm_v4 \
---train_config=radam_slow \
---exp_name=lisa_offlineteacher_v1
+--model_config=small_lstm_4 \
+--train_config=crs_slw \
+--keep_checkpoint_every_n_hours=1 \
+--exp_name=lisa_crs_slw_offlineteacher_v20

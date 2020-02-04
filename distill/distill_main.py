@@ -41,7 +41,7 @@ flags.DEFINE_string('student_config', 'base', 'base | small_lstm ')
 flags.DEFINE_string('teacher_config', 'base', 'base | small_lstm ')
 
 flags.DEFINE_string('distill_mode', 'offline', 'offline | online | off_schdld | on_schdld')
-
+flags.DEFINE_string('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
 
 FLAGS(sys.argv)
 hparams = flags.FLAGS
