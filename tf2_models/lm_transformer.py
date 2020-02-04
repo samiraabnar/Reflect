@@ -405,10 +405,11 @@ class ClassifierGPT2(tf.keras.Model):
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits = _call(batch_size, inputs, transformer_outputs)
 
+    outputs = cl_logits
     if self.transformer.output_attentions:
-      return cl_logits, transformer_outputs
-    else:
-      return cl_logits
+      outputs = (cl_logits,) + transformer_outputs
+
+    return outputs
 
 class ClassifierGPT2SharedWeights(ClassifierGPT2):
   def __init__(self, hparams, scope='cl_gpt2_shared_weights', *inputs, **kwargs):
@@ -488,7 +489,8 @@ class ClassifierBERT(tf.keras.Model):
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits = _call(batch_size, inputs, transformer_outputs)
 
+    outputs = cl_logits
     if self.transformer.output_attentions:
-      return cl_logits, transformer_outputs
-    else:
-      return cl_logits
+      outputs = (cl_logits,) + transformer_outputs
+
+    return outputs
