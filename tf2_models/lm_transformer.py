@@ -394,7 +394,7 @@ class ClassifierGPT2(tf.keras.Model):
       indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
       hidden_states = tf.gather_nd(transformer_outputs[0], indices)
       cl_logits = self.e2c(hidden_states)
-      return cl_logits
+      return cl_logits, hidden_states
 
     # Add CL token:
     batch_size = tf.shape(inputs)[0]
@@ -403,11 +403,11 @@ class ClassifierGPT2(tf.keras.Model):
     #inputs = tf.concat([cl_tokens, inputs], axis=-1)
 
     transformer_outputs = self.transformer(inputs, **kwargs)
-    cl_logits = _call(batch_size, inputs, transformer_outputs)
+    cl_logits, hidden_states = _call(batch_size, inputs, transformer_outputs)
 
     outputs = cl_logits
     if self.transformer.output_attentions:
-      outputs = (cl_logits,) + transformer_outputs
+      outputs = (cl_logits, hidden_states) + transformer_outputs
 
     return outputs
 
