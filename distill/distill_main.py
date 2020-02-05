@@ -81,7 +81,8 @@ if __name__ == '__main__':
   teacher_model, student_model, \
   teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models()
 
-  distiller = DISTILLER[hparams.distill_mode](distill_params=get_distill_params(hparams.distill_config),
+  distiller = DISTILLER[hparams.distill_mode](hparams=hparams,
+                                              distill_params=get_distill_params(hparams.distill_config),
                                               teacher_model=teacher_model,
                                               student_model=student_model,
                                               task=task,
