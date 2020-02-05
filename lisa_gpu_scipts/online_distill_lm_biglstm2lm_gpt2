@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=fd_lm_big
+#SBATCH --job-name=od_lm_big
 #SBATCH --time=20:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
@@ -38,7 +38,7 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_a
 --teacher_model=lm_lstm_shared_emb \
 --teacher_exp_name=0.001_lisa_crs_fst_od506 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_od505 \
+--student_exp_name=lisa_od506 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \

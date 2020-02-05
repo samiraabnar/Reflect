@@ -29,9 +29,9 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
---teacher_exp_name=0.001_lisa_onlineteacher_od430 \
+--teacher_exp_name=0.001_lisa_onlineteacher_od431 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_od430 \
+--student_exp_name=lisa_od431 \
 --teacher_config=lstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
