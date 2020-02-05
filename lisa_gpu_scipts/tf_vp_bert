@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=cl_bert
+#SBATCH --job-name=vp_bert
 #SBATCH --time=10:00:00
 #SBATCH --partition=gpu_shared
 #SBATCH --gres=gpu:1
