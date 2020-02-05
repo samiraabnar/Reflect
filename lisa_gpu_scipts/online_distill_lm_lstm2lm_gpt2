@@ -26,12 +26,16 @@ LOGS_DIR=$HEAD_DIR/logs
 
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
+# 0.001_lisa_crs_fst_offlineteacher_v20
+# 430 431 432 big
+# 435 436 437 small
+
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
---teacher_exp_name=0.001_lisa_onlineteacher_od4 \
+--teacher_exp_name=0.001_lisa_onlineteacher_od430 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_od4 \
+--student_exp_name=lisa_od430 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=pure_distill_4_crs_slw
+--distill_config=pure_dstl_4_crs_slwfst

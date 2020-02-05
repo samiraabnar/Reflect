@@ -8,8 +8,9 @@ from inspect import isfunction
 import numpy as np
 
 class OnlineDistiller(Distiller):
-  def __init__(self, distill_params, teacher_model, student_model, task,
+  def __init__(self, hparams, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
+    self.hparams = hparams
     self.teacher_model = teacher_model
     self.student_model = student_model
     self.task = task
