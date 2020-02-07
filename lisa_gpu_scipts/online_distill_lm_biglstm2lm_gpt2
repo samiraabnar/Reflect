@@ -36,10 +36,10 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
---teacher_exp_name=0.001_lisa_crs_fst_od507 \
+--teacher_exp_name=0.001_lisa_crs_fst_od500 \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_od507 \
+--student_exp_name=lisa_od500 \
 --teacher_config=biglstm_drop31_v2 \
---student_config=very_big_gpt_v10 \
+--student_config=big_gpt_v5 \
 --distill_mode=online \
 --distill_config=pure_dstl_4_crs_slwfst
