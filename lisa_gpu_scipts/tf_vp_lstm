@@ -51,6 +51,6 @@ CUDA_VISIBLE_DEVICES=3 python $CODE_DIR/keras_trainer.py \
 --model_config=small_lstm_4 \
 --train_config=crs_fst \
 --keep_checkpoint_every_n_hours=1 \
---exp_name=lisa_crs_slw_offlineteacher_v30 &
+--exp_name=lisa_crs_fst_offlineteacher_v30 &
 
 wait

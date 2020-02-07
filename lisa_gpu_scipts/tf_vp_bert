@@ -1,9 +1,8 @@
 #!/bin/bash
 
-#SBATCH --job-name=vp_bert
+#SBATCH --job-name=vp_lstm
 #SBATCH --time=10:00:00
-#SBATCH --partition=gpu_shared
-#SBATCH --gres=gpu:1
+#SBATCH --partition=gpu
 
 module load 2019
 module load CUDA/10.0.130
@@ -28,4 +27,29 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --model_config=small_gpt_v9 \
 --train_config=crs_slw \
 --keep_checkpoint_every_n_hours=1 \
---exp_name=lisa_crs_slw_offlineteacher_v20
+--exp_name=lisa_crs_slw_offlineteacher_v20 &
+
+CUDA_VISIBLE_DEVICES=1 python $CODE_DIR/keras_trainer.py \
+--model=cl_bert \
+--task=word_sv_agreement_vp \
+--model_config=small_gpt_v9 \
+--train_config=crs_slw \
+--keep_checkpoint_every_n_hours=1 \
+--exp_name=lisa_crs_slw_offlineteacher_v21 &
+
+CUDA_VISIBLE_DEVICES=2 python $CODE_DIR/keras_trainer.py \
+--model=cl_bert \
+--task=word_sv_agreement_vp \
+--model_config=small_lstm_4 \
+--train_config=small_gpt_v9 \
+--keep_checkpoint_every_n_hours=1 \
+--exp_name=lisa_crs_slw_offlineteacher_v22 &
+
+CUDA_VISIBLE_DEVICES=3 python $CODE_DIR/keras_trainer.py \
+--model=cl_bert \
+--task=word_sv_agreement_vp \
+--model_config=small_gpt_v9 \
+--train_config=crs_fst \
+--exp_name=lisa_crs_fst_offlineteacher_v30 &
+
+wait
