@@ -15,7 +15,7 @@ flags.DEFINE_string('task', 'word_sv_agreement_lm', 'sv_agreement_lm | word_sv_a
 flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_gpt2_shared | lm_lstm_shared_emb | cl_gpt2_shared | cl_gpt2 | cl_lstm')
 flags.DEFINE_string('model_config', 'base', 'base | small_lstm ')
 flags.DEFINE_string('train_config', 'radam_fast', 'radam_slow | radam_fast')
-flags.DEFINE_string('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
+flags.DEFINE_integer('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
 
 
 hparams = flags.FLAGS
