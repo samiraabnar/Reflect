@@ -27,4 +27,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
 --task=word_sv_agreement_lm \
 --model_config=very_big_gpt_v10 \
 --train_config=crs_fst \
---exp_name=lisa_crs_fst_offlineteacher_v25
+--exp_name=lisa_crs_fst_offlineteacher_v24
