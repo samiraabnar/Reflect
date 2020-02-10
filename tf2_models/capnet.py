@@ -34,7 +34,7 @@ class Mask(layers.Layer):
       mask = tf.clip(x, 0, 1)  # the max value in x clipped to 1 and other to 0
 
     # masked inputs, shape = [batch_size, dim_vector]
-    inputs_masked = tf.matmul(inputs, mask, [1, 1])
+    inputs_masked = tf.keras.backend.batch_dot(inputs, mask, [1, 1])
     return inputs_masked
 
   def compute_output_shape(self, input_shape):
@@ -117,7 +117,7 @@ class CapsuleLayer(layers.Layer):
     """
     # Compute `inputs * W` by scanning inputs_tiled on dimension 0. This is faster but requires Tensorflow.
     # inputs_hat.shape = [None, input_num_capsule, num_capsule, 1, dim_vector]
-    inputs_hat = tf.scan(lambda ac, x: tf.matmul(x, self.W, [3, 2]),
+    inputs_hat = tf.scan(lambda ac, x: tf.keras.backend.batch_dot(x, self.W, [3, 2]),
                          elems=inputs_tiled,
                          initializer=tf.zeros([self.input_num_capsule, self.num_capsule, 1, self.dim_vector]))
     """
