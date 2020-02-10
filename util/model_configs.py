@@ -634,6 +634,11 @@ lstm2_big_drop30_v2 = {
   'initializer_range': 0.01
 }
 
+ff_mnist_config = {'hidden_dim': 128,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.5,
+                   'input_dropout_rate': 0.2}
+
 MODEL_CONFIGS = {
   'base':{},
   'small_lstm':small_lstm,
@@ -697,5 +702,6 @@ MODEL_CONFIGS = {
   'lstm_drop31_v4': lstm_drop31_v4,
   'lstm_drop31_v5': lstm_drop31_v5,
   'biglstm_drop31_v2': biglstm_drop31_v2,
-  'short_gpt_v9': short_gpt_v9
+  'short_gpt_v9': short_gpt_v9,
+  'ff_mnist_config': ff_mnist_config
 }

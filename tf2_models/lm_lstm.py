@@ -3,7 +3,6 @@ import tensorflow as tf
 import numpy as np
 from tensorboard.compat.tensorflow_stub import tensor_shape
 from tensorflow.python.util import nest
-
 from tf2_models.common_layers import get_initializer
 from tf2_models.embedding import SharedEmbeddings
 from tf2_models.utils import create_init_var
@@ -201,7 +200,6 @@ class ClassifierLSTM(tf.keras.Model):
       return out
 
     return _call(inputs, training)
-
 
 
 class LmLSTMSharedEmb(tf.keras.Model):
