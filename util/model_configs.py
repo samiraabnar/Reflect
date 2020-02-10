@@ -731,4 +731,5 @@ MODEL_CONFIGS = {
   'short_gpt_v9': short_gpt_v9,
   'ff_mnist': ff_mnist,
   'vcnn_mnist': vcnn_mnist,
+  'vcnn_lenet5': vcnn_lenet5
 }
