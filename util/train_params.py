@@ -83,6 +83,13 @@ crs_slw_v3 = {
 'schedule': 'crs_slw'
 }
 
+
+mnist_adam = {'optimizer': 'adam',
+              'learning_rate': '0.001',
+              'decay_steps': 10000,
+              'n_epochs': 20
+              }
+
 TRAIN_PARAMS = {'radam_slw': radam_slw,
                 'radam_fst': radam_fst,
                 'adam_slw':  adam_slw,

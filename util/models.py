@@ -1,3 +1,5 @@
+from tf2_models.cnn import VanillaCNN
+from tf2_models.ff import VanillaFF
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM, LmLSTMSharedEmbV2
 from tf2_models.lm_transformer import LmGPT2, LmGPT2SharedWeights, ClassifierGPT2, ClassifierGPT2SharedWeights, \
   ClassifierBERT
@@ -9,4 +11,6 @@ MODELS = {"lm_lstm": LmLSTM,
           'cl_gpt2': ClassifierGPT2,
           'cl_lstm': ClassifierLSTM,
           'cl_gpt2_shared': ClassifierGPT2SharedWeights,
-          'cl_bert': ClassifierBERT}
+          'cl_bert': ClassifierBERT,
+          'cl_vcnn': VanillaCNN,
+          'cl_vff': VanillaFF}
