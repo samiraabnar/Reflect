@@ -99,7 +99,10 @@ class OnlineDistiller(Distiller):
       with tf.GradientTape() as tape:
         logits = self.teacher_model(x, training=True)
         loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
-        reg_loss = tf.math.add_n(self.teacher_model.losses)
+        if len(self.teacher_model.losses) > 0:
+          reg_loss = tf.math.add_n(self.teacher_model.losses)
+        else:
+          reg_loss = 0
         final_loss = loss + reg_loss
 
       grads = tape.gradient(final_loss, self.teacher_model.trainable_weights)
