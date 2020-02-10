@@ -33,6 +33,9 @@ class Mnist(Task):
     # To make sure we are not using this!
     raise NotImplementedError
 
+  def convert_examples(self, examples):
+    return examples['image'], examples['label']
+
   def setup_datasets(self):
     self.info = self.databuilder.info
     self.n_train_batches = int(
@@ -43,6 +46,8 @@ class Mnist(Task):
 
     self.test_dataset = self.databuilder.as_dataset(split="test")
     assert isinstance(self.test_dataset, tf.data.Dataset)
+    self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
+                                              num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.test_dataset = self.test_dataset.repeat()
     self.test_dataset = self.test_dataset.batch(
       batch_size=self.task_params.batch_size)
@@ -51,6 +56,8 @@ class Mnist(Task):
 
     self.train_dataset = self.databuilder.as_dataset(split="train")
     assert isinstance(self.train_dataset, tf.data.Dataset)
+    self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x),
+                                                num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.train_dataset = self.train_dataset.repeat()
     self.train_dataset = self.train_dataset.shuffle(1024)
     self.train_dataset = self.train_dataset.batch(
