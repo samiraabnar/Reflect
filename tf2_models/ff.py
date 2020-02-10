@@ -20,10 +20,10 @@ class VanillaFF(tf.keras.models.Sequential):
     self.create_vars()
 
 
-def create_vars(self):
-  self.add(tf.keras.layers.Flatten())
-  for i in np.arange(self.hparams.depth):
-    self.add(tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu'))
+  def create_vars(self):
+    self.add(tf.keras.layers.Flatten())
+    for i in np.arange(self.hparams.depth):
+      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu'))
 
-  self.add(tf.keras.layers.Dense(self.hparams.output_dim))
+    self.add(tf.keras.layers.Dense(self.hparams.output_dim))
 
