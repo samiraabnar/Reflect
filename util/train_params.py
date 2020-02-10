@@ -87,7 +87,7 @@ crs_slw_v3 = {
 mnist_adam = {'optimizer': 'adam',
               'learning_rate': 0.001,
               'decay_steps': 10000,
-              'n_epochs': 20
+              'num_train_epochs': 20
               }
 
 TRAIN_PARAMS = {'radam_slw': radam_slw,
