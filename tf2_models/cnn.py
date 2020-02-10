@@ -22,9 +22,11 @@ class VanillaCNN(tf.keras.models.Sequential):
     self.create_vars()
 
   def create_vars(self):
+    self.add(tf.keras.layers.ZeroPadding2D((2,2)))
+
     for i in np.arange(self.hparams.depth):
       self.add(tf.keras.layers.Conv2D(self.hparams.filters[i], self.hparams.kernel_size[i], activation='relu',
-                                      input_shape=(28, 28, 1)))
+                                      input_shape=(32, 32, 1)))
       self.add(tf.keras.layers.MaxPooling2D(self.hparams.pool_size[i]))
 
     self.add(tf.keras.layers.Flatten())
