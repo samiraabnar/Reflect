@@ -85,6 +85,7 @@ class CapsuleLayer(layers.Layer):
     self.input_dim_vector = input_shape[2]
 
     # Transform matrix
+    print(self.input_num_capsule, self.num_capsule, self.input_dim_vector, self.dim_vector)
     self.W = self.add_weight(shape=[self.input_num_capsule, self.num_capsule, self.input_dim_vector, self.dim_vector],
                              initializer=self.kernel_initializer,
                              name='W')
