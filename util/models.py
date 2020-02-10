@@ -1,3 +1,4 @@
+from tf2_models.capnet import CapsNet
 from tf2_models.cnn import VanillaCNN
 from tf2_models.ff import VanillaFF
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM, LmLSTMSharedEmbV2
@@ -13,4 +14,5 @@ MODELS = {"lm_lstm": LmLSTM,
           'cl_gpt2_shared': ClassifierGPT2SharedWeights,
           'cl_bert': ClassifierBERT,
           'cl_vcnn': VanillaCNN,
-          'cl_vff': VanillaFF}
+          'cl_vff': VanillaFF,
+          'capsnet': CapsNet}
