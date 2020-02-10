@@ -8,6 +8,9 @@ class ModelConfig(object):
                hidden_dropout_rate=0.5,
                input_dropout_rate=0.2,
                initializer_range=None,
+               filters=[32],
+               kernel_size=[(3,3)],
+               pool_size=[(2,2)],
                **kwargs):
     self.embedding_dim = embedding_dim
     self.hidden_dim = hidden_dim
@@ -17,7 +20,9 @@ class ModelConfig(object):
     self.hidden_dropout_rate = hidden_dropout_rate
     self.input_dropout_rate = input_dropout_rate
     self.initializer_range = initializer_range
-
+    self.kernel_size = kernel_size
+    self.filters = filters
+    self.pool_size = pool_size
     self.output_hidden_states = kwargs.pop('output_hidden_states', False)
     self.output_embeddings = kwargs.pop('output_embeddings', False)
 
@@ -634,10 +639,18 @@ lstm2_big_drop30_v2 = {
   'initializer_range': 0.01
 }
 
-ff_mnist_config = {'hidden_dim': 128,
+ff_mnist = {'hidden_dim': 128,
                    'depth': 3,
                    'hidden_dropout_rate': 0.5,
                    'input_dropout_rate': 0.2}
+
+vcnn_mnist = {'hidden_dim': 64,
+               'depth': 3,
+               'filters': [32, 64, 64],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.5,
+               'input_dropout_rate': 0.2}
 
 MODEL_CONFIGS = {
   'base':{},

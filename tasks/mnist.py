@@ -14,7 +14,7 @@ class Mnist(Task):
 
   def vocab_size(self):
     return 28*28
-  
+
   def output_size(self):
     return 10
 
