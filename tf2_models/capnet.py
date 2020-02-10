@@ -171,13 +171,17 @@ class CapsuleLayer(layers.Layer):
 
 
 def PrimaryCap(inputs, dim_capsule, n_channels, kernel_size, strides, padding):
-  outputs = []
-  for _ in range(n_channels):
-    output = layers.Conv2D(filters=dim_capsule, kernel_size=kernel_size, strides=strides, padding=padding)(inputs)
-    outputs.append(layers.Reshape([output.get_shape().as_list()[1] ** 2, dim_capsule])(output))
-  outputs = layers.Concatenate(axis=1)(outputs)
-  return layers.Lambda(squash)(outputs)
-
+  """
+  Apply Conv2D `n_channels` times and concatenate all capsules
+  :param inputs: 4D tensor, shape=[None, width, height, channels]
+  :param dim_capsule: the dim of the output vector of capsule
+  :param n_channels: the number of types of capsules
+  :return: output tensor, shape=[None, num_capsule, dim_capsule]
+  """
+  output = layers.Conv2D(filters=dim_capsule * n_channels, kernel_size=kernel_size, strides=strides, padding=padding,
+                         name='primarycap_conv2d')(inputs)
+  outputs = layers.Reshape(target_shape=[-1, dim_capsule], name='primarycap_reshape')(output)
+  return layers.Lambda(squash, name='primarycap_squash')(outputs)
 
 def CapsNet(input_shape, n_class, num_routing):
     """
