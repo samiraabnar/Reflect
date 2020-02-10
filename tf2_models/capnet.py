@@ -10,7 +10,7 @@ class Length(layers.Layer):
   """
 
   def call(self, inputs, **kwargs):
-    return tf.sqrt(tf.reduce_sum(tf.square(inputs), -1))
+    return tf.math.sqrt(tf.reduce_sum(tf.math.square(inputs), -1))
 
   def compute_output_shape(self, input_shape):
     return input_shape[:-1]
@@ -30,7 +30,7 @@ class Mask(layers.Layer):
     else:  # if no true label, mask by the max length of vectors of capsules
       x = inputs
       # Enlarge the range of values in x to make max(new_x)=1 and others < 0
-      x = (x - tf.max(x, 1, True)) / tf.epsilon() + 1
+      x = (x - tf.reduce_max(x, 1, True)) / tf.epsilon() + 1
       mask = tf.clip(x, 0, 1)  # the max value in x clipped to 1 and other to 0
 
     # masked inputs, shape = [batch_size, dim_vector]
