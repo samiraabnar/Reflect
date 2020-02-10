@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras import initializers, layers, models
-
+import tensorflow.keras.backend as K
 
 class Length(layers.Layer):
   """
@@ -55,99 +55,96 @@ def squash(vectors, axis=-1):
   scale = s_squared_norm / (1 + s_squared_norm) / tf.math.sqrt(s_squared_norm)
   return scale * vectors
 
-
 class CapsuleLayer(layers.Layer):
-  """
-  The capsule layer. It is similar to Dense layer. Dense layer has `in_num` inputs, each is a scalar, the output of the
-  neuron from the former layer, and it has `out_num` output neurons. CapsuleLayer just expand the output of the neuron
-  from scalar to vector. So its input shape = [None, input_num_capsule, input_dim_vector] and output shape = \
-  [None, num_capsule, dim_vector]. For Dense Layer, input_dim_vector = dim_vector = 1.
-
-  :param num_capsule: number of capsules in this layer
-  :param dim_vector: dimension of the output vectors of the capsules in this layer
-  :param num_routings: number of iterations for the routing algorithm
-  """
-
-  def __init__(self, num_capsule, dim_vector, num_routing=3,
-               kernel_initializer='glorot_uniform',
-               bias_initializer='zeros',
-               **kwargs):
-    super(CapsuleLayer, self).__init__(**kwargs)
-    self.num_capsule = num_capsule
-    self.dim_vector = dim_vector
-    self.num_routing = num_routing
-    self.kernel_initializer = initializers.get(kernel_initializer)
-    self.bias_initializer = initializers.get(bias_initializer)
-
-  def build(self, input_shape):
-    print(input_shape)
-    assert len(input_shape) >= 3, "The input Tensor should have shape=[None, input_num_capsule, input_dim_vector]"
-    self.input_num_capsule = input_shape[1]
-    self.input_dim_vector = input_shape[2]
-
-    # Transform matrix
-    print(self.input_num_capsule, self.num_capsule, self.input_dim_vector, self.dim_vector)
-    self.W = self.add_weight(shape=[self.input_num_capsule, self.num_capsule, self.input_dim_vector, self.dim_vector],
-                             initializer=self.kernel_initializer,
-                             name='W')
-
-    # Coupling coefficient. The redundant dimensions are just to facilitate subsequent matrix calculation.
-    self.bias = self.add_weight(shape=[1, self.input_num_capsule, self.num_capsule, 1, 1],
-                                initializer=self.bias_initializer,
-                                name='bias',
-                                trainable=False)
-    self.built = True
-
-  def call(self, inputs, training=None):
-    # inputs.shape=[None, input_num_capsule, input_dim_vector]
-    # Expand dims to [None, input_num_capsule, 1, 1, input_dim_vector]
-    inputs_expand = tf.expand_dims(tf.expand_dims(inputs, 2), 2)
-
-    # Replicate num_capsule dimension to prepare being multiplied by W
-    # Now it has shape = [None, input_num_capsule, num_capsule, 1, input_dim_vector]
-    inputs_tiled = tf.tile(inputs_expand, [1, 1, self.num_capsule, 1, 1])
-
-    """  
-    # Compute `inputs * W` by expanding the first dim of W. More time-consuming and need batch_size.
-    # Now W has shape  = [batch_size, input_num_capsule, num_capsule, input_dim_vector, dim_vector]
-    w_tiled = tf.tile(tf.expand_dims(self.W, 0), [self.batch_size, 1, 1, 1, 1])
-
-    # Transformed vectors, inputs_hat.shape = [None, input_num_capsule, num_capsule, 1, dim_vector]
-    inputs_hat = tf.batch_dot(inputs_tiled, w_tiled, [4, 3])
     """
-    # Compute `inputs * W` by scanning inputs_tiled on dimension 0. This is faster but requires Tensorflow.
-    # inputs_hat.shape = [None, input_num_capsule, num_capsule, 1, dim_vector]
-    inputs_hat = tf.keras.backend.map_fn(lambda x: tf.keras.backend.batch_dot(x, self.W, [3, 2]),
-                         elems=inputs_tiled)
+    The capsule layer. It is similar to Dense layer. Dense layer has `in_num` inputs, each is a scalar, the output of the
+    neuron from the former layer, and it has `out_num` output neurons. CapsuleLayer just expand the output of the neuron
+    from scalar to vector. So its input shape = [None, input_num_capsule, input_dim_capsule] and output shape = \
+    [None, num_capsule, dim_capsule]. For Dense Layer, input_dim_capsule = dim_capsule = 1.
+
+    :param num_capsule: number of capsules in this layer
+    :param dim_capsule: dimension of the output vectors of the capsules in this layer
+    :param routings: number of iterations for the routing algorithm
     """
-    # Routing algorithm V1. Use tf.while_loop in a dynamic way.
-    def body(i, b, outputs):
-        c = tf.nn.softmax(self.bias, dim=2)  # dim=2 is the num_capsule dimension
-        outputs = squash(tf.reduce_sum(c * inputs_hat, 1, keepdims=True))
-        b = b + tf.reduce_sum(inputs_hat * outputs, -1, keepdims=True)
-        return [i-1, b, outputs]
 
-    cond = lambda i, b, inputs_hat: i > 0
-    loop_vars = [tf.constant(self.num_routing), self.bias, tf.reduce_sum(inputs_hat, 1, keepdims=True)]
-    _, _, outputs = tf.while_loop(cond, body, loop_vars)
-    """
-    # Routing algorithm V2. Use iteration. V2 and V1 both work without much difference on performance
-    assert self.num_routing > 0, 'The num_routing should be > 0.'
-    for i in range(self.num_routing):
-      c = tf.nn.softmax(self.bias, axis=2)  # dim=2 is the num_capsule dimension
-      # outputs.shape=[None, 1, num_capsule, 1, dim_vector]
-      outputs = squash(tf.keras.backend.sum(c * inputs_hat, 1, keepdims=True))
+    def __init__(self, num_capsule, dim_capsule, routings=3,
+                 kernel_initializer='glorot_uniform',
+                 **kwargs):
+      super(CapsuleLayer, self).__init__(**kwargs)
+      self.num_capsule = num_capsule
+      self.dim_capsule = dim_capsule
+      self.routings = routings
+      self.kernel_initializer = initializers.get(kernel_initializer)
 
-      # last iteration needs not compute bias which will not be passed to the graph any more anyway.
-      if i != self.num_routing - 1:
-        # self.bias = tf.update_add(self.bias, tf.reduce_sum(inputs_hat * outputs, [0, -1], keepdims=True))
-        self.bias += tf.reduce_sum(inputs_hat * outputs, -1, keepdims=True)
-      # tf.reduce_summary.histogram('BigBee', self.bias)  # for debugging
-    return tf.reshape(outputs, [-1, self.num_capsule, self.dim_vector])
+    def build(self, input_shape):
+      assert len(input_shape) >= 3, "The input Tensor should have shape=[None, input_num_capsule, input_dim_capsule]"
+      self.input_num_capsule = input_shape[1]
+      self.input_dim_capsule = input_shape[2]
 
-  def compute_output_shape(self, input_shape):
-    return tuple([None, self.num_capsule, self.dim_vector])
+      # Transform matrix
+      self.W = self.add_weight(shape=[self.num_capsule, self.input_num_capsule,
+                                      self.dim_capsule, self.input_dim_capsule],
+                               initializer=self.kernel_initializer,
+                               name='W')
 
+      self.built = True
+
+    def call(self, inputs, training=None):
+      # inputs.shape=[None, input_num_capsule, input_dim_capsule]
+      # inputs_expand.shape=[None, 1, input_num_capsule, input_dim_capsule]
+      inputs_expand = K.expand_dims(inputs, 1)
+
+      # Replicate num_capsule dimension to prepare being multiplied by W
+      # inputs_tiled.shape=[None, num_capsule, input_num_capsule, input_dim_capsule]
+      inputs_tiled = K.tile(inputs_expand, [1, self.num_capsule, 1, 1])
+
+      # Compute `inputs * W` by scanning inputs_tiled on dimension 0.
+      # x.shape=[num_capsule, input_num_capsule, input_dim_capsule]
+      # W.shape=[num_capsule, input_num_capsule, dim_capsule, input_dim_capsule]
+      # Regard the first two dimensions as `batch` dimension,
+      # then matmul: [input_dim_capsule] x [dim_capsule, input_dim_capsule]^T -> [dim_capsule].
+      # inputs_hat.shape = [None, num_capsule, input_num_capsule, dim_capsule]
+      inputs_hat = K.map_fn(lambda x: K.batch_dot(x, self.W, [2, 3]), elems=inputs_tiled)
+
+      # Begin: Routing algorithm ---------------------------------------------------------------------#
+      # The prior for coupling coefficient, initialized as zeros.
+      # b.shape = [None, self.num_capsule, self.input_num_capsule].
+      b = tf.zeros(shape=[K.shape(inputs_hat)[0], self.num_capsule, self.input_num_capsule])
+
+      assert self.routings > 0, 'The routings should be > 0.'
+      for i in range(self.routings):
+        # c.shape=[batch_size, num_capsule, input_num_capsule]
+        c = tf.nn.softmax(b, axis=1)
+
+        # c.shape =  [batch_size, num_capsule, input_num_capsule]
+        # inputs_hat.shape=[None, num_capsule, input_num_capsule, dim_capsule]
+        # The first two dimensions as `batch` dimension,
+        # then matmal: [input_num_capsule] x [input_num_capsule, dim_capsule] -> [dim_capsule].
+        # outputs.shape=[None, num_capsule, dim_capsule]
+        outputs = squash(K.batch_dot(c, inputs_hat, [2, 2]))  # [None, 10, 16]
+
+        if i < self.routings - 1:
+          # outputs.shape =  [None, num_capsule, dim_capsule]
+          # inputs_hat.shape=[None, num_capsule, input_num_capsule, dim_capsule]
+          # The first two dimensions as `batch` dimension,
+          # then matmal: [dim_capsule] x [input_num_capsule, dim_capsule]^T -> [input_num_capsule].
+          # b.shape=[batch_size, num_capsule, input_num_capsule]
+          b += K.batch_dot(outputs, inputs_hat, [2, 3])
+      # End: Routing algorithm -----------------------------------------------------------------------#
+
+      return outputs
+
+    def compute_output_shape(self, input_shape):
+      return tuple([None, self.num_capsule, self.dim_capsule])
+
+    def get_config(self):
+      config = {
+        'num_capsule': self.num_capsule,
+        'dim_capsule': self.dim_capsule,
+        'routings': self.routings
+      }
+      base_config = super(CapsuleLayer, self).get_config()
+      return dict(list(base_config.items()) + list(config.items()))
 
 def PrimaryCap(inputs, dim_vector, n_channels, kernel_size, strides, padding):
   """
