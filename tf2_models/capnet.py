@@ -10,7 +10,7 @@ class Length(layers.Layer):
   """
 
   def call(self, inputs, **kwargs):
-    return tf.sqrt(tf.sum(tf.square(inputs), -1))
+    return tf.sqrt(tf.reduce_sum(tf.square(inputs), -1))
 
   def compute_output_shape(self, input_shape):
     return input_shape[:-1]
@@ -51,7 +51,7 @@ def squash(vectors, axis=-1):
   :param axis: the axis to squash
   :return: a Tensor with same shape as input vectors
   """
-  s_squared_norm = tf.sum(tf.square(vectors), axis, keepdims=True)
+  s_squared_norm = tf.reduce_sum(tf.square(vectors), axis, keepdims=True)
   scale = s_squared_norm / (1 + s_squared_norm) / tf.sqrt(s_squared_norm)
   return scale * vectors
 
@@ -122,12 +122,12 @@ class CapsuleLayer(layers.Layer):
     # Routing algorithm V1. Use tf.while_loop in a dynamic way.
     def body(i, b, outputs):
         c = tf.nn.softmax(self.bias, dim=2)  # dim=2 is the num_capsule dimension
-        outputs = squash(tf.sum(c * inputs_hat, 1, keepdims=True))
-        b = b + tf.sum(inputs_hat * outputs, -1, keepdims=True)
+        outputs = squash(tf.reduce_sum(c * inputs_hat, 1, keepdims=True))
+        b = b + tf.reduce_sum(inputs_hat * outputs, -1, keepdims=True)
         return [i-1, b, outputs]
 
     cond = lambda i, b, inputs_hat: i > 0
-    loop_vars = [tf.constant(self.num_routing), self.bias, tf.sum(inputs_hat, 1, keepdims=True)]
+    loop_vars = [tf.constant(self.num_routing), self.bias, tf.reduce_sum(inputs_hat, 1, keepdims=True)]
     _, _, outputs = tf.while_loop(cond, body, loop_vars)
     """
     # Routing algorithm V2. Use iteration. V2 and V1 both work without much difference on performance
@@ -135,13 +135,13 @@ class CapsuleLayer(layers.Layer):
     for i in range(self.num_routing):
       c = tf.nn.softmax(self.bias, dim=2)  # dim=2 is the num_capsule dimension
       # outputs.shape=[None, 1, num_capsule, 1, dim_vector]
-      outputs = squash(tf.sum(c * inputs_hat, 1, keepdims=True))
+      outputs = squash(tf.reduce_sum(c * inputs_hat, 1, keepdims=True))
 
       # last iteration needs not compute bias which will not be passed to the graph any more anyway.
       if i != self.num_routing - 1:
-        # self.bias = tf.update_add(self.bias, tf.sum(inputs_hat * outputs, [0, -1], keepdims=True))
-        self.bias += tf.sum(inputs_hat * outputs, -1, keepdims=True)
-      # tf.summary.histogram('BigBee', self.bias)  # for debugging
+        # self.bias = tf.update_add(self.bias, tf.reduce_sum(inputs_hat * outputs, [0, -1], keepdims=True))
+        self.bias += tf.reduce_sum(inputs_hat * outputs, -1, keepdims=True)
+      # tf.reduce_summary.histogram('BigBee', self.bias)  # for debugging
     return tf.reshape(outputs, [-1, self.num_capsule, self.dim_vector])
 
   def compute_output_shape(self, input_shape):
