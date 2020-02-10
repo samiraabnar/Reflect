@@ -102,4 +102,5 @@ TRAIN_PARAMS = {'radam_slw': radam_slw,
                 'crs_slw': crs_slw,
                 'crs_slw_v2': crs_slw_v2,
                 'crs_slw_v3': crs_slw_v3,
-                'crs_fst_v2': crs_fst_v2}
+                'crs_fst_v2': crs_fst_v2,
+                'mnist_adam': mnist_adam}
