@@ -146,22 +146,15 @@ class CapsuleLayer(layers.Layer):
       base_config = super(CapsuleLayer, self).get_config()
       return dict(list(base_config.items()) + list(config.items()))
 
-def PrimaryCap(inputs, dim_vector, n_channels, kernel_size, strides, padding):
-  """
-  Apply Conv2D `n_channels` times and concatenate all capsules
-  :param inputs: 4D tensor, shape=[None, width, height, channels]
-  :param dim_vector: the dim of the output vector of capsule
-  :param n_channels: the number of types of capsules
-  :return: output tensor, shape=[None, num_capsule, dim_vector]
-  """
-  print(inputs, dim_vector, n_channels, kernel_size, strides, padding)
-  output = layers.Conv2D(filters=dim_vector * n_channels, kernel_size=kernel_size, strides=strides, padding=padding)(
-    inputs)
-  print(output)
-  ts = output.shape[1]*output.shape[2]*output.shape[3] // dim_vector
-  outputs = layers.Reshape(target_shape=[ts, dim_vector])(output)
-  print(outputs)
+
+def PrimaryCap(inputs, dim_capsule, n_channels, kernel_size, strides, padding):
+  outputs = []
+  for _ in range(n_channels):
+    output = layers.Conv2D(filters=dim_capsule, kernel_size=kernel_size, strides=strides, padding=padding)(inputs)
+    outputs.append(layers.Reshape([output.get_shape().as_list()[1] ** 2, dim_capsule])(output))
+  outputs = layers.Concatenate(axis=1)(outputs)
   return layers.Lambda(squash)(outputs)
+
 
 def CapsNet(input_shape, n_class, num_routing):
     """
@@ -172,13 +165,12 @@ def CapsNet(input_shape, n_class, num_routing):
     :return: A Keras Model with 2 inputs and 2 outputs
     """
     x = layers.Input(shape=input_shape)
-    print(x)
+
     # Layer 1: Just a conventional Conv2D layer
     conv1 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv1')(x)
-    print(conv1)
-    # Layer 2: Conv2D layer with `squash` activation, then reshape to [None, num_capsule, dim_vector]
-    primarycaps = PrimaryCap(conv1, dim_vector=8, n_channels=32, kernel_size=9, strides=2, padding='valid')
-    print(primarycaps)
+
+    # Layer 2: Conv2D layer with `squash` activation, then reshape to [None, num_capsule, dim_capsule]
+    primarycaps = PrimaryCap(conv1, dim_capsule=8, n_channels=32, kernel_size=9, strides=2, padding='valid')
     # Layer 3: Capsule layer. Routing algorithm works here.
     # Layer 3: Capsule layer. Routing algorithm works here.
     digitcaps = CapsuleLayer(num_capsule=n_class, dim_capsule=16, routings=num_routing,
