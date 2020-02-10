@@ -6,7 +6,7 @@ import tensorflow_datasets as tfds
 from tf2_models.metrics import ClassificationLoss
 
 class Mnist(Task):
-  def __init__(self, task_params, name='mnis', data_dir='mnist_data'):
+  def __init__(self, task_params, name='mnist', data_dir='mnist_data'):
     self.databuilder = tfds.builder("mnist")
     super(Mnist, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
