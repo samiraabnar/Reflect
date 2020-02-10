@@ -30,5 +30,8 @@ class VanillaCNN(tf.keras.models.Sequential):
       self.add(tf.keras.layers.MaxPooling2D(self.hparams.pool_size[i]))
 
     self.add(tf.keras.layers.Flatten())
-    self.add(tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu'))
+
+    for i in np.arange(self.hparams.proj_depth):
+      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim[i], activation='relu'))
+
     self.add(tf.keras.layers.Dense(self.hparams.output_dim))

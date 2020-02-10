@@ -11,12 +11,14 @@ class ModelConfig(object):
                filters=[32],
                kernel_size=[(3,3)],
                pool_size=[(2,2)],
+               proj_depth=1,
                **kwargs):
     self.embedding_dim = embedding_dim
     self.hidden_dim = hidden_dim
     self.input_dim = input_dim
     self.output_dim = output_dim
     self.depth = depth
+    self.proj_depth = proj_depth
     self.hidden_dropout_rate = hidden_dropout_rate
     self.input_dropout_rate = input_dropout_rate
     self.initializer_range = initializer_range
@@ -25,6 +27,7 @@ class ModelConfig(object):
     self.pool_size = pool_size
     self.output_hidden_states = kwargs.pop('output_hidden_states', False)
     self.output_embeddings = kwargs.pop('output_embeddings', False)
+
 
 class GPT2Config(object):
     """Configuration class to store the configuration of a `GPT2Model`.
@@ -644,9 +647,19 @@ ff_mnist = {'hidden_dim': 128,
                    'hidden_dropout_rate': 0.5,
                    'input_dropout_rate': 0.2}
 
-vcnn_mnist = {'hidden_dim': 64,
+vcnn_mnist = {'hidden_dim': [64],
                'depth': 3,
+               'proj_depth': 1,
                'filters': [32, 64, 64],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.5,
+               'input_dropout_rate': 0.2}
+
+vcnn_lenet5 = {'hidden_dim': [120, 84],
+               'depth': 2,
+               'proj_depth': 2,
+               'filters': [6, 16],
                'kernel_size': [(3,3), (3,3), (3,3)],
                'pool_size': [(2,2), (2,2), (2,2)],
                'hidden_dropout_rate': 0.5,
