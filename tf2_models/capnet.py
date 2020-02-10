@@ -180,7 +180,8 @@ def PrimaryCap(inputs, dim_capsule, n_channels, kernel_size, strides, padding):
   """
   output = layers.Conv2D(filters=dim_capsule * n_channels, kernel_size=kernel_size, strides=strides, padding=padding,
                          name='primarycap_conv2d')(inputs)
-  outputs = layers.Reshape(target_shape=[-1, dim_capsule], name='primarycap_reshape')(output)
+  ts = output.shape[1]*output.shape[2]*output.shape[3] // dim_capsule
+  outputs = layers.Reshape(target_shape=[ts, dim_capsule], name='primarycap_reshape')(output)
   return layers.Lambda(squash, name='primarycap_squash')(outputs)
 
 def CapsNet(input_shape, n_class, num_routing):
