@@ -77,6 +77,7 @@ class CapsuleLayer(layers.Layer):
       self.kernel_initializer = initializers.get(kernel_initializer)
 
     def build(self, input_shape):
+      print(input_shape)
       assert len(input_shape) >= 3, "The input Tensor should have shape=[None, input_num_capsule, input_dim_capsule]"
       self.input_num_capsule = input_shape[1]
       self.input_dim_capsule = input_shape[2]
@@ -114,6 +115,7 @@ class CapsuleLayer(layers.Layer):
       assert self.routings > 0, 'The routings should be > 0.'
       for i in range(self.routings):
         # c.shape=[batch_size, num_capsule, input_num_capsule]
+        print(c)
         c = tf.nn.softmax(b, axis=1)
 
         # c.shape =  [batch_size, num_capsule, input_num_capsule]
