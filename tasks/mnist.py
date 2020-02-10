@@ -43,7 +43,7 @@ class Mnist(Task):
 
     self.test_dataset = self.databuilder.as_dataset(split="test")
     assert isinstance(self.test_dataset, tf.data.Dataset)
-    self.train_dataset = self.train_dataset.repeat()
+    self.test_dataset = self.test_dataset.repeat()
     self.test_dataset = self.test_dataset.batch(
       batch_size=self.task_params.batch_size)
     self.test_dataset = self.test_dataset.prefetch(
