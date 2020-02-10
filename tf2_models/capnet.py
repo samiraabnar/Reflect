@@ -124,7 +124,8 @@ class CapsuleLayer(layers.Layer):
         # then matmal: [input_num_capsule] x [input_num_capsule, dim_capsule] -> [dim_capsule].
         # outputs.shape=[None, num_capsule, dim_capsule]
         outputs = squash(K.batch_dot(c, inputs_hat, [2, 2]))  # [None, 10, 16]
-
+        print(outputs)
+        print(b)
         if i < self.routings - 1:
           # outputs.shape =  [None, num_capsule, dim_capsule]
           # inputs_hat.shape=[None, num_capsule, input_num_capsule, dim_capsule]
