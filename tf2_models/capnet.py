@@ -51,8 +51,8 @@ def squash(vectors, axis=-1):
   :param axis: the axis to squash
   :return: a Tensor with same shape as input vectors
   """
-  s_squared_norm = tf.reduce_sum(tf.square(vectors), axis, keepdims=True)
-  scale = s_squared_norm / (1 + s_squared_norm) / tf.sqrt(s_squared_norm)
+  s_squared_norm = tf.reduce_sum(tf.math.square(vectors), axis, keepdims=True)
+  scale = s_squared_norm / (1 + s_squared_norm) / tf.math.sqrt(s_squared_norm)
   return scale * vectors
 
 
@@ -172,13 +172,13 @@ def CapsNet(input_shape, n_class, num_routing):
     :return: A Keras Model with 2 inputs and 2 outputs
     """
     x = layers.Input(shape=input_shape)
-
+    print(x)
     # Layer 1: Just a conventional Conv2D layer
     conv1 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv1')(x)
-
+    print(conv1)
     # Layer 2: Conv2D layer with `squash` activation, then reshape to [None, num_capsule, dim_vector]
     primarycaps = PrimaryCap(conv1, dim_vector=8, n_channels=32, kernel_size=9, strides=2, padding='valid')
-
+    print(primarycaps)
     # Layer 3: Capsule layer. Routing algorithm works here.
     digitcaps = CapsuleLayer(num_capsule=n_class, dim_vector=16, num_routing=num_routing, name='digitcaps')(primarycaps)
 
