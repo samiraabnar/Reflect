@@ -85,7 +85,7 @@ crs_slw_v3 = {
 
 
 mnist_adam = {'optimizer': 'adam',
-              'learning_rate': '0.001',
+              'learning_rate': 0.001,
               'decay_steps': 10000,
               'n_epochs': 20
               }
