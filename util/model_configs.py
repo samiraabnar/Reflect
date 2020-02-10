@@ -716,5 +716,6 @@ MODEL_CONFIGS = {
   'lstm_drop31_v5': lstm_drop31_v5,
   'biglstm_drop31_v2': biglstm_drop31_v2,
   'short_gpt_v9': short_gpt_v9,
-  'ff_mnist_config': ff_mnist_config
+  'ff_mnist': ff_mnist,
+  'vcnn_mnist': vcnn_mnist,
 }
