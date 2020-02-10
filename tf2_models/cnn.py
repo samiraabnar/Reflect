@@ -17,6 +17,8 @@ class VanillaCNN(tf.keras.models.Sequential):
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.00001)
+    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
+                                                   l2=0.00001)
     self.create_vars()
 
   def create_vars(self):
