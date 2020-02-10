@@ -10,7 +10,7 @@ class VanillaCNN(tf.keras.models.Sequential):
     self.scope = scope
 
     self.model_name = '_'.join([self.scope,
-                                'h-' + str(self.hparams.hidden_dim),
+                                'h-' + '.'.join([str(h) for h in self.hparams.hidden_dim[0]]),
                                 'd-' + str(self.hparams.depth),
                                 'hdrop-' + str(self.hparams.hidden_dropout_rate),
                                 'indrop-' + str(self.hparams.input_dropout_rate)])
