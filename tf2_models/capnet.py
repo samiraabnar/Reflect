@@ -51,8 +51,8 @@ def squash(vectors, axis=-1):
   :param axis: the axis to squash
   :return: a Tensor with same shape as input vectors
   """
-  s_squared_norm = tf.keras.backend.sum(tf.math.square(vectors), axis, keepdims=True)
-  scale = s_squared_norm / (1 + s_squared_norm) / tf.math.sqrt(s_squared_norm)
+  s_squared_norm = K.sum(K.square(vectors), axis, keepdims=True)
+  scale = s_squared_norm / (1 + s_squared_norm) / K.sqrt(s_squared_norm + K.epsilon())
   return scale * vectors
 
 class CapsuleLayer(layers.Layer):
