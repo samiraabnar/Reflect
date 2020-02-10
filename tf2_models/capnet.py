@@ -51,7 +51,7 @@ def squash(vectors, axis=-1):
   :param axis: the axis to squash
   :return: a Tensor with same shape as input vectors
   """
-  s_squared_norm = tf.reduce_sum(tf.math.square(vectors), axis, keepdims=True)
+  s_squared_norm = tf.keras.backend.sum(tf.math.square(vectors), axis, keepdims=True)
   scale = s_squared_norm / (1 + s_squared_norm) / tf.math.sqrt(s_squared_norm)
   return scale * vectors
 
@@ -136,7 +136,7 @@ class CapsuleLayer(layers.Layer):
     for i in range(self.num_routing):
       c = tf.nn.softmax(self.bias, axis=2)  # dim=2 is the num_capsule dimension
       # outputs.shape=[None, 1, num_capsule, 1, dim_vector]
-      outputs = squash(tf.reduce_sum(c * inputs_hat, 1, keepdims=True))
+      outputs = squash(tf.keras.backend.sum(c * inputs_hat, 1, keepdims=True))
 
       # last iteration needs not compute bias which will not be passed to the graph any more anyway.
       if i != self.num_routing - 1:
