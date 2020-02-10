@@ -117,9 +117,8 @@ class CapsuleLayer(layers.Layer):
     """
     # Compute `inputs * W` by scanning inputs_tiled on dimension 0. This is faster but requires Tensorflow.
     # inputs_hat.shape = [None, input_num_capsule, num_capsule, 1, dim_vector]
-    inputs_hat = tf.keras.backend.scan(lambda ac, x: tf.keras.backend.batch_dot(x, self.W, [3, 2]),
-                         elems=inputs_tiled,
-                         initializer=tf.zeros([self.input_num_capsule, self.num_capsule, 1, self.dim_vector]))
+    inputs_hat = tf.keras.backend.map_fn(lambda x: tf.keras.backend.batch_dot(x, self.W, [3, 2]),
+                         elems=inputs_tiled)
     """
     # Routing algorithm V1. Use tf.while_loop in a dynamic way.
     def body(i, b, outputs):
