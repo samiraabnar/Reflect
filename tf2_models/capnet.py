@@ -80,6 +80,7 @@ class CapsuleLayer(layers.Layer):
     self.bias_initializer = initializers.get(bias_initializer)
 
   def build(self, input_shape):
+    print(input_shape)
     assert len(input_shape) >= 3, "The input Tensor should have shape=[None, input_num_capsule, input_dim_vector]"
     self.input_num_capsule = input_shape[1]
     self.input_dim_vector = input_shape[2]
