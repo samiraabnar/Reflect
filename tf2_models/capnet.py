@@ -158,8 +158,10 @@ def PrimaryCap(inputs, dim_vector, n_channels, kernel_size, strides, padding):
   :param n_channels: the number of types of capsules
   :return: output tensor, shape=[None, num_capsule, dim_vector]
   """
+  print(inputs, dim_vector, n_channels, kernel_size, strides, padding)
   output = layers.Conv2D(filters=dim_vector * n_channels, kernel_size=kernel_size, strides=strides, padding=padding)(
     inputs)
+  print(output)
   outputs = layers.Reshape(target_shape=[-1, dim_vector])(output)
   print(outputs)
   return layers.Lambda(squash)(outputs)
