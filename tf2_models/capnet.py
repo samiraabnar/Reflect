@@ -1,6 +1,5 @@
 from tensorflow.keras import activations
 from tensorflow.keras import backend as K
-from tensorflow.keras import Layer
 import numpy as np
 import tensorflow as tf
 
@@ -18,7 +17,7 @@ def softmax(x, axis=-1):
 
 
 #A Capsule Implement with Pure Keras
-class Capsule(Layer):
+class Capsule(tf.keras.layers.Layer):
     def __init__(self, hparams, scope='cl_capsule', share_weights=True, activation='squash', *inputs, **kwargs):
         super(Capsule, self).__init__(**kwargs)
         self.num_capsule = hparams.filters
