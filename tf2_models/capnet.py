@@ -19,7 +19,7 @@ def softmax(x, axis=-1):
 
 #A Capsule Implement with Pure Keras
 class Capsule(Layer):
-    def __init__(self, hparams, scope='cl_capsule', share_weights=True, activation='squash', **inputs, **kwargs):
+    def __init__(self, hparams, scope='cl_capsule', share_weights=True, activation='squash', *inputs, **kwargs):
         super(Capsule, self).__init__(**kwargs)
         self.num_capsule = hparams.filters
         self.dim_capsule = hparams.hidden_dim
