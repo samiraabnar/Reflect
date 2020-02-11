@@ -24,8 +24,8 @@ class VanillaCNN(tf.keras.models.Sequential):
   def create_vars(self):
     self.add(tf.keras.layers.ZeroPadding2D((2,2)))
 
-    width = tf.math.sqrt(self.hparams.input_dim) + 4
-    
+    width = np.sqrt(self.hparams.input_dim) + 4
+
     for i in np.arange(self.hparams.depth):
       self.add(tf.keras.layers.Conv2D(self.hparams.filters[i], self.hparams.kernel_size[i], activation='relu',
                                       input_shape=(width, width, 1)))
