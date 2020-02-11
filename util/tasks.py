@@ -1,4 +1,4 @@
-from tasks.mnist import Mnist, AffNist
+from tasks.mnist import Mnist, AffNistTask
 from tasks.sv_agreement import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
 
 TASKS = {
@@ -6,5 +6,5 @@ TASKS = {
   'word_sv_agreement_lm': WordSvAgreementLM,
   'word_sv_agreement_vp': WordSvAgreementVP,
   'mnist': Mnist,
-  'affnist': AffNist
+  'affnist': AffNistTask
 }

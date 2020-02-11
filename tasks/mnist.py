@@ -4,7 +4,7 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 
 from tf2_models.metrics import ClassificationLoss
-from tfds_data.aff_nist import AffNistBuilder
+from tfds_data.aff_nist import AffNist
 
 
 class Mnist(Task):
@@ -84,9 +84,9 @@ class Mnist(Task):
     self.valid_dataset = self.valid_dataset.prefetch(
       tf.data.experimental.AUTOTUNE)
 
-class AffNist(Task):
-  def __init__(self, task_params, name='aff_nist',data_dir='data', builder_cls=AffNistBuilder):
-    super(AffNist, self).__init__(task_params=task_params, name=name,
+class AffNistTask(Task):
+  def __init__(self, task_params, name='aff_nist',data_dir='data', builder_cls=AffNist):
+    super(AffNistTask, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
                                 builder_cls=builder_cls)
 
@@ -117,4 +117,4 @@ class AffNist(Task):
   def convert_examples(self, examples):
     return tf.cast(examples['image'], dtype=tf.float32), tf.cast(examples['label'], dtype=tf.int32)
 
-  
+

@@ -63,7 +63,7 @@ def load_affNIST(path):
 
 
 
-class AffNistBuilder(tfds.core.GeneratorBasedBuilder):
+class AffNist(tfds.core.GeneratorBasedBuilder):
   """ This is the dataset for evaluating the ability of language models to learn syntax.
   Paper:
   Assessing the Ability of LSTMs to Learn Syntax-Sensitive Dependencies
@@ -73,7 +73,7 @@ class AffNistBuilder(tfds.core.GeneratorBasedBuilder):
   VERSION = tfds.core.Version('0.1.0')
 
   def __init__(self, **kwargs):
-    super(AffNistBuilder, self).__init__(**kwargs)
+    super(AffNist, self).__init__(**kwargs)
 
   def _info(self):
     return tfds.core.DatasetInfo(
