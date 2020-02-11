@@ -12,6 +12,7 @@ class ModelConfig(object):
                kernel_size=[(3,3)],
                pool_size=[(2,2)],
                proj_depth=1,
+               routings=3,
                **kwargs):
     self.embedding_dim = embedding_dim
     self.hidden_dim = hidden_dim
@@ -27,6 +28,7 @@ class ModelConfig(object):
     self.pool_size = pool_size
     self.output_hidden_states = kwargs.pop('output_hidden_states', False)
     self.output_embeddings = kwargs.pop('output_embeddings', False)
+    self.routings = routings
 
 
 class GPT2Config(object):
@@ -665,6 +667,14 @@ vcnn_lenet5 = {'hidden_dim': [120, 84],
                'hidden_dropout_rate': 0.5,
                'input_dropout_rate': 0.2}
 
+
+caps_base = {'hidden_dim': 16,
+               'routing': 3,
+               'filters': 10,
+               'hidden_dropout_rate': 0.5,
+               'input_dropout_rate': 0.2}
+
+
 MODEL_CONFIGS = {
   'base':{},
   'small_lstm':small_lstm,
@@ -731,5 +741,6 @@ MODEL_CONFIGS = {
   'short_gpt_v9': short_gpt_v9,
   'ff_mnist': ff_mnist,
   'vcnn_mnist': vcnn_mnist,
-  'vcnn_lenet5': vcnn_lenet5
+  'vcnn_lenet5': vcnn_lenet5,
+  'caps_base': caps_base,
 }
