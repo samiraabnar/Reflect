@@ -1,6 +1,6 @@
 from tensorflow.keras import activations
 from tensorflow.keras import backend as K
-from tensorflow.keras.engine.topology import Layer
+from tensorflow.keras import Layer
 import numpy as np
 import tensorflow as tf
 
