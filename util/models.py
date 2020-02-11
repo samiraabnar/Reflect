@@ -15,4 +15,4 @@ MODELS = {"lm_lstm": LmLSTM,
           'cl_bert': ClassifierBERT,
           'cl_vcnn': VanillaCNN,
           'cl_vff': VanillaFF,
-          'capsnet': Capsule}
+          'cl_capsule': Capsule}
