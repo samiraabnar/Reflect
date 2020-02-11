@@ -84,7 +84,7 @@ class Mnist(Task):
     self.valid_dataset = self.valid_dataset.prefetch(
       tf.data.experimental.AUTOTUNE)
 
-class AffNistTask(Task):
+class AffNistTask(Mnist):
   def __init__(self, task_params, name='aff_nist',data_dir='data', builder_cls=AffNist):
     super(AffNistTask, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
