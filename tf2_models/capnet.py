@@ -24,6 +24,14 @@ class Capsule(tf.keras.layers.Layer):
         self.dim_capsule = hparams.hidden_dim
         self.routings = hparams.routings
         self.share_weights = share_weights
+
+        self.model_name = '_'.join([self.scope,
+                                    'nc-' + str(self.num_capsule),
+                                    'dc-' + str(self.dim_capsule),
+                                    'r-' + str(self.routings),
+                                    'hdrop-' + str(self.hparams.hidden_dropout_rate),
+                                    'indrop-' + str(self.hparams.input_dropout_rate)])
+
         if activation == 'squash':
             self.activation = squash
         else:
