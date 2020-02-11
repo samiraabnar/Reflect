@@ -20,6 +20,7 @@ def softmax(x, axis=-1):
 class Capsule(tf.keras.layers.Layer):
     def __init__(self, hparams, scope='cl_capsule', share_weights=True, activation='squash', *inputs, **kwargs):
         super(Capsule, self).__init__(**kwargs)
+        self.hparams = hparams
         self.scope = scope
         self.num_capsule = hparams.filters
         self.dim_capsule = hparams.hidden_dim
