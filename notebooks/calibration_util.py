@@ -54,11 +54,11 @@ def plot_calibration(model_accuracy, predicted_class_probs, correct_class_probs,
     denominator = 100.0 / n_bins
     for i in np.arange(len(model_accuracy)):
         if model_accuracy[i]:
-            p_confidence_bins[int(predicted_class_probs[i]*100 // denominator)] += 1.0
+            p_confidence_bins[min(int(predicted_class_probs[i]*100 // denominator),n_bins-1)] += 1.0
         else:
-            n_confidence_bins[int(predicted_class_probs[i]*100 // denominator)] -= 1.0
+            n_confidence_bins[min(int(predicted_class_probs[i]*100 // denominator),n_bins-1)] -= 1.0
             
-        total_confidence_bins[int(predicted_class_probs[i]*100 // denominator)] += 1
+        total_confidence_bins[min(int(predicted_class_probs[i]*100 // denominator),n_bins-1)] += 1
 
     #sns.stripplot(model_accuracy,predicted_class_probs, color='blue', alpha=0.5, jitter=True)
     #sns.stripplot(model_accuracy,correct_class_probs, color='green', alpha=0.2, jitter=True)
