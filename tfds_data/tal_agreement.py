@@ -209,7 +209,7 @@ class WordSvAgreement(SVAgreement):
       # builder.as_dataset.
       supervised_keys=("sentence", "verb_class"),
       # Homepage of the dataset for documentation
-      urls=["https://github.com/TalLinzen/rnn_agreement"],
+      homepage="https://github.com/TalLinzen/rnn_agreement",
       # Bibtex citation for the dataset
       citation=r"""@article{my-awesome-dataset-2020,
                                   author = {Linzen, Tal; Dupoux,Emmanuel; Goldberg, Yoav},"}""",

@@ -18,21 +18,14 @@ def softmax(x, axis=-1):
 
 #A Capsule Implement with Pure Keras
 class Capsule(tf.keras.layers.Layer):
-    def __init__(self, hparams, scope='cl_capsule', share_weights=True, activation='squash', *inputs, **kwargs):
+    def __init__(self, hparams, share_weights=True, activation='squash', *inputs, **kwargs):
         super(Capsule, self).__init__(**kwargs)
-        self.hparams = hparams
-        self.scope = scope
+
         self.num_capsule = hparams.filters
         self.dim_capsule = hparams.hidden_dim
         self.routings = hparams.routings
         self.share_weights = share_weights
 
-        self.model_name = '_'.join([self.scope,
-                                    'nc-' + str(self.num_capsule),
-                                    'dc-' + str(self.dim_capsule),
-                                    'r-' + str(self.routings),
-                                    'hdrop-' + str(self.hparams.hidden_dropout_rate),
-                                    'indrop-' + str(self.hparams.input_dropout_rate)])
 
         if activation == 'squash':
             self.activation = squash
@@ -88,3 +81,34 @@ class Capsule(tf.keras.layers.Layer):
 
     def compute_output_shape(self, input_shape):
         return (None, self.num_capsule, self.dim_capsule)
+
+
+class CNNCapsule(tf.keras.models.Sequential):
+    def __init__(self, hparams, scope='cl_capsule', *inputs, **kwargs):
+        super(Capsule, self).__init__(**kwargs)
+        self.hparams = hparams
+        self.scope = scope
+        self.num_capsule = hparams.filters
+        self.dim_capsule = hparams.hidden_dim
+        self.routings = hparams.routings
+        self.share_weights = True
+        self.activation = 'squash'
+
+        self.model_name = '_'.join([self.scope,
+                                    'nc-' + str(self.num_capsule),
+                                    'dc-' + str(self.dim_capsule),
+                                    'r-' + str(self.routings),
+                                    'hdrop-' + str(self.hparams.hidden_dropout_rate),
+                                    'indrop-' + str(self.hparams.input_dropout_rate)])
+
+
+    def create_vars(self):
+        self.add(Input(shape=(None, None, 1)))
+        self.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+        self.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
+        self.add(tf.keras.layers.AveragePooling2D((2, 2)))
+        self.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
+        self.add(tf.keras.layers.Conv2D(128, (3, 3), activation='relu'))
+        self.add(tf.keras.layers.Reshape((-1, 128)))
+        capsule = Capsule(self.num_capsule, self.dim_capsule, self.routings, True)
+        output = Lambda(lambda x: K.sqrt(K.sum(K.square(x), 2)), output_shape=(10,))(capsule)
