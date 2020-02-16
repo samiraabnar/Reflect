@@ -16,10 +16,10 @@ class SST2(Task):
                                 builder_cls=None)
 
   def vocab_size(self):
-    return 28*28
+    return self.text_encoder.vocab_size
 
   def output_size(self):
-    return 10
+    return 2
 
   def get_loss_fn(self):
     return ClassificationLoss()
@@ -41,7 +41,8 @@ class SST2(Task):
   def convert_examples(self, examples):
     print(examples)
     print(examples['sentence'])
-    return self.text_encoder.encode(examples['sentence'].numpy()), examples['label']
+    print(tf.as_string(examples['sentence']))
+    return self.text_encoder.encode(tf.as_string(examples['sentence'])), examples['label']
 
 
 
