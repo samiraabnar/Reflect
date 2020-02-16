@@ -2,21 +2,19 @@ from distill.distill_util import DistillLoss, get_probs
 from tasks.tasks import Task
 import tensorflow as tf
 import tensorflow_datasets as tfds
-import os
 
 from tf2_models.metrics import ClassificationLoss
+from tfds_data.sst2 import SST2
 
 
-class SST2(Task):
+class ClassifySST2(Task):
   def __init__(self, task_params, name='sst2', data_dir='data'):
-    self.databuilder = tfds.builder("glue/sst2")
-    self.text_encoder = tfds.features.text.SubwordTextEncoder.load_from_file(os.path.join(data_dir, name,'tokenizer'))
-    super(SST2, self).__init__(task_params=task_params, name=name,
+    super(ClassifySST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
-                                builder_cls=None)
+                                builder_cls=SST2)
 
   def vocab_size(self):
-    return self.text_encoder.vocab_size
+    return self.databuilder.vocab_size()
 
   def output_size(self):
     return 2
@@ -39,9 +37,7 @@ class SST2(Task):
     return ([None],[])
 
   def convert_examples(self, examples):
-    print(examples)
-    print(tf.keras.backend.get_value(examples['sentence']))
-    return self.text_encoder.encode(tf.keras.backend.get_value(examples['sentence'])), examples['label']
+    return examples['sentence'], examples['label']
 
 
 
