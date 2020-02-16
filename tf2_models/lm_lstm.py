@@ -57,7 +57,6 @@ class LmLSTM(tf.keras.Model):
                                                     kernel_regularizer=self.regularizer,
                                                     recurrent_regularizer=self.regularizer,
                                                     bias_regularizer=self.regularizer,
-
                                                     ))
 
   @tf.function(experimental_relax_shapes=True)
