@@ -40,8 +40,8 @@ class SST2(Task):
 
   def convert_examples(self, examples):
     print(examples)
-    print(examples['sentence'])
-    return self.text_encoder.encode(examples['sentence']), examples['label']
+    print(tf.keras.backend.get_value(examples['sentence']))
+    return self.text_encoder.encode(tf.keras.backend.get_value(examples['sentence'])), examples['label']
 
 
 
