@@ -9,9 +9,10 @@ from tf2_models.metrics import ClassificationLoss
 
 class SST2(Task):
   def __init__(self, task_params, name='sst2', data_dir='data'):
+    self.databuilder = tfds.builder("glue/sst2")
     super(SST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
-                                builder_cls=tfds.builder("glue/sst2"))
+                                builder_cls=None)
     self.text_encoder = tfds.features.text.SubwordTextEncoder.load_from_file(os.path.join(self.data_dir,'txtencoder'))
 
   def vocab_size(self):
