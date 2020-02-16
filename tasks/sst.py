@@ -1,5 +1,5 @@
 from distill.distill_util import DistillLoss, get_probs
-from distill.tasks.tasks import Task
+from tasks.tasks import Task
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import os
