@@ -49,6 +49,6 @@ if __name__ == '__main__':
 
   txt_encoder = tfds.features.text.SubwordTextEncoder.build_from_corpus(
     (example['sentence'].numpy() for example in train_examples), target_vocab_size=2 ** 13)
-  txt_encoder.save_to_file('data/glue/tokenizer')
+  txt_encoder.save_to_file('data/sst2/tokenizer')
 
 
