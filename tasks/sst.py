@@ -44,7 +44,7 @@ class SST2(Task):
 
 
 if __name__ == '__main__':
-  examples, metadata = tfds.load('glue/sst2')
+  examples = tfds.load('glue/sst2')
   train_examples, val_examples = examples['train'], examples['validation']
 
   txt_encoder = tfds.features.text.SubwordTextEncoder.build_from_corpus(
