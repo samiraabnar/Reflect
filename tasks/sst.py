@@ -41,7 +41,6 @@ class SST2(Task):
   def convert_examples(self, examples):
     print(examples)
     print(examples['sentence'])
-    print(examples['sentence'].value)
     return self.text_encoder.encode(examples['sentence']), examples['label']
 
 
