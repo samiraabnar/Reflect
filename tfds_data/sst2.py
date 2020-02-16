@@ -69,8 +69,8 @@ class SST2(tfds.core.GeneratorBasedBuilder):
     examples = tfds.load(name='glue/sst2', split=input_file_path)
 
     for example in examples:
-      yield example['idx'], {'label': example['label'],
-              'sentence': example['sentence']
+      yield example['idx'], {'label': example['label'].numpy(),
+              'sentence': example['sentence'].numpy()
               }
 
 
