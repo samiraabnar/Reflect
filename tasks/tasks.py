@@ -28,7 +28,7 @@ class Task(object):
     return get_masked_probs
 
   def setup_datasets(self):
-    assert self.builder_cls
+    assert self.databuilder
     self.info = self.databuilder.info
     self.n_train_batches = int(self.info.splits['train'].num_examples / self.task_params.batch_size)
     self.n_valid_batches = int(self.info.splits['validation'].num_examples / self.task_params.batch_size)
