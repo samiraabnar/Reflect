@@ -39,7 +39,7 @@ class SST2(Task):
     return ([None],[])
 
   def convert_examples(self, examples):
-    print(examples['sentence'[0]])
+    print(examples['sentence'][0])
     return self.text_encoder.encode(examples['sentence'][0].numpy()), examples['label']
 
 
