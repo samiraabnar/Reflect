@@ -66,7 +66,7 @@ class SST2(tfds.core.GeneratorBasedBuilder):
     :param input_file_path:
     :return: example
     """
-    examples = tfds.load('glue/sst2', input_file_path)
+    examples = tfds.load(name='glue/sst2', split=input_file_path)
 
     for example in examples:
       yield { 'id':example['idx'],
