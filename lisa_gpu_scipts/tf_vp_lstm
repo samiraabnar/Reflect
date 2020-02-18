@@ -34,7 +34,6 @@ CUDA_VISIBLE_DEVICES=1 python $CODE_DIR/keras_trainer.py \
 --task=word_sv_agreement_vp \
 --model_config=small_lstm_v4 \
 --train_config=crs_slw \
---keep_checkpoint_every_n_hours=1 \
 --exp_name=lisa_crs_slw_offlineteacher_v21 &
 
 CUDA_VISIBLE_DEVICES=2 python $CODE_DIR/keras_trainer.py \
