@@ -72,6 +72,7 @@ ckptz['l2l_131'] = ckpt
 infl_eng = inflect.engine()
 verb_infl, noun_infl = gen_inflect_from_vocab(infl_eng, 'wiki.vocab')
 
+keys = ['l2l_131', 'l2l_130']
 
 for key in keys:
     model = modelz[key]

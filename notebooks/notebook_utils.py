@@ -67,6 +67,29 @@ def get_student_model(config, task, hparams, cl_token):
     
     return model, ckpt
 
+def get_teacher_model(config, task, hparams, cl_token):
+    model = MODELS[config['teacher_model']](hparams=hparams, cl_token=cl_token)
+   
+    ckpt_dir = os.path.join(config['chkpt_dir'], task.name,
+                                  '_'.join([model.model_name, config['teacher_config'],config['teacher_exp_name']]))
+
+    ckpt = tf.train.Checkpoint(net=model)
+    manager = tf.train.CheckpointManager(ckpt, ckpt_dir, max_to_keep=None)
+
+    ckpt.restore(manager.latest_checkpoint)
+
+
+
+    ckpt.restore(manager.latest_checkpoint)
+    if manager.latest_checkpoint:
+      print("Restored student from {}".format(manager.latest_checkpoint))
+    else:
+      print("No checkpoint found {}".format(ckpt_dir))
+
+    model.compile(loss=task.get_loss_fn(), metrics=task.metrics())
+    
+    
+    return model, ckpt
 
 
 def gen_inflect_from_vocab(infl_eng, vocab_file, freq_threshold=1000):
