@@ -24,12 +24,12 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
       features=tfds.features.FeaturesDict({
         "sentence": tfds.features.Text(
           encoder_config=self.text_encoder_config),
-        "document_title": tfds.features.Text(encoder_config=self.text_encoder_config),
+        "title": tfds.features.Text(encoder_config=self.text_encoder_config),
       }),
       # If there's a common (input, target) tuple from the features,
       # specify them here. They'll be used if as_supervised=True in
       # builder.as_dataset.
-      supervised_keys=("sentence", "document_title"),
+      supervised_keys=("sentence", "title"),
     )
 
   def _split_generators(self, dl_manager):
