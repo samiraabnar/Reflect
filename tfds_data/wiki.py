@@ -70,6 +70,7 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
     """
     examples = tfds.load(name='wikipedia/20190301.en', split=input_file_path)
 
+    example_id = 0
     for example in examples:
       paragprahs = example['text'].numpy().decode('utf-8').split('\n')
       title = example['title'].numpy().decode('utf-8')
@@ -77,7 +78,8 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
         sentences = map(lambda s: s.strip(), tokenize.sent_tokenize(p))
         sentences = filter(lambda s: len(s.split()) > 2 and len(s) < 1000, sentences)
         for s in sentences:
-          yield {'sentence': s,
+          example_id += 1
+          yield example_id, {'sentence': s,
                  'title': title}
 
   def sentence_encoder(self):
