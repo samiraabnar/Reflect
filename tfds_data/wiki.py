@@ -79,6 +79,7 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
         sentences = filter(lambda s: len(s.split()) > 2 and len(s) < 1000, sentences)
         for s in sentences:
           example_id += 1
+          print(title, s)
           yield example_id, {'sentence': s,
                  'title': title}
 
