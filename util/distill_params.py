@@ -230,7 +230,7 @@ pure_dstl_mn_fstonln = {
 'teacher_decay_steps' : 10000,
 'teacher_warmup_steps' : 0,
 'teacher_hold_base_rate_steps' : 0,
-'teacher_optimizer' : 'radam'
+'teacher_optimizer' : 'radam',
 }
 
 DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,

@@ -15,7 +15,8 @@ class LmLSTM(tf.keras.Model):
     super(LmLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
-
+    self.rep_index = 1
+    self.rep_layer = None
     self.model_name = '_'.join([self.scope,
                          'em-'+str(self.hparams.embedding_dim),
                          'h-'+str(self.hparams.hidden_dim),
@@ -88,6 +89,8 @@ class ClassifierLSTM(tf.keras.Model):
     super(ClassifierLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
+    self.rep_index = 1
+    self.rep_layer = None
 
     self.model_name = '_'.join([self.scope,
                          'em-'+str(self.hparams.embedding_dim),
@@ -206,6 +209,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
   def __init__(self, hparams, scope="lm_lstm_shared_emb",*inputs, **kwargs):
     del kwargs['cl_token']
     super(LmLSTMSharedEmb, self).__init__()
+    self.rep_index = 1
+    self.rep_layer = None
     self.hparams = hparams
     self.scope = scope
 
@@ -346,6 +351,8 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
   def __init__(self, hparams, scope="lm_lstm_shared_emb",*inputs, **kwargs):
     del kwargs['cl_token']
     super(LmLSTMSharedEmbV2, self).__init__()
+    self.rep_index = 1
+    self.rep_layer = None
     self.hparams = hparams
     self.scope = scope
 

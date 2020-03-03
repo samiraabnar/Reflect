@@ -1,5 +1,6 @@
 import tensorflow as tf
 from distill.distill_util import get_masked_probs
+from distill.repsim_util import rep_loss
 
 
 class Task(object):
@@ -58,6 +59,8 @@ class Task(object):
     self.train_dataset = self.train_dataset.repeat()
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
+  def get_rep_loss(self):
+    return rep_loss
 
 
 class RandomGaussianTask(object):

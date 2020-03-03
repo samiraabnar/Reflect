@@ -2,6 +2,7 @@ import tensorflow as tf
 import os
 from distill.distiller import Distiller
 from distill.online_distiller import OnlineDistiller
+from distill.repsim_util import get_reps
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
 from tf2_models.utils import camel2snake
@@ -9,17 +10,22 @@ from inspect import isfunction
 import numpy as np
 
 class OnlineRepDistiller(OnlineDistiller):
-  def __init__(self, distill_params, teacher_model, student_model, task,
+  """
+  Implementation of soft representation sharing in online mode
+  """
+  def __init__(self, hparams, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     self.teacher_model = teacher_model
     self.student_model = student_model
     self.task = task
+    self.hparams = hparams
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
-    self.rep_loss = self.task.rep_loss()
+    self.rep_loss = self.task.get_rep_loss()
     self.task_loss = self.task.get_loss_fn()
     self.metrics = self.task.metrics()
+    self.task_probs_fn = self.task.get_probs_fn()
 
     self.create_student_optimizer()
     self.create_teacher_optimizer()
@@ -44,7 +50,7 @@ class OnlineRepDistiller(OnlineDistiller):
       return logits, final_loss
 
     @tf.function(experimental_relax_shapes=True)
-    def student_train_step(x, teacher_reps, y_true):
+    def student_train_step(x, y, y_true):
       ''' Training step for the student model (this is the only training step for offline distillation).
 
       :param x: input
@@ -55,9 +61,14 @@ class OnlineRepDistiller(OnlineDistiller):
       actual_loss
       '''
 
+      teacher_reps = get_reps(x, self.teacher_model,
+                              index=self.teacher_model.rep_index, layer=self.teacher_model.rep_layer)
       with tf.GradientTape() as tape:
-        logits, student_reps = self.student_model(x, training=True)
-        rep_loss = self.rep_loss(y_pred=student_reps, y_true=teacher_reps)
+        logits = self.student_model(x, training=True)
+        student_reps = get_reps(x, self.student_model,
+                                index=self.student_model.rep_index, layer=self.student_model.rep_layer)
+
+        rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.task.output_padding_symbol)
         reg_loss = tf.math.add_n(self.student_model.losses)
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
         final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \

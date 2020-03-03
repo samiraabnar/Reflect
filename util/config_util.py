@@ -45,6 +45,7 @@ class DistillParams(object):
                distill_decay_steps=1000000,
                distill_warmup_steps=0,
                hold_base_distillrate_steps=1000000,
+               student_distill_rep_rate=1.0,
   ):
     self.distill_temp = distill_temp
     self.student_distill_rate = student_distill_rate
@@ -64,6 +65,7 @@ class DistillParams(object):
     self.distill_decay_steps = distill_decay_steps
     self.distill_warmup_steps = distill_warmup_steps
     self.hold_base_distillrate_steps = hold_base_distillrate_steps
+    self.student_distill_rep_rate = student_distill_rep_rate
 
 
 class TaskParams:

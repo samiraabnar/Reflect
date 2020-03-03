@@ -281,6 +281,9 @@ class LmGPT2(tf.keras.Model):
     del kwargs['cl_token']
     super(LmGPT2, self).__init__(hparams, *inputs, **kwargs)
     self.scope = scope
+    self.rep_index = 1
+    self.rep_layer = None
+
     self.model_name = '_'.join([self.scope,
                          'h-'+str(hparams.embedding_dim),
                          'd-'+str(hparams.depth),
@@ -340,6 +343,8 @@ class ClassifierGPT2(tf.keras.Model):
     self.cl_token = kwargs['cl_token']
     del kwargs['cl_token']
     super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
+    self.rep_index = 1
+    self.rep_layer = None
 
     self.scope = scope
     self.hparams = hparams
@@ -422,7 +427,6 @@ class ClassifierGPT2SharedWeights(ClassifierGPT2):
                                      kernel_initializer=get_initializer(self.hparams.initializer_range),
                                      name='e2c')
 
-
 class ClassifierBERT(tf.keras.Model):
   def __init__(self, hparams, scope='cl_bert',*inputs, **kwargs):
     self.cl_token = kwargs['cl_token']
@@ -431,6 +435,8 @@ class ClassifierBERT(tf.keras.Model):
 
     self.scope = scope
     self.hparams = hparams
+    self.rep_index = 1
+    self.rep_layer = None
     self.model_name = '_'.join([self.scope,
                          'h-'+str(hparams.embedding_dim),
                          'd-'+str(hparams.depth),
