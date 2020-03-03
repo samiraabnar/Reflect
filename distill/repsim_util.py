@@ -94,4 +94,4 @@ def rep_loss(reps1, reps2, padding_symbol=None, inputs=None):
 
   mean_sim, _ = second_order_rep_sim(reps1, reps2, padding_mask)
 
-  return mean_sim
+  return 1.0 - mean_sim
