@@ -50,7 +50,7 @@ class OnlineRepDistiller(OnlineDistiller):
       return logits, final_loss
 
     @tf.function(experimental_relax_shapes=True)
-    def student_train_step(x, y, y_true):
+    def student_train_step(x, y, y_true, teacher_reps):
       ''' Training step for the student model (this is the only training step for offline distillation).
 
       :param x: input
@@ -60,9 +60,6 @@ class OnlineRepDistiller(OnlineDistiller):
       distill_loss
       actual_loss
       '''
-
-      teacher_reps = get_reps(x, self.teacher_model,
-                              index=self.teacher_model.rep_index, layer=self.teacher_model.rep_layer)
       with tf.GradientTape() as tape:
         logits = self.student_model(x, training=True)
         student_reps = get_reps(x, self.student_model,
@@ -88,11 +85,15 @@ class OnlineRepDistiller(OnlineDistiller):
         teacher_logits, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         soft_targets = tf.stop_gradient(teacher_probs)
-        distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y)
+        teacher_reps = get_reps(x, self.teacher_model,
+                                index=self.teacher_model.rep_index, layer=self.teacher_model.rep_layer)
+        teacher_reps = tf.stop_gradient(teacher_reps)
+        distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y, teacher_reps=teacher_reps)
 
         # Log every 200 batches.
         if step % 200 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
+            tf.print("distill_loss",distill_loss)
             tf.summary.scalar('student_learning_rate',
                           self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
             tf.summary.scalar('fine_distill_loss', distill_loss, )
