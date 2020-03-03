@@ -67,7 +67,8 @@ def create_and_load_models():
 
   return teacher_model, student_model, teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir
 
-DISTILLER = {'rep_online': OnlineRepDistiller}
+DISTILLER = {'rep_online': OnlineRepDistiller,
+             'rep_offline': OnlineRepDistiller}
 
 if __name__ == '__main__':
   # Create task

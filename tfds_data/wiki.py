@@ -39,6 +39,7 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
 
     examples = tfds.load('wikipedia/20190301.en', split='train')
     self.info.features["sentence"].maybe_build_from_corpus((example['text'].numpy().decode('utf-8') for example in examples))
+    self.info.features["title"].maybe_build_from_corpus((example['text'].numpy().decode('utf-8') for example in examples))
 
     # Specify the splits
     return [
