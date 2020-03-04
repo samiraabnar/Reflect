@@ -43,7 +43,7 @@ def second_order_rep_sim(reps1, reps2, padding_mask):
   sims1 = normalized_pairwisedot_product_sim(reps1, reps1)
   sims2 = normalized_pairwisedot_product_sim(reps2, reps2)
 
-  padding_mask = tf.ones((reps1.shape[0], 1))
+  padding_mask = tf.ones((tf.shape(reps1)[0], 1))
   so_sims = normalized_dot_product_sim(sims1, sims2, padding_mask) * padding_mask[:, 0]
   mean_sim = tf.reduce_sum(so_sims) / tf.reduce_sum(padding_mask)
 
