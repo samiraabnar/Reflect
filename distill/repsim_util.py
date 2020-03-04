@@ -7,7 +7,6 @@ def get_reps(inputs, model, index=1, layer=None):
       2: hidden_activation (for all layers, including input embeddings)
   """
   outputs = model.detailed_call(inputs)
-  tf.print(inputs.shape, outputs[1].shape, outputs.shape)
   reps = outputs[index]
 
   if layer is not None:
