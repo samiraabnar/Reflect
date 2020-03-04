@@ -82,6 +82,7 @@ def compare_reps(reps1, reps2, padding_symbol=None, inputs=None):
 
   return similarity_measures
 
+@tf.function
 def rep_loss(reps1, reps2, padding_symbol=None, inputs=None):
   reps1 = tf.reshape(reps1, (-1, tf.shape(reps1)[-1]))
   reps2 = tf.reshape(reps2, (-1, tf.shape(reps2)[-1]))
