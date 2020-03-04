@@ -66,7 +66,6 @@ class OnlineRepDistiller(OnlineDistiller):
                                 index=self.student_model.rep_index, layer=self.student_model.rep_layer)
 
         rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.task.output_padding_symbol)
-        tf.print("rep loss:", rep_loss, tf.reduce_sum(tf.abs(student_reps - teacher_reps)))
         reg_loss = tf.math.add_n(self.student_model.losses)
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
         final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
