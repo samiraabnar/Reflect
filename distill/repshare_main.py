@@ -27,7 +27,7 @@ flags.DEFINE_string('logdir', 'logs', 'log dir')
 flags.DEFINE_string('chkpt_dir', 'tf_ckpts', 'checkpoint dir')
 
 flags.DEFINE_string('task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
-flags.DEFINE_string('distill_config', 'base', ' distillation hparams set')
+flags.DEFINE_string('distill_config', 'pure_rpdst_crs_slwfst', ' distillation hparams set')
 
 flags.DEFINE_string('teacher_exp_name', 'rep_trial1', 'experiment directory')
 flags.DEFINE_string('teacher_model', 'cl_lstm', 'lm_lstm | lm_gpt2')

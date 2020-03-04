@@ -92,7 +92,6 @@ class OnlineRepDistiller(OnlineDistiller):
         # Log every 200 batches.
         if step % 200 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
-            tf.print("distill_loss",distill_loss)
             tf.summary.scalar('student_learning_rate',
                           self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
             tf.summary.scalar('fine_distill_loss', distill_loss, )
