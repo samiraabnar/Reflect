@@ -46,19 +46,19 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
       tfds.core.SplitGenerator(
         name=tfds.Split.TRAIN,
         gen_kwargs={
-          "input_file_path": "train[:98%]",
+          "input_file_path": "train[:90%]",
         },
       ),
       tfds.core.SplitGenerator(
         name=tfds.Split.VALIDATION,
         gen_kwargs={
-          "input_file_path": "train[98%:99%]",
+          "input_file_path": "train[90%:95%]",
         },
       ),
       tfds.core.SplitGenerator(
         name=tfds.Split.TEST,
         gen_kwargs={
-          "input_file_path": "train[99%:]",
+          "input_file_path": "train[95%:]",
         },
       ),
     ]
