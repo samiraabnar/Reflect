@@ -87,7 +87,6 @@ class OnlineRepDistiller(OnlineDistiller):
         teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         soft_targets = tf.stop_gradient(teacher_probs)
-
         teacher_reps = tf.stop_gradient(teacher_reps)
         distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y, teacher_reps=teacher_reps)
 

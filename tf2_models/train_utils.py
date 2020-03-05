@@ -145,7 +145,6 @@ class ExponentialDecayWithWarmpUp(LearningRateSchedule):
     }
 
 
-@keras_utils.register_keras_custom_object
 class RectifiedAdam(tf.keras.optimizers.Optimizer):
     """Variant of the Adam optimizer whose adaptive learning rate is rectified
     so as to have a consistent variance.
