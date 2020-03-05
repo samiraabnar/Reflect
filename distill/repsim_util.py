@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
+@tf.function
 def get_reps(inputs, model, index=1, layer=None):
   """
   If Model is LSTM:
@@ -26,6 +27,7 @@ def get_reps(inputs, model, index=1, layer=None):
   return reps
 
 
+@tf.function
 def normalized_pairwisedot_product_sim(reps1, reps2):
   reps1 = reps1 / tf.norm(reps1, axis=-1)[..., None]
   reps2 = reps2 / tf.norm(reps2, axis=-1)[..., None]
@@ -35,6 +37,7 @@ def normalized_pairwisedot_product_sim(reps1, reps2):
   return pw_dot_product
 
 
+@tf.function
 def normalized_dot_product_sim(reps1, reps2, padding_mask):
   # normalize reps:
   reps1 = reps1 / tf.norm(reps1, axis=-1)[..., None]
@@ -50,6 +53,7 @@ def normalized_dot_product_sim(reps1, reps2, padding_mask):
   return dot_product
 
 
+@tf.function
 def second_order_rep_sim(reps1, reps2, padding_mask):
   sims1 = normalized_pairwisedot_product_sim(reps1, reps1)
   sims2 = normalized_pairwisedot_product_sim(reps2, reps2)
@@ -60,7 +64,7 @@ def second_order_rep_sim(reps1, reps2, padding_mask):
 
   return mean_sim, so_sims
 
-
+@tf.function
 def compare_models(inputs, model1, model2, index1=1, index2=1, layer1=None, layer2=None, padding_symbol=None):
   reps1 = get_reps(inputs, model1, index=index1, layer=layer1)
   reps2 = get_reps(inputs, model2, index=index2, layer=layer2)
@@ -78,7 +82,7 @@ def compare_models(inputs, model1, model2, index1=1, index2=1, layer1=None, laye
 
   return similarity_measures
 
-
+@tf.function
 def compare_reps(reps1, reps2, padding_symbol=None, inputs=None):
   reps1 = tf.reshape(reps1, (-1, tf.shape(reps1)[-1]))
   reps2 = tf.reshape(reps2, (-1, tf.shape(reps2)[-1]))
