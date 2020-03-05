@@ -61,9 +61,10 @@ class OnlineRepDistiller(OnlineDistiller):
       actual_loss
       '''
       with tf.GradientTape() as tape:
-        logits = self.student_model(x, training=True)
-        student_reps = get_reps(x, self.student_model,
-                                index=self.student_model.rep_index, layer=self.student_model.rep_layer)
+        #logits = self.student_model(x, training=True)
+        logits, student_reps = get_reps(x, self.student_model,
+                                index=(0, self.student_model.rep_index),
+                                        layer= (None, self.student_model.rep_layer))
 
         rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.task.output_padding_symbol)
         reg_loss = tf.math.add_n(self.student_model.losses)

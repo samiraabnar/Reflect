@@ -7,10 +7,18 @@ def get_reps(inputs, model, index=1, layer=None):
       2: hidden_activation (for all layers, including input embeddings)
   """
   outputs = model.detailed_call(inputs)
-  reps = outputs[index]
 
-  if layer is not None:
-    reps = reps[layer]
+  if index is not tuple:
+    index = (index,)
+    layer = (layer,)
+
+  reps = ()
+  for i,l in zip(index,layer):
+    rep = rep + (outputs[index],)
+
+    if l is not None:
+      rep = rep[layer]
+    reps = reps + (rep,)
 
   return reps
 
