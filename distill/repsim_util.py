@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 def get_reps(inputs, model, index=1, layer=None):
   """
@@ -13,7 +14,7 @@ def get_reps(inputs, model, index=1, layer=None):
     layer = (layer,)
 
   reps = ()
-  for k in len(index):
+  for k in np.arange(len(index)):
     i, l = index[k], layer[k]
     rep = outputs[i]
 
