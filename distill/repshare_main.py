@@ -9,7 +9,7 @@ python distill/repshare_main.py \
 --student_model=cl_lstm \
 --teacher_config=small_lstm_v4 \
 --student_config=small_lstm_v4 \
---distill_mode=offline \
+--distill_mode=rep_online \
 --distill_config=rpdst_019_crs_slwfst
 '''
 from distill.rep_share import OnlineRepDistiller
