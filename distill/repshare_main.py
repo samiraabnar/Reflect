@@ -1,15 +1,16 @@
 ''' Code to apply the distillation process for a teacher and a student model.
 
 Run:
-python distill/distill_main.py \
+python distill/repshare_main.py \
 --task=word_sv_agreement_vp \
---teacher_exp_name=small_lstm_v4_0.0001_withl2 \
+--teacher_exp_name=reptchr1\
+--student_exp_name=repstd1 \
 --teacher_model=cl_lstm \
+--student_model=cl_lstm \
 --teacher_config=small_lstm_v4 \
---student_exp_name=distilled0 \
---student_model=cl_gpt2 \
---student_config=small_gpt_v9 \
---distill_mode=offline
+--student_config=small_lstm_v4 \
+--distill_mode=offline \
+--distill_config=rpdst_019_crs_slwfst
 '''
 from distill.rep_share import OnlineRepDistiller
 from util import constants
