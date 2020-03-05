@@ -16,6 +16,8 @@ def get_reps(inputs, model, index=1, layer=None):
   reps = ()
   for k in np.arange(len(index)):
     i, l = index[k], layer[k]
+    print(i,l)
+    tf.print(i,l)
     rep = outputs[i]
 
     if l is not None:
