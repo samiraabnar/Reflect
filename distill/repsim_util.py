@@ -9,7 +9,7 @@ def get_reps(inputs, model, index=1, layer=None):
   """
   outputs = model.detailed_call(inputs)
 
-  if index is not tuple:
+  if type(index) is not tuple:
     index = (index,)
     layer = (layer,)
 
