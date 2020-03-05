@@ -49,7 +49,7 @@ class OnlineRepDistiller(OnlineDistiller):
       self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights),
                                                    name="teacher_optimizer")
 
-      return logits, final_loss
+      return logits, teacher_reps, final_loss
 
     @tf.function(experimental_relax_shapes=True)
     def student_train_step(x, y, y_true, teacher_reps):
