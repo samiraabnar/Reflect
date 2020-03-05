@@ -14,10 +14,10 @@ def get_reps(inputs, model, index=1, layer=None):
 
   reps = ()
   for i,l in zip(index,layer):
-    rep = rep + (outputs[index],)
+    rep = rep + (outputs[i],)
 
     if l is not None:
-      rep = rep[layer]
+      rep = rep[l]
     reps = reps + (rep,)
 
   return reps
