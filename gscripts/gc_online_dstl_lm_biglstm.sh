@@ -4,6 +4,7 @@ conda activate indist
 
 cd ~/Codes/InDist
 
+export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 # LSTM 2 LSTM
 
 CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_lm \
