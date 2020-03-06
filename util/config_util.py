@@ -46,9 +46,13 @@ class DistillParams(object):
                distill_warmup_steps=0,
                hold_base_distillrate_steps=1000000,
                student_distill_rep_rate=1.0,
+               distill_min_rate=0.0,
+               distill_schedule='cnst',
   ):
     self.distill_temp = distill_temp
+    self.distill_schedule = distill_schedule
     self.student_distill_rate = student_distill_rate
+    self.distill_min_rate = distill_min_rate
     self.student_gold_rate = student_gold_rate
     self.student_learning_rate = student_learning_rate
     self.student_decay_steps = student_decay_steps

@@ -1,26 +1,21 @@
 import tensorflow as tf
-
-
 import numpy as np
-
+from distill.distill_util import get_distill_scheduler
 from distill.distiller import Distiller
-from tf2_models.train_utils import ExponentialDecayWithWarmpUp
+
 
 
 class ScheduledDistiller(Distiller):
   ''' Pipeline for offline scheduled distillation.
   '''
-  def __init__(self, distill_params, teacher_model, student_model, task,
+  def __init__(self, hparams, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     super(ScheduledDistiller, self).__init__(distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir)
 
-    self.distillrate_scheduler = ExponentialDecayWithWarmpUp(
-        initial_learning_rate=1.0,
-        decay_steps=self.distill_params.distill_decay_steps,
-        decay_rate=0.96,
-        warmup_steps=self.distill_params.distill_warmup_steps,
-        hold_base_rate_steps=self.distill_params.hold_base_distillrate_steps)
+    self.distillrate_scheduler = get_distill_scheduler(distill_params.distill_schedule,
+                                                       min=distill_params.distill_min_rate,
+                                                       max=distill_params.student_distill_rate)
 
   def distill_loop(self):
     ''' Offline Distillation main loop.
