@@ -321,4 +321,5 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'pure_rpdst_crs_slwfst': pure_rpdst_crs_slwfst,
                   'rpdst_019_crs_slwfst': rpdst_019_crs_slwfst,
                   'rpdst_019_crs_slwfst_2': rpdst_019_crs_slwfst_2,
+                  'dstl_910_crs_slwfst_2': dstl_910_crs_slwfst_2
                   }
