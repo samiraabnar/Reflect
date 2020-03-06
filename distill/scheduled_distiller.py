@@ -10,7 +10,7 @@ class ScheduledDistiller(Distiller):
   '''
   def __init__(self, hparams, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
-    super(ScheduledDistiller, self).__init__(distill_params, teacher_model, student_model, task,
+    super(ScheduledDistiller, self).__init__(hparams, distill_params, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir)
 
     self.distillrate_scheduler = get_distill_scheduler(distill_params.distill_schedule,
