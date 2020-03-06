@@ -51,7 +51,7 @@ class ScheduledDistiller(Distiller):
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
                                                    name="student_optimizer")
 
-      return distill_loss, actual_loss
+      return distill_loss, actual_loss, student_distill_rate
 
     @tf.function
     def epoch_loop():
@@ -59,7 +59,7 @@ class ScheduledDistiller(Distiller):
       for x,y in self.task.train_dataset:
         teacher_logits = self.teacher_model(x, training=True)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
-        distill_loss, actual_loss = student_train_step(x=x, teacher_y=teacher_probs, y_true=y)
+        distill_loss, actual_loss, distill_rate = student_train_step(x=x, teacher_y=teacher_probs, y_true=y)
 
         # Log every 200 batches.
         if step % 200 == 0:
@@ -69,6 +69,8 @@ class ScheduledDistiller(Distiller):
                         )
             tf.summary.scalar('fine_distill_loss',
                               distill_loss)
+            tf.summary.scalar('distill_rate',
+                              distill_rate)
 
         step += 1
         # Stop at the end of the epoch
