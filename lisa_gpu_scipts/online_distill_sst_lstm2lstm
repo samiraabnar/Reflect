@@ -34,11 +34,11 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py --task=sst2 \
---teacher_exp_name=lisa_tchr_onln1 \
---student_exp_name=lisa_std_onln1 \
+--teacher_exp_name=lisa_tchr_onln10 \
+--student_exp_name=lisa_std_onln10 \
 --teacher_model=cl_lstm \
 --student_model=lm_gpt2 \
 --teacher_config=small_lstm_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=online \
---distill_config=dstl_910_crs_slwfst_2
+--distill_config=rpdst5_019_crs_slwfst_2

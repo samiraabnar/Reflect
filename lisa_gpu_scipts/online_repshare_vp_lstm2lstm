@@ -26,9 +26,9 @@ export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_vp \
 --teacher_model=cl_lstm \
 --student_model=cl_lstm \
---teacher_exp_name=lisa_rep_tchr1 \
---student_exp_name=lisa_rep_std1 \
+--teacher_exp_name=lisa_rep_tchr10 \
+--student_exp_name=lisa_rep_std10 \
 --teacher_config=small_lstm_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_2
+--distill_config=rpdst5_019_crs_slwfst_2
