@@ -71,7 +71,7 @@ def create_and_load_models():
 
 DISTILLER = {'offline': Distiller,
              'online': OnlineDistiller,
-             'off_schdld': ScheduledDistiller}
+             }
 
 if __name__ == '__main__':
   # Create task

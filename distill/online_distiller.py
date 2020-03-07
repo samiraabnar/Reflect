@@ -122,7 +122,6 @@ class OnlineDistiller(Distiller):
       distill_loss
       actual_loss
       '''
-      scale_distill_grads = np.math.pow(self.distill_params.distill_temp, 2)
 
       with tf.GradientTape() as tape:
         logits = self.student_model(x, training=True)
@@ -132,7 +131,7 @@ class OnlineDistiller(Distiller):
         else:
           reg_loss = 0
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
-        final_loss = scale_distill_grads * self.distill_params.student_distill_rate * distill_loss + \
+        final_loss = self.distill_params.student_distill_rate * distill_loss + \
                      self.distill_params.student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
