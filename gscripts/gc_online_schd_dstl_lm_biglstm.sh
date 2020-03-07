@@ -11,31 +11,31 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --student_exp_name=gc_std1 \
---teacher_exp_name=gc_o_tchr1 \
+--teacher_exp_name=gc_os_tchr1 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=dstl5_910_crs_slwfst_2 > run0 &
+--distill_config=schdexp_dstl5_910_crs_slwfst_2 > run0 &
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --student_exp_name=gc_std10 \
---teacher_exp_name=gc_o_tchr10 \
+--teacher_exp_name=gc_os_tchr10 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=dstl_910_crs_slwfst_2 > run1 &
+--distill_config=schdexp_dstl_910_crs_slwfst_2 > run1 &
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --student_exp_name=gc_std20 \
---teacher_exp_name=gc_o_tchr20 \
+--teacher_exp_name=gc_os_tchr20 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=biglstm_drop31_v2 \
 --distill_mode=online \
---distill_config=dstl01_910_crs_slwfst_2 > run2 &
+--distill_config=schdexp_dstl01_910_crs_slwfst_2 > run2 &
 
 # LSTM 2 Transformer
 
@@ -43,30 +43,30 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
 --student_exp_name=gc_std1 \
---teacher_exp_name=gc_o_tchr1 \
+--teacher_exp_name=gc_os_tchr1 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=dstl5_910_crs_slwfst_2 > run3 &
+--distill_config=schdexp_dstl5_910_crs_slwfst_2 > run3 &
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
 --student_exp_name=gc_std10 \
---teacher_exp_name=gc_o_tchr10 \
+--teacher_exp_name=gc_os_tchr10 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=dstl_910_crs_slwfst_2 > run4 &
+--distill_config=schdexp_dstl_910_crs_slwfst_2 > run4 &
 
 CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
 --student_exp_name=gc_std20 \
---teacher_exp_name=gc_o_tchr20 \
+--teacher_exp_name=gc_os_tchr20 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=dstl01_910_crs_slwfst_2  > run5&
+--distill_config=schdexp_dstl01_910_crs_slwfst_2  > run5 &
 
 wait

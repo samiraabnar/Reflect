@@ -10,8 +10,8 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
---student_exp_name=gc_tmp5_rep_std1 \
---teacher_exp_name=gc_tmp5_rep_tchr1 \
+--student_exp_name=gc_std1 \
+--teacher_exp_name=gc_os_tchr1 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=off_schdld \
@@ -20,8 +20,8 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
---student_exp_name=gc_tmp1_rep_std10 \
---teacher_exp_name=gc_tmp1_rep_tchr10 \
+--student_exp_name=gc_std10 \
+--teacher_exp_name=gc_os_tchr10 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=off_schdld \
@@ -30,8 +30,8 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
---student_exp_name=gc_tmp01_rep_std20 \
---teacher_exp_name=gc_tmp01_rep_tchr20 \
+--student_exp_name=gc_std20 \
+--teacher_exp_name=gc_os_tchr20 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=biglstm_drop31_v2 \
 --distill_mode=off_schdld \
@@ -42,8 +42,8 @@ CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
---student_exp_name=gc_tmp5_rep_std1 \
---teacher_exp_name=gc_tmp5_rep_tchr1 \
+--student_exp_name=gc_std1 \
+--teacher_exp_name=gc_os_tchr1 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=off_schdld \
@@ -52,8 +52,8 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
---student_exp_name=gc_tmp1_rep_std10 \
---teacher_exp_name=gc_tmp1_rep_tchr10 \
+--student_exp_name=gc_std10 \
+--teacher_exp_name=gc_os_tchr10 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=off_schdld \
@@ -62,8 +62,8 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
---student_exp_name=gc_tmp01_rep_std20 \
---teacher_exp_name=gc_tmp01_rep_tchr20 \
+--student_exp_name=gc_std20 \
+--teacher_exp_name=gc_os_tchr20 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=off_schdld \
