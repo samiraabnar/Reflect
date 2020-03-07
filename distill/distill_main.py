@@ -13,7 +13,6 @@ python distill/distill_main.py \
 '''
 from distill.distiller import Distiller
 from distill.online_distiller import OnlineDistiller
-from distill.scheduled_distiller import ScheduledDistiller
 from util import constants
 from util.config_util import get_distill_params
 import os
