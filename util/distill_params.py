@@ -343,7 +343,7 @@ rpdst5_019_crs_slwfst_2 = {
 }
 
 rpdst01_019_crs_slwfst_2 = {
-'distill_temp' : 0.01,
+'distill_temp' : 0.1,
 'student_distill_rate' : 0.0,
 'student_gold_rate' : 0.1,
 'student_distill_rep_rate': 0.9,
@@ -362,7 +362,7 @@ rpdst01_019_crs_slwfst_2 = {
 
 
 dstl01_910_crs_slwfst_2 = {
-'distill_temp' : 0.01,
+'distill_temp' : 0.1,
 'student_distill_rate' : 0.9,
 'student_gold_rate' : 0.1,
 'student_distill_rep_rate': 0.0,
@@ -380,7 +380,7 @@ dstl01_910_crs_slwfst_2 = {
 }
 
 schdexp_dstl01_910_crs_slwfst_2 = {
-'distill_temp' : 0.01,
+'distill_temp' : 0.1,
 'student_distill_rate' : 1.0,
 'distill_min_rate': 0.0,
 'distill_schedule': 'exp',
