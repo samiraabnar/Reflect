@@ -1,5 +1,7 @@
 import tensorflow as tf
 import os
+
+from distill.distill_util import get_distill_scheduler
 from distill.distiller import Distiller
 from tf2_models.train_utils import ExponentialDecayWithWarmpUp
 from tf2_models.trainer import OPTIMIZER_DIC
@@ -28,6 +30,10 @@ class OnlineDistiller(Distiller):
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params, task)
     self.setup_loggings()
+
+    self.distillrate_scheduler = get_distill_scheduler(distill_params.distill_schedule,
+                                                       min=distill_params.distill_min_rate,
+                                                       max=distill_params.student_distill_rate)
 
 
   def setup_ckp_and_summary(self, student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir):
@@ -123,6 +129,8 @@ class OnlineDistiller(Distiller):
       actual_loss
       '''
 
+      student_distill_rate = self.distillrate_scheduler(self.student_optimizer.iterations)
+      student_gold_rate = 1 - student_distill_rate
       with tf.GradientTape() as tape:
         logits = self.student_model(x, training=True)
         distill_loss = self.distill_loss(y_pred=logits, y_true=y)
@@ -131,13 +139,13 @@ class OnlineDistiller(Distiller):
         else:
           reg_loss = 0
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
-        final_loss = self.distill_params.student_distill_rate * distill_loss + \
-                     self.distill_params.student_gold_rate * actual_loss + reg_loss
+        final_loss = student_distill_rate * distill_loss + \
+                     student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
                                                    name="student_optimizer")
 
-      return distill_loss, actual_loss
+      return distill_loss, actual_loss, student_distill_rate
 
 
     @tf.function
@@ -147,14 +155,16 @@ class OnlineDistiller(Distiller):
         teacher_logits, teacher_loss = teacher_train_step(x, y)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         soft_targets = tf.stop_gradient(teacher_probs)
-        distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y)
+        distill_loss, actual_loss, student_distill_rate = student_train_step(x=x, y=soft_targets, y_true=y)
 
         # Log every 200 batches.
         if step % 200 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
             tf.summary.scalar('student_learning_rate',
                           self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
-            tf.summary.scalar('fine_distill_loss', distill_loss, )
+            tf.summary.scalar('fine_distill_loss', distill_loss)
+            tf.summary.scalar('student_distill_rate', student_distill_rate)
+
           with tf.summary.experimental.summary_scope("teacher_train"):
             tf.summary.scalar('teacher_loss', teacher_loss)
             tf.summary.scalar('teacher_learning_rate',
