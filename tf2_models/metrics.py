@@ -5,6 +5,7 @@ import tensorflow as tf
 def distill_loss(y_true, y_pred, tmp):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.float32)
   scale_factor = 1.0 / tf.math.pow(tmp, 2)
+  tf.print("scale_factor", scale_factor)
   return tf.reduce_mean(tf.compat.v2.nn.softmax_cross_entropy_with_logits(logits=y_pred / tmp,
                                                                          labels=y_true,
                                                                          name='loss')) / scale_factor
