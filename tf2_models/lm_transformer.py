@@ -313,11 +313,7 @@ class LmGPT2(tf.keras.Model):
 
     lm_logits = self.transformer.wte(hidden_states, mode="linear")
 
-    if self.transformer.output_attentions:
-      outputs = (lm_logits,) + transformer_outputs
-    else:
-      outputs = lm_logits
-
+    outputs = (lm_logits,) + transformer_outputs
     return outputs  # lm_logits, presents, (all hidden_states), (attentions)
 
 class LmGPT2SharedWeights(LmGPT2):
@@ -410,9 +406,7 @@ class ClassifierGPT2(tf.keras.Model):
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits, hidden_states = _call(batch_size, inputs, transformer_outputs)
 
-    outputs = cl_logits
-    if self.transformer.output_attentions:
-      outputs = (cl_logits, hidden_states) + transformer_outputs
+    outputs = (cl_logits, hidden_states) + transformer_outputs
 
     return outputs
 
@@ -495,8 +489,6 @@ class ClassifierBERT(tf.keras.Model):
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits, hidden_states = _call(batch_size, inputs, transformer_outputs)
 
-    outputs = cl_logits
-    if self.transformer.output_attentions:
-      outputs = (cl_logits, hidden_states) + transformer_outputs
+    outputs = (cl_logits, hidden_states) + transformer_outputs
 
     return outputs
