@@ -22,7 +22,7 @@ LOGS_DIR=$HEAD_DIR/logs
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
+python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --student_exp_name=lisa_std1 \
