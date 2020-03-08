@@ -7,7 +7,7 @@ cd ~/Codes/InDist
 export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 # LSTM 2 LSTM
 
-CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
+CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --student_exp_name=gc_std10_t1 \
@@ -27,7 +27,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --distill_mode=online \
 --distill_config=schdexp_dstl_10_crs_slwfst_3 > os_run7 &
 
-CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
+CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --student_exp_name=gc_std30_t1 \
@@ -37,7 +37,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --distill_mode=online \
 --distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run8 &
 
-CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
+CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --student_exp_name=gc_std40_t1 \
@@ -59,7 +59,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 --distill_mode=online \
 --distill_config=schdexp_dstl_10_crs_slwfst_2 > os_run10 &
 
-CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
+CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
 --student_exp_name=gc_std20_t1 \
@@ -69,7 +69,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 --distill_mode=online \
 --distill_config=schdexp_dstl_10_crs_slwfst_3 > os_run11 &
 
-CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
+CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
 --student_exp_name=gc_std30_t1 \
@@ -79,7 +79,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 --distill_mode=online \
 --distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run12 &
 
-CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
+CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
 --student_exp_name=gc_std40_t1 \
