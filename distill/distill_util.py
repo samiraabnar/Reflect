@@ -74,11 +74,11 @@ class SequenceDistillLoss(tf.keras.losses.Loss):
     return sequence_distill_loss(y_true, y_pred, self.padding_symbol, self.tmp)
 
 
-def get_distill_scheduler(schedule, min=0.0, max=1.0, decay_steps=100000):
+def get_distill_scheduler(schedule, min=0.0, max=1.0, decay_steps=10000):
   if schedule is "exp":
     scheduler = tf.keras.optimizers.schedules.ExponentialDecay(
       max,
-      decay_steps=decay_steps,
+      decay_steps=1000,
       decay_rate=0.96,
       staircase=True)
   elif schedule is 'crs':
