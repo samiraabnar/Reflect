@@ -25,7 +25,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdexp_dstl_10_crs_slwfst_3 > os_run6 &
+--distill_config=schdexp_dstl_10_crs_slwfst_3 > os_run7 &
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
@@ -35,7 +35,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run6 &
+--distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run8 &
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
@@ -45,7 +45,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run6 &
+--distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run9 &
 # LSTM 2 Transformer
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
@@ -56,7 +56,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdexp_dstl_10_crs_slwfst_2 > os_run4 &
+--distill_config=schdexp_dstl_10_crs_slwfst_2 > os_run10 &
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
@@ -66,7 +66,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdexp_dstl_10_crs_slwfst_3 > os_run4 &
+--distill_config=schdexp_dstl_10_crs_slwfst_3 > os_run11 &
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
@@ -76,7 +76,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run4 &
+--distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run12 &
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
@@ -86,7 +86,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdcrs_dstl_10_crs_slwfst_3 > os_run4 &
+--distill_config=schdcrs_dstl_10_crs_slwfst_3 > os_run13 &
 
 
 wait
