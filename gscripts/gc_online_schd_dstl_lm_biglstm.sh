@@ -45,7 +45,8 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_config=biglstm_drop31_v2 \
 --student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=schdcrs_dstl_10_crs_slwfst_2 > os_run9 &
+--distill_config=schdcrs_dstl_10_crs_slwfst_3 > os_run9 &
+
 # LSTM 2 Transformer
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
