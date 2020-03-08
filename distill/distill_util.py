@@ -82,9 +82,13 @@ def get_distill_scheduler(schedule, min=0.0, max=1.0, decay_steps=10000):
       decay_rate=0.96,
       staircase=True)
   elif schedule is 'crs':
-    scheduler = tf.keras.optimizers.schedules.CosineDecay(max,
-      decay_steps=decay_steps,
-      alpha=min)
+    scheduler = tf.keras.experimental.CosineDecayRestarts(
+      max,
+      max,
+      t_mul=2.0,
+      m_mul=0.9,
+      alpha=0.001,
+    )
   elif schedule is 'lnr':
     a = (max - min) / decay_steps
     scheduler = lambda x: max - a*x
