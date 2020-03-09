@@ -48,13 +48,13 @@ def build_dic(data_dir):
 
 
 if __name__ == '__main__':
-  #vocab_dir = 'data/lm1b/vocab'
+  data_dir = 'data/lm1b/'
   #build_dic(data_dir='data/lm1b')
   #
   # vocab = list(np.load(vocab_dir, allow_pickle=True).item().keys())
   # print("Vocab len: ", len(vocab))
   text_encoder_config = tfds.features.text.TextEncoderConfig(
-    encoder=tfds.features.text.SubwordTextEncoder.load_from_file('sublmvocab')
+    encoder=tfds.features.text.SubwordTextEncoder.load_from_file(os.path.join('sublmvocab'))
   )
 
   config = Lm1bConfig(
