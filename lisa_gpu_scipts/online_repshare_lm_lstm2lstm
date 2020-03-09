@@ -22,25 +22,25 @@ LOGS_DIR=$HEAD_DIR/logs
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=lisa_std1 \
---teacher_exp_name=lisa_or_tchr1 \
---teacher_config=biglstm_drop31_v2 \
---student_config=biglstm_drop31_v2 \
---distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_2
-
-#CUDA_VISIBLE_DEVICES=1 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
+#CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
 #--teacher_model=lm_lstm_shared_emb \
 #--student_model=lm_lstm_shared_emb \
-#--student_exp_name=lisa_std10 \
-#--teacher_exp_name=lisa_or_tchr10 \
+#--student_exp_name=lisa_std1 \
+#--teacher_exp_name=lisa_or_tchr1 \
 #--teacher_config=biglstm_drop31_v2 \
 #--student_config=biglstm_drop31_v2 \
 #--distill_mode=rep_online \
-#--distill_config=rpdst_019_crs_slwfst_3 &
+#--distill_config=rpdst_019_crs_slwfst_2
+
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
+--teacher_model=lm_lstm_shared_emb \
+--student_model=lm_lstm_shared_emb \
+--student_exp_name=lisa_std10 \
+--teacher_exp_name=lisa_or_tchr10 \
+--teacher_config=biglstm_drop31_v2 \
+--student_config=biglstm_drop31_v2 \
+--distill_mode=rep_online \
+--distill_config=rpdst_019_crs_slwfst_3
 #
 #CUDA_VISIBLE_DEVICES=2 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
 #--teacher_model=lm_lstm_shared_emb \
