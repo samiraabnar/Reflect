@@ -33,7 +33,7 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --distill_config=rpdst_019_crs_slwfst_2 &
 
 
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
+CUDA_VISIBLE_DEVICES=1 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --teacher_model=cl_lstm \
 --student_model=cl_lstm \
 --teacher_exp_name=lisa_or_tchr2 \
@@ -43,7 +43,7 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --distill_mode=rep_online \
 --distill_config=rpdst_019_crs_slwfst_3 &
 
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
+CUDA_VISIBLE_DEVICES=2 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --teacher_model=cl_lstm \
 --student_model=cl_lstm \
 --teacher_exp_name=lisa_or_tchr3 \
@@ -54,7 +54,7 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --distill_config=rpdst_0010_crs_slwfst_2 &
 
 
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
+CUDA_VISIBLE_DEVICES=3 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --teacher_model=cl_lstm \
 --student_model=cl_lstm \
 --teacher_exp_name=lisa_or_tchr4 \
