@@ -73,7 +73,8 @@ class DistillParams(object):
 
 
 class TaskParams:
-  batch_size = 64
+  def __init__(self, batch_size=64):
+    self.batch_size = batch_size
 
 def get_train_params(train_config):
   train_params = TrainParams(**TRAIN_PARAMS[train_config])
@@ -87,8 +88,8 @@ def get_distill_params(distill_config):
   return DistillParams()
 
 
-def get_task_params():
-  task_params = TaskParams()
+def get_task_params(**kwargs):
+  task_params = TaskParams(**kwargs)
   return task_params
 
 def get_model_params(task, config_name='', model_config='base'):

@@ -42,6 +42,8 @@ flags.DEFINE_string('teacher_config', 'small_lstm_v4', 'base | small_lstm ')
 flags.DEFINE_string('distill_mode', 'rep_online', 'rep_offline | rep_online | rep_off_schdld | rep_on_schdld')
 flags.DEFINE_string('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
 
+flags.DEFINE_integer('batch_size', 64, 'batch_size')
+
 FLAGS(sys.argv)
 hparams = flags.FLAGS
 
@@ -73,7 +75,7 @@ DISTILLER = {'rep_online': OnlineRepDistiller,
 
 if __name__ == '__main__':
   # Create task
-  task = TASKS[hparams.task](get_task_params())
+  task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
 
   # Create the Model
   teacher_model, student_model, \
