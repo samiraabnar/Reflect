@@ -3,6 +3,7 @@
 #SBATCH --job-name=orep_lm
 #SBATCH --time=24:00:00
 #SBATCH --partition=gpu_shared
+#SBATCH --mem=60G
 
 module load 2019
 module load CUDA/10.1.243
