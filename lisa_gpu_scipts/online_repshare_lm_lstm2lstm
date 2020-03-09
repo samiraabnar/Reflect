@@ -62,4 +62,4 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=word_sv_
 #--distill_mode=rep_online \
 #--distill_config=rpdst_0010_crs_slwfst_3 &
 
-wait
+#wait
