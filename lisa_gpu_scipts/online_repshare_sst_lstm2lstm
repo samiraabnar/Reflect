@@ -31,7 +31,7 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --student_config=small_lstm_v4 \
 --batch_size=128 \
 --distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_2 &
+--distill_config=rpdst_019_crs_slwfst_sst &
 
 
 CUDA_VISIBLE_DEVICES=1 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
