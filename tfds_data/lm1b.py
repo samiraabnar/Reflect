@@ -37,14 +37,20 @@ def build_dic(data_dir):
     for sentence in dataset:
       yield sentence
 
-  text_encoder_config.encoder.build_from_corpus(
-                    generator,
-                    target_vocab_size=2 ** 13,
-                    max_subword_length=20,
-                    max_corpus_chars=None,
-                    reserved_tokens=reserved)
+  # text_encoder_config.encoder.build_from_corpus(
+  #                   generator,
+  #                   target_vocab_size=2 ** 13,
+  #                   max_subword_length=20,
+  #                   max_corpus_chars=None,
+  #                   reserved_tokens=reserved)
+  encoder = tfds.features.Text.SubwordTextEncoder.build_from_corpus(
+    corpus_generator=generator,
+    target_vocab_size=2 ** 13,
+    max_subword_length=20,
+    max_corpus_chars=None,
+    reserved_tokens=reserved)
 
-  feature.encoder.save_to_file(filename_prefix=os.path.join(data_dir,"sublmvocab"))
+  encoder.save_to_file(filename_prefix=os.path.join(data_dir,"sublmvocab"))
 
 
 if __name__ == '__main__':
