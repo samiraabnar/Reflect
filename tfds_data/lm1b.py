@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
   config = Lm1bConfig(
     name="subwords",
-    version="0.0.1",
+    version="0.0.2",
     description=("Uses token text encoding with "
                  "`tfds.features.text.SubwordTextEncodereTextEncoder`"),
     text_encoder_config=text_encoder_config,
