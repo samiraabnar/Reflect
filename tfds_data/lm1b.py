@@ -35,7 +35,7 @@ def build_dic(data_dir):
     dataset = databuilder.as_dataset(split="train")
     dataset = tfds.as_numpy(dataset)
     for sentence in dataset:
-      yield sentence
+      yield sentence['text']
 
   # text_encoder_config.encoder.build_from_corpus(
   #                   generator,
