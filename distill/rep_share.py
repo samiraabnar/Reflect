@@ -40,9 +40,12 @@ class OnlineRepDistiller(OnlineDistiller):
       with tf.GradientTape() as tape:
         logits, teacher_reps = get_reps(x, self.teacher_model,
                                 index=(0, self.teacher_model.rep_index),
-                                        layer=(None,self.teacher_model.rep_layer))
+                                        layer=(None,self.teacher_model.rep_layer), training=True)
         loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
-        reg_loss = tf.math.add_n(self.teacher_model.losses)
+        if len(self.teacher_model.losses) > 0:
+          reg_loss = tf.math.add_n(self.teacher_model.losses)
+        else:
+          reg_loss = 0
         final_loss = loss + reg_loss
 
       grads = tape.gradient(final_loss, self.teacher_model.trainable_weights)
@@ -66,7 +69,7 @@ class OnlineRepDistiller(OnlineDistiller):
         #logits = self.student_model(x, training=True)
         logits, student_reps = get_reps(x, self.student_model,
                                 index=(0, self.student_model.rep_index),
-                                        layer= (None, self.student_model.rep_layer))
+                                        layer= (None, self.student_model.rep_layer), training=True)
 
         rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.task.output_padding_symbol)
         reg_loss = tf.math.add_n(self.student_model.losses)

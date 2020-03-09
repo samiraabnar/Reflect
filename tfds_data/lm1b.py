@@ -37,12 +37,6 @@ def build_dic(data_dir):
     for sentence in dataset:
       yield sentence['text']
 
-  # text_encoder_config.encoder.build_from_corpus(
-  #                   generator,
-  #                   target_vocab_size=2 ** 13,
-  #                   max_subword_length=20,
-  #                   max_corpus_chars=None,
-  #                   reserved_tokens=reserved)
   encoder = tfds.features.text.SubwordTextEncoder.build_from_corpus(
     corpus_generator=generator(),
     target_vocab_size=2 ** 13,

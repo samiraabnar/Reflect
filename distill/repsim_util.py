@@ -2,13 +2,13 @@ import tensorflow as tf
 import numpy as np
 
 @tf.function
-def get_reps(inputs, model, index=1, layer=None):
+def get_reps(inputs, model, index=1, layer=None, **kwargs):
   """
   If Model is LSTM:
       1: final_rnn_outputs,
       2: hidden_activation (for all layers, including input embeddings)
   """
-  outputs = model.detailed_call(inputs)
+  outputs = model.detailed_call(inputs, **kwargs)
 
   if type(index) is not tuple:
     index = (index,)
