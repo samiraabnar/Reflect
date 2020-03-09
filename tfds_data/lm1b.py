@@ -44,44 +44,40 @@ def build_dic(data_dir):
     max_corpus_chars=None,
     reserved_tokens=reserved)
 
-  encoder.save_to_file(filename_prefix=os.path.join(data_dir,"sublmvocab"))
+  encoder.save_to_file(filename_prefix=os.path.join(data_dir,'sublmvocab'))
 
 
 if __name__ == '__main__':
-  vocab_dir = 'data/lm1b/vocab'
-  build_dic(data_dir='data/lm1b')
+  #vocab_dir = 'data/lm1b/vocab'
+  #build_dic(data_dir='data/lm1b')
   #
   # vocab = list(np.load(vocab_dir, allow_pickle=True).item().keys())
   # print("Vocab len: ", len(vocab))
-  # text_encoder_config = tfds.features.text.TextEncoderConfig(
-  #   encoder=tfds.features.text.TokenTextEncoder(vocab_list=vocab,
-  #                                               oov_token=constants.unk,
-  #                                               lowercase=False, tokenizer=tfds.features.text.Tokenizer(
-  #       alphanum_only=True,
-  #       reserved_tokens=[a for a in string.punctuation if a not in ['<', '>']] + constants.all
-  #     )))
-  #
-  # config = Lm1bConfig(
-  #   name="bytes",
-  #   version="0.0.1",
-  #   description=("Uses token text encoding with "
-  #                "`tfds.features.text.ByteTextEncoder`"),
-  #   text_encoder_config=tfds.features.text.TextEncoderConfig(
-  #     encoder=tfds.features.text.ByteTextEncoder()),
-  # ),
-  #
-  # databuilder = tfds.text.lm1b.Lm1b(data_dir='data',
-  #                                   config=config)
-  # databuilder.download_and_prepare(download_dir='tmp/',
-  #                                   download_config=tfds.download.DownloadConfig(register_checksums=True))
-  #
-  #
-  # dataset = databuilder.as_dataset(split="test", batch_size=1000)
-  # dataset = tfds.as_numpy(dataset)
-  # for batch in dataset:
-  #   print(batch[0])
-  #
-  #   break
+  text_encoder_config = tfds.features.text.TextEncoderConfig(
+    encoder=tfds.features.text.SubwordTextEncoder.load_from_file('sublmvocab')
+  )
+
+  config = Lm1bConfig(
+    name="bytes",
+    version="0.0.1",
+    description=("Uses token text encoding with "
+                 "`tfds.features.text.ByteTextEncoder`"),
+    text_encoder_config=tfds.features.text.TextEncoderConfig(
+      encoder=tfds.features.text.ByteTextEncoder()),
+  ),
+
+  databuilder = tfds.text.lm1b.Lm1b(data_dir='data',
+                                    config=config)
+  databuilder.download_and_prepare(download_dir='tmp/',
+                                    download_config=tfds.download.DownloadConfig(register_checksums=True))
+
+
+  dataset = databuilder.as_dataset(split="test", batch_size=1000)
+  dataset = tfds.as_numpy(dataset)
+  for batch in dataset:
+    print(batch[0])
+
+    break
   #
   # print(databuilder.info.features.keys())
   # print(databuilder.info.features['text'].vocab_size)
