@@ -54,7 +54,7 @@ if __name__ == '__main__':
   # vocab = list(np.load(vocab_dir, allow_pickle=True).item().keys())
   # print("Vocab len: ", len(vocab))
   text_encoder_config = tfds.features.text.TextEncoderConfig(
-    encoder=tfds.features.text.SubwordTextEncoder.load_from_file(os.path.join('sublmvocab'))
+    encoder=tfds.features.text.SubwordTextEncoder.load_from_file(os.path.join(data_dir,'sublmvocab'))
   )
 
   config = Lm1bConfig(
