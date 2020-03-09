@@ -281,7 +281,7 @@ rpdst_019_crs_slwfst_2 = {
 'student_optimizer' : 'adam',
 'teacher_learning_rate' : 0.001,
 'teacher_decay_steps' : 10000,
-'teacher_warmup_steps' : 10000,
+'teacher_warmup_steps' : 0.0,
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs_fst'
@@ -444,7 +444,7 @@ rpdst01_019_crs_slwfst_2 = {
 'student_optimizer' : 'adam',
 'teacher_learning_rate' : 0.001,
 'teacher_decay_steps' : 10000,
-'teacher_warmup_steps' : 10000,
+'teacher_warmup_steps' : 0,
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs_fst'
@@ -562,7 +562,7 @@ schdcrs_dstl_10_crs_slwfst_3 = {
 'student_optimizer' : 'adam',
 'teacher_learning_rate' : 0.001,
 'teacher_decay_steps' : 10000,
-'teacher_warmup_steps' : 10000,
+'teacher_warmup_steps' : 0.0,
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs_fst'

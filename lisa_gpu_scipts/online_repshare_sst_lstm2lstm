@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --job-name=repshare
-#SBATCH --time=24:00:00
-#SBATCH --partition=gpu
+#SBATCH --time=10:00:00
+#SBATCH --partition=gpu_shared
 
 module load 2019
 module load CUDA/10.0.130
@@ -30,36 +30,5 @@ CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
 --teacher_config=small_lstm_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_2 &
+--distill_config=rpdst_019_crs_slwfst_2
 
-CUDA_VISIBLE_DEVICES=1 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
---teacher_model=cl_lstm \
---student_model=cl_lstm \
---teacher_exp_name=lisa_or_tchr10 \
---student_exp_name=lisa_std10 \
---teacher_config=small_lstm_v4 \
---student_config=small_lstm_v4 \
---distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_3 &
-
-CUDA_VISIBLE_DEVICES=2 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
---teacher_model=cl_lstm \
---student_model=cl_bert \
---teacher_exp_name=lisa_or_tchr10 \
---student_exp_name=lisa_std10 \
---teacher_config=small_lstm_v4 \
---student_config=small_gpt_v9 \
---distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_2 &
-
-CUDA_VISIBLE_DEVICES=3 python $CODE_DIR/distill/repshare_main.py --task=sst2 \
---teacher_model=cl_lstm \
---student_model=cl_bert \
---teacher_exp_name=lisa_or_tchr20 \
---student_exp_name=lisa_std20 \
---teacher_config=small_lstm_v4 \
---student_config=small_gpt_v9 \
---distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_3 &
-
-wait
