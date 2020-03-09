@@ -60,6 +60,7 @@ if __name__ == '__main__':
   config = Lm1bConfig(
     old_version='1.0.0',
     text_encoder_config=text_encoder_config,
+    name='subwords'
   ),
 
   databuilder = tfds.text.lm1b.Lm1b(data_dir='data',
