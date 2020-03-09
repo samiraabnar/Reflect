@@ -43,7 +43,7 @@ def build_dic(data_dir):
   #                   max_subword_length=20,
   #                   max_corpus_chars=None,
   #                   reserved_tokens=reserved)
-  encoder = tfds.features.Text.SubwordTextEncoder.build_from_corpus(
+  encoder = tfds.features.text.build_from_corpus(
     corpus_generator=generator,
     target_vocab_size=2 ** 13,
     max_subword_length=20,
