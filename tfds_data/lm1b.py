@@ -73,7 +73,8 @@ if __name__ == '__main__':
   dataset = tfds.as_numpy(dataset)
   for batch in dataset:
     print(batch['text'][0])
-
+    print(databuilder.info.features["text"].decoder(batch['text'][0]))
+    print(databuilder.info.features["text"].encoder('<bos> hi <eos>'))
     break
   #
   # print(databuilder.info.features.keys())
