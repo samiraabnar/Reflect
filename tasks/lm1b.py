@@ -62,10 +62,8 @@ class Lm1B(Task):
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['text']
-    s_shape = tf.shape(sentences)
-    # batch_size, length = s_shape[0], s_shape[1]
-    bos = self.databuilder.sentence_encoder().encode(constants.bos)
-    eos = self.databuilder.sentence_encoder().encode(constants.eos)
+    bos = self.databuilder.info.features['text'].encoder.encode(constants.bos)
+    eos = self.databuilder.info.features['text'].encoder.encode(constants.eos)
 
     sentence = tf.concat([bos, sentences, eos], axis=-1)
     return sentence[:-1], \
