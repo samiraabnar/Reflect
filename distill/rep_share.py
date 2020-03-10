@@ -13,26 +13,48 @@ class OnlineRepDistiller(OnlineDistiller):
   """
   Implementation of soft representation sharing in online mode
   """
-  def __init__(self, hparams, distill_params, teacher_model, student_model, task,
+  def __init__(self, hparams, distill_params, teacher_model, student_model, teacher_task, student_task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     self.teacher_model = teacher_model
     self.student_model = student_model
-    self.task = task
+    self.student_task = student_task
+    self.teacher_task = teacher_task
     self.hparams = hparams
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
     self.rep_loss = self.task.get_rep_loss()
-    self.task_loss = self.task.get_loss_fn()
-    self.metrics = self.task.metrics()
-    self.task_probs_fn = self.task.get_probs_fn()
+    self.student_task_loss = self.student_task.get_loss_fn()
+    self.teacher_task_loss = self.teacher_task.get_loss_fn()
+
+    self.student_metrics = self.student_task.metrics()
+    self.teacher_metrics = self.teacher_task.metrics()
+    self.teacher_task_probs_fn = self.teacher_task.get_probs_fn()
 
     self.create_student_optimizer()
     self.create_teacher_optimizer()
 
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
-    self.setup_models(distill_params, task)
+    self.setup_models(distill_params)
     self.setup_loggings()
+
+  def setup_models(self, distill_params):
+    x, y = iter(self.task.valid_dataset).next()
+    self.student_model(x)
+    self.student_model.summary()
+    self.teacher_model(x)
+    self.teacher_model.summary()
+
+    self.student_model.compile(
+      optimizer=self.student_optimizer,
+      loss=self.student_task_loss,
+      metrics=[self.student_metrics])
+
+    self.teacher_model.compile(
+      optimizer=self.teacher_optimizer,
+      loss=self.teacher_task_loss,
+      metrics=[self.teacher_metrics])
+
 
   def distill_loop(self):
     @tf.function(experimental_relax_shapes=True)
@@ -73,7 +95,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
         rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.task.output_padding_symbol)
         reg_loss = tf.math.add_n(self.student_model.losses)
-        actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
+        actual_loss = self.student_task_loss(y_pred=logits, y_true=y_true)
         final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
                      self.distill_params.student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)

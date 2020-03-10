@@ -27,7 +27,9 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('logdir', 'logs', 'log dir')
 flags.DEFINE_string('chkpt_dir', 'tf_ckpts', 'checkpoint dir')
 
-flags.DEFINE_string('task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
+flags.DEFINE_string('teacher_task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
+flags.DEFINE_string('student_task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
+
 flags.DEFINE_string('distill_config', 'pure_rpdst_crs_slwfst', ' distillation hparams set')
 
 flags.DEFINE_string('teacher_exp_name', 'rep_trial1', 'experiment directory')
@@ -75,7 +77,8 @@ DISTILLER = {'rep_online': OnlineRepDistiller,
 
 if __name__ == '__main__':
   # Create task
-  task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
+  teacher_task = TASKS[hparams.teacher_task](get_task_params(batch_size=hparams.batch_size))
+  student_task = TASKS[hparams.student_task](get_task_params(batch_size=hparams.batch_size))
 
   # Create the Model
   teacher_model, student_model, \
@@ -85,7 +88,8 @@ if __name__ == '__main__':
                                               distill_params=get_distill_params(hparams.distill_config),
                                               teacher_model=teacher_model,
                                               student_model=student_model,
-                                              task=task,
+                                              teacher_task=teacher_task,
+                                              student_task=student_task,
                                               teacher_ckpt_dir=teacher_ckpt_dir,
                                               teacher_log_dir=teacher_log_dir,
                                               student_ckpt_dir=student_ckpt_dir,
