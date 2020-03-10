@@ -8,12 +8,11 @@ import tensorflow as tf
 from tf2_models import metrics
 from tf2_models.metrics import MaskedSequenceLoss, masked_batch_perplexity, masked_perplexity
 from util import constants
+from util.config_util import get_task_params
 
 
 class Lm1B(Task):
   def __init__(self, task_params, name='lm1b', data_dir='data', builder_cls=tfds.text.lm1b.Lm1b):
-    super(Lm1B, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=None)
-
     text_encoder_config = tfds.features.text.TextEncoderConfig(
       encoder_cls=tfds.features.text.SubwordTextEncoder,
       vocab_size=2 ** 13)
@@ -22,8 +21,10 @@ class Lm1B(Task):
       text_encoder_config=text_encoder_config,
       name='subwords'
     )
-    self.databuilder = tfds.text.lm1b.Lm1b(data_dir='data',
-                                      config=config)
+    self.databuilder = builder_cls(data_dir=data_dir,
+                                   config=config)
+    super(Lm1B, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=None)
+
 
   def setup_datasets(self):
     self.info = self.databuilder.info
@@ -91,3 +92,8 @@ class Lm1B(Task):
 
 
 if __name__ == '__main__':
+  task = Lm1B(get_task_params())
+
+  for example in task.valid_dataset:
+    print(example[0])
+    break
