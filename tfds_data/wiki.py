@@ -32,33 +32,38 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
       supervised_keys=("sentence", "title"),
     )
 
+  def _vocab_text_gen(self,):
+    for _, ex in self._generate_examples("train[:80%]"):
+      yield ex["text"]
+
   def _split_generators(self, dl_manager):
     # Downloads the data and defines the splits
     # dl_manager is a tfds.download.DownloadManager that can be used to
     # download and extract URLs
-
-    examples = tfds.load('wikipedia/20190301.en', split='train')
-    self.info.features["sentence"].maybe_build_from_corpus((example['text'].numpy().decode('utf-8') for example in examples))
-    self.info.features["title"].maybe_build_from_corpus((example['text'].numpy().decode('utf-8') for example in examples))
+    self.info.features["sentence"].maybe_build_from_corpus(self._vocab_text_gen())
+    self.info.features["title"] = self.info.features["sentence"]
 
     # Specify the splits
     return [
       tfds.core.SplitGenerator(
         name=tfds.Split.TRAIN,
+        num_shards=100,
         gen_kwargs={
-          "input_file_path": "train[:90%]",
+          "input_file_path": "train[:80%]",
         },
       ),
       tfds.core.SplitGenerator(
         name=tfds.Split.VALIDATION,
+        num_shards=50,
         gen_kwargs={
-          "input_file_path": "train[90%:95%]",
+          "input_file_path": "train[80%:85%]",
         },
       ),
       tfds.core.SplitGenerator(
         name=tfds.Split.TEST,
+        num_shards=50,
         gen_kwargs={
-          "input_file_path": "train[95%:]",
+          "input_file_path": "train[85%:]",
         },
       ),
     ]
@@ -80,7 +85,6 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
         sentences = filter(lambda s: len(s.split()) > 2 and len(s) < 1000, sentences)
         for s in sentences:
           example_id += 1
-          print(title, s)
           yield example_id, {'sentence': s,
                  'title': title}
 

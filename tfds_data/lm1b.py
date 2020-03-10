@@ -6,7 +6,6 @@ import tensorflow_datasets as tfds
 import os
 import numpy as np
 from tensorflow_datasets.text import Lm1bConfig
-
 from prep_data.build_dictionary import build_and_save_dic
 from util import text_util, constants
 from util.text_util import deps_from_tsv, deps_to_tsv
@@ -49,10 +48,6 @@ def build_dic(data_dir):
 
 if __name__ == '__main__':
   data_dir = 'data/lm1b/'
-  #build_dic(data_dir='data/lm1b')
-  #
-  # vocab = list(np.load(vocab_dir, allow_pickle=True).item().keys())
-  # print("Vocab len: ", len(vocab))
   text_encoder_config = tfds.features.text.TextEncoderConfig(
     encoder=tfds.features.text.SubwordTextEncoder.load_from_file(os.path.join(data_dir,'sublmvocab'))
   )
