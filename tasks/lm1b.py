@@ -4,14 +4,14 @@ from distill.distill_util import get_masked_probs, SequenceDistillLoss
 import tensorflow_datasets as tfds
 import tensorflow as tf
 
-from distill.tasks import tasks
+from tasks.task import Task
 from tf2_models import metrics
 from tf2_models.metrics import MaskedSequenceLoss, masked_batch_perplexity, masked_perplexity
 from util import constants
 from util.config_util import get_task_params
 
 
-class Lm1B(tasks.Task):
+class Lm1B(Task):
   def __init__(self, task_params, name='lm1b', data_dir='data', builder_cls=tfds.text.lm1b.Lm1b):
     text_encoder_config = tfds.features.text.TextEncoderConfig(
       encoder_cls=tfds.features.text.SubwordTextEncoder,
