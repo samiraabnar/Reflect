@@ -29,6 +29,12 @@ radam_fst_long = {
 'hold_base_rate_steps': 1000000
 }
 
+radam_slw2 = {
+'learning_rate': 0.0005,
+'optimizer': 'radam',
+'hold_base_rate_steps': 5000
+}
+
 radam_slw_long = {
 'learning_rate': 0.0001,
 'optimizer': 'radam',
@@ -103,4 +109,5 @@ TRAIN_PARAMS = {'radam_slw': radam_slw,
                 'crs_slw_v2': crs_slw_v2,
                 'crs_slw_v3': crs_slw_v3,
                 'crs_fst_v2': crs_fst_v2,
-                'mnist_adam': mnist_adam}
+                'mnist_adam': mnist_adam,
+                'radam_slw2': radam_slw2}
