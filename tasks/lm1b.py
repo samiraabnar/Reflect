@@ -1,10 +1,10 @@
 from tensorflow_datasets.text import Lm1bConfig
 
 from distill.distill_util import get_masked_probs, SequenceDistillLoss
-from tasks.tasks import Task
 import tensorflow_datasets as tfds
 import tensorflow as tf
 
+from distill.tasks.tasks import Task
 from tf2_models import metrics
 from tf2_models.metrics import MaskedSequenceLoss, masked_batch_perplexity, masked_perplexity
 from util import constants
