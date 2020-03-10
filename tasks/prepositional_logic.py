@@ -1,6 +1,5 @@
 from distill.distill_util import get_probs
-from tasks.tasks import Task
-from tf2_models.metrics import sequence_loss
+from tasks.task import Task
 from tfds_data.bowman_logic import BowmanLogic
 from util import constants
 import tensorflow as tf
@@ -28,8 +27,6 @@ class BowmanLogicConcat(Task):
   def padded_shapes(self):
     return ([None],[])
 
-  def get_loss_fn(self):
-    return sequence_loss
 
   def vocab_size(self):
     return self.databuilder.vocab_size()

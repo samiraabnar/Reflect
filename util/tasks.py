@@ -1,3 +1,4 @@
+from tasks.lm1b import Lm1B
 from tasks.mnist import Mnist, AffNistTask
 from tasks.sst import ClassifySST2
 from tasks.sv_agreement import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
@@ -9,4 +10,5 @@ TASKS = {
   'mnist': Mnist,
   'affnist': AffNistTask,
   'sst2': ClassifySST2,
+  'lm1b': Lm1B
 }
