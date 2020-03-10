@@ -72,7 +72,7 @@ if __name__ == '__main__':
   dataset = databuilder.as_dataset(split="test", batch_size=1000)
   dataset = tfds.as_numpy(dataset)
   for batch in dataset:
-    print(batch[0])
+    print(batch['text'][0])
 
     break
   #
