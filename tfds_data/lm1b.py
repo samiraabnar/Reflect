@@ -75,6 +75,11 @@ if __name__ == '__main__':
     print(batch['text'][0])
     print(databuilder.info.features["text"].encoder.decode(batch['text'][0]))
     print(databuilder.info.features["text"].encoder.encode('<bos> hi <eos>'))
+    print(databuilder.info.features["text"].encoder.encode('<bos>'))
+    print(databuilder.info.features["text"].encoder.encode('<eos>'))
+    print(databuilder.info.features["text"].encoder.encode('<pad>'))
+
+
     break
   #
   # print(databuilder.info.features.keys())
