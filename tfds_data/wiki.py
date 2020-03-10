@@ -34,7 +34,7 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
 
   def _vocab_text_gen(self,):
     for _, ex in self._generate_examples("train[:80%]"):
-      yield ex["text"]
+      yield ex["sentence"]
 
   def _split_generators(self, dl_manager):
     # Downloads the data and defines the splits
