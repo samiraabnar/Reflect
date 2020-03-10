@@ -1,5 +1,5 @@
 from distill.distill_util import DistillLoss, get_probs, SequenceDistillLoss, get_topk_masked_probs, get_masked_probs
-from tasks.tasks import Task
+from tasks.task import Task
 import tensorflow as tf
 
 from tf2_models import metrics
