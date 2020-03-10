@@ -92,6 +92,7 @@ class Lm1B(Task):
 if __name__ == '__main__':
   task = Lm1B(get_task_params())
 
-  for example in task.valid_dataset:
-    print(example[0])
+  for x, y in task.valid_dataset:
+    print(x[0])
+    print(y[0])
     break
