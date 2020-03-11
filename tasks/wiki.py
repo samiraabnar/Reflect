@@ -19,8 +19,6 @@ class WikiLM(Task):
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
-    s_shape = tf.shape(sentences)
-    # batch_size, length = s_shape[0], s_shape[1]
     bos = self.databuilder.sentence_encoder().encode(constants.bos)
     eos = self.databuilder.sentence_encoder().encode(constants.eos)
 

@@ -41,7 +41,7 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
     # dl_manager is a tfds.download.DownloadManager that can be used to
     # download and extract URLs
     self.info.features["sentence"].maybe_build_from_corpus(self._vocab_text_gen())
-    self.info.features["title"] = self.info.features["sentence"]
+    self.info.features["title"].encoder = self.info.features["sentence"].encoder
 
     # Specify the splits
     return [
