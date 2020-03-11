@@ -30,7 +30,7 @@ radam_fst_long = {
 }
 
 radam_slw2 = {
-'learning_rate': 0.0001,
+'learning_rate': 0.0005,
 'optimizer': 'radam',
 'hold_base_rate_steps': 10000
 }
