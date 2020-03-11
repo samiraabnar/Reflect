@@ -55,9 +55,9 @@ def create_and_load_models(teacher_task, student_task):
   s_cl_token = student_task.databuilder.sentence_encoder().encode(constants.bos)
 
   teacher_model = MODELS[hparams.teacher_model](
-    hparams=get_model_params(task, hparams.teacher_model, hparams.teacher_config), cl_token=t_cl_token)
+    hparams=get_model_params(teacher_task, hparams.teacher_model, hparams.teacher_config), cl_token=t_cl_token)
   student_model = MODELS[hparams.student_model](
-    hparams=get_model_params(task, hparams.student_model, hparams.student_config), cl_token=s_cl_token)
+    hparams=get_model_params(student_task, hparams.student_model, hparams.student_config), cl_token=s_cl_token)
   teacher_log_dir = os.path.join(hparams.logdir, teacher_task.name,
                                  '_'.join([hparams.distill_mode,hparams.distill_config,
                                           "teacher",teacher_model.model_name,hparams.teacher_config,hparams.teacher_exp_name]))
@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
   # Create the Model
   teacher_model, student_model, \
-  teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models()
+  teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models(teacher_task, student_task)
 
   distiller = DISTILLER[hparams.distill_mode](hparams=hparams,
                                               distill_params=get_distill_params(hparams.distill_config),
