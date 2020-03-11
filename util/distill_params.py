@@ -544,8 +544,8 @@ rpdst_019_crs_slwfst_sst = {
 'student_optimizer' : 'adam',
 'teacher_learning_rate' : 0.001,
 'teacher_decay_steps' : 10000,
-'teacher_warmup_steps' : 0000,
-'teacher_hold_base_rate_steps' : 1000,
+'teacher_warmup_steps' : 1000,
+'teacher_hold_base_rate_steps' : 10000,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs_fst',
 }
