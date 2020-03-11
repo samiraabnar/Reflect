@@ -21,7 +21,9 @@ class OnlineDistiller(Distiller):
 
     self.distill_loss = self.task.get_distill_loss_fn(self.distill_params)
     self.task_loss = self.task.get_loss_fn()
-    self.metrics = self.task.metrics()
+    self.student_metrics = self.task.metrics()
+    self.teacher_metrics = self.task.metrics()
+
     self.task_probs_fn = self.task.get_probs_fn()
 
     self.create_student_optimizer()
@@ -68,7 +70,7 @@ class OnlineDistiller(Distiller):
 
   def setup_loggings(self):
     self.student_validation_metrics = {}
-    for metric in self.metrics:
+    for metric in self.student_metrics:
       if isfunction(metric):
         self.student_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
@@ -76,7 +78,7 @@ class OnlineDistiller(Distiller):
     self.student_validation_loss = tf.keras.metrics.Mean()
 
     self.teacher_validation_metrics = {}
-    for metric in self.metrics:
+    for metric in self.teacher_metrics:
       if isfunction(metric):
         self.teacher_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
       else:
@@ -92,12 +94,12 @@ class OnlineDistiller(Distiller):
     self.student_model.compile(
       optimizer=self.student_optimizer,
       loss=self.task_loss,
-      metrics=[self.metrics])
+      metrics=[self.student_metrics])
 
     self.teacher_model.compile(
       optimizer=self.teacher_optimizer,
       loss=self.task_loss,
-      metrics=[self.metrics])
+      metrics=[self.teacher_metrics])
 
   def distill_loop(self):
     @tf.function(experimental_relax_shapes=True)
