@@ -113,9 +113,8 @@ class OnlineRepDistiller(OnlineDistiller):
     @tf.function
     def epoch_loop():
       step = 0
-      student_train_examples = iter(self.student_task.train_dataset)
-      for i in np.arange(self.student_task.n_train_batches):
-        x_t,y_t = next(student_train_examples)
+      student_train_examples = self.student_task.train_dataset
+      for x_t, y_t in student_train_examples:
         x_s, y_s = x_t,y_t
         teacher_logits, teacher_loss = teacher_train_step(x_t, y_t)
         distill_loss, actual_loss = student_train_step(x=x_s, y_s=y_s, y_t=y_t)
