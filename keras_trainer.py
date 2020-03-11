@@ -50,18 +50,14 @@ def run():
   log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
   ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
 
+  trainer = Trainer(hparams,
+                    task=task,
+                    model=model,
+                    train_params=trainer_params,
+                    log_dir=log_dir,
+                    ckpt_dir=ckpt_dir)
 
-  central_storage_strategy = tf.distribute.experimental.CentralStorageStrategy()
-
-  with central_storage_strategy.scope():
-    trainer = Trainer(hparams,
-                      task=task,
-                      model=model,
-                      train_params=trainer_params,
-                      log_dir=log_dir,
-                      ckpt_dir=ckpt_dir)
-
-    trainer.restore()
+  trainer.restore()
   trainer.train()
 
 
