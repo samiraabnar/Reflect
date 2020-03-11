@@ -23,7 +23,7 @@ class OnlineRepDistiller(OnlineDistiller):
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
 
-    self.rep_loss = self.task.get_rep_loss()
+    self.rep_loss = self.student_task.get_rep_loss()
     self.student_task_loss = self.student_task.get_loss_fn()
     self.teacher_task_loss = self.teacher_task.get_loss_fn()
 
@@ -39,10 +39,12 @@ class OnlineRepDistiller(OnlineDistiller):
     self.setup_loggings()
 
   def setup_models(self, distill_params):
-    x, y = iter(self.task.valid_dataset).next()
-    self.student_model(x)
+    x_s, y_s = iter(self.student_task.valid_dataset).next()
+    x_t, y_t = iter(self.teacher_task.valid_dataset).next()
+
+    self.student_model(x_s)
     self.student_model.summary()
-    self.teacher_model(x)
+    self.teacher_model(x_t)
     self.teacher_model.summary()
 
     self.student_model.compile(
@@ -60,9 +62,7 @@ class OnlineRepDistiller(OnlineDistiller):
     @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
-        logits, teacher_reps = get_reps(x, self.teacher_model,
-                                index=(0, self.teacher_model.rep_index),
-                                        layer=(None,self.teacher_model.rep_layer), training=True)
+        logits =self.teacher_model(x, training=True)
         loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
         if len(self.teacher_model.losses) > 0:
           reg_loss = tf.math.add_n(self.teacher_model.losses)
@@ -74,10 +74,10 @@ class OnlineRepDistiller(OnlineDistiller):
       self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights),
                                                    name="teacher_optimizer")
 
-      return logits, teacher_reps, final_loss
+      return logits, final_loss
 
     @tf.function(experimental_relax_shapes=True)
-    def student_train_step(x, y, y_true, teacher_reps):
+    def student_train_step(x, y_s, y_t):
       ''' Training step for the student model (this is the only training step for offline distillation).
 
       :param x: input
@@ -87,15 +87,20 @@ class OnlineRepDistiller(OnlineDistiller):
       distill_loss
       actual_loss
       '''
+      teacher_logits, teacher_reps = get_reps(x, self.teacher_model,
+                                      index=(0, self.teacher_model.rep_index),
+                                      layer=(None, self.teacher_model.rep_layer), training=False)
+      #teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y_t, temperature=self.temperature)
+
       with tf.GradientTape() as tape:
         #logits = self.student_model(x, training=True)
         logits, student_reps = get_reps(x, self.student_model,
                                 index=(0, self.student_model.rep_index),
                                         layer= (None, self.student_model.rep_layer), training=True)
 
-        rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.task.output_padding_symbol)
+        rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.student_task.output_padding_symbol)
         reg_loss = tf.math.add_n(self.student_model.losses)
-        actual_loss = self.student_task_loss(y_pred=logits, y_true=y_true)
+        actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
         final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
                      self.distill_params.student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
@@ -108,12 +113,13 @@ class OnlineRepDistiller(OnlineDistiller):
     @tf.function
     def epoch_loop():
       step = 0
-      for x, y in self.task.train_dataset:
-        teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x, y)
-        teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
-        soft_targets = tf.stop_gradient(teacher_probs)
-        teacher_reps = tf.stop_gradient(teacher_reps)
-        distill_loss, actual_loss = student_train_step(x=x, y=soft_targets, y_true=y, teacher_reps=teacher_reps)
+      student_train_examples = iter(self.student_task.train_dataset)
+      teacher_train_examples = iter(self.teacher_task.train_dataset)
+      for i in np.arange(self.student_task.n_train_batches):
+        x_t,y_t = next(teacher_train_examples)
+        x_s, y_s = next(student_train_examples)
+        teacher_logits, teacher_loss = teacher_train_step(x_t, y_t)
+        distill_loss, actual_loss = student_train_step(x=x_s, y_s=y_s, y_t=y_t)
 
         # Log every 200 batches.
         if step % 200 == 0:
@@ -127,7 +133,7 @@ class OnlineRepDistiller(OnlineDistiller):
                               self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations))
 
         step += 1
-        if step == self.task.n_train_batches:
+        if step == self.student_task.n_train_batches:
           with tf.summary.experimental.summary_scope("student_train"):
             tf.summary.scalar('distill_loss', distill_loss)
             tf.summary.scalar('actual_loss', actual_loss)
@@ -140,8 +146,8 @@ class OnlineRepDistiller(OnlineDistiller):
       for _ in tf.range(num_epochs):
         epoch_loop()
 
-        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
+        teacher_eval_results = self.teacher_model.evaluate(self.teacher_task.valid_dataset,
+                                                           steps=self.teacher_task.n_valid_batches)
 
         # Evaluate Teacher
         with tf.summary.experimental.summary_scope("eval_teacher"):
@@ -149,8 +155,8 @@ class OnlineRepDistiller(OnlineDistiller):
             tf.summary.scalar(m_name, teacher_eval_results[i])
 
         # Evaluate Student
-        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
+        student_eval_results = self.student_model.evaluate(self.student_task.valid_dataset,
+                                                           steps=self.student_task.n_valid_batches)
         with tf.summary.experimental.summary_scope("eval_student"):
           for i, m_name in enumerate(self.student_model.metrics_names):
             tf.summary.scalar(m_name, student_eval_results[i])

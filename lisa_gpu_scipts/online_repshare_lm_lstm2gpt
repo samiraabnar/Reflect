@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=orep_lm
 #SBATCH --time=24:00:00
-#SBATCH --partition=gpu
+#SBATCH --partition=gpu_shared
 
 module load 2019
 module load CUDA/10.1.243
@@ -22,44 +22,15 @@ LOGS_DIR=$HEAD_DIR/logs
 export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
 
 
-CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/repshare_main.py \
+--teacher_task=word_sv_agreement_lm \
+--student_task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
---student_exp_name=lisa_std1 \
---teacher_exp_name=lisa_or_tchr1 \
---teacher_config=biglstm_drop31_v2 \
---student_config=very_big_gpt_v10 \
+--student_exp_name=lisa_std2 \
+--teacher_exp_name=lisa_or_tchr2 \
+--teacher_config=lstm_drop31_v2 \
+--student_config=big_gpt_v5 \
 --distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_2 &
+--distill_config=rpdst_019_crs_slwfst_3
 
-CUDA_VISIBLE_DEVICES=1 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=lisa_std10 \
---teacher_exp_name=lisa_or_tchr10 \
---teacher_config=biglstm_drop31_v2 \
---student_config=very_big_gpt_v10 \
---distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_3 &
-
-CUDA_VISIBLE_DEVICES=2 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=lisa_std20 \
---teacher_exp_name=lisa_or_tchr20 \
---teacher_config=biglstm_drop31_v2 \
---student_config=very_big_gpt_v10 \
---distill_mode=rep_online \
---distill_config=rpdst_0010_crs_slwfst_2 &
-
-CUDA_VISIBLE_DEVICES=3 python $CODE_DIR/distill/repshare_main.py --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=lisa_std30 \
---teacher_exp_name=lisa_or_tchr30 \
---teacher_config=biglstm_drop31_v2 \
---student_config=very_big_gpt_v10 \
---distill_mode=rep_online \
---distill_config=rpdst_0010_crs_slwfst_3 &
-
-wait
