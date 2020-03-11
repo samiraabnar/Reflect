@@ -50,22 +50,24 @@ FLAGS(sys.argv)
 hparams = flags.FLAGS
 
 
-def create_and_load_models():
-  cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+def create_and_load_models(teacher_task, student_task):
+  t_cl_token = teacher_task.databuilder.sentence_encoder().encode(constants.bos)
+  s_cl_token = student_task.databuilder.sentence_encoder().encode(constants.bos)
+
   teacher_model = MODELS[hparams.teacher_model](
-    hparams=get_model_params(task, hparams.teacher_model, hparams.teacher_config), cl_token=cl_token)
+    hparams=get_model_params(task, hparams.teacher_model, hparams.teacher_config), cl_token=t_cl_token)
   student_model = MODELS[hparams.student_model](
-    hparams=get_model_params(task, hparams.student_model, hparams.student_config), cl_token=cl_token)
-  teacher_log_dir = os.path.join(hparams.logdir, task.name,
+    hparams=get_model_params(task, hparams.student_model, hparams.student_config), cl_token=s_cl_token)
+  teacher_log_dir = os.path.join(hparams.logdir, teacher_task.name,
                                  '_'.join([hparams.distill_mode,hparams.distill_config,
                                           "teacher",teacher_model.model_name,hparams.teacher_config,hparams.teacher_exp_name]))
-  teacher_ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
+  teacher_ckpt_dir = os.path.join(hparams.chkpt_dir, teacher_task.name,
                                   '_'.join([teacher_model.model_name, hparams.teacher_config,hparams.teacher_exp_name]))
-  student_log_dir = os.path.join(hparams.logdir, task.name,
+  student_log_dir = os.path.join(hparams.logdir, student_task.name,
                                  '_'.join([hparams.distill_mode,hparams.distill_config,
                                            "teacher", teacher_model.model_name, str(hparams.teacher_config), hparams.teacher_exp_name,
                                           "student", student_model.model_name,  str(hparams.student_config), hparams.student_exp_name]))
-  student_ckpt_dir = os.path.join(hparams.chkpt_dir, task.name,
+  student_ckpt_dir = os.path.join(hparams.chkpt_dir, student_task.name,
                                   '_'.join([hparams.distill_mode,hparams.distill_config,
                                             "teacher", teacher_model.model_name, str(hparams.teacher_config), hparams.teacher_exp_name,
                                            "student",student_model.model_name, str(hparams.student_config),hparams.student_exp_name]))
