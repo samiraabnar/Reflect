@@ -61,8 +61,8 @@ def run():
                       log_dir=log_dir,
                       ckpt_dir=ckpt_dir)
 
-    trainer.restore()
-    trainer.train()
+  trainer.restore()
+  trainer.train()
 
 
 def main(argv):
