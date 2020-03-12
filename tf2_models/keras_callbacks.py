@@ -13,8 +13,8 @@ class CheckpointCallback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs=None):
     self.ckpt.step.assign_add(1)
     save_path = self.manager.save()
-    print("Epoch %d: " %epoch)
-    print("Saved checkpoint for step {}: {}".format(int(self.ckpt.step), save_path))
+    tf.print("Epoch %d: " %epoch)
+    tf.print("Saved checkpoint for:", save_path)
 
 class SummaryCallback(tf.keras.callbacks.Callback):
   def __init__(self, summary_writer):
