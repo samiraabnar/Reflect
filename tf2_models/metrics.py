@@ -149,7 +149,7 @@ class ClassificationLoss(tf.keras.losses.Loss):
   def call(self, y_true, y_pred):
     return classification_loss(y_true=y_true, y_pred=y_pred) / self.global_batch_size
 
-class ClassificationLossMetric(tf.keras.metrics.Mean):
+class ClassificationLossMetric(tf.keras.losses.Loss):
   def __init__(self, global_batch_size, padding_symbol=0,
                **kwargs):
     super(ClassificationLossMetric, self).__init__(**kwargs)
