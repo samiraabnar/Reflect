@@ -146,7 +146,6 @@ class ClassificationLoss(tf.keras.losses.Loss):
     self.global_batch_size = global_batch_size
 
   def call(self, y_true, y_pred):
-    tf.print(self.global_batch_size)
     return classification_loss(y_true=y_true, y_pred=y_pred) / self.global_batch_size
 
 if __name__ == '__main__':
