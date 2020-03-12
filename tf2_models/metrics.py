@@ -152,7 +152,7 @@ class ClassificationLoss(tf.keras.losses.Loss):
 class ClassificationLossMetric(tf.keras.losses.Loss):
   def __init__(self, global_batch_size, padding_symbol=0,
                **kwargs):
-    super(ClassificationLossMetric, self).__init__(**kwargs)
+    super(ClassificationLossMetric, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
     self.name = "classification_loss"
     self.global_batch_size = global_batch_size
