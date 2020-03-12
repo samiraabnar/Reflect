@@ -59,6 +59,9 @@ class Lm1B(Task):
   def output_size(self):
     return self.vocab_size()
 
+  def sentence_encoder(self):
+    return self.databuilder.info.features['text'].encoder
+
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['text']
