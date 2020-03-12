@@ -3,7 +3,7 @@ from tasks.task import Task
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-from tf2_models.metrics import ClassificationLoss
+from tf2_models.metrics import ClassificationLoss, ClassificationLossMetric
 from tfds_data.sst2 import SST2
 
 
@@ -32,7 +32,7 @@ class ClassifySST2(Task):
     return get_probs
 
   def metrics(self):
-    return [ClassificationLoss(global_batch_size=self.task_params.batch_size),
+    return [ClassificationLossMetric(global_batch_size=self.task_params.batch_size),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
   @property
