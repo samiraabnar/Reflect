@@ -12,6 +12,7 @@ python distill/repshare_main.py \
 --distill_mode=rep_online \
 --distill_config=rpdst_019_crs_slwfst_2
 '''
+from distill.offline_repshare import OfflineRepDistiller
 from distill.rep_share import OnlineRepDistiller
 from util import constants
 from util.config_util import get_distill_params
@@ -75,23 +76,21 @@ def create_and_load_models(teacher_task, student_task):
   return teacher_model, student_model, teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir
 
 DISTILLER = {'rep_online': OnlineRepDistiller,
-             'rep_offline': OnlineRepDistiller}
+             'rep_offline': OfflineRepDistiller}
 
 if __name__ == '__main__':
   # Create task
-  teacher_task = TASKS[hparams.teacher_task](get_task_params(batch_size=hparams.batch_size))
-  student_task = TASKS[hparams.student_task](get_task_params(batch_size=hparams.batch_size))
+  task = TASKS[hparams.teacher_task](get_task_params(batch_size=hparams.batch_size))
 
   # Create the Model
   teacher_model, student_model, \
-  teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models(teacher_task, student_task)
+  teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models(task, task)
 
   distiller = DISTILLER[hparams.distill_mode](hparams=hparams,
                                               distill_params=get_distill_params(hparams.distill_config),
                                               teacher_model=teacher_model,
                                               student_model=student_model,
-                                              teacher_task=teacher_task,
-                                              student_task=student_task,
+                                              task=task,
                                               teacher_ckpt_dir=teacher_ckpt_dir,
                                               teacher_log_dir=teacher_log_dir,
                                               student_ckpt_dir=student_ckpt_dir,

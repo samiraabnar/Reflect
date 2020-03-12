@@ -7,6 +7,7 @@ def get_reps(inputs, model, index=1, layer=None, **kwargs):
   If Model is LSTM:
       1: final_rnn_outputs,
       2: hidden_activation (for all layers, including input embeddings)
+  reduction: None, "last", "sum"
   """
   outputs = model.detailed_call(inputs, **kwargs)
 
@@ -99,6 +100,7 @@ def compare_reps(reps1, reps2, padding_symbol=None, inputs=None):
 
 @tf.function
 def rep_loss(reps1, reps2, padding_symbol=None, inputs=None):
+
   reps1 = tf.reshape(reps1, (-1, tf.shape(reps1)[-1]))
   reps2 = tf.reshape(reps2, (-1, tf.shape(reps2)[-1]))
 

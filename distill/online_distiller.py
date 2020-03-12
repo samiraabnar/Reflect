@@ -31,7 +31,6 @@ class OnlineDistiller(Distiller):
 
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params, task)
-    self.setup_loggings()
 
     self.distillrate_scheduler = get_distill_scheduler(distill_params.distill_schedule,
                                                        min=distill_params.distill_min_rate,
@@ -68,21 +67,6 @@ class OnlineDistiller(Distiller):
     self.teacher_optimizer = OPTIMIZER_DIC[self.distill_params.teacher_optimizer](
       learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
-  def setup_loggings(self):
-    self.student_validation_metrics = {}
-    for metric in self.student_metrics:
-      if isfunction(metric):
-        self.student_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
-      else:
-        self.student_validation_metrics[camel2snake(metric.__class__.__name__)] = tf.keras.metrics.Mean()
-    self.student_validation_loss = tf.keras.metrics.Mean()
-
-    self.teacher_validation_metrics = {}
-    for metric in self.teacher_metrics:
-      if isfunction(metric):
-        self.teacher_validation_metrics[camel2snake(metric.__name__)] = tf.keras.metrics.Mean()
-      else:
-        self.teacher_validation_metrics[camel2snake(metric.__class__.__name__)] = tf.keras.metrics.Mean()
 
   def setup_models(self, distill_params, task):
     x, y = iter(self.task.valid_dataset).next()

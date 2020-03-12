@@ -35,7 +35,6 @@ class OfflineRepDistiller(Distiller):
 
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params)
-    self.setup_loggings()
 
   def setup_models(self, distill_params):
     x_s, y_s = iter(self.student_task.valid_dataset).next()
@@ -104,7 +103,6 @@ class OfflineRepDistiller(Distiller):
         distill_loss, actual_loss = student_train_step(x=x_s, y_s=y_s,
                                                        teacher_logits=teacher_logits, teacher_reps=teacher_reps)
 
-
         # Log every 200 batches.
         if step % 200 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
@@ -120,7 +118,6 @@ class OfflineRepDistiller(Distiller):
             tf.summary.scalar('distill_loss', distill_loss)
             tf.summary.scalar('actual_loss', actual_loss)
           break
-
 
 
     with self.summary_writer.as_default():
@@ -144,5 +141,4 @@ class OfflineRepDistiller(Distiller):
             tf.summary.scalar(m_name, student_eval_results[i])
 
         self.save_student()
-        self.save_teacher()
 

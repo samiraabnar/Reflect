@@ -334,6 +334,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
 
       rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
       rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
+      sentence_rep = tf.gather_nd(rnn_outputs, )
+
       logits = self.input_embedding(rnn_outputs, mode='linear')
 
       out = logits
