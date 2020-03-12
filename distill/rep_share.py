@@ -35,7 +35,6 @@ class OnlineRepDistiller(OnlineDistiller):
 
     self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
     self.setup_models(distill_params)
-    self.setup_loggings()
 
   def setup_models(self, distill_params):
     x_s, y_s = iter(self.task.valid_dataset).next()
