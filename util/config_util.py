@@ -73,8 +73,9 @@ class DistillParams(object):
 
 
 class TaskParams:
-  def __init__(self, batch_size=64):
+  def __init__(self, batch_size=64, num_replicas_in_sync=1):
     self.batch_size = batch_size
+    self.num_replicas_in_sync = num_replicas_in_sync
 
 def get_train_params(train_config):
   train_params = TrainParams(**TRAIN_PARAMS[train_config])

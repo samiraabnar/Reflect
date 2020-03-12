@@ -16,7 +16,7 @@ flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_gpt2_shared | lm
 flags.DEFINE_string('model_config', 'base', 'base | small_lstm ')
 flags.DEFINE_string('train_config', 'radam_fast', 'radam_slow | radam_fast')
 flags.DEFINE_integer('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
-
+flags.DEFINE_integer('batch_size', 64, 'batch_size')
 
 hparams = flags.FLAGS
 
@@ -35,22 +35,25 @@ def run():
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
 
+  strategy = tf.distribute.MirroredStrategy()
+
   # Create task
-  task = TASKS[hparams.task](get_task_params())
+  with strategy.scope():
+    task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size,
+                                               num_replicas_in_sync=strategy.num_replicas_in_sync))
 
-  # Create the Model
-  model_params = get_model_params(task,hparams.model, hparams.model_config)
-  print("model_params: ", model_params.__dict__)
+    # Create the Model
+    model_params = get_model_params(task,hparams.model, hparams.model_config)
+    print("model_params: ", model_params.__dict__)
 
-  cl_token = task.sentence_encoder().encode(constants.bos)
-  model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config),cl_token=cl_token)
+    cl_token = task.sentence_encoder().encode(constants.bos)
+    model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config),cl_token=cl_token)
 
   trainer_params = get_train_params(hparams.train_config)
 
   log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
   ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
 
-  strategy = tf.distribute.MirroredStrategy()
   trainer = Trainer(hparams,
                     strategy=strategy,
                     task=task,

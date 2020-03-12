@@ -4,12 +4,13 @@ from distill.repsim_util import rep_loss
 
 
 class Task(object):
-  def __init__(self, task_params, builder_cls=None, name='abstract_task', data_dir='data'):
+  def __init__(self, task_params, num_replicas_in_sync=1, builder_cls=None, name='abstract_task', data_dir='data'):
     self.name = name
     self.output_padding_symbol = 0
     self.task_params = task_params
     self.data_dir = data_dir
     self.builder_cls = builder_cls
+    self.num_replicas_in_sync = num_replicas_in_sync
     if builder_cls:
       self.databuilder = self.builder_cls(data_dir=self.data_dir)
 
