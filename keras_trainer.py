@@ -42,7 +42,7 @@ def run():
   model_params = get_model_params(task,hparams.model, hparams.model_config)
   print("model_params: ", model_params.__dict__)
 
-  cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+  cl_token = task.sentence_encoder().encode(constants.bos)
   model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config),cl_token=cl_token)
 
   trainer_params = get_train_params(hparams.train_config)
