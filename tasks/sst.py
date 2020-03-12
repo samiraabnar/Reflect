@@ -16,6 +16,9 @@ class ClassifySST2(Task):
   def vocab_size(self):
     return self.databuilder.vocab_size()
 
+  def sentence_encoder(self):
+    return self.databuilder.sentence_encoder()
+
   def output_size(self):
     return 2
 
