@@ -140,7 +140,7 @@ class MaskedSequenceLoss(tf.keras.losses.Loss):
 class ClassificationLoss(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0,
                **kwargs):
-    super(ClassificationLoss, self).__init__(**kwargs)
+    super(ClassificationLoss, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
     self.name = "classification_loss"
 
