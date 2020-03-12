@@ -54,7 +54,7 @@ class Lm1B(Task):
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
   def vocab_size(self):
-    return self.databuilder.vocab_size()
+    return self.databuilder.info.features['text'].vocab_size
 
   def output_size(self):
     return self.vocab_size()
