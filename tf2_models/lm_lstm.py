@@ -15,7 +15,7 @@ class LmLSTM(tf.keras.Model):
     super(LmLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
-    self.rep_index = 1
+    self.rep_index = 2
     self.rep_layer = None
     self.model_name = '_'.join([self.scope,
                          'em-'+str(self.hparams.embedding_dim),
@@ -334,12 +334,16 @@ class LmLSTMSharedEmb(tf.keras.Model):
 
       rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
       rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
-      sentence_rep = tf.gather_nd(rnn_outputs, )
+
+      inputs_lengths = tf.reduce_sum(input_mask, axis=-1) - 1
+      batch_indices = tf.range(batch_size_tensor)
+      indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
+      sentence_rep = tf.gather_nd(rnn_outputs, indices)
 
       logits = self.input_embedding(rnn_outputs, mode='linear')
 
       out = logits
-      out = (out,rnn_outputs, hidden_activation)
+      out = (out,rnn_outputs, sentence_rep, hidden_activation)
 
       return out
 
@@ -435,10 +439,17 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
 
       rnn_outputs = self.output_projection(rnn_outputs, **kwargs)
       rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
+
+      batch_size_tensor = tf.shape(rnn_outputs)[0]
+      inputs_lengths = tf.reduce_sum(input_mask, axis=-1) - 1
+      batch_indices = tf.range(batch_size_tensor)
+      indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
+      sentence_rep = tf.gather_nd(rnn_outputs, indices)
+
       logits = self.input_embedding(rnn_outputs, mode='linear')
 
       out = logits
-      out = (out, rnn_outputs, hidden_activation)
+      out = (out, rnn_outputs, sentence_rep, hidden_activation)
 
       return out
 

@@ -63,9 +63,9 @@ def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
 @tf.function(experimental_relax_shapes=True)
 def classification_loss(y_true, y_pred):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
-  return tf.reduce_mean(tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
+  return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
-                                                                  name='loss'))
+                                                                  name='loss')
 
 
 @tf.function(experimental_relax_shapes=True)
@@ -129,7 +129,7 @@ def unmasked_accuracy_topk(targets, logits, topk):
 class MaskedSequenceLoss(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0,
                **kwargs):
-    super(MaskedSequenceLoss, self).__init__(**kwargs)
+    super(MaskedSequenceLoss, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
     self.name = "batch_masked_sequence_loss"
 
@@ -138,14 +138,15 @@ class MaskedSequenceLoss(tf.keras.losses.Loss):
 
 
 class ClassificationLoss(tf.keras.losses.Loss):
-  def __init__(self, padding_symbol=0,
+  def __init__(self, global_batch_size, padding_symbol=0,
                **kwargs):
-    super(ClassificationLoss, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
+    super(ClassificationLoss, self).__init__(reduction=tf.keras.losses.Reduction.SUM, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
     self.name = "classification_loss"
+    self.global_batch_size = global_batch_size
 
   def call(self, y_true, y_pred):
-    return classification_loss(y_true=y_true, y_pred=y_pred)
+    return classification_loss(y_true=y_true, y_pred=y_pred) / self.global_batch_size
 
 if __name__ == '__main__':
   import numpy as np
