@@ -28,6 +28,7 @@ class Task(object):
   def get_probs_fn(self):
     return get_masked_probs
 
+
   def setup_datasets(self):
     assert self.databuilder
     self.info = self.databuilder.info
