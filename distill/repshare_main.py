@@ -28,8 +28,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('logdir', 'logs', 'log dir')
 flags.DEFINE_string('chkpt_dir', 'tf_ckpts', 'checkpoint dir')
 
-flags.DEFINE_string('teacher_task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
-flags.DEFINE_string('student_task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
+flags.DEFINE_string('task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
 
 flags.DEFINE_string('distill_config', 'pure_rpdst_crs_slwfst', ' distillation hparams set')
 
@@ -80,7 +79,7 @@ DISTILLER = {'rep_online': OnlineRepDistiller,
 
 if __name__ == '__main__':
   # Create task
-  task = TASKS[hparams.teacher_task](get_task_params(batch_size=hparams.batch_size))
+  task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
 
   # Create the Model
   teacher_model, student_model, \
