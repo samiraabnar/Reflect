@@ -34,6 +34,9 @@ class SvAgreementLM(Task):
   def output_size(self):
     return self.vocab_size()
 
+  def sentence_encoder(self):
+    return self.databuilder.sentence_encoder()
+
   def get_distill_loss_fn(self, distill_params):
     return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=0)
 
