@@ -146,25 +146,25 @@ class OnlineRepDistiller(OnlineDistiller):
 
     with self.summary_writer.as_default():
       num_epochs = self.distill_params.n_epochs
-      for _ in tf.range(num_epochs):
-        with self.strategy.scope():
+      with self.strategy.scope():
+        for _ in tf.range(num_epochs):
           epoch_loop()
 
-        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
+          teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                             steps=self.task.n_valid_batches)
 
-        # Evaluate Teacher
-        with tf.summary.experimental.summary_scope("eval_teacher"):
-          for i, m_name in enumerate(self.teacher_model.metrics_names):
-            tf.summary.scalar(m_name, teacher_eval_results[i])
+          # Evaluate Teacher
+          with tf.summary.experimental.summary_scope("eval_teacher"):
+            for i, m_name in enumerate(self.teacher_model.metrics_names):
+              tf.summary.scalar(m_name, teacher_eval_results[i])
 
-        # Evaluate Student
-        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
-        with tf.summary.experimental.summary_scope("eval_student"):
-          for i, m_name in enumerate(self.student_model.metrics_names):
-            tf.summary.scalar(m_name, student_eval_results[i])
+          # Evaluate Student
+          student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                             steps=self.task.n_valid_batches)
+          with tf.summary.experimental.summary_scope("eval_student"):
+            for i, m_name in enumerate(self.student_model.metrics_names):
+              tf.summary.scalar(m_name, student_eval_results[i])
 
-          self.save_student()
-          self.save_teacher()
+            self.save_student()
+            self.save_teacher()
 
