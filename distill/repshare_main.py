@@ -84,8 +84,6 @@ if __name__ == '__main__':
   task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
 
   task.train_dataset = strategy.experimental_distribute_dataset(task.train_dataset)
-  task.valid_dataset = strategy.experimental_distribute_dataset(task.valid_dataset)
-  task.test_dataset = strategy.experimental_distribute_dataset(task.test_dataset)
 
 
   with strategy.scope():
