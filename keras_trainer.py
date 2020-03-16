@@ -35,7 +35,8 @@ def run():
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
 
-  strategy = tf.distribute.MirroredStrategy()
+  strategy = tf.distribute.CentralStorageStrategy()
+    #tf.distribute.MirroredStrategy()
 
   # Create task
   with strategy.scope():
