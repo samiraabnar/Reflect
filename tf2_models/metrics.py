@@ -129,7 +129,7 @@ def unmasked_accuracy_topk(targets, logits, topk):
 class MaskedSequenceLoss(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0,
                **kwargs):
-    super(MaskedSequenceLoss, self).__init__(reduction=tf.keras.losses.Reduction.Mean, **kwargs)
+    super(MaskedSequenceLoss, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
     self.name = "batch_masked_sequence_loss"
 
