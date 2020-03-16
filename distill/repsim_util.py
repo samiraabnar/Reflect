@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 @tf.function(experimental_relax_shapes=True)
-def get_reps(inputs, model, index=1, layer=None, **kwargs):
+def get_reps(inputs, model, index=1, layer=-1, **kwargs):
   """
   If Model is LSTM:
       1: final_rnn_outputs,
@@ -20,7 +20,7 @@ def get_reps(inputs, model, index=1, layer=None, **kwargs):
     i, l = index[k], layer[k]
     rep = outputs[i]
 
-    if l is not None:
+    if l != -1 :
       rep = rep[l]
 
     reps = reps + (rep,)
