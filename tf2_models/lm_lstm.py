@@ -167,6 +167,7 @@ class ClassifierLSTM(tf.keras.Model):
 
     return _call(inputs, training)
 
+  @tf.function(experimental_relax_shapes=True)
   def detailed_call(self, inputs, **kwargs):
     if 'training' in kwargs:
       training = kwargs['training']
@@ -304,7 +305,8 @@ class LmLSTMSharedEmb(tf.keras.Model):
 
     return _call(inputs, padding_symbol, **kwargs)
 
-  def detailed_call(self, inputs, padding_symbol=0, **kwargs):
+  @tf.function(experimental_relax_shapes=True)
+  def detailed_call(self, inputs, padding_symbol=tf.constant(0), **kwargs):
 
     @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
@@ -424,7 +426,8 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
 
     return _call(inputs, padding_symbol, **kwargs)
 
-  def detailed_call(self, inputs, padding_symbol=0, **kwargs):
+  @tf.function(experimental_relax_shapes=True)
+  def detailed_call(self, inputs, padding_symbol=tf.constant(0), **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
       input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)

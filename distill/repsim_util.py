@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 
-@tf.function(experimental_relax_shapes=True)
 def get_reps(inputs, model, index=1, layer=-1, **kwargs):
   """
   If Model is LSTM:
