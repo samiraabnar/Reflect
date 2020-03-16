@@ -95,7 +95,8 @@ class OnlineRepDistiller(OnlineDistiller):
                                 index=(0, self.student_model.rep_index),
                                         layer= (-1, self.student_model.rep_layer), training=True)
 
-        rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps, padding_symbol=self.task.output_padding_symbol)
+        rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
+                                 padding_symbol=tf.constant(self.task.output_padding_symbol))
         reg_loss = tf.math.add_n(self.student_model.losses)
         actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
         final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
@@ -146,25 +147,25 @@ class OnlineRepDistiller(OnlineDistiller):
 
     with self.summary_writer.as_default():
       num_epochs = self.distill_params.n_epochs
-      with self.strategy.scope():
-        for _ in tf.range(num_epochs):
+      for _ in tf.range(num_epochs):
+        with self.strategy.scope():
           epoch_loop()
 
-          teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                             steps=self.task.n_valid_batches)
+        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
 
-          # Evaluate Teacher
-          with tf.summary.experimental.summary_scope("eval_teacher"):
-            for i, m_name in enumerate(self.teacher_model.metrics_names):
-              tf.summary.scalar(m_name, teacher_eval_results[i])
+        # Evaluate Teacher
+        with tf.summary.experimental.summary_scope("eval_teacher"):
+          for i, m_name in enumerate(self.teacher_model.metrics_names):
+            tf.summary.scalar(m_name, teacher_eval_results[i])
 
-          # Evaluate Student
-          student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                             steps=self.task.n_valid_batches)
-          with tf.summary.experimental.summary_scope("eval_student"):
-            for i, m_name in enumerate(self.student_model.metrics_names):
-              tf.summary.scalar(m_name, student_eval_results[i])
+        # Evaluate Student
+        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
+        with tf.summary.experimental.summary_scope("eval_student"):
+          for i, m_name in enumerate(self.student_model.metrics_names):
+            tf.summary.scalar(m_name, student_eval_results[i])
 
-            self.save_student()
-            self.save_teacher()
+          self.save_student()
+          self.save_teacher()
 
