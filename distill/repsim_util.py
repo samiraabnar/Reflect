@@ -12,7 +12,7 @@ def get_reps(inputs, model, index=1, layer=-1, **kwargs):
   outputs = model.detailed_call(inputs, **kwargs)
 
   outputs = tf.tuple(outputs)
-  
+
   if type(index) is not tuple:
     index = (index,)
     layer = (layer,)
@@ -20,10 +20,10 @@ def get_reps(inputs, model, index=1, layer=-1, **kwargs):
   reps = ()
   for k in np.arange(len(index)):
     i, l = index[k], layer[k]
-    rep = outputs[i]
+    rep = tf.gather(outputs, i)
 
     if l != -1 :
-      rep = rep[l]
+      rep = tf.gather(rep, l)
 
     reps = reps + (rep,)
 
