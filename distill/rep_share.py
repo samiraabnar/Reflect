@@ -145,10 +145,10 @@ class OnlineRepDistiller(OnlineDistiller):
           break
         step += 1
 
-    with self.summary_writer.as_default():
-      num_epochs = self.distill_params.n_epochs
-      for _ in tf.range(num_epochs):
-        with self.strategy.scope():
+    with self.strategy.scope():
+      with self.summary_writer.as_default():
+        num_epochs = self.distill_params.n_epochs
+        for _ in tf.range(num_epochs):
           epoch_loop()
 
           teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
