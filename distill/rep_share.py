@@ -13,10 +13,11 @@ class OnlineRepDistiller(OnlineDistiller):
   """
   Implementation of soft representation sharing in online mode
   """
-  def __init__(self, hparams, distill_params, teacher_model, student_model, task,
+  def __init__(self, hparams, distill_params, strategy, teacher_model, student_model, task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     self.teacher_model = teacher_model
     self.student_model = student_model
+    self.strategy = strategy
     self.task = task
     self.hparams = hparams
     self.distill_params = distill_params
@@ -37,22 +38,24 @@ class OnlineRepDistiller(OnlineDistiller):
     self.setup_models(distill_params)
 
   def setup_models(self, distill_params):
-    x_s, y_s = iter(self.task.valid_dataset).next()
+    with self.strategy.scope():
 
-    self.student_model(x_s)
-    self.student_model.summary()
-    self.teacher_model(x_s)
-    self.teacher_model.summary()
+      x_s, y_s = iter(self.task.valid_dataset).next()
 
-    self.student_model.compile(
-      optimizer=self.student_optimizer,
-      loss=self.student_task_loss,
-      metrics=[self.student_metrics])
+      self.student_model(x_s)
+      self.student_model.summary()
+      self.teacher_model(x_s)
+      self.teacher_model.summary()
 
-    self.teacher_model.compile(
-      optimizer=self.teacher_optimizer,
-      loss=self.teacher_task_loss,
-      metrics=[self.teacher_metrics])
+      self.student_model.compile(
+        optimizer=self.student_optimizer,
+        loss=self.student_task_loss,
+        metrics=[self.student_metrics])
+
+      self.teacher_model.compile(
+        optimizer=self.teacher_optimizer,
+        loss=self.teacher_task_loss,
+        metrics=[self.teacher_metrics])
 
 
   def distill_loop(self):
@@ -133,28 +136,27 @@ class OnlineRepDistiller(OnlineDistiller):
             tf.summary.scalar('actual_loss', actual_loss)
           break
 
+    with self.strategy.scope():
+      with self.summary_writer.as_default():
+        num_epochs = self.distill_params.n_epochs
+        for _ in tf.range(num_epochs):
+          epoch_loop()
 
+          teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                             steps=self.task.n_valid_batches)
 
-    with self.summary_writer.as_default():
-      num_epochs = self.distill_params.n_epochs
-      for _ in tf.range(num_epochs):
-        epoch_loop()
+          # Evaluate Teacher
+          with tf.summary.experimental.summary_scope("eval_teacher"):
+            for i, m_name in enumerate(self.teacher_model.metrics_names):
+              tf.summary.scalar(m_name, teacher_eval_results[i])
 
-        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
+          # Evaluate Student
+          student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                             steps=self.task.n_valid_batches)
+          with tf.summary.experimental.summary_scope("eval_student"):
+            for i, m_name in enumerate(self.student_model.metrics_names):
+              tf.summary.scalar(m_name, student_eval_results[i])
 
-        # Evaluate Teacher
-        with tf.summary.experimental.summary_scope("eval_teacher"):
-          for i, m_name in enumerate(self.teacher_model.metrics_names):
-            tf.summary.scalar(m_name, teacher_eval_results[i])
-
-        # Evaluate Student
-        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                           steps=self.task.n_valid_batches)
-        with tf.summary.experimental.summary_scope("eval_student"):
-          for i, m_name in enumerate(self.student_model.metrics_names):
-            tf.summary.scalar(m_name, student_eval_results[i])
-
-        self.save_student()
-        self.save_teacher()
+            self.save_student()
+            self.save_teacher()
 
