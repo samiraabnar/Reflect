@@ -26,7 +26,7 @@ class SvAgreementLM(Task):
            sentence[1:]
 
   def get_loss_fn(self):
-    return MaskedSequenceLoss(padding_symbol=0)
+    return MaskedSequenceLoss(padding_symbol=0, num_replicas_in_sync=self.task_params.num_replicas_in_sync)
 
   def vocab_size(self):
     return self.databuilder.vocab_size()

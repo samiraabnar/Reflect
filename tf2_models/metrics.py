@@ -127,18 +127,36 @@ def unmasked_accuracy_topk(targets, logits, topk):
 
 
 class MaskedSequenceLoss(tf.keras.losses.Loss):
+  def __init__(self, padding_symbol=0, num_replicas_in_sync=1,
+               **kwargs):
+    super(MaskedSequenceLoss, self).__init__(reduction=tf.keras.losses.Reduction.SUM, **kwargs)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.name = "batch_masked_sequence_loss"
+    self.num_replicas_in_sync = num_replicas_in_sync
+
+  def call(self, y_true, y_pred, sample_weight=None):
+    entropies, mask = batch_masked_sequence_loss(y_true=y_true, y_pred=y_pred, padding_symbol=self.padding_symbol)
+    if sample_weight is not None:
+      mask = sample_weight
+
+    norm_factor = mask / tf.reduce_sum(mask)
+    return tf.reduce_sum(entropies * norm_factor) / self.num_replicas_in_sync
+
+
+class MaskedSequenceMetric(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0,
                **kwargs):
-    super(MaskedSequenceLoss, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
+    super(MaskedSequenceMetric, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
     self.name = "batch_masked_sequence_loss"
 
-  def call(self, y_true, y_pred):
+  def call(self, y_true, y_pred, sample_weight=None):
     entropies, mask = batch_masked_sequence_loss(y_true=y_true, y_pred=y_pred, padding_symbol=self.padding_symbol)
+    if sample_weight is not None:
+      mask = sample_weight
+
     norm_factor = mask / tf.reduce_sum(mask)
-
     return tf.reduce_sum(entropies * norm_factor)
-
 
 class ClassificationLoss(tf.keras.losses.Loss):
   def __init__(self, global_batch_size, padding_symbol=0,
