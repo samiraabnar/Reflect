@@ -20,7 +20,7 @@ def get_reps(inputs, model, index=1, layer=-1, **kwargs):
   reps = ()
   for k in np.arange(len(index)):
     i, l = index[k], layer[k]
-    rep = tf.gather(outputs, i)
+    rep = outputs[i.numpy()]
 
     if l != -1 :
       rep = tf.gather(rep, l)
