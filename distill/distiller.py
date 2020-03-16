@@ -106,7 +106,7 @@ class Distiller(object):
   def save_student(self):
     self.student_ckpt.step.assign_add(1)
     save_path = self.student_manager.save()
-    tf.print("Saved student checkpoint for step {}: {}".format(int(self.student_ckpt.step), save_path))
+    tf.print("Saved student checkpoint", save_path)
 
   def distill_loop(self):
     ''' Offline Distillation main loop.
