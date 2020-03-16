@@ -137,6 +137,7 @@ class MaskedSequenceLoss(tf.keras.losses.Loss):
     entropies, mask = batch_masked_sequence_loss(y_true=y_true, y_pred=y_pred, padding_symbol=self.padding_symbol)
     norm_factor = mask / tf.reduce_sum(mask)
 
+    tf.print(tf.reduce_sum(entropies) / norm_factor)
     return tf.reduce_sum(entropies) / norm_factor
 
 
