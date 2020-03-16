@@ -108,10 +108,9 @@ class OnlineRepDistiller(OnlineDistiller):
     def epoch_loop():
       step = 0
       student_train_examples = self.task.train_dataset
-      for x_t, y_t in student_train_examples:
-        x_s, y_s = x_t,y_t
-        teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_t, y_t)
-        teacher_probs = self.teacher_task_probs_fn(logits=teacher_logits, labels=y_t, temperature=self.temperature)
+      for x_s, y_s in student_train_examples:
+        teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
+        teacher_probs = self.teacher_task_probs_fn(logits=teacher_logits, labels=y_s, temperature=self.temperature)
 
         distill_loss, actual_loss = student_train_step(x=x_s, y_s=y_s,
                                                        teacher_probs=teacher_probs, teacher_reps=teacher_reps)

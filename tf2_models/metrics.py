@@ -169,7 +169,7 @@ class AccuracyTopk(tf.keras.losses.Loss):
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
     self.name = "classification_loss"
     self.global_batch_size = global_batch_size
-    self.topk = tf.constant(self.topk)
+    self.topk = tf.constant(topk)
 
 
   def call(self, y_true, y_pred):
