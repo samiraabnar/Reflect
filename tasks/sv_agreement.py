@@ -93,15 +93,15 @@ class WordSvAgreementVP(Task):
     return 2
 
   def get_loss_fn(self):
-    return ClassificationLoss(padding_symbol=-1)
+    return ClassificationLoss(global_batch_size=tf.constant(self.task_params.batch_size), padding_symbol=tf.constant(-1))
 
   def get_distill_loss_fn(self, distill_params):
-    return DistillLoss(tmp=distill_params.distill_temp, padding_symbol=-1)
+    return DistillLoss(tmp=tf.constant(distill_params.distill_temp), padding_symbol=tf.constant(-1))
 
   def get_probs_fn(self):
     return get_probs
 
 
   def metrics(self):
-    return [ClassificationLoss(padding_symbol=-1),
+    return [ClassificationLoss(global_batch_size=tf.constant(self.task_params.batch_size), padding_symbol=tf.constant(-1)),
             tf.keras.metrics.SparseCategoricalAccuracy()]

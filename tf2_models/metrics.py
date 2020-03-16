@@ -160,7 +160,7 @@ class MaskedSequenceMetric(tf.keras.losses.Loss):
     return tf.reduce_sum(entropies * norm_factor)
 
 class ClassificationLoss(tf.keras.losses.Loss):
-  def __init__(self, global_batch_size, padding_symbol=0,
+  def __init__(self, global_batch_size, padding_symbol=tf.constant(0),
                **kwargs):
     super(ClassificationLoss, self).__init__(reduction=tf.keras.losses.Reduction.SUM, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)

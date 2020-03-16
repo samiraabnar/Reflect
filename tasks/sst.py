@@ -23,7 +23,7 @@ class ClassifySST2(Task):
     return 2
 
   def get_loss_fn(self):
-    return ClassificationLoss(global_batch_size=self.task_params.batch_size)
+    return ClassificationLoss(global_batch_size=tf.cost(self.task_params.batch_size), padding_symbol=tf.constant(-1))
 
   def get_distill_loss_fn(self, distill_params):
     return DistillLoss(tmp=distill_params.distill_temp)
@@ -32,7 +32,7 @@ class ClassifySST2(Task):
     return get_probs
 
   def metrics(self):
-    return [ClassificationLossMetric(global_batch_size=self.task_params.batch_size),
+    return [ClassificationLossMetric(global_batch_size=tf.constant(self.task_params.batch_size),padding_symbol=tf.constant(-1)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
   @property

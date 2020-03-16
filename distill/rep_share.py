@@ -31,10 +31,12 @@ class OnlineRepDistiller(OnlineDistiller):
     self.teacher_metrics = self.task.metrics()
     self.teacher_task_probs_fn = self.task.get_probs_fn()
 
-    self.create_student_optimizer()
-    self.create_teacher_optimizer()
+    with self.strategy.scope():
+      self.create_student_optimizer()
+      self.create_teacher_optimizer()
 
-    self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
+      self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
+
     self.setup_models(distill_params)
 
   def setup_models(self, distill_params):

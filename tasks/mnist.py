@@ -30,7 +30,7 @@ class Mnist(Task):
     return get_probs
 
   def metrics(self):
-    return [ClassificationLoss(),
+    return [ClassificationLoss(padding_symbol=tf.constant(-1)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
   @property
