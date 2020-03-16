@@ -11,6 +11,8 @@ def get_reps(inputs, model, index=1, layer=-1, **kwargs):
   """
   outputs = model.detailed_call(inputs, **kwargs)
 
+  outputs = tf.tuple(outputs)
+  
   if type(index) is not tuple:
     index = (index,)
     layer = (layer,)
