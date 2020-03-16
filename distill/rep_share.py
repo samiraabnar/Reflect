@@ -107,11 +107,12 @@ class OnlineRepDistiller(OnlineDistiller):
       return rep_loss, actual_loss
 
 
-    @tf.function
+
     def epoch_loop():
       step = 0
       student_train_examples = self.task.train_dataset
 
+      @tf.function
       def epoch_step(x_s, y_s, step):
         teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
         teacher_probs = self.teacher_task_probs_fn(logits=teacher_logits, labels=y_s, temperature=self.temperature)
