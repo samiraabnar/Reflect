@@ -161,6 +161,23 @@ class ClassificationLossMetric(tf.keras.losses.Loss):
   def call(self, y_true, y_pred):
     return tf.reduce_mean(classification_loss(y_true=y_true, y_pred=y_pred), axis=0)
 
+class AccuracyTopk(tf.keras.losses.Loss):
+  def __init__(self, global_batch_size, padding_symbol=0, topk=1,
+               **kwargs):
+    super(AccuracyTopk, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
+    self.name = '-'.join(['accuracy','top', str(topk)])
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.name = "classification_loss"
+    self.global_batch_size = global_batch_size
+    self.topk = tf.constant(self.topk)
+
+
+  def call(self, y_true, y_pred):
+    y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+    sequence_mask = tf.cast(y_true != self.padding_symbol, dtype=tf.float32)
+    return accuracy_topk(y_true, y_pred, sequence_mask, topk=self.topk)
+
+
 if __name__ == '__main__':
   import numpy as np
   a = np.asarray([[[1,1.5,2,0], [4,3,0,0]],

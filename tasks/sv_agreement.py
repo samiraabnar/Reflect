@@ -47,9 +47,9 @@ class SvAgreementLM(Task):
     return [MaskedSequenceLoss(padding_symbol=0),
             masked_batch_perplexity,
             masked_perplexity,
-            metrics.accuracy,
-            metrics.accuracy_top2,
-            metrics.accuracy_top5
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=0, topk=1),
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=0, topk=2),
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=0, topk=5)
           ]
 
 
