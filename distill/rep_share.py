@@ -134,7 +134,7 @@ class OnlineRepDistiller(OnlineDistiller):
             tf.summary.scalar('distill_loss', distill_loss)
             tf.summary.scalar('actual_loss', actual_loss)
 
-      @tf.function
+      @tf.function(experimental_relax_shapes=True)
       def epoch_step(x_s, y_s, step):
         self.strategy.experimental_run_v2(epoch_step_fn, (x_s, y_s, step))
 
