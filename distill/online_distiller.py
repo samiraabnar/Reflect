@@ -191,6 +191,6 @@ class OnlineDistiller(Distiller):
   def save_teacher(self):
     self.teacher_ckpt.step.assign_add(1)
     save_path = self.teacher_manager.save()
-    tf.print("Saved teacher checkpoint for step {}: {}".format(int(self.teacher_ckpt.step), save_path))
+    tf.print("Saved teacher checkpoint", save_path)
 
 

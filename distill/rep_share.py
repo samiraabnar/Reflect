@@ -36,28 +36,25 @@ class OnlineRepDistiller(OnlineDistiller):
       self.create_teacher_optimizer()
 
       self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
-
-    self.setup_models(distill_params)
+      self.setup_models(distill_params)
 
   def setup_models(self, distill_params):
-    with self.strategy.scope():
+    x_s, y_s = iter(self.task.valid_dataset).next()
 
-      x_s, y_s = iter(self.task.valid_dataset).next()
+    self.student_model(x_s)
+    self.student_model.summary()
+    self.teacher_model(x_s)
+    self.teacher_model.summary()
 
-      self.student_model(x_s)
-      self.student_model.summary()
-      self.teacher_model(x_s)
-      self.teacher_model.summary()
+    self.student_model.compile(
+      optimizer=self.student_optimizer,
+      loss=self.student_task_loss,
+      metrics=[self.student_metrics])
 
-      self.student_model.compile(
-        optimizer=self.student_optimizer,
-        loss=self.student_task_loss,
-        metrics=[self.student_metrics])
-
-      self.teacher_model.compile(
-        optimizer=self.teacher_optimizer,
-        loss=self.teacher_task_loss,
-        metrics=[self.teacher_metrics])
+    self.teacher_model.compile(
+      optimizer=self.teacher_optimizer,
+      loss=self.teacher_task_loss,
+      metrics=[self.teacher_metrics])
 
 
   def distill_loop(self):
