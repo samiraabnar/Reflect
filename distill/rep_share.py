@@ -135,7 +135,7 @@ class OnlineRepDistiller(OnlineDistiller):
       self.strategy.experimental_run_v2(epoch_step_fn, (x_s, y_s, step))
 
     def epoch_loop():
-      step = 0
+      step = tf.Variable(0, trainable=False)
       student_train_examples = self.task.train_dataset
 
       for x_s, y_s in student_train_examples:
