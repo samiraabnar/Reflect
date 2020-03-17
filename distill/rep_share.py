@@ -116,23 +116,23 @@ class OnlineRepDistiller(OnlineDistiller):
 
       # Log every 200 batches.
       if step % 200 == 0:
-        distill_loss = distill_loss + 0.01
-      #   with tf.summary.experimental.summary_scope("student_train"):
-      #     tf.summary.scalar('student_learning_rate',
-      #                       self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
-      #     tf.summary.scalar('fine_distill_loss', distill_loss, )
-      #   with tf.summary.experimental.summary_scope("teacher_train"):
-      #     tf.summary.scalar('teacher_loss', teacher_loss)
-      #     tf.summary.scalar('teacher_learning_rate',
-      #                       self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations))
-      #
-      # if step == self.task.n_train_batches:
-      #   with tf.summary.experimental.summary_scope("student_train"):
-      #     tf.summary.scalar('distill_loss', distill_loss)
-      #     tf.summary.scalar('actual_loss', actual_loss)
+        with tf.summary.experimental.summary_scope("student_train"):
+          tf.summary.scalar('student_learning_rate',
+                            self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
+          tf.summary.scalar('fine_distill_loss', distill_loss, )
+        with tf.summary.experimental.summary_scope("teacher_train"):
+          tf.summary.scalar('teacher_loss', teacher_loss)
+          tf.summary.scalar('teacher_learning_rate',
+                            self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations))
+
+      if step == self.task.n_train_batches:
+        with tf.summary.experimental.summary_scope("student_train"):
+          tf.summary.scalar('distill_loss', distill_loss)
+          tf.summary.scalar('actual_loss', actual_loss)
 
     @tf.function(experimental_relax_shapes=True)
     def epoch_step(x_s, y_s, step):
+      print("traced with step:", step)
       self.strategy.experimental_run_v2(epoch_step_fn, (x_s, y_s, step))
 
     def epoch_loop():
@@ -158,19 +158,19 @@ class OnlineRepDistiller(OnlineDistiller):
 
 
     with self.strategy.scope():
+      with self.summary_writer.as_default():
         num_epochs = self.distill_params.n_epochs
-        with self.summary_writer.as_default():
-          for _ in tf.range(num_epochs):
-            epoch_loop()
+        for _ in tf.range(num_epochs):
+          epoch_loop()
 
-            # Evaluate teacher
-            teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                               steps=self.task.n_valid_batches)
-            # Evaluate Student
-            student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                               steps=self.task.n_valid_batches)
-            summarize(teacher_eval_results, student_eval_results)
+          # Evaluate teacher
+          teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                             steps=self.task.n_valid_batches)
+          # Evaluate Student
+          student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                             steps=self.task.n_valid_batches)
+          summarize(teacher_eval_results, student_eval_results)
 
-            self.save_student()
-            self.save_teacher()
+          self.save_student()
+          self.save_teacher()
 
