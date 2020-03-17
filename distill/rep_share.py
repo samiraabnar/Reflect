@@ -115,7 +115,6 @@ class OnlineRepDistiller(OnlineDistiller):
                                                      teacher_probs=teacher_probs, teacher_reps=teacher_reps)
 
       # Log every 200 batches.
-      tf.print(step)
       if step % 200 == 0:
         with self.summary_writer.as_default():
           with tf.summary.experimental.summary_scope("student_train"):
