@@ -107,42 +107,55 @@ class OnlineRepDistiller(OnlineDistiller):
       return rep_loss, actual_loss
 
 
-    def epoch_step_fn(x_s, y_s, step):
+    def epoch_step_fn(x_s, y_s):
       teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
       teacher_probs = self.teacher_task_probs_fn(logits=teacher_logits, labels=y_s, temperature=self.temperature)
 
       distill_loss, actual_loss = student_train_step(x=x_s, y_s=y_s,
                                                      teacher_probs=teacher_probs, teacher_reps=teacher_reps)
 
-      # Log every 200 batches.
-      if step % 200 == 0:
-        with tf.summary.experimental.summary_scope("student_train"):
-          tf.summary.scalar('student_learning_rate',
-                            self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
-          tf.summary.scalar('fine_distill_loss', distill_loss, )
-        with tf.summary.experimental.summary_scope("teacher_train"):
-          tf.summary.scalar('teacher_loss', teacher_loss)
-          tf.summary.scalar('teacher_learning_rate',
-                            self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations))
+      return teacher_loss, distill_loss, actual_loss
 
-      if step == self.task.n_train_batches:
-        with tf.summary.experimental.summary_scope("student_train"):
-          tf.summary.scalar('distill_loss', distill_loss)
-          tf.summary.scalar('actual_loss', actual_loss)
+
 
     @tf.function(experimental_relax_shapes=True)
-    def epoch_step(x_s, y_s, step):
-      print("traced with step:", step)
-      self.strategy.experimental_run_v2(epoch_step_fn, (x_s, y_s, step))
+    def epoch_step(x_s, y_s):
+      teacher_loss, distill_loss, actual_loss = self.strategy.run(epoch_step_fn, (x_s, y_s))
+
+      teacher_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
+                           axis=None)
+      distill_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, distill_loss,
+                                          axis=None)
+      actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
+                                          axis=None)
+
+      return teacher_loss, distill_loss, actual_loss
+
 
     def epoch_loop():
       step = 0
       student_train_examples = self.task.train_dataset
 
       for x_s, y_s in student_train_examples:
-        epoch_step(x_s, y_s, tf.constant(step))
+        teacher_loss, distill_loss, actual_loss = epoch_step(x_s, y_s)
+
+        # Log every 200 batches.
+        if step % 200 == 0:
+          with tf.summary.experimental.summary_scope("student_train"):
+            tf.summary.scalar('student_learning_rate',
+                              self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
+            tf.summary.scalar('fine_distill_loss', distill_loss, )
+          with tf.summary.experimental.summary_scope("teacher_train"):
+            tf.summary.scalar('teacher_loss', teacher_loss)
+            tf.summary.scalar('teacher_learning_rate',
+                              self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations))
+
         if step == self.task.n_train_batches:
+          with tf.summary.experimental.summary_scope("student_train"):
+            tf.summary.scalar('distill_loss', distill_loss)
+            tf.summary.scalar('actual_loss', actual_loss)
           break
+
         step += 1
 
     @tf.function
