@@ -115,6 +115,7 @@ class OnlineRepDistiller(OnlineDistiller):
                                                      teacher_probs=teacher_probs, teacher_reps=teacher_reps)
 
       # Log every 200 batches.
+      tf.print(step)
       if step % 200 == 0:
         with self.summary_writer.as_default():
           with tf.summary.experimental.summary_scope("student_train"):
@@ -141,7 +142,7 @@ class OnlineRepDistiller(OnlineDistiller):
       student_train_examples = self.task.train_dataset
 
       for x_s, y_s in student_train_examples:
-        epoch_step(x_s, y_s, tf.Variable(step, trainable=False))
+        epoch_step(x_s, y_s, tf.constant(step))
         if step == self.task.n_train_batches:
           break
         step += 1
