@@ -115,7 +115,8 @@ class OnlineRepDistiller(OnlineDistiller):
                                                      teacher_probs=teacher_probs, teacher_reps=teacher_reps)
 
       # Log every 200 batches.
-      # if step % 200 == 0:
+      if step % 200 == 0:
+        distill_loss = distill_loss + 0.01
       #   with tf.summary.experimental.summary_scope("student_train"):
       #     tf.summary.scalar('student_learning_rate',
       #                       self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
