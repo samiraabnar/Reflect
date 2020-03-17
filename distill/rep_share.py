@@ -137,11 +137,11 @@ class OnlineRepDistiller(OnlineDistiller):
       self.strategy.experimental_run_v2(epoch_step_fn, (x_s, y_s, step))
 
     def epoch_loop():
-      step = tf.Variable(0, trainable=False)
+      step = 0
       student_train_examples = self.task.train_dataset
 
       for x_s, y_s in student_train_examples:
-        epoch_step(x_s, y_s, step)
+        epoch_step(x_s, y_s, tf.Variable(step, trainable=False))
         if step == self.task.n_train_batches:
           break
         step += 1
