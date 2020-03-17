@@ -167,7 +167,7 @@ class ClassifierLSTM(tf.keras.Model):
 
     return _call(inputs, training)
 
-  @tf.function(experimental_relax_shapes=True)
+  #@tf.function(experimental_relax_shapes=True)
   def detailed_call(self, inputs, **kwargs):
     if 'training' in kwargs:
       training = kwargs['training']
