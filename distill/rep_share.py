@@ -106,7 +106,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return rep_loss, actual_loss
 
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def epoch_step_fn(x_s, y_s):
       teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
       teacher_probs = self.teacher_task_probs_fn(logits=teacher_logits, labels=y_s, temperature=self.temperature)
