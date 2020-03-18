@@ -118,20 +118,20 @@ class OnlineRepDistiller(OnlineDistiller):
 
 
 
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def epoch_step(x_s, y_s):
       teacher_loss, distill_loss, actual_loss = self.strategy.experimental_run_v2(epoch_step_fn, (x_s, y_s))
 
       return teacher_loss, distill_loss, actual_loss
 
-
+    @tf.function
     def epoch_loop():
       step = 0
       student_train_examples = self.task.train_dataset
 
       for x_s, y_s in student_train_examples:
         teacher_loss, distill_loss, actual_loss = epoch_step(x_s, y_s)
-        
+
         teacher_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
                                             axis=None)
         distill_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, distill_loss,
