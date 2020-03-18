@@ -73,7 +73,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
         teacher_reps, teacher_logits, loss = self.strategy.experimental_run_v2(get_teacher_outputs,
                                                                            args=(x, y_true))
-        tf.print(len(teacher_reps), teacher_reps[0].shape)
+        tf.print(teacher_reps)
 
         loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, loss,
                                            axis=None)
