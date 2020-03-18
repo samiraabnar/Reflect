@@ -122,13 +122,6 @@ class OnlineRepDistiller(OnlineDistiller):
     def epoch_step(x_s, y_s):
       teacher_loss, distill_loss, actual_loss = self.strategy.experimental_run_v2(epoch_step_fn, (x_s, y_s))
 
-      teacher_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
-                           axis=None)
-      distill_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, distill_loss,
-                                          axis=None)
-      actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
-                                          axis=None)
-
       return teacher_loss, distill_loss, actual_loss
 
 
@@ -138,7 +131,13 @@ class OnlineRepDistiller(OnlineDistiller):
 
       for x_s, y_s in student_train_examples:
         teacher_loss, distill_loss, actual_loss = epoch_step(x_s, y_s)
-
+        
+        teacher_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
+                                            axis=None)
+        distill_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, distill_loss,
+                                            axis=None)
+        actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
+                                           axis=None)
         # Log every 200 batches.
         if step % 200 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
