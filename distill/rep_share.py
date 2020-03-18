@@ -71,7 +71,7 @@ class OnlineRepDistiller(OnlineDistiller):
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
 
-        teacher_reps, teacher_logits, loss = self.strategy.experimental_run(get_teacher_outputs,
+        teacher_reps, teacher_logits, loss = self.strategy.experimental_run_v2(get_teacher_outputs,
                                                                            args=(x, y_true))
         teacher_reps = self.strategy.reduce(tf.distribute.ReduceOp.NONE, teacher_reps,
                                           axis=None)
@@ -119,7 +119,7 @@ class OnlineRepDistiller(OnlineDistiller):
       actual_loss
       '''
       with tf.GradientTape() as tape:
-        rep_loss, final_loss, actual_loss = self.strategy.experimental_run(get_student_outputs,
+        rep_loss, final_loss, actual_loss = self.strategy.experimental_run_v2(get_student_outputs,
                                                                            args=(x, y_s, teacher_probs, teacher_reps))
         final_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, final_loss,
                                             axis=None)
