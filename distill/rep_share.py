@@ -58,13 +58,28 @@ class OnlineRepDistiller(OnlineDistiller):
 
 
   def distill_loop(self):
+
+    def get_teacher_outputs(x, y_true):
+      teacher_logits, teacher_reps = get_reps(x, self.teacher_model,
+                                              index=(0, self.teacher_model.rep_index),
+                                              layer=(-1, self.teacher_model.rep_layer), training=True)
+      loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
+
+      return teacher_reps, teacher_logits, loss
+
     @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
-        teacher_logits, teacher_reps = get_reps(x, self.teacher_model,
-                                                index=(0, self.teacher_model.rep_index),
-                                                layer=(-1, self.teacher_model.rep_layer), training=True)
-        loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
+
+        teacher_reps, teacher_logits, loss = self.strategy.experimental_run(get_teacher_outputs,
+                                                                           args=(x, y_true))
+        teacher_reps = self.strategy.reduce(tf.distribute.ReduceOp.NONE, teacher_reps,
+                                          axis=None)
+        teacher_logits = self.strategy.reduce(tf.distribute.ReduceOp.NONE, teacher_logits,
+                                        axis=None)
+        loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, loss,
+                                           axis=None)
+
         if len(self.teacher_model.losses) > 0:
           reg_loss = tf.math.add_n(self.teacher_model.losses)
         else:
@@ -78,6 +93,21 @@ class OnlineRepDistiller(OnlineDistiller):
       return teacher_logits, teacher_reps, final_loss
 
     @tf.function(experimental_relax_shapes=True)
+    def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
+      logits, student_reps = get_reps(x, self.student_model,
+                                      index=(0, self.student_model.rep_index),
+                                      layer=(-1, self.student_model.rep_layer), training=True)
+
+      rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
+                               padding_symbol=tf.constant(self.task.output_padding_symbol))
+      reg_loss = tf.math.add_n(self.student_model.losses)
+      actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
+      final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
+                   self.distill_params.student_gold_rate * actual_loss + reg_loss
+
+      return rep_loss, final_loss, actual_loss
+
+    @tf.function(experimental_relax_shapes=True)
     def student_train_step(x, y_s, teacher_probs, teacher_reps):
       ''' Training step for the student model (this is the only training step for offline distillation).
 
@@ -89,24 +119,24 @@ class OnlineRepDistiller(OnlineDistiller):
       actual_loss
       '''
       with tf.GradientTape() as tape:
-        #logits = self.student_model(x, training=True)
-        logits, student_reps = get_reps(x, self.student_model,
-                                index=(0, self.student_model.rep_index),
-                                        layer= (-1, self.student_model.rep_layer), training=True)
+        rep_loss, final_loss, actual_loss = self.strategy.experimental_run(get_student_outputs,
+                                                                           args=(x, y_s, teacher_probs, teacher_reps))
+        final_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, final_loss,
+                                            axis=None)
+        rep_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, rep_loss,
+                                          axis=None)
+        actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
+                                          axis=None)
 
-        rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
-                                 padding_symbol=tf.constant(self.task.output_padding_symbol))
-        reg_loss = tf.math.add_n(self.student_model.losses)
-        actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
-        final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
-                     self.distill_params.student_gold_rate * actual_loss + reg_loss
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
                                                    name="student_optimizer")
 
+
+
       return rep_loss, actual_loss
 
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def epoch_step_fn(x_s, y_s):
       teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
       teacher_probs = self.teacher_task_probs_fn(logits=teacher_logits, labels=y_s, temperature=self.temperature)
@@ -120,7 +150,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
     #@tf.function(experimental_relax_shapes=True)
     def epoch_step(x_s, y_s):
-      teacher_loss, distill_loss, actual_loss = self.strategy.experimental_run(epoch_step_fn, (x_s, y_s))
+      teacher_loss, distill_loss, actual_loss = epoch_step_fn(x_s, y_s)
 
       return teacher_loss, distill_loss, actual_loss
 
@@ -132,12 +162,6 @@ class OnlineRepDistiller(OnlineDistiller):
       for x_s, y_s in student_train_examples:
         teacher_loss, distill_loss, actual_loss = epoch_step(x_s, y_s)
 
-        teacher_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
-                                            axis=None)
-        distill_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, distill_loss,
-                                            axis=None)
-        actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
-                                           axis=None)
         # Log every 200 batches.
         if step % 200 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
