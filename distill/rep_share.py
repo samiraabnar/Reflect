@@ -60,7 +60,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
   def distill_loop(self):
 
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def get_teacher_outputs(x, y_true):
       outputs = self.teacher_model.detailed_call(x, training=tf.convert_to_tensor(True))
       teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
@@ -122,30 +122,38 @@ class OnlineRepDistiller(OnlineDistiller):
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
                                                    name="student_optimizer")
-
-
-
       return rep_loss, actual_loss
 
     @tf.function(experimental_relax_shapes=True)
-    def epoch_step_fn(x_s, y_s):
+    def epoch_teacher(x_s, y_s):
       teacher_logits, teacher_reps, teacher_loss = tf.distribute.get_strategy().experimental_run_v2(teacher_train_step,
                                                                                               (x_s, y_s))
+      return teacher_logits, teacher_reps, teacher_loss
 
-      teacher_probs = tf.distribute.get_strategy().experimental_run_v2(self.teacher_task_probs_fn,
-                                                                 (teacher_logits, y_s, tf.constant(self.temperature)))
+    @tf.function(experimental_relax_shapes=True)
+    def epoch_student(x_s, y_s, teacher_probs, teacher_reps):
 
       distill_loss, actual_loss = tf.distribute.get_strategy().experimental_run_v2(student_train_step,
                                                                              (x_s, y_s, teacher_probs, teacher_reps))
 
-      return teacher_loss, distill_loss, actual_loss
+      return distill_loss, actual_loss
 
+
+    @tf.function(experimental_relax_shapes=True)
+    def epoch_teacher_probs(teacher_logits, y_s):
+      teacher_probs = tf.distribute.get_strategy().experimental_run_v2(self.teacher_task_probs_fn,
+                                                                 (teacher_logits, y_s, tf.constant(self.temperature)))
+
+      return teacher_probs
 
     def epoch_loop():
       step = 0
       one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
       for x_s, y_s in one_epoch_iterator:
-        teacher_loss, distill_loss, actual_loss = epoch_step_fn(x_s, y_s)
+        teacher_logits, teacher_reps, teacher_loss = epoch_teacher(x_s, y_s)
+        teacher_probs = epoch_teacher_probs(teacher_logits, y_s)
+        distill_loss, actual_loss = epoch_student(x_s, y_s, teacher_probs, teacher_reps)
+
         teacher_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
                                                            axis=None)
         distill_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, distill_loss,
