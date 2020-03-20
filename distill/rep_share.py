@@ -146,6 +146,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return teacher_probs
 
+    @tf.function
     def epoch_loop():
       step = 0
       one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
