@@ -22,7 +22,7 @@ def get_reps(inputs, model, index=1, layer=-1, **kwargs):
     rep = outputs[i]
 
     if l != -1 :
-      rep = tf.gather(rep, l)
+      rep = tf.gather(rep, tf.convert_to_tensor(l))
 
     reps = reps + (rep,)
 
