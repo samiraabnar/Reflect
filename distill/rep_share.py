@@ -84,6 +84,7 @@ class OnlineRepDistiller(OnlineDistiller):
           reg_loss = 0
         final_loss = loss + reg_loss
 
+      tf.print(final_loss)
       grads = tape.gradient(final_loss, self.teacher_model.trainable_weights)
       self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights),
                                                    name="teacher_optimizer")
