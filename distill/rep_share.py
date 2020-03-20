@@ -179,7 +179,6 @@ class OnlineRepDistiller(OnlineDistiller):
 
         step += 1
 
-    @tf.function
     def eval_and_summarize():
       # Evaluate teacher
       teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
