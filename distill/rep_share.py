@@ -62,7 +62,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
     @tf.function(experimental_relax_shapes=True)
     def get_teacher_outputs(x, y_true):
-      outputs = self.teacher_model.detailed_call(x, training=True)
+      outputs = self.teacher_model.detailed_call(x, training=tf.convert_to_tensor(True))
       teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
       if self.teacher_model.rep_layer != -1 and self.teacher_model.rep_layer is not None:
         teacher_reps = teacher_reps[self.teacher_model.rep_layer]
@@ -91,7 +91,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
     @tf.function(experimental_relax_shapes=True)
     def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
-      outputs = self.student_model.detailed_call(x, training=True)
+      outputs = self.student_model.detailed_call(x, training=tf.convert_to_tensor(True))
       logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
       if self.student_model.rep_layer != -1 and self.student_model.rep_layer is not None:
         student_reps = teacher_reps[self.student_model.rep_layer]
@@ -145,7 +145,7 @@ class OnlineRepDistiller(OnlineDistiller):
       step = 0
       one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
       for x_s, y_s in one_epoch_iterator:
-        teacher_loss, distill_loss, actual_loss = epoch_step_fn(x_s, y_s)
+        teacher_loss, distill_loss, actual_loss = epoch_step_fn(tf.convert_to_tensor(x_s), tf.convert_to_tensor(y_s))
         teacher_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
                                                            axis=None)
         distill_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, distill_loss,
@@ -172,7 +172,14 @@ class OnlineRepDistiller(OnlineDistiller):
         step += 1
 
     @tf.function
-    def summarize(teacher_eval_results, student_eval_results):
+    def eval_and_summarize():
+      # Evaluate teacher
+      teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                         steps=self.task.n_valid_batches)
+      # Evaluate Student
+      student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                         steps=self.task.n_valid_batches)
+
       with tf.summary.experimental.summary_scope("eval_teacher"):
         for i, m_name in enumerate(self.teacher_model.metrics_names):
           tf.summary.scalar(m_name, teacher_eval_results[i])
@@ -189,13 +196,8 @@ class OnlineRepDistiller(OnlineDistiller):
         for _ in tf.range(num_epochs):
           epoch_loop()
 
-          # Evaluate teacher
-          teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                             steps=self.task.n_valid_batches)
-          # Evaluate Student
-          student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                             steps=self.task.n_valid_batches)
-          summarize(teacher_eval_results, student_eval_results)
+
+          eval_and_summarize()
 
           self.save_student()
           self.save_teacher()
