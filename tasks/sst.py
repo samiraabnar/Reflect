@@ -40,7 +40,7 @@ class ClassifySST2(Task):
     return ([None],[])
 
   def convert_examples(self, examples):
-    return examples['sentence'], examples['label']
+    return tf.convert_to_tensor(examples['sentence']), tf.convert_to_tensor(examples['label'])
 
 
 
