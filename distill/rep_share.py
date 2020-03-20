@@ -61,10 +61,10 @@ class OnlineRepDistiller(OnlineDistiller):
   def distill_loop(self):
 
     def get_teacher_outputs(x, y_true):
-      outputs = self.student_model.detailed_call(x, training=True)
-      teacher_logits, teacher_reps = get_reps(outputs,
-                                      index=tf.constant(self.teacher_model.rep_index),
-                                      layer=tf.constant(self.teacher_model.rep_layer))
+      outputs = self.teacher_model.detailed_call(x, training=True)
+      teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
+      if self.teacher_model.rep_layer != -1 and self.teacher_model.rep_layer is not None:
+        teacher_reps = teacher_reps[self.teacher_model.rep_layer]
 
       loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
 
@@ -90,9 +90,9 @@ class OnlineRepDistiller(OnlineDistiller):
 
     def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
       outputs = self.student_model.detailed_call(x, training=True)
-      logits, student_reps = get_reps(outputs,
-                                      index=tf.constant(self.student_model.rep_index),
-                                      layer=tf.constant(self.student_model.rep_layer))
+      logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
+      if self.student_model.rep_layer != -1 and self.student_model.rep_layer is not None:
+        student_reps = teacher_reps[self.student_model.rep_layer]
 
       rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
                                padding_symbol=tf.constant(self.task.output_padding_symbol))
