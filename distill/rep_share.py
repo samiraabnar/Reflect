@@ -112,14 +112,7 @@ class OnlineRepDistiller(OnlineDistiller):
       actual_loss
       '''
       with tf.GradientTape() as tape:
-        rep_loss, final_loss, actual_loss = self.strategy.experimental_run_v2(get_student_outputs,
-                                                                           args=(x, y_s, teacher_probs, teacher_reps))
-        final_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, final_loss,
-                                            axis=None)
-        rep_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, rep_loss,
-                                          axis=None)
-        actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
-                                          axis=None)
+        rep_loss, final_loss, actual_loss = get_student_outputs(x, y_s, teacher_probs, teacher_reps)
 
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
