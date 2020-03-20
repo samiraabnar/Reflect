@@ -145,7 +145,7 @@ class OnlineRepDistiller(OnlineDistiller):
       step = 0
       one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
       for x_s, y_s in one_epoch_iterator:
-        teacher_loss, distill_loss, actual_loss = epoch_step_fn(tf.convert_to_tensor(x_s), tf.convert_to_tensor(y_s))
+        teacher_loss, distill_loss, actual_loss = epoch_step_fn(x_s, y_s)
         teacher_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
                                                            axis=None)
         distill_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, distill_loss,
