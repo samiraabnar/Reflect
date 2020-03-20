@@ -60,7 +60,7 @@ def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
                                                                   labels=y_true,
                                                                   name='loss')))
 
-@tf.function(experimental_relax_shapes=True)
+#@tf.function(experimental_relax_shapes=True)
 def classification_loss(y_true, y_pred):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
   return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
