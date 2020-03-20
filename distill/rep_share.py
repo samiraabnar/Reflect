@@ -71,7 +71,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return teacher_reps, teacher_logits, loss
 
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
 
@@ -105,7 +105,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return rep_loss, final_loss, actual_loss
 
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def student_train_step(x, y_s, teacher_probs, teacher_reps):
       ''' Training step for the student model (this is the only training step for offline distillation).
 
