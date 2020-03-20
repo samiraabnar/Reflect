@@ -71,12 +71,7 @@ class OnlineRepDistiller(OnlineDistiller):
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
 
-        teacher_reps, teacher_logits, loss = self.strategy.experimental_run_v2(get_teacher_outputs,
-                                                                           args=(x, y_true))
-        teacher_reps = tf.concat(self.strategy.unwrap(teacher_reps), axis=0)
-        teacher_logits = tf.concat(self.strategy.unwrap(teacher_logits), axis=0)
-        loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, loss,
-                                           axis=None)
+        teacher_reps, teacher_logits, loss = get_teacher_outputs(x, y_true)
 
         if len(self.teacher_model.losses) > 0:
           reg_loss = tf.math.add_n(self.teacher_model.losses)
@@ -84,7 +79,6 @@ class OnlineRepDistiller(OnlineDistiller):
           reg_loss = 0
         final_loss = loss + reg_loss
 
-      tf.print(final_loss)
       grads = tape.gradient(final_loss, self.teacher_model.trainable_weights)
       self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights),
                                                    name="teacher_optimizer")
@@ -135,13 +129,25 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return rep_loss, actual_loss
 
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def epoch_step_fn(x_s, y_s):
-      teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
-      teacher_probs = self.teacher_task_probs_fn(logits=teacher_logits, labels=y_s, temperature=self.temperature)
+      teacher_logits, teacher_reps, teacher_loss = tf.distribute.strategy.experimental_run_v2(teacher_train_step,
+                                                                                              (x_s, y_s))
 
-      distill_loss, actual_loss = student_train_step(x=x_s, y_s=y_s,
-                                                     teacher_probs=teacher_probs, teacher_reps=teacher_reps)
+      teacher_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
+                                        axis=None)
+      #teacher_logits = tf.concat(self.strategy.unwrap(teacher_logits), axis=0)
+      #teacher_reps = tf.concat(self.strategy.unwrap(teacher_reps), axis=0)
+      teacher_probs = tf.distribute.strategy.experimental_run_v2(self.teacher_task_probs_fn,
+                                                                 (teacher_logits, y_s, tf.constant(self.temperature)))
+
+      distill_loss, actual_loss = tf.distribute.strategy.experimental_run_v2(student_train_step,
+                                                                             (x_s, y_s, teacher_probs, teacher_reps))
+
+      distill_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, distill_loss,
+                                          axis=None)
+      actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
+                                          axis=None)
 
       return teacher_loss, distill_loss, actual_loss
 
