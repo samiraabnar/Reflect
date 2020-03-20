@@ -131,22 +131,22 @@ class OnlineRepDistiller(OnlineDistiller):
 
     @tf.function(experimental_relax_shapes=True)
     def epoch_step_fn(x_s, y_s):
-      teacher_logits, teacher_reps, teacher_loss = tf.distribute.strategy.experimental_run_v2(teacher_train_step,
+      teacher_logits, teacher_reps, teacher_loss = tf.distribute.get_strategy().experimental_run_v2(teacher_train_step,
                                                                                               (x_s, y_s))
 
-      teacher_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
+      teacher_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
                                         axis=None)
       #teacher_logits = tf.concat(self.strategy.unwrap(teacher_logits), axis=0)
       #teacher_reps = tf.concat(self.strategy.unwrap(teacher_reps), axis=0)
-      teacher_probs = tf.distribute.strategy.experimental_run_v2(self.teacher_task_probs_fn,
+      teacher_probs = tf.distribute.get_strategy().experimental_run_v2(self.teacher_task_probs_fn,
                                                                  (teacher_logits, y_s, tf.constant(self.temperature)))
 
-      distill_loss, actual_loss = tf.distribute.strategy.experimental_run_v2(student_train_step,
+      distill_loss, actual_loss = tf.distribute.get_strategy().experimental_run_v2(student_train_step,
                                                                              (x_s, y_s, teacher_probs, teacher_reps))
 
-      distill_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, distill_loss,
+      distill_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, distill_loss,
                                           axis=None)
-      actual_loss = self.strategy.reduce(tf.distribute.ReduceOp.SUM, actual_loss,
+      actual_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, actual_loss,
                                           axis=None)
 
       return teacher_loss, distill_loss, actual_loss
