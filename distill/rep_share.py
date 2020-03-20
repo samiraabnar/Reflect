@@ -60,7 +60,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
   def distill_loop(self):
 
-    @tf.function(experimental_relax_shapes=True)
+    #@tf.function(experimental_relax_shapes=True)
     def get_teacher_outputs(x, y_true):
       outputs = self.teacher_model.detailed_call(x, training=tf.convert_to_tensor(True))
       teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
