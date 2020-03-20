@@ -146,13 +146,13 @@ class OnlineRepDistiller(OnlineDistiller):
 
 
 
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function#(experimental_relax_shapes=True)
     def epoch_step(x_s, y_s):
       teacher_loss, distill_loss, actual_loss = epoch_step_fn(x_s, y_s)
 
       return teacher_loss, distill_loss, actual_loss
 
-    @tf.function
+    #@tf.function
     def epoch_loop():
       step = 0
       student_train_examples = self.task.train_dataset
