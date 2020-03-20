@@ -127,6 +127,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return rep_loss, actual_loss
 
+    @tf.function(experimental_relax_shapes=True)
     def epoch_step_fn(x_s, y_s):
       teacher_logits, teacher_reps, teacher_loss = tf.distribute.get_strategy().experimental_run_v2(teacher_train_step,
                                                                                               (x_s, y_s))
@@ -140,7 +141,6 @@ class OnlineRepDistiller(OnlineDistiller):
       return teacher_loss, distill_loss, actual_loss
 
 
-    @tf.function
     def epoch_loop():
       step = 0
       one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
