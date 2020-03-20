@@ -1,32 +1,23 @@
 import tensorflow as tf
 import numpy as np
 
-def get_reps(inputs, model, index=1, layer=-1, **kwargs):
+def get_reps(outputs, index=1, layer=-1, **kwargs):
   """
   If Model is LSTM:
       1: final_rnn_outputs,
       2: hidden_activation (for all layers, including input embeddings)
   reduction: None, "last", "sum"
   """
-  outputs = model.detailed_call(inputs, **kwargs)
 
+  logits = outputs[0]
   outputs = tf.tuple(outputs)
 
-  if type(index) is not tuple:
-    index = (index,)
-    layer = (layer,)
+  rep = outputs[index]
 
-  reps = ()
-  for k in np.arange(len(index)):
-    i, l = index[k], layer[k]
-    rep = outputs[i]
+  if layer != -1 :
+    rep = tf.gather(rep, layer)
 
-    if l != -1 :
-      rep = tf.gather(rep, tf.convert_to_tensor(l))
-
-    reps = reps + (rep,)
-
-  return reps
+  return logits, rep
 
 
 @tf.function

@@ -61,9 +61,11 @@ class OnlineRepDistiller(OnlineDistiller):
   def distill_loop(self):
 
     def get_teacher_outputs(x, y_true):
-      teacher_logits, teacher_reps = get_reps(x, self.teacher_model,
-                                              index=(0, self.teacher_model.rep_index),
-                                              layer=(-1, self.teacher_model.rep_layer), training=True)
+      outputs = self.student_model.detailed_call(x, training=True)
+      teacher_logits, teacher_reps = get_reps(outputs,
+                                      index=tf.constant(self.teacher_model.rep_index),
+                                      layer=tf.constant(self.teacher_model.rep_layer))
+
       loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
 
       return teacher_reps, teacher_logits, loss
@@ -87,9 +89,10 @@ class OnlineRepDistiller(OnlineDistiller):
       return teacher_logits, teacher_reps, final_loss
 
     def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
-      logits, student_reps = get_reps(x, self.student_model,
-                                      index=(0, self.student_model.rep_index),
-                                      layer=(-1, self.student_model.rep_layer), training=True)
+      outputs = self.student_model.detailed_call(x, training=True)
+      logits, student_reps = get_reps(outputs,
+                                      index=tf.constant(self.student_model.rep_index),
+                                      layer=tf.constant(self.student_model.rep_layer))
 
       rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
                                padding_symbol=tf.constant(self.task.output_padding_symbol))
