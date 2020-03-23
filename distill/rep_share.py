@@ -108,8 +108,7 @@ class OnlineRepDistiller(OnlineDistiller):
                    self.distill_params.student_distill_rate * distill_loss + \
                    reg_loss
 
-      tf.print(distill_loss, rep_loss, final_loss, actual_loss)
-      return distill_loss, rep_loss, final_loss, actual_loss
+      return (distill_loss, rep_loss, final_loss, actual_loss)
 
     @tf.function(experimental_relax_shapes=True)
     def student_train_step(x, y_s, teacher_probs, teacher_reps):
