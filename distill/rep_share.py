@@ -143,9 +143,8 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return teacher_probs
 
-    def epoch_loop():
+    def epoch_loop(one_epoch_iterator):
       step = 0
-      one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
       for x_s, y_s in one_epoch_iterator:
         teacher_logits, teacher_reps, teacher_loss = epoch_teacher(x_s, y_s)
         teacher_probs = epoch_teacher_probs(teacher_logits, y_s)
@@ -188,8 +187,9 @@ class OnlineRepDistiller(OnlineDistiller):
 
     with self.summary_writer.as_default():
       num_epochs = self.distill_params.n_epochs
+      one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
       for _ in tf.range(num_epochs):
-        epoch_loop()
+        epoch_loop(one_epoch_iterator)
         eval_and_summarize()
 
         self.save_student()
