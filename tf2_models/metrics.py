@@ -111,10 +111,11 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
   unmasked_accuracies = tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true=targets,
                                                y_pred=logits,
                                                k=topk)
-  sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
+  normalizing_factor = sequence_mask / tf.reduce_sum(sequence_mask)
   tf.print(tf.reduce_sum(sequence_mask))
   tf.print(unmasked_accuracies)
-  return tf.reduce_sum(sequence_mask * unmasked_accuracies)
+  tf.print(normalizing_factor)
+  return tf.reduce_sum(normalizing_factor * unmasked_accuracies)
 
 @tf.function(experimental_relax_shapes=True)
 def unmasked_accuracy_topk(targets, logits, topk):
