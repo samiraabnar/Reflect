@@ -189,7 +189,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
     def teacher_epoch_loop(one_epoch_iterator):
       step = 0
       for x_t, y_t in one_epoch_iterator:
-        teacher_loss = teacher_train_step(x_t)
+        teacher_loss = teacher_train_step(x_t, y_t)
 
         # Log every 1000 batches.
         if step % 1000 == 0:
