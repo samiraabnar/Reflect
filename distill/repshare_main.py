@@ -12,6 +12,7 @@ python distill/repshare_main.py \
 --distill_mode=rep_online \
 --distill_config=rpdst_019_crs_slwfst_2
 '''
+from distill.multi_repshare import MultiOnlineRepDistiller
 from distill.offline_repshare import OfflineRepDistiller
 from distill.rep_share import OnlineRepDistiller
 from util import constants
@@ -78,7 +79,7 @@ def create_and_load_models(teacher_task, student_task):
   return teacher_model, student_model, teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir
 
 DISTILLER = {'rep_online': OnlineRepDistiller,
-             'mrep_online': OnlineRepDistiller,
+             'mrep_online': MultiOnlineRepDistiller,
              'rep_offline': OfflineRepDistiller}
 
 if __name__ == '__main__':
