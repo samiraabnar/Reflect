@@ -14,8 +14,8 @@ CUDA_VISIBLE_DEVICES=3 python distill/repshare_main.py --task=word_sv_agreement_
 CUDA_VISIBLE_DEVICES=4 python distill/repshare_main.py --task=word_sv_agreement_lm  \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2_shared \
---teacher_exp_name=gc_or_dtchr1 \
---student_exp_name=gc_std1 \
+--teacher_exp_name=gc_or_dtchr3 \
+--student_exp_name=gc_std3 \
 --teacher_config=very_big_gpt_v10 \
 --student_config=lstm_drop31_v2 \
 --batch_size=64 \
