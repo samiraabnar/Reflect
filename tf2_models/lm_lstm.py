@@ -272,7 +272,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
       self.rnn_initial_states.append(init_state)
 
 
-  def call(self, inputs, padding_symbol=0, **kwargs):
+  def call(self, inputs, padding_symbol=tf.constant(0, dtype=tf.int64), **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
       input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
@@ -306,7 +306,7 @@ class LmLSTMSharedEmb(tf.keras.Model):
     return _call(inputs, padding_symbol, **kwargs)
 
   @tf.function(experimental_relax_shapes=True)
-  def detailed_call(self, inputs, padding_symbol=tf.constant(0), **kwargs):
+  def detailed_call(self, inputs, padding_symbol=tf.constant(0, dtype=tf.int64), **kwargs):
 
     @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
@@ -407,7 +407,7 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
                                                     ))
 
 
-  def call(self, inputs, padding_symbol=0, **kwargs):
+  def call(self, inputs, padding_symbol=tf.constant(0, dtype=tf.int64), **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
       input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
@@ -427,7 +427,7 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
     return _call(inputs, padding_symbol, **kwargs)
 
   @tf.function(experimental_relax_shapes=True)
-  def detailed_call(self, inputs, padding_symbol=tf.constant(0), **kwargs):
+  def detailed_call(self, inputs, padding_symbol=tf.constant(0, dtype=tf.int64), **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(inputs, padding_symbol, **kwargs):
       input_mask = tf.cast(inputs != padding_symbol, dtype=tf.bool)
