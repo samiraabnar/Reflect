@@ -113,9 +113,9 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
                                                k=topk)
   normalizing_factor = sequence_mask / tf.reduce_sum(sequence_mask)
   tf.print(tf.reduce_sum(sequence_mask))
-  tf.print(unmasked_accuracies)
-  tf.print(normalizing_factor)
-  tf.print(tf.multiply(normalizing_factor, unmasked_accuracies))
+  tf.print(unmasked_accuracies.shape)
+  tf.print(normalizing_factor.shape)
+  tf.print(tf.multiply(normalizing_factor, unmasked_accuracies,))
   return tf.reduce_sum(tf.multiply(normalizing_factor, unmasked_accuracies))
 
 @tf.function(experimental_relax_shapes=True)
