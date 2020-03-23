@@ -1,15 +1,37 @@
 #!/usr/bin/env bash
 
-CUDA_VISIBLE_DEVICES=7 python distill/repshare_main.py --task=word_sv_agreement_lm  \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2_shared \
---teacher_exp_name=gc_or_dtchr1 \
---student_exp_name=gc_std1 \
---teacher_config=very_big_gpt_v10 \
---student_config=lstm_drop31_v2 \
---batch_size=64 \
+CUDA_VISIBLE_DEVICES=0 python distill/repshare_main.py --task=sst2  \
+--teacher_model=cl_lstm \
+--student_model=cl_bert \
+--teacher_exp_name=gc_or_dtchr3 \
+--student_exp_name=gc_std3 \
+--teacher_config=small_lstm_v4 \
+--student_config=small_gpt_v9 \
+--batch_size=128 \
 --distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_2 > run_sv_lm1 &
+--distill_config=rpdst_019_crs_slwfst_sst3 > run_sst8 &
+
+CUDA_VISIBLE_DEVICES=1 python distill/repshare_main.py --task=sst2  \
+--teacher_model=cl_lstm \
+--student_model=cl_bert \
+--teacher_exp_name=gc_or_dtchr4 \
+--student_exp_name=gc_std4 \
+--teacher_config=small_lstm_v4 \
+--student_config=small_gpt_v9 \
+--batch_size=128 \
+--distill_mode=rep_online \
+--distill_config=rpdst_019_crs_slwfst_sst4 > run_sst9 &
+
+CUDA_VISIBLE_DEVICES=2 python distill/repshare_main.py --task=sst2  \
+--teacher_model=cl_lstm \
+--student_model=cl_bert \
+--teacher_exp_name=gc_or_dtchr5 \
+--student_exp_name=gc_std5 \
+--teacher_config=small_lstm_v4 \
+--student_config=small_gpt_v9 \
+--batch_size=128 \
+--distill_mode=rep_online \
+--distill_config=rpdst_019_crs_slwfst_sst5 > run_sst10 &
 
 
 wait
