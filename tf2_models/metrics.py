@@ -115,6 +115,7 @@ def accuracy_topk(targets, logits, sequence_mask, topk):
   tf.print(tf.reduce_sum(sequence_mask))
   tf.print(unmasked_accuracies)
   tf.print(normalizing_factor)
+  tf.print(normalizing_factor * unmasked_accuracies)
   return tf.reduce_sum(normalizing_factor * unmasked_accuracies)
 
 @tf.function(experimental_relax_shapes=True)
@@ -189,7 +190,7 @@ class ClassificationLossMetric(tf.keras.losses.Loss):
 class AccuracyTopk(tf.keras.losses.Loss):
   def __init__(self, global_batch_size, padding_symbol=0, topk=1,
                **kwargs):
-    super(AccuracyTopk, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
+    super(AccuracyTopk, self).__init__(reduction=tf.keras.losses.Reduction.MEAN, **kwargs)
     self.name = '-'.join(['accuracy','top', str(topk)])
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int64)
     self.global_batch_size = global_batch_size
