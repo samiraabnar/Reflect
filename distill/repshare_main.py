@@ -80,23 +80,20 @@ DISTILLER = {'rep_online': OnlineRepDistiller,
 if __name__ == '__main__':
   # Create task
 
-  strategy = tf.distribute.MirroredStrategy()
 
   # task.train_dataset = strategy.experimental_distribute_dataset(task.train_dataset)
   # task.valid_dataset = strategy.experimental_distribute_dataset(task.valid_dataset)
 
 
-  with strategy.scope():
-    task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
-    #task.train_dataset = strategy.experimental_distribute_dataset(task.train_dataset)
+  task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
 
-    # Create the Model
-    teacher_model, student_model, \
-    teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models(task, task)
+  # Create the Model
+  teacher_model, student_model, \
+  teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models(task, task)
 
   distiller = DISTILLER[hparams.distill_mode](hparams=hparams,
                                               distill_params=get_distill_params(hparams.distill_config),
-                                              strategy=strategy,
+                                              strategy=None,
                                               teacher_model=teacher_model,
                                               student_model=student_model,
                                               task=task,
@@ -107,9 +104,8 @@ if __name__ == '__main__':
                                               )
 
   # Restore Models
-  with strategy.scope():
-    distiller.restore_teacher()
-    distiller.restore_student()
+  distiller.restore_teacher()
+  distiller.restore_student()
 
   # Run the distillation loop
   distiller.distill_loop()

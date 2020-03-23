@@ -32,12 +32,12 @@ class OnlineRepDistiller(OnlineDistiller):
     self.teacher_task_probs_fn = self.task.get_probs_fn()
 
     self.train_batch_iterator = iter(self.task.train_dataset)
-    with self.strategy.scope():
-      self.create_student_optimizer()
-      self.create_teacher_optimizer()
+    #with self.strategy.scope():
+    self.create_student_optimizer()
+    self.create_teacher_optimizer()
 
-      self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
-      self.setup_models(distill_params)
+    self.setup_ckp_and_summary(student_ckpt_dir, student_log_dir, teacher_ckpt_dir, teacher_log_dir)
+    self.setup_models(distill_params)
 
   def setup_models(self, distill_params):
     x_s, y_s = iter(self.task.valid_dataset).next()
@@ -187,16 +187,12 @@ class OnlineRepDistiller(OnlineDistiller):
         for i, m_name in enumerate(self.student_model.metrics_names):
           tf.summary.scalar(m_name, student_eval_results[i])
 
+    with self.summary_writer.as_default():
+      num_epochs = self.distill_params.n_epochs
+      for _ in tf.range(num_epochs):
+        epoch_loop()
+        eval_and_summarize()
 
-    with self.strategy.scope():
-      with self.summary_writer.as_default():
-        num_epochs = self.distill_params.n_epochs
-        for _ in tf.range(num_epochs):
-          epoch_loop()
-
-
-          eval_and_summarize()
-
-          self.save_student()
-          self.save_teacher()
+        self.save_student()
+        self.save_teacher()
 
