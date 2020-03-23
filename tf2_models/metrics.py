@@ -22,7 +22,7 @@ def sequence_distill_loss(y_true, y_pred, padding_symbol, tmp):
 
 @tf.function(experimental_relax_shapes=True)
 def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
-  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
   sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
   # [batch_size, 1]
   sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)[...,None]
@@ -32,7 +32,7 @@ def masked_sequence_loss(y_true, y_pred, padding_symbol=0):
 
 @tf.function(experimental_relax_shapes=True)
 def batch_masked_sequence_loss(y_true, y_pred, padding_symbol=0):
-  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
   sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
   # [batch_size, 1]
   sequence_mask = sequence_mask
@@ -42,7 +42,7 @@ def batch_masked_sequence_loss(y_true, y_pred, padding_symbol=0):
 
 @tf.function(experimental_relax_shapes=True)
 def masked_perplexity(y_true, y_pred, padding_symbol=0):
-  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
   sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
   # [batch_size, 1]
   sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask, axis=-1)[...,None]
@@ -52,7 +52,7 @@ def masked_perplexity(y_true, y_pred, padding_symbol=0):
 
 @tf.function(experimental_relax_shapes=True)
 def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
-  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
   sequence_mask = tf.cast(y_true != padding_symbol, dtype=tf.float32)
   # [batch_size, 1]
   sequence_mask = sequence_mask / tf.reduce_sum(sequence_mask)
@@ -62,7 +62,7 @@ def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
 
 #@tf.function(experimental_relax_shapes=True)
 def classification_loss(y_true, y_pred):
-  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+  y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
   return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
                                                                   name='loss')
@@ -70,35 +70,35 @@ def classification_loss(y_true, y_pred):
 
 @tf.function(experimental_relax_shapes=True)
 def accuracy(targets, logits, padding_symbol=0):
-  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int64)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(targets, logits, sequence_mask, topk=tf.constant(1))
 
 @tf.function(experimental_relax_shapes=True)
 def unmasked_accuracy(targets, logits, ):
-  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int64)
   return unmasked_accuracy_topk(targets, logits, topk=tf.constant(1))
 
 @tf.function(experimental_relax_shapes=True)
 def accuracy_top2(targets, logits, padding_symbol=0):
-  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int64)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(targets, logits, sequence_mask, topk=tf.constant(2))
 
 @tf.function(experimental_relax_shapes=True)
 def unmasked_accuracy_top2(targets, logits, ):
-  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int64)
   return unmasked_accuracy_topk(targets, logits, topk=tf.constant(2))
 
 @tf.function(experimental_relax_shapes=True)
 def accuracy_top5(targets, logits, padding_symbol=0):
-  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int64)
   sequence_mask = tf.cast(targets != padding_symbol, dtype=tf.float32)
   return accuracy_topk(targets, logits, sequence_mask, topk=tf.constant(5))
 
 @tf.function(experimental_relax_shapes=True)
 def unmasked_accuracy_top5(targets, logits, ):
-  targets = tf.cast(tf.squeeze(targets), dtype=tf.int32)
+  targets = tf.cast(tf.squeeze(targets), dtype=tf.int64)
   return unmasked_accuracy_topk(targets, logits, topk=tf.constant(5))
 
 @tf.function(experimental_relax_shapes=True)
@@ -131,7 +131,7 @@ class MaskedSequenceLoss(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0, num_replicas_in_sync=1,
                **kwargs):
     super(MaskedSequenceLoss, self).__init__(reduction=tf.keras.losses.Reduction.SUM, **kwargs)
-    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int64)
     self.name = "batch_masked_sequence_loss"
     self.num_replicas_in_sync = num_replicas_in_sync
 
@@ -148,7 +148,7 @@ class MaskedSequenceMetric(tf.keras.losses.Loss):
   def __init__(self, padding_symbol=0,
                **kwargs):
     super(MaskedSequenceMetric, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
-    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int64)
     self.name = "batch_masked_sequence_loss"
 
   def call(self, y_true, y_pred, sample_weight=None):
@@ -163,7 +163,7 @@ class ClassificationLoss(tf.keras.losses.Loss):
   def __init__(self, global_batch_size, padding_symbol=tf.constant(0),
                **kwargs):
     super(ClassificationLoss, self).__init__(reduction=tf.keras.losses.Reduction.SUM, **kwargs)
-    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int64)
     self.name = "classification_loss"
     self.global_batch_size = global_batch_size
 
@@ -175,7 +175,7 @@ class ClassificationLossMetric(tf.keras.losses.Loss):
   def __init__(self, global_batch_size, padding_symbol=0,
                **kwargs):
     super(ClassificationLossMetric, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
-    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int64)
     self.name = "classification_loss"
     self.global_batch_size = global_batch_size
 
@@ -188,13 +188,13 @@ class AccuracyTopk(tf.keras.losses.Loss):
                **kwargs):
     super(AccuracyTopk, self).__init__(reduction=tf.keras.losses.Reduction.NONE, **kwargs)
     self.name = '-'.join(['accuracy','top', str(topk)])
-    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int32)
+    self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int64)
     self.global_batch_size = global_batch_size
     self.topk = tf.constant(topk)
 
 
   def call(self, y_true, y_pred):
-    y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int32)
+    y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
     sequence_mask = tf.cast(y_true != self.padding_symbol, dtype=tf.float32)
     return accuracy_topk(y_true, y_pred, sequence_mask, topk=self.topk)
 
@@ -205,6 +205,6 @@ if __name__ == '__main__':
                   [[1,1.5,2,0], [4,3,0,0]]], dtype=np.float32)
   a_mask = [[1, 1],[1 , 0]]
   print(a_mask)
-  b = np.asarray([[0, 0],[1, 1]], dtype=np.int32)
+  b = np.asarray([[0, 0],[1, 1]], dtype=np.int64)
 
   print(accuracy_topk(logits=a,targets=b,sequence_mask=a_mask,topk=1))
