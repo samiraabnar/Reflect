@@ -168,23 +168,19 @@ class OnlineRepDistiller(OnlineDistiller):
 
         step += 1
 
-    @tf.function
-    def eval():
-      # Evaluate teacher
-      teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
-                                                         steps=self.task.n_valid_batches)
-      # Evaluate Student
-      student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
-                                                         steps=self.task.n_valid_batches)
-      return teacher_eval_results, student_eval_results
-
 
     with self.summary_writer.as_default():
       num_epochs = self.distill_params.n_epochs
       for _ in tf.range(num_epochs):
         one_epoch_iterator = (next(self.train_batch_iterator) for _ in range(self.task.n_train_batches))
         epoch_loop(one_epoch_iterator)
-        teacher_eval_results, student_eval_results = eval()
+
+        # Evaluate teacher
+        teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
+        # Evaluate Student
+        student_eval_results = self.student_model.evaluate(self.task.valid_dataset,
+                                                           steps=self.task.n_valid_batches)
 
         with tf.summary.experimental.summary_scope("eval_teacher"):
           for i, m_name in enumerate(self.teacher_model.metrics_names):
