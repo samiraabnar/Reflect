@@ -199,7 +199,8 @@ class AccuracyTopk(tf.keras.losses.Loss):
   def call(self, y_true, y_pred):
     y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
     sequence_mask = tf.cast(y_true != self.padding_symbol, dtype=tf.float32)
-    return accuracy_topk(y_true, y_pred, sequence_mask, topk=self.topk)
+    tf.print("sequence_mask", sequence_mask)
+    return accuracy_topk(targets=y_true, logits=y_pred, sequence_mask=sequence_mask, topk=self.topk)
 
 
 if __name__ == '__main__':
