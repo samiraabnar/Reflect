@@ -444,7 +444,7 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
       rnn_outputs = self.output_embedding_dropout(rnn_outputs,**kwargs)
 
       batch_size_tensor = tf.shape(rnn_outputs)[0]
-      inputs_lengths = tf.reduce_sum(input_mask, axis=-1) - 1
+      inputs_lengths = tf.reduce_sum(tf.cast(input_mask, dtype=tf.int32), axis=-1) - 1
       batch_indices = tf.range(batch_size_tensor)
       indices = tf.concat([batch_indices[..., None], inputs_lengths[..., None]], -1)
       sentence_rep = tf.gather_nd(rnn_outputs, indices)
