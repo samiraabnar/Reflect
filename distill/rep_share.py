@@ -60,7 +60,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
   def distill_loop(self):
 
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def get_teacher_outputs(x, y_true):
       outputs = self.teacher_model.detailed_call(x, training=tf.convert_to_tensor(True))
       teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
@@ -71,7 +71,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return teacher_reps, teacher_logits, loss
 
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
 
@@ -89,7 +89,7 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return teacher_logits, teacher_reps, final_loss
 
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
       outputs = self.student_model.detailed_call(x, training=tf.convert_to_tensor(True))
       logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
@@ -126,23 +126,20 @@ class OnlineRepDistiller(OnlineDistiller):
 
     @tf.function(experimental_relax_shapes=True)
     def epoch_teacher(x_s, y_s):
-      teacher_logits, teacher_reps, teacher_loss = tf.distribute.get_strategy().experimental_run_v2(teacher_train_step,
-                                                                                              (x_s, y_s))
+      teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
       return teacher_logits, teacher_reps, teacher_loss
 
     @tf.function(experimental_relax_shapes=True)
     def epoch_student(x_s, y_s, teacher_probs, teacher_reps):
 
-      distill_loss, actual_loss = tf.distribute.get_strategy().experimental_run_v2(student_train_step,
-                                                                             (x_s, y_s, teacher_probs, teacher_reps))
+      distill_loss, actual_loss = student_train_step(x_s, y_s, teacher_probs, teacher_reps)
 
       return distill_loss, actual_loss
 
 
     @tf.function(experimental_relax_shapes=True)
     def epoch_teacher_probs(teacher_logits, y_s):
-      teacher_probs = tf.distribute.get_strategy().experimental_run_v2(self.teacher_task_probs_fn,
-                                                                 (teacher_logits, y_s, tf.constant(self.temperature)))
+      teacher_probs = self.teacher_task_probs_fn(teacher_logits, y_s, tf.constant(self.temperature))
 
       return teacher_probs
 
@@ -154,13 +151,6 @@ class OnlineRepDistiller(OnlineDistiller):
         teacher_logits, teacher_reps, teacher_loss = epoch_teacher(x_s, y_s)
         teacher_probs = epoch_teacher_probs(teacher_logits, y_s)
         distill_loss, actual_loss = epoch_student(x_s, y_s, teacher_probs, teacher_reps)
-
-        teacher_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, teacher_loss,
-                                                           axis=None)
-        distill_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, distill_loss,
-                                                           axis=None)
-        actual_loss = tf.distribute.get_strategy().reduce(tf.distribute.ReduceOp.SUM, actual_loss,
-                                                          axis=None)
 
         # Log every 200 batches.
         if step % 200 == 0:
