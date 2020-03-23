@@ -9,7 +9,7 @@ CUDA_VISIBLE_DEVICES=7 python distill/repshare_main.py --task=word_sv_agreement_
 --student_config=lstm_drop31_v2 \
 --batch_size=64 \
 --distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst_3 > run_sv_lm1 &
+--distill_config=rpdst_019_crs_slwfst_2 > run_sv_lm1 &
 
 
 wait
