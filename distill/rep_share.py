@@ -90,25 +90,14 @@ class OnlineRepDistiller(OnlineDistiller):
 
       return teacher_logits, teacher_reps, final_loss
 
-    #@tf.function(experimental_relax_shapes=True)
+    @tf.function(experimental_relax_shapes=True)
     def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
       outputs = self.student_model.detailed_call(x, training=tf.convert_to_tensor(True))
       logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
       if self.student_model.rep_layer != -1 and self.student_model.rep_layer is not None:
         student_reps = teacher_reps[self.student_model.rep_layer]
 
-      rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
-                               padding_symbol=tf.constant(self.task.output_padding_symbol))
-      actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
-      distill_loss = self.student_distill_loss(y_pred=logits, y_true=teacher_probs)
-      reg_loss = tf.math.add_n(self.student_model.losses)
-
-      final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
-                   self.distill_params.student_gold_rate * actual_loss + \
-                   self.distill_params.student_distill_rate * distill_loss + \
-                   reg_loss
-
-      return (distill_loss, rep_loss, final_loss, actual_loss)
+      return student_reps, logits
 
     @tf.function(experimental_relax_shapes=True)
     def student_train_step(x, y_s, teacher_probs, teacher_reps):
@@ -122,7 +111,18 @@ class OnlineRepDistiller(OnlineDistiller):
       actual_loss
       '''
       with tf.GradientTape() as tape:
-        distill_loss, rep_loss, final_loss, actual_loss = get_student_outputs(x, y_s, teacher_probs, teacher_reps)
+        student_reps, logits = get_student_outputs(x, y_s, teacher_probs, teacher_reps)
+
+        rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
+                                 padding_symbol=tf.constant(self.task.output_padding_symbol))
+        actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
+        distill_loss = self.student_distill_loss(y_pred=logits, y_true=teacher_probs)
+        reg_loss = tf.math.add_n(self.student_model.losses)
+
+        final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
+                     self.distill_params.student_gold_rate * actual_loss + \
+                     self.distill_params.student_distill_rate * distill_loss + \
+                     reg_loss
 
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
