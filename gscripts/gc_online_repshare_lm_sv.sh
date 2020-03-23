@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CUDA_VISIBLE_DEVICES=7 python distill/repshare_main.py --task=word_sv_agreement_lm  \
+CUDA_VISIBLE_DEVICES=5 python distill/repshare_main.py --task=word_sv_agreement_lm  \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_lstm_shared_emb \
 --teacher_exp_name=gc_or_tchr1 \
@@ -11,7 +11,7 @@ CUDA_VISIBLE_DEVICES=7 python distill/repshare_main.py --task=word_sv_agreement_
 --distill_mode=rep_online \
 --distill_config=rpdst_019_crs_slwfst_2 > run_sv_lm1 &
 
-CUDA_VISIBLE_DEVICES=7 python distill/repshare_main.py --task=word_sv_agreement_lm  \
+CUDA_VISIBLE_DEVICES=6 python distill/repshare_main.py --task=word_sv_agreement_lm  \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2_shared \
 --teacher_exp_name=gc_or_dtchr1 \
