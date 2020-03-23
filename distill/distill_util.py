@@ -57,7 +57,7 @@ class DistillLoss(tf.keras.losses.Loss):
                **kwargs):
     super(DistillLoss, self).__init__(**kwargs)
     self.tmp = tf.Variable(tmp, dtype=tf.float32, name="temp")
-    self.padding_symbol = tf.Variable(padding_symbol, dtype=tf.int32, name="padding_symbol")
+    self.padding_symbol = tf.Variable(padding_symbol, dtype=tf.int64, name="padding_symbol")
 
   def call(self, y_true, y_pred):
     return distill_loss(y_true, y_pred, self.tmp)
@@ -68,7 +68,7 @@ class SequenceDistillLoss(tf.keras.losses.Loss):
                **kwargs):
     super(SequenceDistillLoss, self).__init__(**kwargs)
     self.tmp = tf.Variable(tmp, dtype=tf.float32, name="tmp")
-    self.padding_symbol = tf.Variable(padding_symbol, dtype=tf.int32, name="padding_symbol")
+    self.padding_symbol = tf.Variable(padding_symbol, dtype=tf.int64, name="padding_symbol")
 
   def call(self, y_true, y_pred):
     return sequence_distill_loss(y_true, y_pred, self.padding_symbol, self.tmp)
