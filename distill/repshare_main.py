@@ -29,6 +29,9 @@ flags.DEFINE_string('logdir', 'logs', 'log dir')
 flags.DEFINE_string('chkpt_dir', 'tf_ckpts', 'checkpoint dir')
 
 flags.DEFINE_string('task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
+flags.DEFINE_string('teacher_task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
+flags.DEFINE_string('student_task', 'word_sv_agreement_vp', 'sv_agreement_lm | word_sv_agreement_lm | word_sv_agreement_vp')
+
 
 flags.DEFINE_string('distill_config', 'pure_rpdst_crs_slwfst', ' distillation hparams set')
 
@@ -75,6 +78,7 @@ def create_and_load_models(teacher_task, student_task):
   return teacher_model, student_model, teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir
 
 DISTILLER = {'rep_online': OnlineRepDistiller,
+             'mrep_online': OnlineRepDistiller,
              'rep_offline': OfflineRepDistiller}
 
 if __name__ == '__main__':
@@ -85,18 +89,25 @@ if __name__ == '__main__':
   # task.valid_dataset = strategy.experimental_distribute_dataset(task.valid_dataset)
 
 
-  task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
+
+  if hparams.distill_mode.startswith('mrep'):
+    teacher_task = TASKS[hparams.teacher_task](get_task_params(batch_size=hparams.batch_size))
+    student_task = TASKS[hparams.student_task](get_task_params(batch_size=hparams.batch_size))
+  else:
+    teacher_task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
+    student_task = None
 
   # Create the Model
   teacher_model, student_model, \
-  teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models(task, task)
+  teacher_log_dir, teacher_ckpt_dir, student_log_dir, student_ckpt_dir = create_and_load_models(teacher_task, student_task)
 
   distiller = DISTILLER[hparams.distill_mode](hparams=hparams,
                                               distill_params=get_distill_params(hparams.distill_config),
                                               strategy=None,
                                               teacher_model=teacher_model,
                                               student_model=student_model,
-                                              task=task,
+                                              teacher_task=teacher_task,
+                                              student_task=student_task,
                                               teacher_ckpt_dir=teacher_ckpt_dir,
                                               teacher_log_dir=teacher_log_dir,
                                               student_ckpt_dir=student_ckpt_dir,

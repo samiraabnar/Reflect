@@ -13,12 +13,13 @@ class OnlineRepDistiller(OnlineDistiller):
   """
   Implementation of soft representation sharing in online mode
   """
-  def __init__(self, hparams, distill_params, strategy, teacher_model, student_model, task,
+  def __init__(self, hparams, distill_params, strategy, teacher_model, student_model,
+               teacher_task, student_task,
                teacher_log_dir, student_log_dir, teacher_ckpt_dir, student_ckpt_dir):
     self.teacher_model = teacher_model
     self.student_model = student_model
     self.strategy = strategy
-    self.task = task
+    self.task = teacher_task
     self.hparams = hparams
     self.distill_params = distill_params
     self.temperature = tf.convert_to_tensor(distill_params.distill_temp)
