@@ -26,7 +26,7 @@ class OnlineRepDistiller(OnlineDistiller):
     self.rep_loss = self.task.get_rep_loss()
     self.student_task_loss = self.task.get_loss_fn()
     self.teacher_task_loss = self.task.get_loss_fn()
-    self.student_distill_loss = self.task.get_distill_loss_fn()
+    self.student_distill_loss = self.task.get_distill_loss_fn(distill_params=self.distill_params)
 
     self.student_metrics = self.task.metrics()
     self.teacher_metrics = self.task.metrics()
