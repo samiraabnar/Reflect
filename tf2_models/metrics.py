@@ -63,6 +63,7 @@ def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
 #@tf.function(experimental_relax_shapes=True)
 def classification_loss(y_true, y_pred):
   y_true = tf.cast(tf.squeeze(y_true), dtype=tf.int64)
+
   return tf.compat.v2.nn.sparse_softmax_cross_entropy_with_logits(logits=y_pred,
                                                                   labels=y_true,
                                                                   name='loss')
@@ -167,7 +168,7 @@ class ClassificationLoss(tf.keras.losses.Loss):
     super(ClassificationLoss, self).__init__(reduction=tf.keras.losses.Reduction.SUM, **kwargs)
     self.padding_symbol = tf.constant(padding_symbol, dtype=tf.int64)
     self.name = "classification_loss"
-    self.global_batch_size = global_batch_size
+    self.global_batch_size = tf.cast(global_batch_size, dtype=tf.float32)
 
 
   def call(self, y_true, y_pred):
