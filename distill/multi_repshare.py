@@ -115,7 +115,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
                                                    name="teacher_optimizer")
 
       tf.compat.v2.summary.experimental.set_step(
-        self.self.teacher_optimizer.iterations + self.student_optimizer.iterations)
+        self.teacher_optimizer.iterations + self.student_optimizer.iterations)
       return final_loss
 
     @tf.function(experimental_relax_shapes=True)
@@ -157,7 +157,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
                                                    name="student_optimizer")
 
       tf.compat.v2.summary.experimental.set_step(
-        self.self.teacher_optimizer.iterations + self.student_optimizer.iterations)
+        self.teacher_optimizer.iterations + self.student_optimizer.iterations)
       return distill_loss, rep_loss, actual_loss
 
     @tf.function(experimental_relax_shapes=True)
