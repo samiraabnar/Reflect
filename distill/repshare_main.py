@@ -96,7 +96,7 @@ if __name__ == '__main__':
     student_task = TASKS[hparams.student_task](get_task_params(batch_size=hparams.batch_size))
   else:
     teacher_task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
-    student_task = None
+    student_task = teacher_task
 
   # Create the Model
   teacher_model, student_model, \
