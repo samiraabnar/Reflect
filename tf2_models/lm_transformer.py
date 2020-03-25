@@ -220,7 +220,7 @@ class Bert(tf.keras.layers.Layer):
       else:
         attention_mask = attention_mask*padding_mask
 
-      input_shape = shape_list(inputs)
+      input_shape = shape_list(tf.sequeeze(inputs))
       input_ids = tf.reshape(inputs, [-1, input_shape[-1]])
       position_ids = tf.reshape(position_ids, [-1, shape_list(position_ids)[-1]])
 
@@ -271,7 +271,7 @@ class Bert(tf.keras.layers.Layer):
         outputs = outputs + (all_attentions,)
       if self.output_embeddings:
           outputs = outputs + (inputs_embeds,)
-      return outputs  # last hidden state, presents, (all hidden_states), (attentions)
+      return outputs  # last hidden state, presents, (all hidden_states), (attentions), input_embedding
 
     return _call(inputs, past, attention_mask, token_type_ids, position_ids,
            training)
