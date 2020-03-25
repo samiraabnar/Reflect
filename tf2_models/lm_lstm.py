@@ -453,7 +453,7 @@ class LmLSTMSharedEmbV2(tf.keras.Model):
 
       out = logits
       out = (out, rnn_outputs, sentence_rep, hidden_activation)
-      teacher_loss
+
       return out
 
     return _call(inputs, padding_symbol, **kwargs)
