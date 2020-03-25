@@ -51,7 +51,7 @@ def second_order_rep_sim(reps1, reps2, padding_mask):
   sims1 = normalized_pairwisedot_product_sim(reps1, reps1)
   sims2 = normalized_pairwisedot_product_sim(reps2, reps2)
 
-  padding_mask = tf.ones((tf.shape(reps1)[0], 1))
+  #padding_mask = tf.ones((tf.shape(reps1)[0], 1))
   so_sims = normalized_dot_product_sim(sims1, sims2, padding_mask) * padding_mask[:, 0]
   mean_sim = tf.reduce_sum(so_sims) / tf.reduce_sum(padding_mask)
 
@@ -93,6 +93,8 @@ def compare_reps(reps1, reps2, padding_symbol=None, inputs=None):
 @tf.function(experimental_relax_shapes=True)
 def rep_loss(reps1, reps2, padding_symbol=None, inputs=None):
 
+  tf.print("reps1", reps1.shape)
+  tf.print("reps2", reps2.shape)
   reps1 = tf.reshape(reps1, (-1, tf.shape(reps1)[-1]))
   reps2 = tf.reshape(reps2, (-1, tf.shape(reps2)[-1]))
 
