@@ -32,7 +32,6 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
     self.rep_loss = self.student_task.get_rep_loss()
     self.student_task_loss = self.student_task.get_loss_fn()
     self.teacher_task_loss = self.teacher_task.get_loss_fn()
-    self.student_distill_loss = self.student_task.get_distill_loss_fn(distill_params=self.distill_params)
 
     self.student_metrics = self.student_task.metrics()
     self.teacher_metrics = self.teacher_task.metrics()
@@ -160,7 +159,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
                                                    name="student_optimizer")
 
 
-      return distill_loss, rep_loss, actual_loss
+      return rep_loss, actual_loss
 
     @tf.function(experimental_relax_shapes=True)
     def get_teacher_probs(teacher_logits, y_s):
@@ -172,14 +171,13 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       step = 0
       for x_s, y_s in one_epoch_iterator:
         teacher_reps, teacher_logits = get_teacher_outputs(x_s)
-        distill_loss, rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_reps)
+        rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_reps)
 
 
         # Log every 1000 batches.
         if step % 1000 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
             tf.summary.scalar('fine_rep_loss', rep_loss, step=self.get_summary_step())
-            tf.summary.scalar('fine_distill_loss', distill_loss, step=self.get_summary_step())
             tf.summary.scalar('fine_actual_loss', actual_loss, step=self.get_summary_step())
             tf.summary.scalar('student_learning_rate',
                               self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations), step=self.get_summary_step())
