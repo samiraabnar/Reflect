@@ -282,7 +282,7 @@ class LmGPT2(tf.keras.Model):
     super(LmGPT2, self).__init__(hparams, *inputs, **kwargs)
     self.scope = scope
     self.rep_index = 1
-    self.rep_layer = -1
+    self.rep_layer = None
 
     self.model_name = '_'.join([self.scope,
                          'h-'+str(hparams.embedding_dim),
@@ -340,7 +340,7 @@ class ClassifierGPT2(tf.keras.Model):
     del kwargs['cl_token']
     super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
     self.rep_index = 1
-    self.rep_layer = -1
+    self.rep_layer = None
 
     self.scope = scope
     self.hparams = hparams
@@ -430,7 +430,7 @@ class ClassifierBERT(tf.keras.Model):
     self.scope = scope
     self.hparams = hparams
     self.rep_index = 1
-    self.rep_layer = -1
+    self.rep_layer = None
     self.model_name = '_'.join([self.scope,
                          'h-'+str(hparams.embedding_dim),
                          'd-'+str(hparams.depth),
