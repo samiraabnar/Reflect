@@ -124,7 +124,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       return final_loss
 
     @tf.function(experimental_relax_shapes=True)
-    def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
+    def get_student_outputs(x):
       outputs = self.student_model.detailed_call(x, training=tf.convert_to_tensor(True))
       logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
       if self.student_model.rep_layer is not None:
@@ -133,7 +133,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       return student_reps, logits
 
     @tf.function(experimental_relax_shapes=True)
-    def student_train_step(x, y_s, teacher_probs, teacher_reps):
+    def student_train_step(x, y_s, teacher_reps):
       ''' Training step for the student model (this is the only training step for offline distillation).
 
       :param x: input
@@ -144,17 +144,15 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       actual_loss
       '''
       with tf.GradientTape() as tape:
-        student_reps, logits = get_student_outputs(x, y_s, teacher_probs, teacher_reps)
+        student_reps, logits = get_student_outputs(x)
 
         rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
                                  padding_symbol=tf.constant(self.student_task.output_padding_symbol))
         actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
-        distill_loss = self.student_distill_loss(y_pred=logits, y_true=teacher_probs)
         reg_loss = tf.math.add_n(self.student_model.losses)
 
         final_loss = self.distill_params.student_distill_rep_rate * rep_loss + \
                      self.distill_params.student_gold_rate * actual_loss + \
-                     self.distill_params.student_distill_rate * distill_loss + \
                      reg_loss
 
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
@@ -174,8 +172,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       step = 0
       for x_s, y_s in one_epoch_iterator:
         teacher_reps, teacher_logits = get_teacher_outputs(x_s)
-        teacher_probs = get_teacher_probs(teacher_logits, y_s)
-        distill_loss, rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_probs, teacher_reps)
+        distill_loss, rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_reps)
 
 
         # Log every 1000 batches.
