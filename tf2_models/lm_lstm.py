@@ -89,7 +89,7 @@ class ClassifierLSTM(tf.keras.Model):
     super(ClassifierLSTM, self).__init__(*inputs, **kwargs)
     self.hparams = hparams
     self.scope = scope
-    self.rep_index = 3
+    self.rep_index = 2
     self.rep_layer = -1
 
     self.model_name = '_'.join([self.scope,
