@@ -63,7 +63,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
     tf.io.gfile.makedirs(student_log_dir)
     self.summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(student_summary_dir, 'train'))
-    tf.compat.v2.summary.experimental.set_step(self.teacher_optimizer.iterations+self.student_optimizer.iterations)
+    tf.compat.v2.summary.experimental.set_step(self.self.teacher_optimizer.iterations+self.student_optimizer.iterations)
 
 
   def setup_models(self, distill_params):
@@ -114,6 +114,8 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       self.teacher_model.optimizer.apply_gradients(zip(grads, self.teacher_model.trainable_weights),
                                                    name="teacher_optimizer")
 
+      tf.compat.v2.summary.experimental.set_step(
+        self.self.teacher_optimizer.iterations + self.student_optimizer.iterations)
       return final_loss
 
     @tf.function(experimental_relax_shapes=True)
@@ -153,6 +155,9 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       grads = tape.gradient(final_loss, self.student_model.trainable_weights)
       self.student_model.optimizer.apply_gradients(zip(grads, self.student_model.trainable_weights),
                                                    name="student_optimizer")
+
+      tf.compat.v2.summary.experimental.set_step(
+        self.self.teacher_optimizer.iterations + self.student_optimizer.iterations)
       return distill_loss, rep_loss, actual_loss
 
     @tf.function(experimental_relax_shapes=True)
@@ -168,11 +173,10 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
         teacher_probs = get_teacher_probs(teacher_logits, y_s)
         distill_loss, rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_probs, teacher_reps)
 
+
         # Log every 1000 batches.
         if step % 1000 == 0:
           with tf.summary.experimental.summary_scope("student_train"):
-            tf.summary.scalar('student_learning_rate',
-                              self.student_model.optimizer.learning_rate(self.student_model.optimizer.iterations))
             tf.summary.scalar('fine_rep_loss', rep_loss)
             tf.summary.scalar('fine_distill_loss', distill_loss)
             tf.summary.scalar('fine_actual_loss', actual_loss)
