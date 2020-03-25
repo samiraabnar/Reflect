@@ -69,15 +69,16 @@ class OnlineRepDistiller(OnlineDistiller):
       if self.teacher_model.rep_layer != -1 and self.teacher_model.rep_layer is not None:
         teacher_reps = teacher_reps[self.teacher_model.rep_layer]
 
-      loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
-
-      return teacher_reps, teacher_logits, loss
+      return teacher_reps, teacher_logits
 
     @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
 
-        teacher_reps, teacher_logits, loss = get_teacher_outputs(x, y_true)
+        teacher_reps, teacher_logits = get_teacher_outputs(x, y_true)
+
+        loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
+
 
         if len(self.teacher_model.losses) > 0:
           reg_loss = tf.math.add_n(self.teacher_model.losses)
@@ -92,11 +93,11 @@ class OnlineRepDistiller(OnlineDistiller):
       return teacher_logits, teacher_reps, final_loss
 
     @tf.function(experimental_relax_shapes=True)
-    def get_student_outputs(x, y_s, teacher_probs, teacher_reps):
+    def get_student_outputs(x):
       outputs = self.student_model.detailed_call(x, training=tf.convert_to_tensor(True))
       logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
       if self.student_model.rep_layer != -1 and self.student_model.rep_layer is not None:
-        student_reps = teacher_reps[self.student_model.rep_layer]
+        student_reps = student_reps[self.student_model.rep_layer]
 
       return student_reps, logits
 
@@ -112,7 +113,7 @@ class OnlineRepDistiller(OnlineDistiller):
       actual_loss
       '''
       with tf.GradientTape() as tape:
-        student_reps, logits = get_student_outputs(x, y_s, teacher_probs, teacher_reps)
+        student_reps, logits = get_student_outputs(x)
 
         rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
                                  padding_symbol=tf.constant(self.task.output_padding_symbol))
@@ -131,20 +132,7 @@ class OnlineRepDistiller(OnlineDistiller):
       return distill_loss, rep_loss, actual_loss
 
     @tf.function(experimental_relax_shapes=True)
-    def epoch_teacher(x_s, y_s):
-      teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
-      return teacher_logits, teacher_reps, teacher_loss
-
-    @tf.function(experimental_relax_shapes=True)
-    def epoch_student(x_s, y_s, teacher_probs, teacher_reps):
-
-      distill_loss, rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_probs, teacher_reps)
-
-      return distill_loss, rep_loss, actual_loss
-
-
-    @tf.function(experimental_relax_shapes=True)
-    def epoch_teacher_probs(teacher_logits, y_s):
+    def get_teacher_probs(teacher_logits, y_s):
       teacher_probs = self.teacher_task_probs_fn(teacher_logits, y_s, tf.constant(self.temperature))
 
       return teacher_probs
@@ -152,9 +140,9 @@ class OnlineRepDistiller(OnlineDistiller):
     def epoch_loop(one_epoch_iterator):
       step = 0
       for x_s, y_s in one_epoch_iterator:
-        teacher_logits, teacher_reps, teacher_loss = epoch_teacher(x_s, y_s)
-        teacher_probs = epoch_teacher_probs(teacher_logits, y_s)
-        distill_loss, rep_loss, actual_loss = epoch_student(x_s, y_s, teacher_probs, teacher_reps)
+        teacher_logits, teacher_reps, teacher_loss = teacher_train_step(x_s, y_s)
+        teacher_probs = get_teacher_probs(teacher_logits, y_s)
+        distill_loss, rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_probs, teacher_reps)
 
         # Log every 1000 batches.
         if step % 1000 == 0:
