@@ -71,7 +71,7 @@ class GPT2(tf.keras.layers.Layer):
       else:
         attention_mask = attention_mask*padding_mask
 
-      input_shape = shape_list(inputs)
+      input_shape = shape_list(tf.squeeze(inputs))
       input_ids = tf.reshape(inputs, [-1, input_shape[-1]])
       position_ids = tf.reshape(position_ids, [-1, shape_list(position_ids)[-1]])
 
@@ -489,6 +489,6 @@ class ClassifierBERT(tf.keras.Model):
     transformer_outputs = self.transformer(inputs, **kwargs)
     cl_logits, hidden_states = _call(batch_size, inputs, transformer_outputs)
 
-    outputs = (cl_logits, hidden_states) + transformer_outputs
+    outputs = (cl_logits, hidden_states, transformer_outputs[0][:,1:,:]) + transformer_outputs
 
     return outputs
