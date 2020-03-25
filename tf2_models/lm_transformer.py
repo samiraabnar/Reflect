@@ -220,7 +220,7 @@ class Bert(tf.keras.layers.Layer):
       else:
         attention_mask = attention_mask*padding_mask
 
-      input_shape = shape_list(tf.sequeeze(inputs))
+      input_shape = shape_list(tf.squeeze(inputs))
       input_ids = tf.reshape(inputs, [-1, input_shape[-1]])
       position_ids = tf.reshape(position_ids, [-1, shape_list(position_ids)[-1]])
 
@@ -429,7 +429,7 @@ class ClassifierBERT(tf.keras.Model):
 
     self.scope = scope
     self.hparams = hparams
-    self.rep_index = 1
+    self.rep_index = 2
     self.rep_layer = None
     self.model_name = '_'.join([self.scope,
                          'h-'+str(hparams.embedding_dim),
