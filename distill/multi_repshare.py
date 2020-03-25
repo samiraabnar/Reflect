@@ -63,7 +63,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
     tf.io.gfile.makedirs(student_log_dir)
     self.summary_writer = tf.compat.v2.summary.create_file_writer(os.path.join(student_summary_dir, 'train'))
-    tf.compat.v2.summary.experimental.set_step(self.self.teacher_optimizer.iterations+self.student_optimizer.iterations)
+    tf.compat.v2.summary.experimental.set_step(self.teacher_optimizer.iterations+self.student_optimizer.iterations)
 
 
   def setup_models(self, distill_params):
