@@ -63,7 +63,7 @@ class OnlineRepDistiller(OnlineDistiller):
   def distill_loop(self):
 
     @tf.function(experimental_relax_shapes=True)
-    def get_teacher_outputs(x, y_true):
+    def get_teacher_outputs(x):
       outputs = self.teacher_model.detailed_call(x, training=tf.convert_to_tensor(True))
       teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
       if self.teacher_model.rep_layer != -1 and self.teacher_model.rep_layer is not None:
@@ -75,9 +75,9 @@ class OnlineRepDistiller(OnlineDistiller):
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
 
-        teacher_reps, teacher_logits = get_teacher_outputs(x, y_true)
+        teacher_reps, teacher_logits = get_teacher_outputs(x)
 
-        loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
+        loss = self.teacher_task_loss(y_pred=teacher_logits, y_true=y_true)
 
 
         if len(self.teacher_model.losses) > 0:
