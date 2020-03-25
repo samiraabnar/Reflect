@@ -66,7 +66,7 @@ class OnlineRepDistiller(OnlineDistiller):
     def get_teacher_outputs(x):
       outputs = self.teacher_model.detailed_call(x, training=tf.convert_to_tensor(True))
       teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
-      if self.teacher_model.rep_layer != -1 and self.teacher_model.rep_layer is not None:
+      if self.teacher_model.rep_layer is not None:
         teacher_reps = teacher_reps[self.teacher_model.rep_layer]
 
       return teacher_reps, teacher_logits
@@ -96,7 +96,7 @@ class OnlineRepDistiller(OnlineDistiller):
     def get_student_outputs(x):
       outputs = self.student_model.detailed_call(x, training=tf.convert_to_tensor(True))
       logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
-      if self.student_model.rep_layer != -1 and self.student_model.rep_layer is not None:
+      if self.student_model.rep_layer is not None:
         student_reps = student_reps[self.student_model.rep_layer]
 
       return student_reps, logits
