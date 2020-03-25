@@ -532,6 +532,7 @@ rpdst_019_crs_slwfst_2 = {
 'schedule': 'crs_fst'
 }
 
+
 rpdst_019_crs_slwfst_3 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 0.0,
@@ -545,6 +546,24 @@ rpdst_019_crs_slwfst_3 = {
 'teacher_learning_rate' : 0.001,
 'teacher_decay_steps' : 10000,
 'teacher_warmup_steps' : 0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs_fst'
+}
+
+rpdst_019_crs_slwfst_4 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 0.0,
+'student_gold_rate' : 0.1,
+'student_distill_rep_rate': 0.9,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 100000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0.0,
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs_fst'
@@ -658,6 +677,42 @@ rpdst_019_crs_slwfst_sst5 = {
 'schedule': 'crs_fst',
 }
 
+rpdst_019_crs_slwfst_sst6 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 0.0,
+'student_gold_rate' : 0.1,
+'student_distill_rep_rate': 0.9,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 10000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.0001,
+'teacher_decay_steps' : 500,
+'teacher_warmup_steps' : 000,
+'teacher_hold_base_rate_steps' : 5000,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs_fst',
+}
+
+rpdst_00199_crs_slwfst_sst6 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 0.0,
+'student_gold_rate' : 0.01,
+'student_distill_rep_rate': 0.99,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 10000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.0001,
+'teacher_decay_steps' : 500,
+'teacher_warmup_steps' : 000,
+'teacher_hold_base_rate_steps' : 5000,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs_fst',
+}
+
 DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'pure_dstl_2' :  pure_dstl_2,
                   'pure_dstl_3' :  pure_dstl_3,
@@ -693,5 +748,9 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'rpdst_019_crs_slwfst_sst4': rpdst_019_crs_slwfst_sst4,
                   'rpdst_019_crs_slwfst_sst5': rpdst_019_crs_slwfst_sst5,
                   'rpdst_019_crs_slwslw_2_trns': rpdst_019_crs_slwslw_2_trns,
-                  'rpdst_019_crs_slwslw_3_trns': rpdst_019_crs_slwslw_3_trns
+                  'rpdst_019_crs_slwslw_3_trns': rpdst_019_crs_slwslw_3_trns,
+                  'rpdst_019_crs_slwfst_4': rpdst_019_crs_slwfst_4,
+                  'rpdst_019_crs_slwfst_sst6': rpdst_019_crs_slwfst_sst6,
+                  'rpdst_00199_crs_slwfst_sst6': rpdst_00199_crs_slwfst_sst6
+
                   }
