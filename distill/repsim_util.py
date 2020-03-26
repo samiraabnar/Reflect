@@ -97,7 +97,7 @@ def rep_loss(reps1, reps2, padding_symbol=None, inputs=None):
   reps2 = tf.reshape(reps2, (-1, tf.shape(reps2)[-1]))
 
   if padding_symbol is not None and padding_symbol > -1:
-    padding_mask = tf.cast(1.0 - (inputs == padding_symbol), dtype=tf.float32)
+    padding_mask = 1.0 - tf.cast(inputs == padding_symbol, dtype=tf.float32)
     padding_mask = tf.reshape(padding_mask, (-1, 1))
   else:
     padding_mask = tf.ones((tf.shape(reps1)[0], 1))

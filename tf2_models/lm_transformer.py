@@ -282,7 +282,7 @@ class LmGPT2(tf.keras.Model):
     del kwargs['cl_token']
     super(LmGPT2, self).__init__(hparams, *inputs, **kwargs)
     self.scope = scope
-    self.rep_index = 1
+    self.rep_index = 2
     self.rep_layer = None
 
     self.model_name = '_'.join([self.scope,
