@@ -105,3 +105,7 @@ class WordSvAgreementVP(Task):
   def metrics(self):
     return [ClassificationLoss(global_batch_size=tf.constant(self.task_params.batch_size), padding_symbol=tf.constant(-1, dtype=tf.int64)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
+
+
+  def sentence_encoder(self):
+    return self.databuilder.sentence_encoder()
