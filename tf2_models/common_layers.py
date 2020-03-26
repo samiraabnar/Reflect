@@ -19,9 +19,9 @@ def gelu(x):
 
 def shape_list(x):
   """Deal with dynamic shape in tensorflow cleanly."""
-  #static = x.shape.as_list()
-  dynamic = tf.shape(x).as_list()
-  return dynamic #[dynamic[i] if s is None else s for i, s in enumerate(static)]
+  static = x.shape.as_list()
+  dynamic = tf.shape(x)
+  return [dynamic[i] if s is None else s for i, s in enumerate(static)]
 
 
 def get_initializer(initializer_range=0.02):
