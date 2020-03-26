@@ -1,6 +1,7 @@
 import tensorflow as tf
 from distill.distill_util import get_masked_probs
 from distill.repsim_util import rep_loss
+from util import constants
 
 
 class Task(object):
@@ -14,8 +15,13 @@ class Task(object):
     if builder_cls:
       self.databuilder = self.builder_cls(data_dir=self.data_dir)
 
+    self.input_padding_symbol = self.sentence_encoder().encode([constants.pad])[0]
     self.setup_datasets()
 
+
+
+  def sentence_encoder(self):
+    raise NotImplementedError
   @property
   def padded_shapes(self):
     return ([None],[None])
