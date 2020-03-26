@@ -341,7 +341,7 @@ class ClassifierGPT2(tf.keras.Model):
     self.cl_token = kwargs['cl_token']
     del kwargs['cl_token']
     super(ClassifierGPT2, self).__init__(hparams, *inputs, **kwargs)
-    self.rep_index = 1
+    self.rep_index = 2
     self.rep_layer = None
 
     self.scope = scope
