@@ -72,7 +72,6 @@ class GPT2(tf.keras.layers.Layer):
         attention_mask = attention_mask*padding_mask
 
       input_shape = shape_list(inputs)
-      tf.print("inputs shape:", input_shape)
       input_ids = tf.reshape(inputs, [-1, input_shape[-1]])
       position_ids = tf.reshape(position_ids, [-1, shape_list(position_ids)[-1]])
 
@@ -222,7 +221,6 @@ class Bert(tf.keras.layers.Layer):
         attention_mask = attention_mask*padding_mask
 
       input_shape = shape_list(inputs)
-      tf.print("input shape:", input_shape)
 
       input_ids = tf.reshape(inputs, [-1, input_shape[-1]])
       position_ids = tf.reshape(position_ids, [-1, shape_list(position_ids)[-1]])
