@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export PYTHONPATH=$PYTHONPATH:~/Codes/InDist
+
 CUDA_VISIBLE_DEVICES=0 python distill/repshare_main.py \
 --teacher_task=word_sv_agreement_lm \
 --student_task=word_sv_agreement_vp  \
@@ -30,7 +32,7 @@ CUDA_VISIBLE_DEVICES=0 python distill/repshare_main.py \
 --teacher_task=word_sv_agreement_lm \
 --student_task=word_sv_agreement_vp  \
 --teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2_shared \
+--student_model=cl_gpt2_shared \
 --teacher_exp_name=gc_mor_dtchr1 \
 --student_exp_name=gc_std1 \
 --teacher_config=lstm_drop31_v2 \
@@ -43,7 +45,7 @@ CUDA_VISIBLE_DEVICES=0 python distill/repshare_main.py \
 --teacher_task=word_sv_agreement_lm \
 --student_task=word_sv_agreement_vp  \
 --teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2_shared \
+--student_model=cl_gpt2_shared \
 --teacher_exp_name=gc_mor_dtchr2 \
 --student_exp_name=gc_std2 \
 --teacher_config=lstm_drop31_v2 \
