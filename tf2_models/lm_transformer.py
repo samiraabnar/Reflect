@@ -223,8 +223,6 @@ class ClassifierBERT(tf.keras.Model):
 
 class ClassifierBERTSharedWeights(ClassifierBERT):
   def __init__(self, hparams, scope='cl_bert_shared', *inputs, **kwargs):
-    self.cl_token = kwargs['cl_token']
-    del kwargs['cl_token']
     super(ClassifierBERTSharedWeights, self).__init__(hparams, *inputs, **kwargs)
 
     self.scope = scope
