@@ -146,7 +146,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
         student_reps, logits = get_student_outputs(x)
 
         rep_loss = self.rep_loss(reps1=student_reps, reps2=teacher_reps,
-                                 padding_symbol=tf.constant(self.student_task.input_padding_symbol),
+                                 padding_symbol=tf.constant(self.student_task.input_padding_symbol, dtype=tf.int64),
                                  inputs=x)
         actual_loss = self.student_task_loss(y_pred=logits, y_true=y_s)
         reg_loss = tf.math.add_n(self.student_model.losses)
