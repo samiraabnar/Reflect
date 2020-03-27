@@ -225,20 +225,6 @@ class ClassifierBERTSharedWeights(ClassifierBERT):
   def __init__(self, hparams, scope='cl_bert_shared', *inputs, **kwargs):
     super(ClassifierBERTSharedWeights, self).__init__(hparams, *inputs, **kwargs)
 
-    self.scope = scope
-    self.hparams = hparams
-    self.rep_index = 2
-    self.rep_layer = None
-    self.model_name = '_'.join([self.scope,
-                                'h-' + str(hparams.embedding_dim),
-                                'd-' + str(hparams.depth),
-                                'rdrop-' + str(hparams.resid_pdrop),
-                                'adrop-' + str(hparams.attn_pdrop),
-                                'indrop-' + str(hparams.embd_pdrop)])
-
-    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
-                                                   l2=0.0001)
-    self.create_vars(**kwargs)
 
   # @tf.function
   def create_vars(self, **kwargs):
