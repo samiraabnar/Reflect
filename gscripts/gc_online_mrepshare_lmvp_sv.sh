@@ -80,7 +80,7 @@ CUDA_VISIBLE_DEVICES=5 python distill/repshare_main.py \
 --distill_mode=mrep_online \
 --distill_config=rpdst_off_019_crs_slwfst_2 > run_sv_lmvp10 &
 
-CUDA_VISIBLE_DEVICES=4 python distill/repshare_main.py \
+CUDA_VISIBLE_DEVICES=6 python distill/repshare_main.py \
 --teacher_task=word_sv_agreement_lm \
 --student_task=word_sv_agreement_vp  \
 --teacher_model=lm_lstm_shared_emb \
@@ -93,7 +93,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/repshare_main.py \
 --distill_mode=mrep_online \
 --distill_config=rpdst_019_crs_slwfst_3 > run_sv_lmvp11 &
 
-CUDA_VISIBLE_DEVICES=5 python distill/repshare_main.py \
+CUDA_VISIBLE_DEVICES=7 python distill/repshare_main.py \
 --teacher_task=word_sv_agreement_lm \
 --student_task=word_sv_agreement_vp  \
 --teacher_model=lm_lstm_shared_emb \
