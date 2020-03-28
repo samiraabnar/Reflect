@@ -212,7 +212,9 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
         one_epoch_iterator_student = (next(self.student_train_batch_iterator) for _ in range(self.student_task.n_train_batches))
         one_epoch_iterator_teacher = (next(self.teacher_train_batch_iterator) for _ in range(self.teacher_task.n_train_batches))
 
-        teacher_epoch_loop(one_epoch_iterator_teacher)
+        if self.distill_params.teacher_learning_rate > 0:
+          teacher_epoch_loop(one_epoch_iterator_teacher)
+
         student_epoch_loop(one_epoch_iterator_student)
 
         # Evaluate teacher
