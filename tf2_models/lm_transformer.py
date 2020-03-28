@@ -223,7 +223,7 @@ class ClassifierBERT(tf.keras.Model):
 
 class ClassifierBERTSharedWeights(ClassifierBERT):
   def __init__(self, hparams, scope='cl_bert_shared', *inputs, **kwargs):
-    super(ClassifierBERTSharedWeights, self).__init__(hparams, *inputs, **kwargs)
+    super(ClassifierBERTSharedWeights, self).__init__(hparams, scope=scope, *inputs, **kwargs)
 
 
   # @tf.function
