@@ -221,7 +221,7 @@ class Bert(tf.keras.layers.Layer):
 
     return input_embeddings, input_shape, padding_mask, past
 
-  def call_with_embeddings(self, input_embeddings, input_shape, past, attention_mask=None,
+  def call_with_embeddings(self, input_embeddings, input_shape, padding_mask, past, attention_mask=None,
            training=False):
     @tf.function(experimental_relax_shapes=True)
     def _call(input_embeddings, input_shape, padding_mask, past, attention_mask,
@@ -277,7 +277,7 @@ class Bert(tf.keras.layers.Layer):
           outputs = outputs
       return outputs  # last hidden state, presents, (all hidden_states), (attentions), input_embedding
 
-    return _call(input_embeddings, input_shape, past, attention_mask,
+    return _call(input_embeddings, input_shape, padding_mask, past, attention_mask,
            training)
 
   def call(self, inputs, past=None, attention_mask=None, token_type_ids=None, position_ids=None,
