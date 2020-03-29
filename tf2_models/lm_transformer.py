@@ -228,8 +228,8 @@ class ClassifierBERT(tf.keras.Model):
     cl_tokens = tf.tile(cl_token, (batch_size, 1))
     inputs = tf.concat([cl_tokens, inputs], axis=-1)
 
-    outputs = self.transformer.get_input_embeddings(self, inputs, **kwargs)
-    
+    outputs = self.transformer.get_input_embeddings(inputs, **kwargs)
+
     return outputs
 
 
