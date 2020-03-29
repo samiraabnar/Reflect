@@ -232,6 +232,13 @@ class ClassifierBERT(tf.keras.Model):
 
     return outputs
 
+  def call_with_embeddings(self, input_embeddings, input_shape, padding_mask, past , **kwargs):
+
+
+    outputs = self.transformer.call_with_embeddings(input_embeddings=input_embeddings,
+                                                    input_shape=input_shape, padding_mask=padding_mask,
+                                                    past=past, **kwargs)
+    return outputs
 
 class ClassifierBERTSharedWeights(ClassifierBERT):
   def __init__(self, hparams, scope='cl_bert_shared', *inputs, **kwargs):
