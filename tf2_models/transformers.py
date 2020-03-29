@@ -191,7 +191,6 @@ class Bert(tf.keras.layers.Layer):
 
   def get_input_embeddings(self, inputs, past=None, attention_mask=None, token_type_ids=None, position_ids=None,
            training=False):
-    tf.print("past", past)
     if past is None:
       past_length = 0
       past = [None] * len(self.h)
