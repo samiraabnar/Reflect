@@ -228,6 +228,10 @@ class ClassifierBERT(tf.keras.Model):
     cl_tokens = tf.tile(cl_token, (batch_size, 1))
     inputs = tf.concat([cl_tokens, inputs], axis=-1)
 
+    outputs = self.transformer.get_input_embeddings(self, inputs, **kwargs)
+    
+    return outputs
+
 
 class ClassifierBERTSharedWeights(ClassifierBERT):
   def __init__(self, hparams, scope='cl_bert_shared', *inputs, **kwargs):
