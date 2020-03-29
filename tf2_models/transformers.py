@@ -284,7 +284,7 @@ class Bert(tf.keras.layers.Layer):
            training=False):
 
     @tf.function(experimental_relax_shapes=True)
-    def _call(embedded_inputs, padding_mask, input_shape, past, attention_mask, token_type_ids, position_ids,
+    def _call(inputs, past, attention_mask, token_type_ids, position_ids,
            training):
 
       if past is None:
