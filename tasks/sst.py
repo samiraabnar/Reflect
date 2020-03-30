@@ -1,9 +1,11 @@
-from distill.distill_util import DistillLoss, get_probs
+from distill.distill_util import DistillLoss, get_probs, SequenceDistillLoss, get_masked_probs
 from tasks.task import Task
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-from tf2_models.metrics import ClassificationLoss, ClassificationLossMetric
+from tf2_models import metrics
+from tf2_models.metrics import ClassificationLoss, ClassificationLossMetric, MaskedSequenceLoss, \
+  masked_batch_perplexity, masked_perplexity
 from tfds_data.sst2 import SST2
 
 
@@ -43,6 +45,46 @@ class ClassifySST2(Task):
     return tf.convert_to_tensor(examples['sentence']), tf.convert_to_tensor(examples['label'])
 
 
+class LmSST2(Task):
+  def __init__(self, task_params, name='lm_sst2', data_dir='data'):
+    super(LmSST2, self).__init__(task_params=task_params, name=name,
+                                data_dir=data_dir,
+                                builder_cls=SST2)
+
+  def vocab_size(self):
+    return self.databuilder.vocab_size()
+
+  def sentence_encoder(self):
+    return self.databuilder.sentence_encoder()
+
+  def output_size(self):
+    return self.vocab_size()
+
+  def get_loss_fn(self):
+    return MaskedSequenceLoss(padding_symbol=0)
+
+  def get_distill_loss_fn(self, distill_params):
+    return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=0)
+
+  def get_probs_fn(self):
+    return get_masked_probs
+
+  def metrics(self):
+    return [MaskedSequenceLoss(padding_symbol=0),
+            masked_batch_perplexity,
+            masked_perplexity,
+            metrics.accuracy,
+            metrics.accuracy_top2,
+            metrics.accuracy_top5
+            ]
+
+
+  @property
+  def padded_shapes(self):
+    return ([None],[None])
+
+  def convert_examples(self, examples):
+    return tf.convert_to_tensor(examples['sentence'][:-1]), tf.convert_to_tensor(examples['sentence'][1:])
 
 
 if __name__ == '__main__':
