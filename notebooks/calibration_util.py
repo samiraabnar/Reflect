@@ -31,9 +31,9 @@ def test_for_calibration(model, task, n_bins=10):
         prob = task.get_probs_fn()(logits, labels=y, temperature=1)
         preds.extend(pred.numpy())
         y_trues.extend(y.numpy())
-        batch_indexes = tf.cast(tf.range(len(y), dtype=tf.int32), dtype=tf.int32)
+        batch_indexes = tf.cast(tf.range(len(y), dtype=tf.int64), dtype=tf.int64)
         true_indexes = tf.concat([batch_indexes[:,None], y[:,None]], axis=1)
-        pred_indexes = tf.concat([batch_indexes[:,None], tf.cast(pred[:,None], tf.int32)], axis=1)
+        pred_indexes = tf.concat([batch_indexes[:,None], tf.cast(pred[:,None], tf.int64)], axis=1)
 
         correct_class_probs.extend(tf.gather_nd(prob, true_indexes).numpy())
         predicted_class_probs.extend(tf.gather_nd(prob, pred_indexes).numpy())
@@ -76,6 +76,8 @@ def plot_calibration(model_accuracy, predicted_class_probs, correct_class_probs,
     x_tick_labels = x_ticks / np.float32(n_bins)
     ax.set_xticks(x_ticks)
     ax.set_xticklabels(x_tick_labels, fontsize=10)
+    
+    return p_confidence_bins,n_confidence_bins,total_confidence_bins
     
 def expected_calibration_error(teacher_accuracy, teacher_predicted_class_probs):
     raise NotImplemented
