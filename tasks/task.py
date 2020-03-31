@@ -5,7 +5,7 @@ from util import constants
 
 
 class Task(object):
-  def __init__(self, task_params, num_replicas_in_sync=1, builder_cls=None, name='abstract_task', data_dir='data'):
+  def __init__(self, task_params, num_replicas_in_sync=1, builder_cls=None, name='abstract_task', data_dir='data', output_padding=False):
     self.name = name
     self.task_params = task_params
     self.data_dir = data_dir
@@ -15,6 +15,10 @@ class Task(object):
       self.databuilder = self.builder_cls(data_dir=self.data_dir)
 
     self.input_padding_symbol = tf.cast(self.sentence_encoder().encode(constants.pad)[0], dtype=tf.int64)
+    if output_padding:
+      self.output_padding_symbol = tf.cast(self.sentence_encoder().encode(constants.pad)[0], dtype=tf.int64)
+    else:
+      self.output_padding_symbol = tf.cast(-1, dtype=tf.int64)
     self.setup_datasets()
 
 
