@@ -15,7 +15,7 @@ class ClassifySST2(Task):
     super(ClassifySST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
                                 builder_cls=SST2)
-    self.output_padding_symbol = -1
+    self.output_padding_symbol = tf.cast(-1, dtype=tf.int64)
 
   def vocab_size(self):
     return self.databuilder.vocab_size()
