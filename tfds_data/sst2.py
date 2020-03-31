@@ -14,8 +14,7 @@ class SST2(tfds.core.GeneratorBasedBuilder):
   def _info(self):
     self.text_encoder_config = tfds.features.text.TextEncoderConfig(
       encoder_cls=tfds.features.text.SubwordTextEncoder,
-      vocab_size=2 ** 13,
-      reserved_tokens=[constants.pad, constants.unk, constants.bos, constants.eos])
+      vocab_size=2 ** 13)
 
     return tfds.core.DatasetInfo(
       builder=self,
@@ -40,7 +39,8 @@ class SST2(tfds.core.GeneratorBasedBuilder):
 
     examples = tfds.load('glue/sst2')
     train_examples, val_examples = examples['train'], examples['validation']
-    self.info.features["sentence"].maybe_build_from_corpus((example['sentence'].numpy() for example in train_examples))
+    self.info.features["sentence"].maybe_build_from_corpus((example['sentence'].numpy() for example in train_examples),
+                                                           reserved_tokens=[constants.pad, constants.unk, constants.bos, constants.eos])
 
     # Specify the splits
     return [
