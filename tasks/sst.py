@@ -78,7 +78,7 @@ class LmSST2(Task):
   def metrics(self):
     return [MaskedSequenceLoss(padding_symbol=tf.constant(tf.constant(self.output_padding_symbol, dtype=tf.int64), dtype=tf.int64)),
             functools.partial(masked_batch_perplexity, padding_sumbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
-            functools.partial(masked_perplexitypadding_sumbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
+            functools.partial(masked_perplexity, padding_sumbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=1),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=2),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=5)
