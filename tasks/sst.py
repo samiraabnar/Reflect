@@ -12,10 +12,10 @@ from util import constants
 
 class ClassifySST2(Task):
   def __init__(self, task_params, name='sst2', data_dir='data'):
+    self.output_padding_symbol = tf.cast(-1, dtype=tf.int64)
     super(ClassifySST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
                                 builder_cls=SST2)
-    self.output_padding_symbol = tf.cast(-1, dtype=tf.int64)
 
   def vocab_size(self):
     return self.databuilder.vocab_size()
