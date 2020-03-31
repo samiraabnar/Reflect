@@ -11,8 +11,8 @@ from util import constants
 
 class SvAgreementLM(Task):
   def __init__(self, task_params, name='sv_agreement_lm', data_dir='data', builder_cls=SVAgreement):
+    self.output_padding_symbol =  tf.cast(self.sentence_encoder().encode(constants.pad)[0], dtype=tf.int64)
     super(SvAgreementLM, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
-    self.output_padding_symbol = self.input_padding_symbol
 
   @tf.function
   def convert_examples(self, examples):

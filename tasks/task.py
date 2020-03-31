@@ -15,7 +15,7 @@ class Task(object):
     if builder_cls:
       self.databuilder = self.builder_cls(data_dir=self.data_dir)
 
-    self.input_padding_symbol = self.sentence_encoder().encode(constants.pad)[0]
+    self.input_padding_symbol = tf.cast(self.sentence_encoder().encode(constants.pad)[0], dtype=tf.int64)
     self.output_padding_symbol = None
     self.setup_datasets()
 
