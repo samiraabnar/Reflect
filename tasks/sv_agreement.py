@@ -101,11 +101,9 @@ class WordSvAgreementVP(Task):
   def get_probs_fn(self):
     return get_probs
 
-
   def metrics(self):
     return [ClassificationLoss(global_batch_size=tf.constant(self.task_params.batch_size), padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
-
 
   def sentence_encoder(self):
     return self.databuilder.sentence_encoder()

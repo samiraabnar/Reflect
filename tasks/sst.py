@@ -1,3 +1,5 @@
+import functools
+
 from distill.distill_util import DistillLoss, get_probs, SequenceDistillLoss, get_masked_probs
 from tasks.task import Task
 import tensorflow as tf
@@ -74,9 +76,9 @@ class LmSST2(Task):
     return get_masked_probs
 
   def metrics(self):
-    return [MaskedSequenceLoss(padding_symbol=tf.constant(0, dtype=tf.int64)),
-            masked_batch_perplexity,
-            masked_perplexity,
+    return [MaskedSequenceLoss(padding_symbol=tf.constant(tf.constant(self.output_padding_symbol, dtype=tf.int64), dtype=tf.int64)),
+            functools.partial(masked_batch_perplexity, padding_sumbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
+            functools.partial(masked_perplexitypadding_sumbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=1),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=2),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=5)
