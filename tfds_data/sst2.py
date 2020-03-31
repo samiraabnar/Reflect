@@ -1,5 +1,8 @@
 import tensorflow_datasets as tfds
 
+from util import constants
+
+
 class SST2(tfds.core.GeneratorBasedBuilder):
 
   VERSION = tfds.core.Version('0.1.0')
@@ -11,7 +14,8 @@ class SST2(tfds.core.GeneratorBasedBuilder):
   def _info(self):
     self.text_encoder_config = tfds.features.text.TextEncoderConfig(
       encoder_cls=tfds.features.text.SubwordTextEncoder,
-      vocab_size=2 ** 13)
+      vocab_size=2 ** 13,
+      reserved_tokens=[constants.pad, constants.unk, constants.bos, constants.eos])
 
     return tfds.core.DatasetInfo(
       builder=self,
