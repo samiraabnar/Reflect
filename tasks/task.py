@@ -49,7 +49,7 @@ class Task(object):
     self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size,
                                                          padded_shapes=self.padded_shapes,
-                                                         padding_values=self.input_padding_symbol)
+                                                         padding_values=(self.input_padding_symbol,self.output_padding_symbol))
     #self.valid_dataset = self.valid_dataset.cache()
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
@@ -58,8 +58,8 @@ class Task(object):
     self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x),
                                                 num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
-                                                         padded_shapes=self.padded_shapes,
-                                                       padding_values=self.input_padding_symbol)
+                                                       padded_shapes=self.padded_shapes,
+                                                       padding_values=(self.input_padding_symbol,self.output_padding_symbol))
     self.test_dataset = self.test_dataset.repeat()
     self.test_dataset = self.test_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
@@ -68,7 +68,7 @@ class Task(object):
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
     self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size,
                                                          padded_shapes=self.padded_shapes,
-                                                         padding_values=self.input_padding_symbol)
+                                                         padding_values=(self.input_padding_symbol,self.output_padding_symbol))
     #self.train_dataset = self.train_dataset.cache()
     self.train_dataset = self.train_dataset.repeat()
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
