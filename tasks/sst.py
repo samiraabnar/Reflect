@@ -34,7 +34,7 @@ class ClassifySST2(Task):
     return get_probs
 
   def metrics(self):
-    return [ClassificationLossMetric(global_batch_size=tf.constant(self.task_params.batch_size, dtype=tf.float32),padding_symbol=tf.constant(-1, dtype=tf.int64)),
+    return [ClassificationLossMetric(global_batch_size=tf.constant(self.task_params.batch_size, dtype=tf.float32),padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
   @property
@@ -50,9 +50,11 @@ class LmSST2(Task):
     super(LmSST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
                                 builder_cls=SST2)
+    self.output_padding_symbol = self.input_padding_symbol
+
 
   def get_loss_fn(self):
-    return MaskedSequenceLoss(padding_symbol=tf.constant(0, dtype=tf.int64), num_replicas_in_sync=self.task_params.num_replicas_in_sync)
+    return MaskedSequenceLoss(padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), num_replicas_in_sync=self.task_params.num_replicas_in_sync)
 
   def vocab_size(self):
     return self.databuilder.vocab_size()
@@ -64,7 +66,7 @@ class LmSST2(Task):
     return self.databuilder.sentence_encoder()
 
   def get_distill_loss_fn(self, distill_params):
-    return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=tf.constant(0, dtype=tf.int64))
+    return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64))
 
   def get_probs_fn(self):
     return get_masked_probs
@@ -73,9 +75,9 @@ class LmSST2(Task):
     return [MaskedSequenceLoss(padding_symbol=tf.constant(0, dtype=tf.int64)),
             masked_batch_perplexity,
             masked_perplexity,
-            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(0, dtype=tf.int64), topk=1),
-            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(0, dtype=tf.int64), topk=2),
-            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(0, dtype=tf.int64), topk=5)
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=1),
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=2),
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=5)
           ]
 
 
