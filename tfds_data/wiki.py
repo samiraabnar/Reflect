@@ -53,21 +53,21 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
         name=tfds.Split.TRAIN,
         num_shards=100,
         gen_kwargs={
-          "input_file_path": "train[:80%]",
+          "input_file_path": "train",
         },
       ),
       tfds.core.SplitGenerator(
         name=tfds.Split.VALIDATION,
         num_shards=50,
         gen_kwargs={
-          "input_file_path": "train[80%:85%]",
+          "input_file_path": "validation",
         },
       ),
       tfds.core.SplitGenerator(
         name=tfds.Split.TEST,
         num_shards=50,
         gen_kwargs={
-          "input_file_path": "train[85%:]",
+          "input_file_path": "test",
         },
       ),
     ]

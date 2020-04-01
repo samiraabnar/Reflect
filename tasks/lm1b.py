@@ -1,3 +1,5 @@
+import functools
+
 from tensorflow_datasets.text import Lm1bConfig
 
 from distill.distill_util import get_masked_probs, SequenceDistillLoss
@@ -34,22 +36,30 @@ class Lm1B(Task):
 
     self.test_dataset = self.databuilder.as_dataset(split="test")
     self.test_dataset = self.test_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.padded_shapes)
+    self.test_dataset = self.test_dataset.filter(lambda x: len(x[0]) < 300)
+    self.test_dataset = self.test_dataset.padded_batch(batch_size=self.task_params.batch_size,
+                                                       padded_shapes=self.padded_shapes,
+                                                       padding_values=(self.input_padding_symbol, self.output_padding_symbol))
     self.test_dataset = self.test_dataset.repeat()
     self.test_dataset = self.test_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
     self.valid_dataset = self.databuilder.as_dataset(split="test")
     self.valid_dataset = self.valid_dataset.map(map_func=lambda x: self.convert_examples(x),
                                               num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    self.valid_dataset = self.valid_dataset.filter(lambda x: len(x[0]) < 300)
     self.valid_dataset = self.valid_dataset.padded_batch(batch_size=self.task_params.batch_size,
-                                                       padded_shapes=self.padded_shapes)
+                                                         padded_shapes=self.padded_shapes,
+                                                         padding_values=(self.input_padding_symbol, self.output_padding_symbol))
     self.valid_dataset = self.valid_dataset.repeat()
     self.valid_dataset = self.valid_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
     self.train_dataset = self.databuilder.as_dataset(split="train")
     self.train_dataset = self.train_dataset.shuffle(10000)
     self.train_dataset = self.train_dataset.map(map_func=lambda x: self.convert_examples(x), num_parallel_calls=tf.data.experimental.AUTOTUNE)
-    self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size, padded_shapes=self.padded_shapes)
+    self.train_dataset = self.train_dataset.filter(lambda x: len(x[0]) < 300)
+    self.train_dataset = self.train_dataset.padded_batch(batch_size=self.task_params.batch_size,
+                                                         padded_shapes=self.padded_shapes,
+                                                         padding_values=(self.input_padding_symbol, self.output_padding_symbol))
     self.train_dataset = self.train_dataset.repeat()
     self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
 
@@ -73,23 +83,26 @@ class Lm1B(Task):
            sentence[1:]
 
   def get_loss_fn(self):
-    return MaskedSequenceLoss(padding_symbol=0)
-
+    return MaskedSequenceLoss(padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64),
+                              num_replicas_in_sync=self.task_params.num_replicas_in_sync)
 
   def get_distill_loss_fn(self, distill_params):
-    return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=0)
+    return SequenceDistillLoss(tmp=distill_params.distill_temp, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64))
 
   def get_probs_fn(self):
     return get_masked_probs
 
   def metrics(self):
-    return [MaskedSequenceLoss(padding_symbol=0),
-            masked_batch_perplexity,
-            masked_perplexity,
-            metrics.accuracy,
-            metrics.accuracy_top2,
-            metrics.accuracy_top5
-            ]
+    return [MaskedSequenceLoss(padding_symbol=tf.constant(tf.constant(self.output_padding_symbol, dtype=tf.int64), dtype=tf.int64)),
+            functools.update_wrapper(functools.partial(masked_batch_perplexity, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
+                                     masked_batch_perplexity),
+            functools.update_wrapper(functools.partial(masked_perplexity, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
+                                     masked_perplexity),
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=1),
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=2),
+            metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=5)
+          ]
+
 
 
 if __name__ == '__main__':

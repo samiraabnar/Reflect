@@ -78,7 +78,6 @@ class SST2(tfds.core.GeneratorBasedBuilder):
               }
 
 
-
   def sentence_encoder(self):
     return self.info.features["sentence"].encoder
 
