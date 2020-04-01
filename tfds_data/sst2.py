@@ -9,7 +9,7 @@ class Sst2(tfds.core.GeneratorBasedBuilder):
 
 
   def __init__(self,**kwargs):
-    super(Sst2, self).__init__(name='sst2',**kwargs)
+    super(Sst2, self).__init__(**kwargs)
 
   def _info(self):
     self.text_encoder_config = tfds.features.text.TextEncoderConfig(
