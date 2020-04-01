@@ -169,7 +169,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
       return teacher_probs
 
     def student_epoch_loop(dataiterator, num_steps):
-      for step in tf.arange(num_steps):
+      for step in tf.range(num_steps):
         x_s, y_s = next(dataiterator)
         teacher_reps, teacher_logits = get_teacher_outputs(x_s)
         rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_reps)
@@ -191,7 +191,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
         step += 1
 
     def teacher_epoch_loop(dataiterator, num_steps_per_epoch):
-      for step in tf.arange(num_steps_per_epoch):
+      for step in tf.range(num_steps_per_epoch):
         x_t, y_t = next(dataiterator)
         teacher_loss = teacher_train_step(x_t, y_t)
 
