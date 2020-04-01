@@ -168,9 +168,9 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
 
       return teacher_probs
 
-    def student_epoch_loop(one_epoch_iterator):
-      step = 0
-      for x_s, y_s in one_epoch_iterator:
+    def student_epoch_loop(dataiterator, num_steps):
+      for step in tf.arange(num_steps):
+        x_s, y_s = next(dataiterator)
         teacher_reps, teacher_logits = get_teacher_outputs(x_s)
         rep_loss, actual_loss = student_train_step(x_s, y_s, teacher_reps)
 
@@ -190,9 +190,9 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
 
         step += 1
 
-    def teacher_epoch_loop(one_epoch_iterator):
-      step = 0
-      for x_t, y_t in one_epoch_iterator:
+    def teacher_epoch_loop(dataiterator, num_steps_per_epoch):
+      for step in tf.arange(num_steps_per_epoch):
+        x_t, y_t = next(dataiterator)
         teacher_loss = teacher_train_step(x_t, y_t)
 
         # Log every 1000 batches.
@@ -203,19 +203,22 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
                               self.teacher_model.optimizer.learning_rate(self.teacher_model.optimizer.iterations), step=self.get_summary_step())
 
 
-        step += 1
+
 
 
     with self.summary_writer.as_default():
       num_epochs = self.distill_params.n_epochs
-      for _ in tf.range(num_epochs):
-        one_epoch_iterator_student = (next(self.student_train_batch_iterator) for _ in range(self.student_task.n_train_batches))
-        one_epoch_iterator_teacher = (next(self.teacher_train_batch_iterator) for _ in range(self.teacher_task.n_train_batches))
+      num_steps_per_epoch = min(5000, self.student_task.n_train_batches)
+      total_steps = (self.student_task.n_train_batches* num_epochs) // num_steps_per_epoch
+      tf.print("total steps:", total_steps)
+      for _ in tf.range(total_steps):
+        # one_epoch_iterator_student = (next(self.student_train_batch_iterator) for _ in range(self.student_task.n_train_batches))
+        # one_epoch_iterator_teacher = (next(self.teacher_train_batch_iterator) for _ in range(self.teacher_task.n_train_batches))
 
         if self.distill_params.teacher_learning_rate > 0:
-          teacher_epoch_loop(one_epoch_iterator_teacher)
+          teacher_epoch_loop(self.teacher_train_batch_iterator, num_steps_per_epoch)
 
-        student_epoch_loop(one_epoch_iterator_student)
+        student_epoch_loop(self.student_train_batch_iterator, num_steps_per_epoch)
 
         # Evaluate teacher
         teacher_eval_results = self.teacher_model.evaluate(self.teacher_task.valid_dataset,
