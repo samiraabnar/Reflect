@@ -8,7 +8,7 @@ import tensorflow_datasets as tfds
 from tf2_models import metrics
 from tf2_models.metrics import ClassificationLoss, ClassificationLossMetric, MaskedSequenceLoss, \
   masked_batch_perplexity, masked_perplexity
-from tfds_data.sst2 import SST2
+from tfds_data.sst2 import Sst2
 from util import constants
 
 
@@ -16,7 +16,7 @@ class ClassifySST2(Task):
   def __init__(self, task_params, name='sst2', data_dir='data'):
     super(ClassifySST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
-                                builder_cls=SST2)
+                                builder_cls=Sst2)
 
   def vocab_size(self):
     return self.databuilder.vocab_size()
@@ -52,7 +52,7 @@ class LmSST2(Task):
   def __init__(self, task_params, name='lm_sst2', data_dir='data'):
     super(LmSST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
-                                builder_cls=SST2,
+                                builder_cls=Sst2,
                                 output_padding=True)
 
 

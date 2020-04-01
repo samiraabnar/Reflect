@@ -3,13 +3,13 @@ import tensorflow_datasets as tfds
 from util import constants
 
 
-class SST2(tfds.core.GeneratorBasedBuilder):
+class Sst2(tfds.core.GeneratorBasedBuilder):
 
   VERSION = tfds.core.Version('0.1.0')
 
 
   def __init__(self,**kwargs):
-    super(SST2, self).__init__(name='sst2',**kwargs)
+    super(Sst2, self).__init__(name='sst2',**kwargs)
 
   def _info(self):
     self.text_encoder_config = tfds.features.text.TextEncoderConfig(
