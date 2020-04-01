@@ -16,7 +16,8 @@ class WikiLM(Task):
   def __init__(self, task_params, name='wikilm', data_dir='data'):
     super(WikiLM, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
-                                builder_cls=WikiEn)
+                                builder_cls=WikiEn,
+                                output_padding=True)
 
 
   def sentence_encoder(self):

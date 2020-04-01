@@ -1,6 +1,9 @@
 import tensorflow_datasets as tfds
 from nltk import tokenize
 import nltk
+
+from util import constants
+
 nltk.download('punkt')
 
 class WikiEn(tfds.core.GeneratorBasedBuilder):
@@ -40,7 +43,8 @@ class WikiEn(tfds.core.GeneratorBasedBuilder):
     # Downloads the data and defines the splits
     # dl_manager is a tfds.download.DownloadManager that can be used to
     # download and extract URLs
-    self.info.features["sentence"].maybe_build_from_corpus(self._vocab_text_gen())
+    self.info.features["sentence"].maybe_build_from_corpus(self._vocab_text_gen(),
+                                                           reserved_tokens=[constants.pad, constants.unk, constants.bos, constants.eos])
     self.info.features["title"].encoder = self.info.features["sentence"].encoder
 
     # Specify the splits
