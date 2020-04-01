@@ -25,7 +25,8 @@ class Lm1B(Task):
     )
     self.databuilder = builder_cls(data_dir=data_dir,
                                    config=config)
-    super(Lm1B, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=None)
+    super(Lm1B, self).__init__(task_params=task_params, name=name, data_dir=data_dir,
+                               builder_cls=None, output_padding=True)
 
 
   def setup_datasets(self):
