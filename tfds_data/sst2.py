@@ -93,7 +93,7 @@ class Sst2(tfds.core.GeneratorBasedBuilder):
 
 if __name__ == '__main__':
 
-  databuilder = SST2(data_dir='data')
+  databuilder = Sst2(data_dir='data')
   databuilder.download_and_prepare(download_dir='tmp/',
                                     download_config=tfds.download.DownloadConfig(register_checksums=True))
 
