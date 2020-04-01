@@ -73,9 +73,9 @@ class Distiller(object):
 
   def setup_models(self, distill_params, task):
     x, y = iter(self.task.valid_dataset).next()
-    self.student_model(x, training=True)
+    self.student_model(x, padding_symbol=self.task.input_padding_symbol, training=True)
     self.student_model.summary()
-    self.teacher_model(x, training=True)
+    self.teacher_model(x, padding_symbol=self.task.input_padding_symbol, training=True)
     self.teacher_model.summary()
     self.student_model.compile(
       optimizer=self.student_optimizer,
@@ -130,7 +130,7 @@ class Distiller(object):
       student_distill_rate = self.distillrate_scheduler(self.student_optimizer.iterations)
       student_gold_rate = 1 - student_distill_rate
       with tf.GradientTape() as tape:
-        logits = self.student_model(x, training=True)
+        logits = self.student_model(x, padding_symbol=self.task.input_padding_symbol, training=True)
         distill_loss = self.distill_loss(y_pred=logits, y_true=teacher_y)
         reg_loss = tf.math.add_n(self.student_model.losses)
         actual_loss = self.task_loss(y_pred=logits, y_true=y_true)
@@ -147,7 +147,7 @@ class Distiller(object):
     def epoch_loop():
       step = 0
       for x,y in self.task.train_dataset:
-        teacher_logits = self.teacher_model(x, training=True)
+        teacher_logits = self.teacher_model(x, padding_symbol=self.task.input_padding_symbol, training=True)
         teacher_probs = self.task_probs_fn(logits=teacher_logits, labels=y, temperature=self.temperature)
         distill_loss, actual_loss, student_distill_rate = student_train_step(x=x, teacher_y=teacher_probs, y_true=y)
 

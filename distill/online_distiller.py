@@ -70,9 +70,9 @@ class OnlineDistiller(Distiller):
 
   def setup_models(self, distill_params, task):
     x, y = iter(self.task.valid_dataset).next()
-    self.student_model(x)
+    self.student_model(x, padding_symbol=self.task.input_padding_symbol)
     self.student_model.summary()
-    self.teacher_model(x)
+    self.teacher_model(x, padding_symbol=self.task.input_padding_symbol)
     self.teacher_model.summary()
 
     self.student_model.compile(
@@ -89,7 +89,7 @@ class OnlineDistiller(Distiller):
     @tf.function(experimental_relax_shapes=True)
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
-        logits = self.teacher_model(x, training=True)
+        logits = self.teacher_model(x, padding_symbol=self.task.input_padding_symbol, training=True)
         loss = self.teacher_model.loss(y_pred=logits, y_true=y_true)
         if len(self.teacher_model.losses) > 0:
           reg_loss = tf.math.add_n(self.teacher_model.losses)
@@ -118,7 +118,7 @@ class OnlineDistiller(Distiller):
       student_distill_rate = self.distillrate_scheduler(self.student_optimizer.iterations)
       student_gold_rate = 1 - student_distill_rate
       with tf.GradientTape() as tape:
-        logits = self.student_model(x, training=True)
+        logits = self.student_model(x, padding_symbol=self.task.input_padding_symbol, training=True)
         distill_loss = self.distill_loss(y_pred=logits, y_true=y)
         if len(self.student_model.losses) > 0:
           reg_loss = tf.math.add_n(self.student_model.losses)

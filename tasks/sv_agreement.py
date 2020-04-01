@@ -1,3 +1,5 @@
+import functools
+
 from distill.distill_util import DistillLoss, get_probs, SequenceDistillLoss, get_topk_masked_probs, get_masked_probs
 from tasks.task import Task
 import tensorflow as tf
@@ -46,8 +48,14 @@ class SvAgreementLM(Task):
 
   def metrics(self):
     return [MaskedSequenceLoss(padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64)),
-            masked_batch_perplexity,
-            masked_perplexity,
+            functools.update_wrapper(functools.partial(masked_batch_perplexity,
+                                                       padding_symbol=tf.constant(self.output_padding_symbol,
+                                                                                  dtype=tf.int64)),
+                                     masked_batch_perplexity),
+            functools.update_wrapper(functools.partial(masked_perplexity,
+                                                       padding_symbol=tf.constant(self.output_padding_symbol,
+                                                                                  dtype=tf.int64)),
+                                     masked_perplexity),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=1),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=2),
             metrics.AccuracyTopk(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64), topk=5)

@@ -70,9 +70,9 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
     x_s, y_s = iter(self.student_task.valid_dataset).next()
     x_t, y_t = iter(self.teacher_task.valid_dataset).next()
 
-    self.student_model(x_s)
+    self.student_model(x_s, padding_symbol=self.student_task.input_padding_symbol)
     self.student_model.summary()
-    self.teacher_model(x_t)
+    self.teacher_model(x_t, padding_symbol=self.teacher_task.input_padding_symbol)
     self.teacher_model.summary()
 
     self.student_model.compile(
@@ -95,7 +95,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
 
     @tf.function(experimental_relax_shapes=True)
     def get_teacher_outputs(x):
-      outputs = self.teacher_model.detailed_call(x, training=False)
+      outputs = self.teacher_model.detailed_call(x, padding_symbol=self.student_task.input_padding_symbol, training=False)
       teacher_logits, teacher_reps = outputs[0], outputs[self.teacher_model.rep_index]
       if self.teacher_model.rep_layer is not None:
         teacher_reps = teacher_reps[self.teacher_model.rep_layer]
@@ -106,7 +106,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
     def teacher_train_step(x, y_true):
       with tf.GradientTape() as tape:
 
-        teacher_logits = self.teacher_model(x, training=True)
+        teacher_logits = self.teacher_model(x, padding_symbol=self.teacher_task.input_padding_symbol, training=True)
         loss = self.teacher_model.loss(y_pred=teacher_logits, y_true=y_true)
 
         if len(self.teacher_model.losses) > 0:
@@ -124,7 +124,7 @@ class MultiOnlineRepDistiller(OnlineRepDistiller):
 
     @tf.function(experimental_relax_shapes=True)
     def get_student_outputs(x):
-      outputs = self.student_model.detailed_call(x, training=tf.convert_to_tensor(True))
+      outputs = self.student_model.detailed_call(x, padding_symbol=self.student_task.input_padding_symbol, training=tf.convert_to_tensor(True))
       logits, student_reps = outputs[0], outputs[self.student_model.rep_index]
       if self.student_model.rep_layer is not None:
         student_reps = student_reps[self.student_model.rep_layer]
