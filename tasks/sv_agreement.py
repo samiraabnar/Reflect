@@ -61,7 +61,10 @@ class WordSvAgreementLM(SvAgreementLM):
 
 class WordSvAgreementVP(Task):
   def __init__(self, task_params, name='word_sv_agreement_vp', data_dir='data', builder_cls=WordSvAgreement):
-    super(WordSvAgreementVP, self).__init__(task_params=task_params, name=name, data_dir=data_dir, builder_cls=builder_cls)
+    super(WordSvAgreementVP, self).__init__(task_params=task_params, name=name, data_dir=data_dir,
+                                            builder_cls=builder_cls,
+                                            output_padding=False)
+
   @property
   def padded_shapes(self):
     return ([None],[])
