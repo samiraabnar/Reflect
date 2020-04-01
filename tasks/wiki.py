@@ -18,6 +18,10 @@ class WikiLM(Task):
                                 data_dir=data_dir,
                                 builder_cls=WikiEn)
 
+
+  def sentence_encoder(self):
+    return self.databuilder.sentence_encoder()
+
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
