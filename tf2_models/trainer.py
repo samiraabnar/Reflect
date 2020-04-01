@@ -20,7 +20,7 @@ class Trainer(object):
 
       self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
 
-      self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, net=self.model)
+      self.ckpt = tf.train.Checkpoint(step=tf.Variable(1, name='checkpoint_step'), optimizer=self.optimizer, net=self.model)
       self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir,
                                                 keep_checkpoint_every_n_hours=self.hparams.keep_checkpoint_every_n_hours,
                                                 max_to_keep=2)
