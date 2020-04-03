@@ -25,7 +25,7 @@ class LmGPT2(tf.keras.Model):
   def create_vars(self, hparams):
     self.transformer = GPT2(hparams, name='transformer')
 
-  def call(self, inputs, **kwargs):
+  def call(self, inputs, padding_symbol=None, **kwargs):
     transformer_outputs = self.transformer(inputs, **kwargs)
     hidden_states = transformer_outputs[0]
 
@@ -35,7 +35,7 @@ class LmGPT2(tf.keras.Model):
 
     return lm_logits  # lm_logits, presents, (all hidden_states), (attentions)
 
-  def detailed_call(self, inputs, **kwargs):
+  def detailed_call(self, inputs, padding_symbol=None, **kwargs):
     transformer_outputs = self.transformer(inputs, **kwargs)
     hidden_states = transformer_outputs[0]
 
@@ -52,7 +52,7 @@ class LmGPT2SharedWeights(LmGPT2):
   def create_vars(self, hparams):
     self.transformer = GPT2SharedWeights(hparams, name='shared_transformer')
 
-  def call(self, inputs, **kwargs):
+  def call(self, inputs, padding_symbol=None, **kwargs):
     transformer_outputs = self.transformer(inputs, **kwargs)
     hidden_states = transformer_outputs[0]
 
@@ -91,7 +91,7 @@ class ClassifierGPT2(tf.keras.Model):
                                      kernel_initializer=get_initializer(self.hparams.initializer_range),
                                      name='e2c')
 
-  def call(self, inputs, **kwargs):
+  def call(self, inputs, padding_symbol=None, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       mask = tf.cast(inputs != 0, dtype=tf.int32)
@@ -114,7 +114,7 @@ class ClassifierGPT2(tf.keras.Model):
 
     return cl_logits
 
-  def detailed_call(self, inputs, **kwargs):
+  def detailed_call(self, inputs, padding_symbol=None, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       mask = tf.cast(inputs != 0, dtype=tf.int32)
@@ -178,7 +178,7 @@ class ClassifierBERT(tf.keras.Model):
                                      kernel_initializer=get_initializer(self.hparams.initializer_range),
                                      name='e2c')
 
-  def call(self, inputs, **kwargs):
+  def call(self, inputs, padding_symbol=None, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       #mask = tf.cast(inputs != 0, dtype=tf.int32)
@@ -201,7 +201,7 @@ class ClassifierBERT(tf.keras.Model):
 
     return cl_logits
 
-  def detailed_call(self, inputs, **kwargs):
+  def detailed_call(self, inputs, padding_symbol=None, **kwargs):
     @tf.function(experimental_relax_shapes=True)
     def _call(batch_size, inputs, transformer_outputs):
       hidden_states = transformer_outputs[0][:, 0]
