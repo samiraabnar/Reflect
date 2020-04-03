@@ -12,7 +12,7 @@ CUDA_VISIBLE_DEVICES=2,3,4,5 python keras_trainer.py \
 --task=lm1b \
 --model_config=lstm_drop31_v3 \
 --train_config=radam_slw2 \
---batch_size=128 \
+--batch_size=256 \
 --exp_name=offlineteacher_v3 > lm1b_run3 &
 
 
