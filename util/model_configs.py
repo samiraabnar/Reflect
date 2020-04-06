@@ -503,6 +503,14 @@ lstm_drop31_v3 = {
   'input_dropout_rate': 0.2,
 }
 
+biglstm_drop31_v3 = {
+  'hidden_dim': 1024,
+  'embedding_dim': 1024,
+  'depth': 2,
+  'hidden_dropout_rate': 0.6,
+  'input_dropout_rate': 0.25,
+}
+
 lstm_drop31_v4 = {
   'hidden_dim': 512,
   'embedding_dim': 512,
@@ -743,4 +751,5 @@ MODEL_CONFIGS = {
   'vcnn_mnist': vcnn_mnist,
   'vcnn_lenet5': vcnn_lenet5,
   'caps_base': caps_base,
+  'biglstm_drop31_v3': biglstm_drop31_v3
 }

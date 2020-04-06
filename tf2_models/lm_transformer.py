@@ -46,7 +46,7 @@ class LmGPT2(tf.keras.Model):
 
 class LmGPT2SharedWeights(LmGPT2):
   def __init__(self, hparams, scope='lm_gpt2_shared_weights', *inputs, **kwargs):
-    super(LmGPT2SharedWeights, self).__init__(hparams, *inputs, **kwargs)
+    super(LmGPT2SharedWeights, self).__init__(hparams, scope=scope, *inputs, **kwargs)
 
   @tf.function
   def create_vars(self, hparams):
