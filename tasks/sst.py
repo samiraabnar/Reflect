@@ -16,7 +16,8 @@ class ClassifySST2(Task):
   def __init__(self, task_params, name='sst2', data_dir='data'):
     super(ClassifySST2, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
-                                builder_cls=Sst2)
+                                builder_cls=Sst2,
+                                output_padding=False)
 
   def vocab_size(self):
     return self.databuilder.vocab_size()
@@ -28,7 +29,7 @@ class ClassifySST2(Task):
     return 2
 
   def get_loss_fn(self):
-    return ClassificationLoss(global_batch_size=tf.constant(self.task_params.batch_size, dtype=tf.float32), padding_symbol=tf.constant(-1, dtype=tf.int64))
+    return ClassificationLoss(global_batch_size=tf.constant(self.task_params.batch_size, dtype=tf.float32), padding_symbol=tf.constant(self.output_padding_symbol, dtype=tf.int64))
 
   def get_distill_loss_fn(self, distill_params):
     return DistillLoss(tmp=distill_params.distill_temp)
