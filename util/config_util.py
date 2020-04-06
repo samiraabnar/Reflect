@@ -12,6 +12,7 @@ class TrainParams(object):
                hold_base_rate_steps=1000,
                total_training_steps=60000,
                num_train_epochs=60,
+               decay_rate=0.96,
                schedule='',
   ):
     self.learning_rate = learning_rate
@@ -23,6 +24,7 @@ class TrainParams(object):
     self.num_train_epochs = num_train_epochs
     self.optimizer =  optimizer
     self.schedule = schedule
+    self.decay_rate = decay_rate
 
 
 class DistillParams(object):
@@ -34,11 +36,13 @@ class DistillParams(object):
                student_decay_steps=10000,
                student_warmup_steps=10000,
                student_hold_base_rate_steps=1000,
+               student_decay_rate=0.96,
                student_optimizer='adam',
                teacher_learning_rate=0.0001,
                teacher_decay_steps=10000,
                teacher_warmup_steps=10000,
                teacher_hold_base_rate_steps=1000,
+               teacher_decay_rate=0.96,
                teacher_optimizer='radam',
                n_epochs=60,
                schedule='',
@@ -70,6 +74,8 @@ class DistillParams(object):
     self.distill_warmup_steps = distill_warmup_steps
     self.hold_base_distillrate_steps = hold_base_distillrate_steps
     self.student_distill_rep_rate = student_distill_rep_rate
+    self.teacher_decay_rate = teacher_decay_rate
+    self.student_decay_rate = student_decay_rate
 
 
 class TaskParams:

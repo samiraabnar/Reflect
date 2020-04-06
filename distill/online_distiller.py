@@ -61,7 +61,7 @@ class OnlineDistiller(Distiller):
     lr_schedule = ExponentialDecayWithWarmpUp(
       initial_learning_rate=teacher_initial_learning_rate,
       decay_steps=self.distill_params.teacher_decay_steps,
-      decay_rate=0.96,
+      decay_rate=self.distill_params.teacher_decay_rate,
       warmup_steps=self.distill_params.teacher_warmup_steps,
       hold_base_rate_steps=self.distill_params.teacher_hold_base_rate_steps)
     self.teacher_optimizer = OPTIMIZER_DIC[self.distill_params.teacher_optimizer](
