@@ -18,7 +18,7 @@ class MatrixCaps(tf.keras.Model):
     # "We use a weight decay loss with a small factor of .0000002 rather than
     # the reconstruction loss."
     # https://openreview.net/forum?id=HJWLfGWRb&noteId=rJeQnSsE3X
-    self.weights_regularizer = tf.contrib.layers.l2_regularizer(0.0000002)
+    self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
 
     self.batch_norm = tf.keras.layers.BatchNormalization()
 
