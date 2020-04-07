@@ -13,7 +13,7 @@ class MatrixCaps(tf.keras.Model):
     # xavier initialization is necessary here to provide higher stability
     # instead of initializing bias with constant 0, a truncated normal
     # initializer is exploited here for higher stability
-    self.bias_initializer = tf.keras.initializers.glorot_normal(mean=0.0, stddev=0.01)
+    self.bias_initializer = tf.keras.initializers.glorot_normal()
 
     # "We use a weight decay loss with a small factor of .0000002 rather than
     # the reconstruction loss."
