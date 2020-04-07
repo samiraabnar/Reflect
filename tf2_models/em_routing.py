@@ -89,19 +89,16 @@ class EmRouting(tf.keras.layers.Layer):
 
     self.beta_a = tf.Variable(
       name='beta_a',
-      shape=[1, 1, 1, 1, self.num_out_caps, 1],
-      dtype=tf.float32,
-      initializer=tf.keras.initializers.GlorotNormal())
+      initial_value=tf.random.truncated_normal(shape=[1, 1, 1, 1, self.num_out_caps, 1],
+      dtype=tf.float32))
 
     # One beta per output capsule type
     # (1, 1, 1, 1, 32, 1)
     # (N, output_h, output_h, num_input_caps, o, n_channels)
     self.beta_v = tf.Variable(
       name='beta_v',
-      shape=[1, 1, 1, 1, self.num_out_caps, 1],
-      dtype=tf.float32,
-      initializer=tf.keras.initializers.GlorotNormal(),
-      regularizer=None)
+      initial_value=tf.random.truncated_normal(shape=[1, 1, 1, 1, self.num_out_caps, 1],
+                                               dtype=tf.float32))
 
 
 
