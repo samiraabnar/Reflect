@@ -7,7 +7,6 @@ import tensorflow as tf
 
 def get_adjmat(mat, input_tokens):
     n_layers, length, _ = mat.shape
-
     adj_mat = np.zeros(((n_layers+1)*length, (n_layers+1)*length))
     labels_to_index = {}
     for k in np.arange(length):
