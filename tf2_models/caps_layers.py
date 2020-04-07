@@ -124,15 +124,14 @@ class ConvCaps(tf.keras.layers.Layer):
                                                batch_size,
                                                spatial_routing_matrix)
 
-    return activation_out, pose_out
+    return pose_out, activation_out
 
 
 class FcCaps(ConvCaps):
   def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
     super(FcCaps, self).__init__(hparams, scope=scope, *inputs, **kwargs)
 
-  def call(self,activation_in,
-           pose_in):
+  def call(self,pose_in, activation_in, training=True, **kwargs):
     """Fully connected capsule layer.
 
     "The last layer of convolutional capsules is connected to the final capsule
@@ -225,7 +224,7 @@ class FcCaps(ConvCaps):
     activation_out = tf.squeeze(activation_out, name="activation_out")
     pose_out = tf.squeeze(pose_out, name="pose_out")
 
-    return activation_out, pose_out
+    return pose_out, activation_out
 
 
 def coord_addition(votes):
