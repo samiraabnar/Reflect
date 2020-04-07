@@ -126,9 +126,9 @@ class ConvCaps(tf.keras.layers.Layer):
     return pose_out, activation_out
 
 
-class FcCaps(ConvCaps):
+class FcCaps(tf.keras.layers.Layer):
   def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
-    super(FcCaps, self).__init__(hparams, scope=scope, *inputs, **kwargs)
+    super(FcCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
 
   def call(self,pose_in, activation_in, training=True, **kwargs):
     """Fully connected capsule layer.
@@ -225,6 +225,58 @@ class FcCaps(ConvCaps):
 
     return pose_out, activation_out
 
+  def compute_votes(self, poses_i, tag=False):
+    """Compute the votes by multiplying input poses by transformation matrix.
+
+    Multiply the poses of layer i by the transform matrix to compute the votes for
+    layer j.
+
+    Author:
+      Ashley Gritzman 19/10/2018
+
+    Credit:
+      Suofei Zhang's implementation on GitHub, "Matrix-Capsules-EM-Tensorflow"
+      https://github.com/www0wwwjs1/Matrix-Capsules-EM-Tensorflow
+
+    Args:
+      poses_i:
+        poses in layer i tiled according to the kernel
+        (N*output_h*output_w, kernel_h*kernel_w*i, 16)
+        (64*5*5, 9*8, 16)
+
+    Returns:
+      votes:
+        (N*output_h*output_w, kernel_h*kernel_w*i, o, 16)
+        (64*5*5, 9*8, 32, 16)
+    """
+
+    batch_size = poses_i.get_shape()[0] # 64*5*5
+    kh_kw_i = poses_i.get_shape()[1] # 9*8
+
+    # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
+    output = tf.reshape(poses_i, shape=[batch_size, kh_kw_i, 1, 4, 4])
+
+    # the output of capsule is miu, the mean of a Gaussian, and activation, the
+    # sum of probabilities it has no relationship with the absolute values of w
+    # and votes using weights with bigger stddev helps numerical stability
+
+
+    # (1, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
+    w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
+
+    # (64*5*5, 9*8, 1, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
+    output = tf.tile(output, [1, 1, self.num_out_caps, 1, 1])
+
+    # (64*5*5, 9*8, 32, 4, 4) x (64*5*5, 9*8, 32, 4, 4)
+    # -> (64*5*5, 9*8, 32, 4, 4)
+    mult = tf.matmul(output, w)
+
+    # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
+    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.num_out_caps, 16])
+
+    # tf.summary.histogram('w', w)
+
+    return votes
 
 def coord_addition(votes):
   """Coordinate addition for connecting the last convolutional capsule layer to   the final layer.
