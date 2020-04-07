@@ -13,7 +13,7 @@ class ConvCaps(tf.keras.layers.Layer):
     self.stride = stride
     self.kh_kw_i = kh_kw_i
     self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
-    self.w =  tf.Variable('w', shape=[1, self.kh_kw_i, self.num_out_caps, 4, 4],
+    self.w =  tf.Variable('w', shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
                             dtype=tf.float32,
                             initializer=tf.truncated_normal_initializer(
                             mean=0.0,
