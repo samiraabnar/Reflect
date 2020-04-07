@@ -66,8 +66,9 @@ class MatrixCaps(tf.keras.Model):
 
 
   def call(self, inputs, padding_symbol=None, training=True, **kwargs):
-    batch_size = input.get_shape()[0]
-    spatial_size = input.get_shape()[1]
+    inputs_shapes = inputs.get_shape()
+    batch_size = inputs_shapes[0]
+    spatial_size = inputs_shapes[1]
 
     outputs = self.batch_norm(inputs, training, **kwargs)
     outputs = self.conv1(outputs, training, **kwargs)
