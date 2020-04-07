@@ -5,19 +5,21 @@ from tf2_models.em_routing import EmRouting
 
 
 class ConvCaps(tf.keras.layers.Layer):
-  def __init__(self, hparams, kernel, stride, scope='conv_caps', *inputs, **kwargs):
+  def __init__(self, hparams, num_output_caps, kernel, stride, kh_kw_i, scope='conv_caps', *inputs, **kwargs):
     super(ConvCaps, self).__init__(hparams, scope=scope, *inputs, **kwargs)
     self.hparams = hparams
+    self.num_output_caps = num_output_caps
     self.kernel = kernel
     self.stride = stride
+    self.kh_kw_i = kh_kw_i
     self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
-    self.w =  tf.Variable('w', shape=[1, self.hparams.kh_kw_i, self.hparams.num_out_caps, 4, 4],
+    self.w =  tf.Variable('w', shape=[1, self.kh_kw_i, self.num_out_caps, 4, 4],
                             dtype=tf.float32,
                             initializer=tf.truncated_normal_initializer(
                             mean=0.0,
                             stddev=1.0),  # 1.0
                             regularizer=self.weights_regularizer)
-    self.em_routing = EmRouting(hparams)
+    self.em_routing = EmRouting(hparams, num_output_caps=num_output_caps)
 
   def compute_votes(self, poses_i, tag=False):
     """Compute the votes by multiplying input poses by transformation matrix.
@@ -44,8 +46,8 @@ class ConvCaps(tf.keras.layers.Layer):
         (64*5*5, 9*8, 32, 16)
     """
 
-    batch_size = int(poses_i.get_shape()[0])  # 64*5*5
-    kh_kw_i = int(poses_i.get_shape()[1])  # 9*8
+    batch_size = poses_i.get_shape()[0] # 64*5*5
+    kh_kw_i = poses_i.get_shape()[1] # 9*8
 
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
     output = tf.reshape(poses_i, shape=[batch_size, kh_kw_i, 1, 4, 4])
@@ -59,14 +61,14 @@ class ConvCaps(tf.keras.layers.Layer):
     w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
 
     # (64*5*5, 9*8, 1, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    output = tf.tile(output, [1, 1, self.hparams.num_out_caps, 1, 1])
+    output = tf.tile(output, [1, 1, self.num_out_caps, 1, 1])
 
     # (64*5*5, 9*8, 32, 4, 4) x (64*5*5, 9*8, 32, 4, 4)
     # -> (64*5*5, 9*8, 32, 4, 4)
     mult = tf.matmul(output, w)
 
     # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
-    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.hparams.num_out_caps, 16])
+    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.num_out_caps, 16])
 
     # tf.summary.histogram('w', w)
 

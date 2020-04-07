@@ -82,13 +82,14 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
 
 class EmRouting(tf.keras.layers.Layer):
 
-  def __init__(self, hparams, scope='em_routing', *inputs, **kwargs):
+  def __init__(self, hparams, num_output_caps, scope='em_routing', *inputs, **kwargs):
     super(EmRouting, self).__init__(hparams, scope=scope, *inputs, **kwargs)
     self.hparams = hparams
+    self.num_out_caps = num_output_caps
 
     self.beta_a = tf.Variable(
       name='beta_a',
-      shape=[1, 1, 1, 1, self.hparams.num_out_caps, 1],
+      shape=[1, 1, 1, 1, self.num_out_caps, 1],
       dtype=tf.float32,
       initializer=tf.keras.initializers.GlorotNormal())
 
@@ -97,7 +98,7 @@ class EmRouting(tf.keras.layers.Layer):
     # (N, output_h, output_h, num_input_caps, o, n_channels)
     self.beta_v = tf.Variable(
       name='beta_v',
-      shape=[1, 1, 1, 1, self.hparams.num_out_caps, 1],
+      shape=[1, 1, 1, 1, self.num_out_caps, 1],
       dtype=tf.float32,
       initializer=tf.keras.initializers.GlorotNormal(),
       regularizer=None)
@@ -220,7 +221,6 @@ class EmRouting(tf.keras.layers.Layer):
         rr = self.e_step(votes_ij,
                     activations_j,
                     mean_j,
-                    stdv_j,
                     var_j,
                     spatial_routing_matrix)
 

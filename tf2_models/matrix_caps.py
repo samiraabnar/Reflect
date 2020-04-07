@@ -52,14 +52,16 @@ class MatrixCaps(tf.keras.Model):
                                kernel_constraint=None, bias_constraint=None)
 
     self.convcaps1 = ConvCaps(self.hparams,
-                              kernel=3, stride=2,
+                              num_output_caps=self.hparams.C,
+                              kernel=3, stride=2, kh_kw_i=9*8,
                               scope='conv_caps1')
     self.convcaps2 = ConvCaps(self.hparams,
-                              kernel=3, stride=1,
+                              num_output_caps=self.hparams.D,
+                              kernel=3, stride=1, kh_kw_i=9*8,
                               name='conv_caps2')
 
 
-    self.fc_caps = FcCaps(self.hparams.output_size,
+    self.fc_caps = FcCaps(self.hparams.output_dim,
                           name='class_caps')
 
 
