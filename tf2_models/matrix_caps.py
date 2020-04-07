@@ -1,5 +1,5 @@
 import tensorflow as tf
-from distill.tf2_models.capsutil import *
+from tf2_models.capsutil import *
 
 from tf2_models.caps_layers import FcCaps, ConvCaps
 

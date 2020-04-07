@@ -1,5 +1,5 @@
 import tensorflow as tf
-from distill.tf2_models.caps_util import *
+from tf2_models.caps_util import *
 
 from tf2_models.em_routing import EmRouting
 

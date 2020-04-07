@@ -1,5 +1,5 @@
 import tensorflow as tf
-from distill.tf2_models.caps_util import *
+from tf2_models.caps_util import *
 
 def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   """Initialise routing weights.
