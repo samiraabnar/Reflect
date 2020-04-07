@@ -6,7 +6,7 @@ from tf2_models.em_routing import EmRouting
 
 class ConvCaps(tf.keras.layers.Layer):
   def __init__(self, hparams, num_output_caps, kernel, stride, kh_kw_i, scope='conv_caps', *inputs, **kwargs):
-    super(ConvCaps, self).__init__(hparams, scope=scope, *inputs, **kwargs)
+    super(ConvCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
     self.hparams = hparams
     self.num_output_caps = num_output_caps
     self.kernel = kernel

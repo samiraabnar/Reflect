@@ -83,7 +83,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
 class EmRouting(tf.keras.layers.Layer):
 
   def __init__(self, hparams, num_output_caps, scope='em_routing', *inputs, **kwargs):
-    super(EmRouting, self).__init__(hparams, scope=scope, *inputs, **kwargs)
+    super(EmRouting, self).__init__(hparams, name=scope, *inputs, **kwargs)
     self.hparams = hparams
     self.num_out_caps = num_output_caps
 
