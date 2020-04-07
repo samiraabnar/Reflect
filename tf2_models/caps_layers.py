@@ -15,7 +15,7 @@ class ConvCaps(tf.keras.layers.Layer):
     self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
     self.w =  tf.Variable('w', shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
                             dtype=tf.float32,
-                            initializer=tf.truncated_normal_initializer(
+                            initializer=tf.random.truncated_normal(
                             mean=0.0,
                             stddev=1.0),  # 1.0
                             regularizer=self.weights_regularizer)
