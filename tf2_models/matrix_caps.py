@@ -58,11 +58,11 @@ class MatrixCaps(tf.keras.Model):
     self.convcaps2 = ConvCaps(self.hparams,
                               num_output_caps=self.hparams.D,
                               kernel=3, stride=1, kh_kw_i=9*8,
-                              name='conv_caps2')
+                              scope='conv_caps2')
 
 
     self.fc_caps = FcCaps(self.hparams.output_dim,
-                          name='class_caps')
+                          scope='class_caps')
 
 
   def call(self, inputs, padding_symbol=None, training=True, **kwargs):
