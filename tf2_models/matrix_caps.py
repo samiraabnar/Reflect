@@ -22,7 +22,7 @@ class MatrixCaps(tf.keras.Model):
 
     self.batch_norm = tf.keras.layers.BatchNormalization()
 
-    self.conv1 = tf.keras.layers.Conv2d(filters=self.hparams.A, kernel_size=[5,5], strides=(2, 2),
+    self.conv1 = tf.keras.layers.Conv2D(filters=self.hparams.A, kernel_size=[5,5], strides=(2, 2),
                                         padding='same',
                                         activation=tf.nn.relu, use_bias=True,
                                         kernel_initializer='glorot_uniform',
@@ -32,7 +32,7 @@ class MatrixCaps(tf.keras.Model):
                                         activity_regularizer=None,
                                         kernel_constraint=None,
                                         bias_constraint=None)
-    self.primcaps_pose_conv = tf.keras.layers.Conv2d(filters=self.hparams.B * 16, kernel_size=[1,1], strides=(1, 1),
+    self.primcaps_pose_conv = tf.keras.layers.Conv2D(filters=self.hparams.B * 16, kernel_size=[1,1], strides=(1, 1),
                                padding='valid',
                                activation=None, use_bias=True,
                                kernel_initializer='glorot_uniform',
@@ -41,7 +41,7 @@ class MatrixCaps(tf.keras.Model):
                                bias_regularizer=self.weights_regularizer,
                                activity_regularizer=None,
                                kernel_constraint=None, bias_constraint=None)
-    self.primcaps_activation_conv = tf.keras.layers.Conv2d(filters=self.hparams.B, kernel_size=[1,1], strides=(1, 1),
+    self.primcaps_activation_conv = tf.keras.layers.Conv2D(filters=self.hparams.B, kernel_size=[1,1], strides=(1, 1),
                                padding='valid',
                                activation=tf.nn.sigmoid, use_bias=True,
                                kernel_initializer='glorot_uniform',
