@@ -13,10 +13,9 @@ class ConvCaps(tf.keras.layers.Layer):
     self.stride = stride
     self.kh_kw_i = kh_kw_i
     self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
-    self.w =  tf.Variable('w', shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
-                            dtype=tf.float32,
-                            initializer=tf.keras.initializers.glorot_normal(),  # 1.0
-                            regularizer=self.weights_regularizer)
+    self.w =  tf.Variable(name='w',
+                          initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
+                                                                   dtype=tf.float32))
     self.em_routing = EmRouting(hparams, num_output_caps=num_output_caps)
 
   def compute_votes(self, poses_i, tag=False):
