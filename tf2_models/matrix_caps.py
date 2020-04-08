@@ -64,7 +64,7 @@ class MatrixCaps(tf.keras.Model):
                           scope='class_caps')
 
 
-  @tf.function(experimental_relax_shapes=True)
+  #@tf.function(experimental_relax_shapes=True)
   def call(self, inputs, padding_symbol=None, training=True, **kwargs):
     inputs_shapes = tf.shape(inputs)
     batch_size = inputs_shapes[0]
