@@ -322,7 +322,7 @@ class EmRouting(tf.keras.layers.Layer):
                                      axis=-3,
                                      keepdims=True,
                                      name="mean_j_numerator")
-    mean_j = tf.div(mean_j_numerator,
+    mean_j = tf.math.divide(mean_j_numerator,
                     rr_prime_sum + self.hparams.epsilon,
                     name="mean_j")
 
@@ -333,7 +333,7 @@ class EmRouting(tf.keras.layers.Layer):
                                     axis=-3,
                                     keepdims=True,
                                     name="var_j_numerator")
-    var_j = tf.div(var_j_numerator,
+    var_j = tf.math.divide(var_j_numerator,
                    rr_prime_sum + self.hparams.epsilon,
                    name="var_j")
 
