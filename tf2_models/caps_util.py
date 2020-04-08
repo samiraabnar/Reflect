@@ -164,7 +164,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
   """
 
   # Get shapes of probs
-  shape = tf.shape(probs).as_list()
+  shape = tf.shape(probs)
   batch_size = shape[0]
   parent_space = shape[1]
   kk = shape[3]
@@ -228,7 +228,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
 
   # Checks
   # 1. Shape
-  assert tf.shape(sparse).as_list() == [batch_size, parent_space, parent_space, child_space_2, child_caps,
+  assert [a for a in tf.shape(sparse)] == [batch_size, parent_space, parent_space, child_space_2, child_caps,
                                           parent_caps]
 
 
@@ -278,7 +278,7 @@ def normalise_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert (tf.shape(rr_updated).as_list()
+  assert ([a for a in tf.shape(rr_updated)]
           == [batch_size, parent_space, parent_space, child_space_2,
               child_caps, parent_caps])
 
@@ -347,7 +347,7 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   # e.g. (1, 5, 5, 49, 8, 32)
   # (batch_size, parent_space, parent_space, child_space*child_space,
   # child_caps, parent_caps)
-  shape = tf.shape(probs_sparse).as_list()
+  shape = tf.shape(probs_sparse)
   batch_size = shape[0]
   parent_space = shape[1]
   child_space_2 = shape[3]  # squared
@@ -382,7 +382,7 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert (tf.shape(rr_updated).as_list()
+  assert ([a for a in tf.shape(rr_updated)]
           == [batch_size, parent_space, parent_space, child_space_2,
               child_caps, parent_caps])
 
@@ -436,7 +436,7 @@ def to_dense(sparse, spatial_routing_matrix):
   """
 
   # Get shapes of probs
-  shape = tf.shape(sparse).as_list()
+  shape = tf.shape(sparse)
   batch_size = shape[0]
   parent_space = shape[1]
   child_space_2 = shape[3]  # squared
@@ -464,7 +464,7 @@ def to_dense(sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert (tf.shape(dense).as_list()
+  assert ([a for a in tf.shape(dense)]
           == [batch_size, parent_space, parent_space, kk, child_caps,
               parent_caps])
 
