@@ -29,7 +29,7 @@ def create_routing_map(child_space, k, s):
       for i in tf.range(k):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
-        binmap[(c_idx):(c_idx + k), p_idx].assign(1)
+        binmap[(c_idx):(c_idx + k), p_idx].Assign(1)
   return binmap
 
 def kernel_tile(input, kernel, stride):
