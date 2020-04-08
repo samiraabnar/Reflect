@@ -294,79 +294,77 @@ class EmRouting(tf.keras.layers.Layer):
         (24, 6, 6, 1, 32, 16)
     """
 
-    with tf.variable_scope("m_step") as scope:
-      rr_prime = rr * activations_i
-      rr_prime = tf.identity(rr_prime, name="rr_prime")
+    rr_prime = rr * activations_i
+    rr_prime = tf.identity(rr_prime, name="rr_prime")
 
-      # rr_prime_sum: sum over all input capsule i
-      rr_prime_sum = tf.reduce_sum(rr_prime,
-                                   axis=-3,
-                                   keepdims=True,
-                                   name='rr_prime_sum')
+    # rr_prime_sum: sum over all input capsule i
+    rr_prime_sum = tf.reduce_sum(rr_prime,
+                                 axis=-3,
+                                 keepdims=True,
+                                 name='rr_prime_sum')
 
-      # The amount of information given to parent capsules is very different for
-      # the final "class-caps" layer. Since all the spatial capsules give output
-      # to just a few class caps, they receive a lot more information than the
-      # convolutional layers. So in order for lambda and beta_v/beta_a settings to
-      # apply to this layer, we must normalise the amount of information.
-      # activ from convcaps1 to convcaps2 (64*5*5, 144, 16, 1) 144/16 = 9 info
-      # (N*output_h*output_w, kernel_h*kernel_w*i, o, 1)
-      # activ from convcaps2 to classcaps (64, 1, 1, 400, 5, 1) 400/5 = 80 info
-      # (N, 1, 1, IH*IW*i, n_classes, 1)
-      child_caps = float(rr_prime.get_shape().as_list()[-3])
-      parent_caps = float(rr_prime.get_shape().as_list()[-2])
-      ratio_child_to_parent = child_caps / parent_caps
-      layer_norm_factor = 100 / ratio_child_to_parent
+    # The amount of information given to parent capsules is very different for
+    # the final "class-caps" layer. Since all the spatial capsules give output
+    # to just a few class caps, they receive a lot more information than the
+    # convolutional layers. So in order for lambda and beta_v/beta_a settings to
+    # apply to this layer, we must normalise the amount of information.
+    # activ from convcaps1 to convcaps2 (64*5*5, 144, 16, 1) 144/16 = 9 info
+    # (N*output_h*output_w, kernel_h*kernel_w*i, o, 1)
+    # activ from convcaps2 to classcaps (64, 1, 1, 400, 5, 1) 400/5 = 80 info
+    # (N, 1, 1, IH*IW*i, n_classes, 1)
+    child_caps = float(rr_prime.get_shape().as_list()[-3])
+    parent_caps = float(rr_prime.get_shape().as_list()[-2])
+    ratio_child_to_parent = child_caps / parent_caps
+    layer_norm_factor = 100 / ratio_child_to_parent
 
-      # mean_j: (24, 6, 6, 1, 32, 16)
-      mean_j_numerator = tf.reduce_sum(rr_prime * votes,
-                                       axis=-3,
-                                       keepdims=True,
-                                       name="mean_j_numerator")
-      mean_j = tf.div(mean_j_numerator,
-                      rr_prime_sum + self.hparams.epsilon,
-                      name="mean_j")
+    # mean_j: (24, 6, 6, 1, 32, 16)
+    mean_j_numerator = tf.reduce_sum(rr_prime * votes,
+                                     axis=-3,
+                                     keepdims=True,
+                                     name="mean_j_numerator")
+    mean_j = tf.div(mean_j_numerator,
+                    rr_prime_sum + self.hparams.epsilon,
+                    name="mean_j")
 
-      # ----- AG 26/06/2018 START -----#
-      # Use variance instead of standard deviation, because the sqrt seems to
-      # cause NaN gradients during backprop.
-      # See original implementation from Suofei below
-      var_j_numerator = tf.reduce_sum(rr_prime * tf.math.square(votes - mean_j),
-                                      axis=-3,
-                                      keepdims=True,
-                                      name="var_j_numerator")
-      var_j = tf.div(var_j_numerator,
-                     rr_prime_sum + self.hparams.epsilon,
-                     name="var_j")
+    # Use variance instead of standard deviation, because the sqrt seems to
+    # cause NaN gradients during backprop.
+    # See original implementation from Suofei below
+    var_j_numerator = tf.reduce_sum(rr_prime * tf.math.square(votes - mean_j),
+                                    axis=-3,
+                                    keepdims=True,
+                                    name="var_j_numerator")
+    var_j = tf.div(var_j_numerator,
+                   rr_prime_sum + self.hparams.epsilon,
+                   name="var_j")
 
 
-      ###################
-      # var_j = var_j + 1e-5
-      var_j = tf.identity(var_j + 1e-9, name="var_j_epsilon")
-      ###################
+    ###################
+    # var_j = var_j + 1e-5
+    var_j = tf.identity(var_j + 1e-9, name="var_j_epsilon")
+    ###################
 
 
-      ######## layer_norm_factor
-      cost_j_h = (beta_v + 0.5 * tf.math.log(var_j)) * rr_prime_sum * layer_norm_factor
-      cost_j_h = tf.identity(cost_j_h, name="cost_j_h")
+    ######## layer_norm_factor
+    cost_j_h = (beta_v + 0.5 * tf.math.log(var_j)) * rr_prime_sum * layer_norm_factor
+    cost_j_h = tf.identity(cost_j_h, name="cost_j_h")
 
-      # ----- END ----- #
+    # ----- END ----- #
 
-      # cost_j: (24, 6, 6, 1, 32, 1)
-      # activations_j_cost = (24, 6, 6, 1, 32, 1)
-      # yg: This is done for numeric stability.
-      # It is the relative variance between each channel determined which one
-      # should activate.
-      cost_j = tf.reduce_sum(cost_j_h, axis=-1, keepdims=True, name="cost_j")
+    # cost_j: (24, 6, 6, 1, 32, 1)
+    # activations_j_cost = (24, 6, 6, 1, 32, 1)
+    # yg: This is done for numeric stability.
+    # It is the relative variance between each channel determined which one
+    # should activate.
+    cost_j = tf.reduce_sum(cost_j_h, axis=-1, keepdims=True, name="cost_j")
 
-      activations_j_cost = tf.identity(beta_a - cost_j,
-                                       name="activations_j_cost")
+    activations_j_cost = tf.identity(beta_a - cost_j,
+                                     name="activations_j_cost")
 
-      # (24, 6, 6, 1, 32, 1)
-      activations_j = tf.sigmoid(inverse_temperature * activations_j_cost,
-                                 name="sigmoid")
+    # (24, 6, 6, 1, 32, 1)
+    activations_j = tf.sigmoid(inverse_temperature * activations_j_cost,
+                               name="sigmoid")
 
-      return activations_j, mean_j, var_j
+    return activations_j, mean_j, var_j
 
   def e_step(self, votes_ij, activations_j, mean_j, stdv_j, var_j, spatial_routing_matrix):
     """The e-step in EM routing between input capsules (i) and output capsules (j).
@@ -415,55 +413,54 @@ class EmRouting(tf.keras.layers.Layer):
         (64, 6, 6, 9*8, 16, 1)
     """
 
-    with tf.variable_scope("e_step") as scope:
-      # AG 26/06/2018: changed stdv_j to var_j
-      o_p_unit0 = - tf.reduce_sum(
-        tf.square(votes_ij - mean_j, name="num") / (2 * var_j),
-        axis=-1,
-        keepdims=True,
-        name="o_p_unit0")
+    # AG 26/06/2018: changed stdv_j to var_j
+    o_p_unit0 = - tf.reduce_sum(
+      tf.square(votes_ij - mean_j, name="num") / (2 * var_j),
+      axis=-1,
+      keepdims=True,
+      name="o_p_unit0")
 
-      o_p_unit2 = - 0.5 * tf.reduce_sum(
-        tf.math.log(2 * tf.math.pi * var_j),
-        axis=-1,
-        keepdims=True,
-        name="o_p_unit2"
-      )
+    o_p_unit2 = - 0.5 * tf.reduce_sum(
+      tf.math.log(2 * tf.math.pi * var_j),
+      axis=-1,
+      keepdims=True,
+      name="o_p_unit2"
+    )
 
-      # (24, 6, 6, 288, 32, 1)
-      o_p = o_p_unit0 + o_p_unit2
-      zz = tf.math.log(activations_j + self.hparams.epsilon) + o_p
+    # (24, 6, 6, 288, 32, 1)
+    o_p = o_p_unit0 + o_p_unit2
+    zz = tf.math.log(activations_j + self.hparams.epsilon) + o_p
 
-      # AG 13/11/2018: New implementation of normalising across parents
-      # ----- Start -----#
-      zz_shape = zz.get_shape().as_list()
-      batch_size = zz_shape[0]
-      parent_space = zz_shape[1]
-      kh_kw_i = zz_shape[3]
-      parent_caps = zz_shape[4]
-      kk = int(tf.reduce_sum(spatial_routing_matrix[:, 0]))
-      child_caps = int(kh_kw_i / kk)
+    # AG 13/11/2018: New implementation of normalising across parents
+    # ----- Start -----#
+    zz_shape = zz.get_shape().as_list()
+    batch_size = zz_shape[0]
+    parent_space = zz_shape[1]
+    kh_kw_i = zz_shape[3]
+    parent_caps = zz_shape[4]
+    kk = int(tf.reduce_sum(spatial_routing_matrix[:, 0]))
+    child_caps = int(kh_kw_i / kk)
 
-      zz = tf.reshape(zz, [batch_size, parent_space, parent_space, kk,
-                           child_caps, parent_caps])
+    zz = tf.reshape(zz, [batch_size, parent_space, parent_space, kk,
+                         child_caps, parent_caps])
 
 
-      # In log space
-      # Fill the sparse matrix with the smallest value in zz (at least -100)
-      sparse_filler = tf.minimum(tf.reduce_min(zz), -100)
-      zz_sparse = to_sparse(
-        zz,
-        spatial_routing_matrix,
-        sparse_filler=sparse_filler)
+    # In log space
+    # Fill the sparse matrix with the smallest value in zz (at least -100)
+    sparse_filler = tf.minimum(tf.reduce_min(zz), -100)
+    zz_sparse = to_sparse(
+      zz,
+      spatial_routing_matrix,
+      sparse_filler=sparse_filler)
 
-      rr_sparse = softmax_across_parents(zz_sparse, spatial_routing_matrix)
+    rr_sparse = softmax_across_parents(zz_sparse, spatial_routing_matrix)
 
-      rr_dense = to_dense(rr_sparse, spatial_routing_matrix)
+    rr_dense = to_dense(rr_sparse, spatial_routing_matrix)
 
-      rr = tf.reshape(
-        rr_dense,
-        [batch_size, parent_space, parent_space, kh_kw_i, parent_caps, 1])
-      # ----- End -----#
+    rr = tf.reshape(
+      rr_dense,
+      [batch_size, parent_space, parent_space, kh_kw_i, parent_caps, 1])
+    # ----- End -----#
 
-      return rr
+    return rr
 
