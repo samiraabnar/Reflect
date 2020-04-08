@@ -43,7 +43,7 @@ def create_routing_map(child_space, k, s):
       children = binmap.read(p_idx)
       cpp = cpp.write(p_idx, tf.where(children))
   binmap = binmap.stack()
-  children_per_parent = tf.squeeze(cpp.stack())
+  children_per_parent = cpp.stack()
   tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2)
   binmap = tf.transpose(binmap)
   tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2, tf.reduce_sum(binmap, axis=0))
