@@ -228,7 +228,8 @@ class FcCaps(tf.keras.layers.Layer):
     spatial_routing_matrix, child_to_parent_idx = create_routing_map(child_space=1, k=1, s=1)
 
 
-
+    tf.print('child_to_parent_idx', child_to_parent_idx)
+    tf.print(spatial_routing_matrix)
     pose_out, activation_out = self.em_routing(votes_flat,
                          activation_flat,
                          batch_size,
