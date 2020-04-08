@@ -208,12 +208,17 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
   parent_idx = tf.repeat(parent_idx, kk)
   parent_idx = tf.tile(parent_idx, [batch_size])
 
+  tf.print('parent_idx', parent_idx.shape)
   parent_idx = tf.reshape(parent_idx, [batch_size, parent_space_2, kk])
+  tf.print('parent_idx', parent_idx.shape)
+
 
   batch_idx = tf.range(batch_size)
+  tf.print('batch_idx', batch_idx.shape)
   batch_idx = tf.reshape(batch_idx, [-1, 1])
   batch_idx = tf.tile(batch_idx, [1,parent_space_2 * kk])
   batch_idx = tf.reshape(batch_idx, [batch_size, parent_space_2, kk])
+  tf.print('batch_idx', batch_idx.shape)
 
   # Combine the 3 coordinates
   indices = tf.stack((batch_idx, parent_idx, tf.cast(child_sparse_idx, dtype=tf.int32)), axis=3)
@@ -237,7 +242,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
   # assert [a for a in tf.shape(sparse)] == [batch_size, parent_space, parent_space, child_space_2, child_caps,
   #                                         parent_caps]
 
-
+  tf.print("end of sparse")
   return sparse
 
 
