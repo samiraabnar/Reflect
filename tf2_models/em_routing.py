@@ -159,7 +159,7 @@ class EmRouting(tf.keras.layers.Layer):
 
     # Get dimensions needed to do conversions
     N = batch_size
-    votes_shape = tf.shape(votes_ij).as_list()
+    votes_shape = tf.shape(votes_ij)
     output_h = tf.math.sqrt(int(votes_shape[0]) / N)
     output_h = tf.cast(output_h, dtype=tf.int32)
     output_w = tf.math.sqrt(int(votes_shape[0]) / N)
@@ -314,8 +314,8 @@ class EmRouting(tf.keras.layers.Layer):
     # (N*output_h*output_w, kernel_h*kernel_w*i, o, 1)
     # activ from convcaps2 to classcaps (64, 1, 1, 400, 5, 1) 400/5 = 80 info
     # (N, 1, 1, IH*IW*i, n_classes, 1)
-    child_caps = float(tf.shape(rr_prime).as_list()[-3])
-    parent_caps = float(tf.shape(rr_prime).as_list()[-2])
+    child_caps = float(tf.shape(rr_prime)[-3])
+    parent_caps = float(tf.shape(rr_prime)[-2])
     ratio_child_to_parent = child_caps / parent_caps
     layer_norm_factor = 100 / ratio_child_to_parent
 
@@ -435,7 +435,7 @@ class EmRouting(tf.keras.layers.Layer):
 
     # AG 13/11/2018: New implementation of normalising across parents
     # ----- Start -----#
-    zz_shape = tf.shape(zz).as_list()
+    zz_shape = tf.shape(zz)
     batch_size = zz_shape[0]
     parent_space = zz_shape[1]
     kh_kw_i = zz_shape[3]
