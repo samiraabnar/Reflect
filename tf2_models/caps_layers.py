@@ -130,7 +130,7 @@ class ConvCaps(tf.keras.layers.Layer):
 
 
 class FcCaps(tf.keras.layers.Layer):
-  def __init__(self, hparams, kh_kw_i, scope='class_caps', *inputs, **kwargs):
+  def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
     super(FcCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
     self.hparams  = hparams
     self.num_output_caps = self.hparams.output_dim
