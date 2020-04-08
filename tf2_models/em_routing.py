@@ -101,7 +101,7 @@ class EmRouting(tf.keras.layers.Layer):
 
 
 
-  def call(self,votes_ij, activations_i, batch_size, spatial_routing_matrix):
+  def call(self,votes_ij, activations_i, batch_size, spatial_routing_matrix, child_to_parent_idx):
     """The EM routing between input capsules (i) and output capsules (j).
 
     See Hinton et al. "Matrix Capsules with EM Routing" for detailed description
@@ -218,7 +218,8 @@ class EmRouting(tf.keras.layers.Layer):
                     activations_j,
                     mean_j,
                     var_j,
-                    spatial_routing_matrix)
+                    spatial_routing_matrix,
+                    child_to_parent_idx)
 
     # pose: (N, output_h, output_w, o, 4 x 4) via squeeze mean_j (24, 6, 6, 32, 16)
     poses_j = tf.squeeze(mean_j, axis=-3, name="poses")
@@ -361,7 +362,7 @@ class EmRouting(tf.keras.layers.Layer):
 
     return activations_j, mean_j, var_j
 
-  def e_step(self, votes_ij, activations_j, mean_j, var_j, spatial_routing_matrix):
+  def e_step(self, votes_ij, activations_j, mean_j, var_j, spatial_routing_matrix, child_to_parent_idx):
     """The e-step in EM routing between input capsules (i) and output capsules (j).
 
     Update the assignment weights using in routung. The output capsules (j)

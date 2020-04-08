@@ -120,7 +120,7 @@ def kernel_tile(input, kernel, stride):
   tiled = tf.reshape(tiled, [batch_size, parent_spatial_size, parent_spatial_size, kernel * kernel, n_capsules, -1])
   tf.print('tiled', tf.shape(tiled))
 
-  return tiled, child_parent_matrix
+  return tiled, child_parent_matrix, child_to_parent_idx
 
 def group_children_by_parent(bin_routing_map):
   """Groups children capsules by parent capsule.
@@ -153,7 +153,7 @@ def group_children_by_parent(bin_routing_map):
   tf.print('true_indexes', tf.shape(true_indexes))
   return children_per_parent
 
-def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
+def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=tf.math.log(1e-20)):
   """Convert probs tensor to sparse along child_space dimension.
 
   Consider a probs tensor of shape (64, 6, 6, 3*3, 32, 16).
@@ -212,7 +212,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
     [batch_size, parent_space_2, kk, child_caps, parent_caps])
 
   # Each row contains the children belonging to one parent
-  child_to_parent_idx = group_children_by_parent(spatial_routing_matrix)
+  #child_to_parent_idx = group_children_by_parent(spatial_routing_matrix)
 
   # Create an index mapping each capsule to the correct sparse location
   # Each element of the index must contain [batch_position,

@@ -89,11 +89,11 @@ class ConvCaps(tf.keras.layers.Layer):
     # Votes
     # Tile poses and activations
     # (64, 7, 7, 8, 16)  -> (64, 5, 5, 9, 8, 16)
-    pose_tiled, spatial_routing_matrix = kernel_tile(
+    pose_tiled, spatial_routing_matrix, child_to_parent_idx = kernel_tile(
       inputs_pose,
       kernel=self.kernel,
       stride=self.stride)
-    activation_tiled, _ = kernel_tile(
+    activation_tiled, _, _ = kernel_tile(
       inputs_activation,
       kernel=self.kernel,
       stride=self.stride)
@@ -126,7 +126,8 @@ class ConvCaps(tf.keras.layers.Layer):
     pose_out, activation_out = self.em_routing(votes,
                                                activation_unroll,
                                                batch_size,
-                                               spatial_routing_matrix)
+                                               spatial_routing_matrix,
+                                               child_to_parent_idx)
 
     return pose_out, activation_out
 
@@ -224,14 +225,15 @@ class FcCaps(tf.keras.layers.Layer):
         activation,
         shape=[batch_size, child_space * child_space * child_caps, 1])
 
-    spatial_routing_matrix = create_routing_map(child_space=1, k=1, s=1)
+    spatial_routing_matrix, child_to_parent_idx = create_routing_map(child_space=1, k=1, s=1)
 
 
 
     pose_out, activation_out = self.em_routing(votes_flat,
                          activation_flat,
                          batch_size,
-                         spatial_routing_matrix)
+                         spatial_routing_matrix,
+                         child_to_parent_idx)
 
     tf.print('activation_out', activation_out.shape)
     activation_out = tf.reshape(activation_out,(batch_size,self.num_output_caps))
