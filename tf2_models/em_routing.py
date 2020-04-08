@@ -46,7 +46,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   tf.print(parent_caps)
   tf.print(spatial_routing_matrix)
   rr_initial = (spatial_routing_matrix
-                / (parents_per_child * tf.cast(parent_caps, dtype=tf.float32) + 1e-9))
+                / (tf.cast(parents_per_child, dtype=tf.float32) * tf.cast(parent_caps, dtype=tf.float32) + 1e-9))
 
   # Convert the sparse matrix to be compatible with votes.
   # This is done by selecting the child capsules belonging to each parent, which
