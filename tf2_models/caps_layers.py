@@ -99,7 +99,7 @@ class ConvCaps(tf.keras.layers.Layer):
       stride=self.stride)
 
     # Check dimensions of spatial_routing_matrix
-    assert spatial_routing_matrix.shape == (child_space_2, parent_space_2)
+    assert [a for a in tf.shape(spatial_routing_matrix)] == [child_space_2, parent_space_2]
 
     # Unroll along batch_size and parent_space_2
     # (64, 5, 5, 9, 8, 16) -> (64*5*5, 9*8, 16)
@@ -199,7 +199,7 @@ class FcCaps(tf.keras.layers.Layer):
 
     # (65*5*5, 32, 5, 16)
     assert (
-      tf.shape(votes) ==
+      [a for a in tf.shape(votes)] ==
       [batch_size * child_space * child_space, child_caps, self.num_output_caps, 16])
 
 
