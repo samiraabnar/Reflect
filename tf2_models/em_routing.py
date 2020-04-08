@@ -50,7 +50,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # This is done by selecting the child capsules belonging to each parent, which
   # is achieved by selecting the non-zero values down each column. Need the
   # combination of two transposes so that order is correct when reshaping
-  mask = spatial_routing_matrix.astype(bool)
+  mask = tf.cast(spatial_routing_matrix, dtype=bool)
 
 
   rr_initial = tf.transpose(rr_initial)[tf.transpose(mask)]
