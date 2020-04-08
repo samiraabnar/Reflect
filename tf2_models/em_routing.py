@@ -447,6 +447,7 @@ class EmRouting(tf.keras.layers.Layer):
     zz_sparse = to_sparse(
       zz,
       spatial_routing_matrix,
+      child_to_parent_idx,
       sparse_filler=sparse_filler)
 
     rr_sparse = softmax_across_parents(zz_sparse, spatial_routing_matrix)
