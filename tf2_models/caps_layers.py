@@ -43,10 +43,10 @@ class ConvCaps(tf.keras.layers.Layer):
         (64*5*5, 9*8, 32, 16)
     """
 
-    batch_size = poses_i.get_shape()[0] # 64*5*5
-    kh_kw_i = poses_i.get_shape()[1] # 9*8
+    batch_size = tf.shape(poses_i)[0] # 64*5*5
+    kh_kw_i = tf.shape(poses_i)[1] # 9*8
     tf.print("kh_kw_i", kh_kw_i)
-    tf.print(poses_i.get_shape())
+    tf.print(tf.shape(poses_i))
 
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
     output = tf.reshape(poses_i, shape=[batch_size, kh_kw_i, 1, 4, 4])
@@ -76,7 +76,7 @@ class ConvCaps(tf.keras.layers.Layer):
   def call(self, inputs_pose, inputs_activation, training=False, **kwargs):
 
     # Get shapes
-    shape = inputs_pose.get_shape().as_list()
+    shape = tf.shape(inputs_pose).as_list()
     batch_size = shape[0]
     child_space = shape[1]
     child_space_2 = int(child_space ** 2)
@@ -177,7 +177,7 @@ class FcCaps(tf.keras.layers.Layer):
     """
 
     # Get shapes
-    shape = pose_in.get_shape().as_list()
+    shape = tf.shape(pose_in).as_list()
     batch_size = shape[0]
     child_space = shape[1]
     child_caps = shape[3]
@@ -199,7 +199,7 @@ class FcCaps(tf.keras.layers.Layer):
 
     # (65*5*5, 32, 5, 16)
     assert (
-      votes.get_shape() ==
+      tf.shape(votes) ==
       [batch_size * child_space * child_space, child_caps, self.num_output_caps, 16])
 
 
@@ -261,8 +261,8 @@ class FcCaps(tf.keras.layers.Layer):
         (64*5*5, 9*8, 32, 16)
     """
 
-    batch_size = poses_i.get_shape()[0] # 64*5*5
-    kh_kw_i = poses_i.get_shape()[1] # 9*8
+    batch_size = tf.shape(poses_i)[0] # 64*5*5
+    kh_kw_i = tf.shape(poses_i)[1] # 9*8
 
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
     output = tf.reshape(poses_i, shape=[batch_size, kh_kw_i, 1, 4, 4])
@@ -327,9 +327,9 @@ def coord_addition(votes):
   """
 
   # get spacial dimension of votes
-  height = votes.get_shape().as_list()[1]
-  width = votes.get_shape().as_list()[2]
-  dims = votes.get_shape().as_list()[-1]
+  height = tf.shape(votes).as_list()[1]
+  width = tf.shape(votes).as_list()[2]
+  dims = tf.shape(votes).as_list()[-1]
 
   # Generate offset coordinates
   # The difference here is that the coordinate won't be exactly in the middle of

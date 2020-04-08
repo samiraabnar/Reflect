@@ -55,7 +55,7 @@ def kernel_tile(input, kernel, stride):
       (7*7, 5*5)
   """
 
-  input_shape = input.get_shape()
+  input_shape = tf.shape(input)
   batch_size = int(input_shape[0])
   spatial_size = int(input_shape[1])
   n_capsules = int(input_shape[3])
@@ -164,7 +164,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
   """
 
   # Get shapes of probs
-  shape = probs.get_shape().as_list()
+  shape = tf.shape(probs).as_list()
   batch_size = shape[0]
   parent_space = shape[1]
   kk = shape[3]
@@ -228,7 +228,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
 
   # Checks
   # 1. Shape
-  assert sparse.get_shape().as_list() == [batch_size, parent_space, parent_space, child_space_2, child_caps,
+  assert tf.shape(sparse).as_list() == [batch_size, parent_space, parent_space, child_space_2, child_caps,
                                           parent_caps]
 
 
@@ -265,7 +265,7 @@ def normalise_across_parents(probs_sparse, spatial_routing_matrix):
 
   # e.g. (1, 5, 5, 49, 8, 32)
   # (batch_size, parent_space, parent_space, child_space*child_space, child_caps, parent_caps)
-  shape = probs_sparse.get_shape().as_list()
+  shape = tf.shape(probs_sparse)
   batch_size = shape[0]
   parent_space = shape[1]
   child_space_2 = shape[3]  # squared
@@ -278,7 +278,7 @@ def normalise_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert (rr_updated.get_shape().as_list()
+  assert (tf.shape(rr_updated).as_list()
           == [batch_size, parent_space, parent_space, child_space_2,
               child_caps, parent_caps])
 
@@ -347,7 +347,7 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   # e.g. (1, 5, 5, 49, 8, 32)
   # (batch_size, parent_space, parent_space, child_space*child_space,
   # child_caps, parent_caps)
-  shape = probs_sparse.get_shape().as_list()
+  shape = tf.shape(probs_sparse).as_list()
   batch_size = shape[0]
   parent_space = shape[1]
   child_space_2 = shape[3]  # squared
@@ -382,7 +382,7 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert (rr_updated.get_shape().as_list()
+  assert (tf.shape(rr_updated).as_list()
           == [batch_size, parent_space, parent_space, child_space_2,
               child_caps, parent_caps])
 
@@ -436,7 +436,7 @@ def to_dense(sparse, spatial_routing_matrix):
   """
 
   # Get shapes of probs
-  shape = sparse.get_shape().as_list()
+  shape = tf.shape(sparse).as_list()
   batch_size = shape[0]
   parent_space = shape[1]
   child_space_2 = shape[3]  # squared
@@ -464,7 +464,7 @@ def to_dense(sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert (dense.get_shape().as_list()
+  assert (tf.shape(dense).as_list()
           == [batch_size, parent_space, parent_space, kk, child_caps,
               parent_caps])
 
@@ -627,7 +627,7 @@ def spread_loss(scores, y):
   """
 
   with tf.variable_scope('spread_loss') as scope:
-    batch_size = int(scores.get_shape()[0])
+    batch_size = int(tf.shape(scores)[0])
 
     # AG 17/09/2018: modified margin schedule based on response of authors to
     # questions on OpenReview.net:
@@ -641,7 +641,7 @@ def spread_loss(scores, y):
     m = (m_min
          + m_delta * tf.sigmoid(tf.minimum(10.0, global_step / 50000.0 - 4)))
 
-    num_class = int(scores.get_shape()[-1])
+    num_class = int(tf.shape(scores)[-1])
 
     y = tf.one_hot(y, num_class, dtype=tf.float32)
 

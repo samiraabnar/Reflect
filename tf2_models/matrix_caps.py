@@ -74,7 +74,7 @@ class MatrixCaps(tf.keras.Model):
     outputs_pos = self.primcaps_pose_conv(outputs)
     outputs_activations = self.primcaps_activation_conv(outputs)
 
-    spatial_size = outputs_pos.get_shape()[1]
+    spatial_size = tf.shape(outputs_pos)[1]
     tf.print(outputs_pos)
     outputs_pos = tf.reshape(outputs_pos, shape=[batch_size, spatial_size, spatial_size,
                                    self.hparams.B, 16], name='pose')
@@ -84,9 +84,9 @@ class MatrixCaps(tf.keras.Model):
       shape=[batch_size, spatial_size, spatial_size, self.hparams.B, 1],
       name="activation")
 
-    assert outputs_pos.get_shape() == [batch_size, spatial_size, spatial_size,
+    assert tf.shape(outputs_pos) == [batch_size, spatial_size, spatial_size,
                                 self.hparams.B, 16]
-    assert outputs_activations.get_shape() == [batch_size, spatial_size, spatial_size,
+    assert tf.shape(outputs_activations) == [batch_size, spatial_size, spatial_size,
                                       self.hparams.B, 1]
 
     # ----- Conv Caps 1 -----#
