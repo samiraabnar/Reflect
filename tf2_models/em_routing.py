@@ -189,7 +189,8 @@ class EmRouting(tf.keras.layers.Layer):
     # Initialise routing assignments
     # rr (1, 6, 6, 9, 8, 16)
     #  (1, parent_space, parent_space, kk, child_caps, parent_caps)
-    rr = init_rr(spatial_routing_matrix, child_caps, parent_caps)
+    rr = init_rr(spatial_routing_matrix, tf.cast(child_caps, dtype=tf.int64),
+                 tf.cast(parent_caps, dtype=tf.int64))
 
     # Need to reshape (1, 6, 6, 9, 8, 16) -> (1, 6, 6, 9*8, 16, 1)
     rr = tf.reshape(
