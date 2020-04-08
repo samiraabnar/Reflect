@@ -31,7 +31,7 @@ def create_routing_map(child_space, k, s):
         c_idx = r * s * child_space + c * s + child_space * i
         binmap[(c_idx):(c_idx + k), p_idx].assign(binmap[(c_idx):(c_idx + k), p_idx] + 1)
 
-  return binmap
+  return tf.convert_to_tensor(binmap, dtype=tf.float32)
 
 def kernel_tile(input, kernel, stride):
   """Tile the children poses/activations so that the children for each parent occur in one axis.
