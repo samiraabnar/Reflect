@@ -45,7 +45,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   tf.print('rr_init')
   parent_caps = tf.cast(parent_caps, tf.int32)
   parents_per_child = tf.cast(parents_per_child, tf.int32)
-  tf.print(tf.max(parents_per_child))
+  tf.print(tf.reduce_max(parents_per_child))
   tf.print(parent_caps)
   tf.print(spatial_routing_matrix.shape)
   rr_initial = (spatial_routing_matrix
