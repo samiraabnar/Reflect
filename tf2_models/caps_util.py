@@ -392,8 +392,8 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   # convolution doesn't fit nicely. So in the sparse form of child capsules, the   # dropped capsules will be 0 everywhere. When we do a softmax, these capsules
   # will then be given a value, so when we check the total child capsules we
   # need to include these. But these will then be excluded when we convert back   # to dense so it's not a problem.
-  total_child_caps = tf.to_float(child_space_2 * child_caps * batch_size)
-  sum_routing_weights = tf.round(tf.reduce_sum(rr_updated))
+  #total_child_caps = tf.cast(child_space_2 * child_caps * batch_size, dtype=tf.float32)
+  #sum_routing_weights = tf.round(tf.reduce_sum(rr_updated))
 
   #   assert_op = tf.assert_equal(
   #       sum_routing_weights,
