@@ -60,7 +60,7 @@ class MatrixCaps(tf.keras.Model):
                               scope='conv_caps2')
 
 
-    self.fc_caps = FcCaps(self.hparams.output_dim,
+    self.fc_caps = FcCaps(self.hparams,
                           scope='class_caps')
 
 
