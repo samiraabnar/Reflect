@@ -65,10 +65,10 @@ class MatrixCaps(tf.keras.Model):
 
 
   def call(self, inputs, padding_symbol=None, training=True, **kwargs):
-    inputs_shapes = inputs.get_shape()
+    inputs_shapes = tf.shape(inputs)
     batch_size = inputs_shapes[0]
     spatial_size = inputs_shapes[1]
-
+    tf.print(batch_size, spatial_size)
     outputs = self.batch_norm(inputs)
     outputs = self.conv1(outputs)
     outputs_pos = self.primcaps_pose_conv(outputs)
