@@ -440,7 +440,7 @@ def to_dense(sparse, spatial_routing_matrix):
   parent_caps = shape[5]
 
   # Calculate kernel size by adding up column of spatial routing matrix
-  kk = tf.cast(tf.reduce_sum(spatial_routing_matrix[:, 0]), dype=tf.int32)
+  kk = tf.cast(tf.reduce_sum(spatial_routing_matrix[:, 0]), dtype=tf.int32)
 
   # Unroll parent spatial dimensions
   # (64, 5, 5, 49, 8, 32) -> (64, 5*5, 49, 8, 32)
