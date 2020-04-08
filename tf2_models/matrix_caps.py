@@ -1,6 +1,5 @@
 import tensorflow as tf
 from tf2_models.caps_util import *
-
 from tf2_models.caps_layers import FcCaps, ConvCaps
 
 
@@ -70,8 +69,8 @@ class MatrixCaps(tf.keras.Model):
     batch_size = inputs_shapes[0]
     spatial_size = inputs_shapes[1]
 
-    outputs = self.batch_norm(inputs, training, **kwargs)
-    outputs = self.conv1(outputs, training, **kwargs)
+    outputs = self.batch_norm(inputs)
+    outputs = self.conv1(outputs)
     outputs_pos = self.primcaps_pose_conv(outputs)
     outputs_activations = self.primcaps_activation_conv(outputs)
 
