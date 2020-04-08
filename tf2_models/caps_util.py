@@ -584,7 +584,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   #   with tf.control_dependencies([assert_op]):
   #     return rr_initial
 
-  assert tf.abs(sum_routing_weights - effective_child_cap) < 1e-3
+  # assert tf.abs(sum_routing_weights - effective_child_cap) < 1e-3
 
   return rr_initial
 
