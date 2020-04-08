@@ -27,7 +27,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
       (1, 5, 5, 9, 8, 32)
   """
   tf.print("child and parent caps")
-  tf.print(child_caps, parent_caps)
+  tf.print(child_caps, parent_caps, tf.reduce_sum(spatial_routing_matrix), spatial_routing_matrix.shape)
   # Get spatial dimension of parent & child
   parent_space_2 = tf.cast(spatial_routing_matrix.shape[1], tf.int32)
   parent_space = tf.cast(tf.math.sqrt(tf.cast(parent_space_2, dtype=tf.float32)), tf.int32)
@@ -178,7 +178,7 @@ class EmRouting(tf.keras.layers.Layer):
     num_input_caps = tf.cast(kh_kw_i / kk, dtype=tf.int32)
     tf.print('child_caps:', num_input_caps)
     tf.print('kh_kw_i', kh_kw_i)
-    
+
     rt_mat_shape = spatial_routing_matrix.shape
     child_space_2 = tf.cast(rt_mat_shape[0], dtype=tf.int32)
     child_space = tf.cast(tf.math.sqrt(tf.cast(child_space_2, dtype=tf.float32)), tf.int32)
