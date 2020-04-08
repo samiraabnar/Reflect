@@ -25,7 +25,7 @@ def create_routing_map(child_space, k, s):
   parent_space = tf.cast((child_space - k) / s + 1, tf.int32)
   #binmap = np.zeros((child_space ** 2, parent_space ** 2))
   binmap = tf.TensorArray(size=0, dynamic_size=True ,dtype=tf.float32, infer_shape=True, clear_after_read=False)
-  cpp = tf.TensorArray(size=0, dynamic_size=True ,dtype=tf.int32, infer_shape=True)
+  cpp = tf.TensorArray(size=0, dynamic_size=True ,dtype=tf.int64, infer_shape=True)
 
   c_eye = tf.eye(child_space ** 2)
   for r in range(parent_space):
