@@ -219,7 +219,9 @@ def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=
   # parent_space_position, child_sparse_position]
   # E.g. [63, 24, 49] maps image 63, parent space 24, sparse position 49
   child_sparse_idx = child_to_parent_idx
+  tf.print('child_sparse_idx', tf.shape(child_to_parent_idx))
   child_sparse_idx = child_sparse_idx[tf.newaxis, ...]
+  tf.print('child_sparse_idx', tf.shape(child_to_parent_idx))
   child_sparse_idx = tf.tile(child_sparse_idx, [batch_size, 1, 1])
 
   parent_idx = tf.range(parent_space_2)
