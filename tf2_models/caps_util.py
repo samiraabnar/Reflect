@@ -22,7 +22,7 @@ def create_routing_map(child_space, k, s):
       (7*7, 5*5)
   """
   parent_space = int((child_space - k) / s + 1)
-  binmap = tf.Variable(tf.zeros((child_space ** 2, parent_space ** 2)))
+  binmap = tf.Variable(lambda: tf.zeros((child_space ** 2, parent_space ** 2)))
   for r in np.arange(parent_space):
     for c in np.arange(parent_space):
       p_idx = r * parent_space + c
