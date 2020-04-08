@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 def create_routing_map(child_space, k, s):
   """Generate TFRecord for train and test datasets from .mat files.
@@ -20,16 +21,15 @@ def create_routing_map(child_space, k, s):
       (child_space^2, parent_space^2)
       (7*7, 5*5)
   """
-  k = tf.cast(k, tf.int32)
-  parent_space = tf.cast((child_space - k) / s + 1, tf.int32)
-  binmap = tf.zeros((child_space ** 2, parent_space ** 2))
-  for r in tf.range(parent_space):
-    for c in tf.range(parent_space):
+  parent_space = int((child_space - k) / s + 1)
+  binmap = np.zeros((child_space ** 2, parent_space ** 2))
+  for r in np.arange(parent_space):
+    for c in np.arange(parent_space):
       p_idx = r * parent_space + c
-      for i in tf.range(k):
+      for i in np.arange(k):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
-        binmap[(c_idx):(c_idx + k), p_idx].Assign(1)
+        binmap[(c_idx):(c_idx + k), p_idx] = binmap[(c_idx):(c_idx + k), p_idx] + 1
   return binmap
 
 def kernel_tile(input, kernel, stride):
