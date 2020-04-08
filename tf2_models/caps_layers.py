@@ -101,6 +101,7 @@ class ConvCaps(tf.keras.layers.Layer):
     # Check dimensions of spatial_routing_matrix
     # assert [a for a in tf.shape(spatial_routing_matrix)] == [child_space_2, parent_space_2]
 
+    tf.print('pose_tiled', tf.shape(pose_tiled))
     # Unroll along batch_size and parent_space_2
     # (64, 5, 5, 9, 8, 16) -> (64*5*5, 9*8, 16)
     pose_unroll = tf.reshape(
