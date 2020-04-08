@@ -78,6 +78,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   sum_routing_weights = tf.reduce_sum(rr_initial)
 
   tf.print('sum_routing_weights')
+  tf.print(child_space * child_space, dropped_child_caps, child_caps)
   tf.print(sum_routing_weights, effective_child_cap)
   assert tf.abs(sum_routing_weights - tf.cast(effective_child_cap, dtype=tf.float32)) < 1e-3
 
