@@ -34,7 +34,10 @@ def create_routing_map(child_space, k, s):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
         all_c_idx = tf.range((c_idx),(c_idx + k))
-        new_row = tf.reduce_sum(tf.gather(c_eye, all_c_idx), axis=0)
+        all_c = tf.gather(c_eye, all_c_idx)
+        tf.print('all_c', all_c)
+        new_row = tf.reduce_sum(all_c, axis=0)
+        tf.print('new_row', new_row)
         binmap = binmap.write(p_idx,new_row)
 
   binmap = binmap.stack()
@@ -67,11 +70,12 @@ def kernel_tile(input, kernel, stride):
       (7*7, 5*5)
   """
 
-  input_shape = tf.shape(input)
-  batch_size = input_shape[0]
-  spatial_size = input_shape[1]
-  n_capsules = input_shape[3]
+  input_shape = tf.shape(input) #2 14 14 8 16
+  batch_size = input_shape[0] #2
+  spatial_size = input_shape[1] #14
+  n_capsules = input_shape[3] # 8
   tf.print('kernel tile', batch_size, spatial_size, n_capsules)
+  # parent_spatial_size ((14 - 3) / 2)+1 --> 6
   parent_spatial_size = tf.cast((spatial_size - kernel) / stride + 1, dtype=tf.int32)
 
   # Check that dim 1 and 2 correspond to the spatial size
@@ -87,23 +91,25 @@ def kernel_tile(input, kernel, stride):
 
   # Matrix showing which children map to which parent. Children are rows,
   # parents are columns.
+  # 196 x 36
   child_parent_matrix = create_routing_map(spatial_size, kernel, stride)
   tf.print('child_parent_matrix', tf.shape(child_parent_matrix))
   # Convert from np to tf
   # child_parent_matrix = tf.constant(child_parent_matrix)
 
   # Each row contains the children belonging to one parent
+  # 36 x 6
   child_to_parent_idx = group_children_by_parent(child_parent_matrix)
-  tf.print('child_to_parent_idx', tf.shape(child_to_parent_idx))
+  tf.print('child_to_parent_idx', tf.shape(child_to_parent_idx)) #36 6
 
   tf.print('input', tf.shape(input), spatial_size, spatial_size * spatial_size)
   # Spread out spatial dimension of children
   input = tf.reshape(input, [batch_size, spatial_size * spatial_size, -1])
-  tf.print('input', tf.shape(input))
+  tf.print('input', tf.shape(input)) #2 14*14 128
 
   # Select which children go to each parent capsule
   tf.print('input', tf.shape(input))
-  tiled = tf.gather(input, child_to_parent_idx, axis=1)
+  tiled = tf.gather(input, child_to_parent_idx, axis=1) #2 196 128
 
   tf.print('tiled', tf.shape(tiled))
   tiled = tf.squeeze(tiled)
