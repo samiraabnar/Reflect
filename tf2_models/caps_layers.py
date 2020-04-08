@@ -76,7 +76,7 @@ class ConvCaps(tf.keras.layers.Layer):
   def call(self, inputs_pose, inputs_activation, training=False, **kwargs):
 
     # Get shapes
-    shape = tf.shape(inputs_pose).as_list()
+    shape = tf.shape(inputs_pose)
     batch_size = shape[0]
     child_space = shape[1]
     child_space_2 = int(child_space ** 2)
@@ -177,7 +177,7 @@ class FcCaps(tf.keras.layers.Layer):
     """
 
     # Get shapes
-    shape = tf.shape(pose_in).as_list()
+    shape = tf.shape(pose_in)
     batch_size = shape[0]
     child_space = shape[1]
     child_caps = shape[3]
@@ -327,9 +327,10 @@ def coord_addition(votes):
   """
 
   # get spacial dimension of votes
-  height = tf.shape(votes).as_list()[1]
-  width = tf.shape(votes).as_list()[2]
-  dims = tf.shape(votes).as_list()[-1]
+  vote_shape = tf.shape(votes)
+  height = vote_shape[1]
+  width = vote_shape[2]
+  dims = vote_shape[-1]
 
   # Generate offset coordinates
   # The difference here is that the coordinate won't be exactly in the middle of
