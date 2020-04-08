@@ -5,7 +5,7 @@ from tf2_models.caps_layers import FcCaps, ConvCaps
 
 class MatrixCaps(tf.keras.Model):
   def __init__(self, hparams, scope='matrix_caps', *inputs, **kwargs):
-    super(MatrixCaps, self).__init__(hparams, *inputs, **kwargs)
+    super(MatrixCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
 
     self.hparams = hparams
 
@@ -64,6 +64,7 @@ class MatrixCaps(tf.keras.Model):
                           scope='class_caps')
 
 
+  @tf.function
   def call(self, inputs, padding_symbol=None, training=True, **kwargs):
     inputs_shapes = tf.shape(inputs)
     batch_size = inputs_shapes[0]
