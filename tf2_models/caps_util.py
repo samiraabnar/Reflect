@@ -96,14 +96,18 @@ def kernel_tile(input, kernel, stride):
 def group_children_by_parent(bin_routing_map):
   """Groups children capsules by parent capsule.
 
-  Rearrange the bin_routing_map so that each row represents one parent capsule,   and the entries in the row are indexes of the children capsules that route to   that parent capsule. This mapping is only along the spatial dimension, each
-  child capsule along in spatial dimension will actually contain many capsules,   e.g. 32. The grouping that we are doing here tell us about the spatial
+  Rearrange the bin_routing_map so that each row represents one parent capsule,
+  and the entries in the row are indexes of the children capsules that route to
+  that parent capsule. This mapping is only along the spatial dimension, each
+  child capsule along in spatial dimension will actually contain many capsules,
+  e.g. 32. The grouping that we are doing here tell us about the spatial
   routing, e.g. if the lower layer is 7x7 in spatial dimension, with a kernel of
   3 and stride of 1, then the higher layer will be 5x5 in the spatial dimension.
   So this function will tell us which children from the 7x7=49 lower capsules
   map to each of the 5x5=25 higher capsules. One child capsule can be in several
   different parent capsules, children in the corners will only belong to one
-  parent, but children towards the center will belong to several with a maximum   of kernel*kernel (e.g. 9), but also depending on the stride.
+  parent, but children towards the center will belong to several with a maximum
+  of kernel*kernel (e.g. 9), but also depending on the stride.
 
   Author:
     Ashley Gritzman 19/10/2018
@@ -115,8 +119,8 @@ def group_children_by_parent(bin_routing_map):
       parents are rows, and the indexes in the row are which children belong to       that parent
   """
 
-  tmp = tf.where(tf.transpose(bin_routing_map))
-  children_per_parent = tf.reshape(tmp[1], [bin_routing_map.shape[1], -1])
+  tmp = np.where(tf.transpose(bin_routing_map))
+  children_per_parent = np.reshape(tmp[1], [bin_routing_map.shape[1], -1])
 
   return children_per_parent
 
