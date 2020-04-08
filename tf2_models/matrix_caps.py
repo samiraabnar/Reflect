@@ -113,5 +113,8 @@ class MatrixCaps(tf.keras.Model):
     # pose_out: (64, 5, 16)
     outputs_pos, outputs_activations = self.fc_caps(outputs_pos, outputs_activations, training, **kwargs)
 
+    tf.print('outputs_pos', outputs_pos.shape)
+    tf.print('outputs_activations', outputs_activations.shape)
+
     return outputs_activations
 

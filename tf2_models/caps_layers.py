@@ -46,9 +46,11 @@ class ConvCaps(tf.keras.layers.Layer):
     batch_size = tf.shape(poses_i)[0] # 64*5*5
     kh_kw_i = tf.shape(poses_i)[1] # 9*8
 
-
+    tf.print('poses_i', poses_i.shape)
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
     output = tf.reshape(poses_i, shape=[batch_size, kh_kw_i, 1, 4, 4])
+    tf.print('poses_i', poses_i.shape)
+
 
     # the output of capsule is miu, the mean of a Gaussian, and activation, the
     # sum of probabilities it has no relationship with the absolute values of w
