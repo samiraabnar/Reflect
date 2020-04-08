@@ -366,7 +366,7 @@ class EmRouting(tf.keras.layers.Layer):
 
     return activations_j, mean_j, var_j
 
-  def e_step(self, votes_ij, activations_j, mean_j, stdv_j, var_j, spatial_routing_matrix):
+  def e_step(self, votes_ij, activations_j, mean_j, var_j, spatial_routing_matrix):
     """The e-step in EM routing between input capsules (i) and output capsules (j).
 
     Update the assignment weights using in routung. The output capsules (j)
