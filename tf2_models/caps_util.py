@@ -205,7 +205,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
 
   batch_idx = tf.range(batch_size)
   batch_idx = tf.reshape(batch_idx, [-1, 1])
-  batch_idx = tf.tile(batch_idx, [parent_space_2 * kk])
+  batch_idx = tf.tile(batch_idx, [1,parent_space_2 * kk])
   tf.print(batch_idx.shape)
   batch_idx = tf.reshape(batch_idx, [batch_size, parent_space_2, kk])
 
