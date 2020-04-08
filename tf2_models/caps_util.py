@@ -22,9 +22,6 @@ def create_routing_map(child_space, k, s):
       (child_space^2, parent_space^2)
       (7*7, 5*5)
   """
-  child_space = child_space.numpy()
-  k = k.numpy()
-  s = s.numpy()
 
   parent_space = tf.cast((child_space - k) / s + 1, tf.int32)
   #binmap = np.zeros((child_space ** 2, parent_space ** 2))
