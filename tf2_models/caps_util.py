@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
+@tf.function
 def create_routing_map(child_space, k, s):
   """Generate TFRecord for train and test datasets from .mat files.
 
@@ -22,17 +23,18 @@ def create_routing_map(child_space, k, s):
       (7*7, 5*5)
   """
   parent_space = int((child_space - k) / s + 1)
-  binmap = tf.Variable(lambda: tf.zeros((child_space ** 2, parent_space ** 2)))
-  for r in tf.range(parent_space):
-    for c in tf.range(parent_space):
+  binmap = np.zeros((child_space ** 2, parent_space ** 2))
+  for r in range(parent_space):
+    for c in range(parent_space):
       p_idx = r * parent_space + c
-      for i in tf.range(k):
+      for i in range(k):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
-        binmap[(c_idx):(c_idx + k), p_idx].assign(binmap[(c_idx):(c_idx + k), p_idx] + 1)
+        binmap[(c_idx):(c_idx + k), p_idx] = binmap[(c_idx):(c_idx + k), p_idx] + 1
 
-  return tf.convert_to_tensor(binmap, dtype=tf.float32)
+  return np.float32(binmap)
 
+@tf.function
 def kernel_tile(input, kernel, stride):
   """Tile the children poses/activations so that the children for each parent occur in one axis.
 
