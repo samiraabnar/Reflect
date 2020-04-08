@@ -229,7 +229,7 @@ class FcCaps(tf.keras.layers.Layer):
                          batch_size,
                          spatial_routing_matrix)
 
-    pose_out = tf.reshape(pose_out,(batch_size,-1))
+    activation_out = tf.reshape(activation_out,(batch_size,-1))
 
     return pose_out, activation_out
 
