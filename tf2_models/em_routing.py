@@ -53,9 +53,12 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # is achieved by selecting the non-zero values down each column. Need the
   # combination of two transposes so that order is correct when reshaping
   mask = spatial_routing_matrix.astype(bool)
-  rr_initial = rr_initial.T[mask.T]
-  rr_initial = tf.reshape(rr_initial, [parent_space, parent_space, -1])
 
+  tf.print(rr_initial)
+  tf.print(rr_initial.shape)
+  rr_initial = tf.transpose(rr_initial)[tf.transpose(mask)]
+  rr_initial = tf.reshape(rr_initial, [parent_space, parent_space, -1])
+  print(rr_initial.shape)
   # Copy values across depth dimensions
   # i.e. the number of child_caps and the number of parent_caps
   # (5, 5, 9) -> (5, 5, 9, 8, 32)
@@ -74,10 +77,6 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
 
   sum_routing_weights = tf.reduce_sum(rr_initial)
 
-  #   assert_op = tf.assert_less(
-  #       np.abs(sum_routing_weights - effective_child_cap), 1e-9)
-  #   with tf.control_dependencies([assert_op]):
-  #     return rr_initial
 
   assert tf.abs(sum_routing_weights - effective_child_cap) < 1e-3
 
