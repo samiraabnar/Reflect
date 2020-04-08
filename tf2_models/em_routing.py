@@ -71,14 +71,14 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # Check the total of the routing weights is equal to the number of child
   # capsules
   # child_space * child_space * child_caps (minus the dropped ones)
-  dropped_child_caps = tf.reduce_sum(tf.cast(tf.reduce_sum(spatial_routing_matrix, axis=1) < 1e-9, dtype=tf.float32))
+  dropped_child_caps = tf.reduce_sum(tf.cast(tf.reduce_sum(spatial_routing_matrix, axis=1) < 1e-9, dtype=tf.int32))
   effective_child_cap = ((child_space * child_space - dropped_child_caps)
                          * child_caps)
 
   sum_routing_weights = tf.reduce_sum(rr_initial)
 
 
-  assert tf.abs(sum_routing_weights - effective_child_cap) < 1e-3
+  assert tf.abs(sum_routing_weights - tf.cast(effective_child_cap, dtype=tf.float32)) < 1e-3
 
   return rr_initial
 
