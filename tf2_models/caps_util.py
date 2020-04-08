@@ -137,12 +137,12 @@ def group_children_by_parent(bin_routing_map):
       binary routing map with children as rows and parents as columns
   Returns:
     children_per_parents:
-      parents are rows, and the indexes in the row are which children belong to       that parent
+      parents are rows, and the indexes in the row are which children belong to that parent
   """
 
   true_indexes = tf.where(tf.transpose(bin_routing_map))
   children_per_parent = tf.reshape(true_indexes, [tf.shape(bin_routing_map)[1], -1])
-  tf.print('true_indexes', true_indexes.shape)
+  tf.print('true_indexes', tf.shape(true_indexes))
   return children_per_parent
 
 def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
