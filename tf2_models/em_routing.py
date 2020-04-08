@@ -201,7 +201,7 @@ class EmRouting(tf.keras.layers.Layer):
       inverse_temperature = (final_lambda *
                              (1 - tf.math.pow(0.95, tf.cast(it + 1, tf.float32))))
 
-      # AG 26/06/2018: added var_j
+      tf.print('mstep')
       activations_j, mean_j, var_j = self.m_step(
         rr,
         votes_ij,
@@ -213,6 +213,7 @@ class EmRouting(tf.keras.layers.Layer):
       # return the a_j and the mean from the m_stp in the last iteration to
       # compute the output capsule activation and pose matrices
       if it < self.hparams.iter_routing - 1:
+        tf.print('estep')
         rr = self.e_step(votes_ij,
                     activations_j,
                     mean_j,
@@ -305,8 +306,9 @@ class EmRouting(tf.keras.layers.Layer):
     # (N*output_h*output_w, kernel_h*kernel_w*i, o, 1)
     # activ from convcaps2 to classcaps (64, 1, 1, 400, 5, 1) 400/5 = 80 info
     # (N, 1, 1, IH*IW*i, n_classes, 1)
-    child_caps = float(tf.shape(rr_prime)[-3])
-    parent_caps = float(tf.shape(rr_prime)[-2])
+    rr_prime_shape = tf.shape(rr_prime)
+    child_caps = float(rr_prime_shape[-3])
+    parent_caps = float(rr_prime_shape[-2])
     ratio_child_to_parent = child_caps / parent_caps
     layer_norm_factor = 100 / ratio_child_to_parent
 
