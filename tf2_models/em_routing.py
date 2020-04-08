@@ -173,9 +173,9 @@ class EmRouting(tf.keras.layers.Layer):
 
     rt_mat_shape = spatial_routing_matrix.shape
     child_space_2 = tf.cast(rt_mat_shape[0], dtype=tf.int32)
-    child_space = tf.cast(tf.math.sqrt(child_space_2), tf.int32)
+    child_space = tf.cast(tf.math.sqrt(tf.cast(child_space_2, dtype=tf.float32)), tf.int32)
     parent_space_2 = tf.cast(rt_mat_shape[1], dtype=tf.int32)
-    parent_space = tf.cast(tf.math.sqrt(parent_space_2), tf.int32)
+    parent_space = tf.cast(tf.math.sqrt(tf.cast(parent_space_2, dtype=tf.float32)), tf.int32)
 
     # ----- Reshape Inputs -----#
     # conv: (N*output_h*output_w, kernel_h*kernel_w*num_input_caps, o, 4x4) -> (N, output_h, output_w, kernel_h*kernel_w*num_input_caps, o, 4x4)
