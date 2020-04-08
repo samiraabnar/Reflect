@@ -193,7 +193,7 @@ class EmRouting(tf.keras.layers.Layer):
       [1, parent_space, parent_space, kk * num_input_caps, num_output_caps, 1])
 
     # Convert rr from np to tf
-    rr = tf.constant(rr, dtype=tf.float32)
+    rr = tf.cast(rr, dtype=tf.float32)
 
     for it in range(self.hparams.iter_routing):
       final_lambda = self.hparams.final_lambda
