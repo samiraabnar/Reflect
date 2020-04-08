@@ -58,14 +58,14 @@ class ConvCaps(tf.keras.layers.Layer):
     w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
 
     # (64*5*5, 9*8, 1, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    output = tf.tile(output, [1, 1, self.num_out_caps, 1, 1])
+    output = tf.tile(output, [1, 1, self.num_output_caps, 1, 1])
 
     # (64*5*5, 9*8, 32, 4, 4) x (64*5*5, 9*8, 32, 4, 4)
     # -> (64*5*5, 9*8, 32, 4, 4)
     mult = tf.matmul(output, w)
 
     # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
-    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.num_out_caps, 16])
+    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.num_output_caps, 16])
 
     # tf.summary.histogram('w', w)
 
@@ -129,6 +129,7 @@ class ConvCaps(tf.keras.layers.Layer):
 class FcCaps(tf.keras.layers.Layer):
   def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
     super(FcCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+    self.num_output_caps = self.hparams.output_dim
 
   def call(self,pose_in, activation_in, training=True, **kwargs):
     """Fully connected capsule layer.
@@ -189,13 +190,13 @@ class FcCaps(tf.keras.layers.Layer):
     # (65*5*5, 32, 5, 16)
     assert (
       votes.get_shape() ==
-      [batch_size * child_space * child_space, child_caps, self.num_out_caps, 16])
+      [batch_size * child_space * child_space, child_caps, self.num_output_caps, 16])
 
 
     # (64*5*5, 32, 5, 16)
     votes = tf.reshape(
         votes,
-        [batch_size, child_space, child_space, child_caps, self.num_out_caps,
+        [batch_size, child_space, child_space, child_caps, self.num_output_caps,
          votes.shape[-1]])
     votes = coord_addition(votes)
 
@@ -206,7 +207,7 @@ class FcCaps(tf.keras.layers.Layer):
     votes_flat = tf.reshape(
         votes,
         shape=[batch_size, child_space * child_space * child_caps,
-               self.num_out_caps, votes.shape[-1]])
+               self.num_output_caps, votes.shape[-1]])
     activation_flat = tf.reshape(
         activation,
         shape=[batch_size, child_space * child_space * child_caps, 1])
@@ -265,14 +266,14 @@ class FcCaps(tf.keras.layers.Layer):
     w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
 
     # (64*5*5, 9*8, 1, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    output = tf.tile(output, [1, 1, self.num_out_caps, 1, 1])
+    output = tf.tile(output, [1, 1, self.num_output_caps, 1, 1])
 
     # (64*5*5, 9*8, 32, 4, 4) x (64*5*5, 9*8, 32, 4, 4)
     # -> (64*5*5, 9*8, 32, 4, 4)
     mult = tf.matmul(output, w)
 
     # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
-    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.num_out_caps, 16])
+    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.num_output_caps, 16])
 
     # tf.summary.histogram('w', w)
 
