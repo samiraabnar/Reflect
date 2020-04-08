@@ -35,7 +35,7 @@ def create_routing_map(child_space, k, s):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
         all_c_idx = tf.range((c_idx),(c_idx + k))
-        binmap[p_idx] = tf.reduce_sum(c_eye[all_c_idx], axis=0)
+        binmap[p_idx] = tf.reduce_sum(tf.gather(c_eye, all_c_idx), axis=0)
 
   binmap = binmap.stack()
   tf.print(binmap.shape, child_space ** 2, parent_space ** 2)
