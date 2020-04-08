@@ -20,11 +20,10 @@ def create_routing_map(child_space, k, s):
       (child_space^2, parent_space^2)
       (7*7, 5*5)
   """
-
-  parent_space = int((child_space - k) / s + 1)
+  parent_space = tf.cast((child_space - k) / s + 1, tf.int32)
   binmap = tf.zeros((child_space ** 2, parent_space ** 2))
-  for r in range(parent_space):
-    for c in range(parent_space):
+  for r in tf.range(parent_space):
+    for c in tf.range(parent_space):
       p_idx = r * parent_space + c
       for i in tf.range(k):
         # c_idx stand for child_index; p_idx is parent_index
