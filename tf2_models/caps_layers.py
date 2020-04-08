@@ -129,6 +129,7 @@ class ConvCaps(tf.keras.layers.Layer):
 class FcCaps(tf.keras.layers.Layer):
   def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
     super(FcCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+    self.hparams  = hparams
     self.num_output_caps = self.hparams.output_dim
 
   def call(self,pose_in, activation_in, training=True, **kwargs):
