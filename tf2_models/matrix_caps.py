@@ -84,9 +84,9 @@ class MatrixCaps(tf.keras.Model):
       shape=[batch_size, spatial_size, spatial_size, self.hparams.B, 1],
       name="activation")
 
-    assert tf.shape(outputs_pos).as_list() == [batch_size, spatial_size, spatial_size,
+    assert [a for a in tf.shape(outputs_pos)] == [batch_size, spatial_size, spatial_size,
                                 self.hparams.B, 16]
-    assert tf.shape(outputs_activations).as_list() == [batch_size, spatial_size, spatial_size,
+    assert [a for a in tf.shape(outputs_activations)] == [batch_size, spatial_size, spatial_size,
                                       self.hparams.B, 1]
 
     # ----- Conv Caps 1 -----#
