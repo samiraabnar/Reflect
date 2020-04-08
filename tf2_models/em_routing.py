@@ -42,9 +42,11 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # have any parents. This would create a divide by 0 scenario, so need to add
   # 1e-9 to prevent NaNs.
   tf.print('rr_init')
+  parent_caps = tf.cast(parent_caps, tf.int32)
+  parents_per_child = tf.cast(parents_per_child, tf.int32)
   tf.print(parents_per_child)
   tf.print(parent_caps)
-  tf.print(spatial_routing_matrix)
+  tf.print(spatial_routing_matrix.shape)
   rr_initial = (spatial_routing_matrix
                 / (tf.cast(parents_per_child * parent_caps, dtype=tf.float32) + 1e-9))
 
