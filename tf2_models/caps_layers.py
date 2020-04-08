@@ -229,8 +229,8 @@ class FcCaps(tf.keras.layers.Layer):
                          batch_size,
                          spatial_routing_matrix)
 
-    activation_out = tf.squeeze(activation_out, name="activation_out")
-    pose_out = tf.squeeze(pose_out, name="pose_out")
+    activation_out = activation_out
+    pose_out = pose_out
 
     return pose_out, activation_out
 
