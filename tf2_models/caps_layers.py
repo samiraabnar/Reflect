@@ -335,13 +335,13 @@ def coord_addition(votes):
   w_offset_vals = (tf.cast(tf.range(width), dtype=tf.float32) + 0.50)/ tf.cast(width, dtype=tf.float32)
   h_offset_vals = (tf.cast(tf.range(height), dtype=tf.float32) + 0.50)/ tf.cast(height, dtype=tf.float32)
 
-  w_offset = tf.Variable(lambda: tf.zeros([width, dims])) # (5, 16)
-  w_offset[:,3].assign(w_offset_vals)
+
+  w_offset = tf.tile(tf.eye(dims)[3][None,...],(width,1))
   # (1, 1, 5, 1, 1, 16)
   w_offset = tf.reshape(w_offset, [1, 1, width, 1, 1, dims])
 
-  h_offset = tf.Variable(lambda: tf.zeros([height, dims]))
-  h_offset[:,7].assign(h_offset_vals)
+  h_offset = tf.tile(tf.eye(dims)[7][None,...],(height,1))
+
   # (1, 5, 1, 1, 1, 16)
   h_offset = tf.reshape(h_offset, [1, height, 1, 1, 1, dims])
 
