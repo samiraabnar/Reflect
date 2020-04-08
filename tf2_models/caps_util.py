@@ -120,9 +120,9 @@ def group_children_by_parent(bin_routing_map):
       parents are rows, and the indexes in the row are which children belong to       that parent
   """
 
-  num_true, true_indexes = tf.where(tf.transpose(bin_routing_map))
-  children_per_parent = tf.reshape(true_indexes[1], [bin_routing_map.shape[1], -1])
-
+  true_indexes = tf.where(tf.transpose(bin_routing_map))
+  children_per_parent = tf.reshape(true_indexes, [bin_routing_map.shape[1], -1])
+  tf.print('true_indexes', true_indexes.shape)
   return children_per_parent
 
 def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
