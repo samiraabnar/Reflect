@@ -26,7 +26,8 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
       (1, parent_space, parent_space, kk, child_caps, parent_caps)
       (1, 5, 5, 9, 8, 32)
   """
-
+  tf.print("child and parent caps")
+  tf.print(child_caps, parent_caps)
   # Get spatial dimension of parent & child
   parent_space_2 = tf.cast(spatial_routing_matrix.shape[1], tf.int32)
   parent_space = tf.cast(tf.math.sqrt(tf.cast(parent_space_2, dtype=tf.float32)), tf.int32)
@@ -167,17 +168,17 @@ class EmRouting(tf.keras.layers.Layer):
     output_w = tf.math.sqrt(int(votes_shape[0]) / N)
     output_w = tf.cast(output_w, tf.int32)
     kh_kw_i = tf.cast(votes_shape[1], tf.int32)
-    num_ouput_caps = tf.cast(votes_shape[2], tf.int32)
+    num_output_caps = tf.cast(votes_shape[2], tf.int32)
     n_channels = tf.cast(votes_shape[3], tf.int32)
 
     # Calculate kernel size by adding up column of spatial routing matrix
     # Do this before conventing the spatial_routing_matrix to tf
-    tf.print(spatial_routing_matrix[:, 0].shape)
     kk =tf.cast(tf.reduce_sum(spatial_routing_matrix[:, 0]), tf.int32)
-
-    parent_caps = num_ouput_caps
-    child_caps = tf.cast(kh_kw_i / kk, dtype=tf.int32)
-
+    tf.print("kernel size:", kk)
+    num_input_caps = tf.cast(kh_kw_i / kk, dtype=tf.int32)
+    tf.print('child_caps:', num_input_caps)
+    tf.print('kh_kw_i', kh_kw_i)
+    
     rt_mat_shape = spatial_routing_matrix.shape
     child_space_2 = tf.cast(rt_mat_shape[0], dtype=tf.int32)
     child_space = tf.cast(tf.math.sqrt(tf.cast(child_space_2, dtype=tf.float32)), tf.int32)
@@ -187,7 +188,7 @@ class EmRouting(tf.keras.layers.Layer):
     # ----- Reshape Inputs -----#
     # conv: (N*output_h*output_w, kernel_h*kernel_w*num_input_caps, o, 4x4) -> (N, output_h, output_w, kernel_h*kernel_w*num_input_caps, o, 4x4)
     # FC: (N, child_space*child_space*num_input_caps, o, 4x4) -> (N, 1, 1, child_space*child_space*num_input_caps, output_classes, 4x4)
-    votes_ij = tf.reshape(votes_ij, [N, output_h, output_w, kh_kw_i, num_ouput_caps, n_channels])
+    votes_ij = tf.reshape(votes_ij, [N, output_h, output_w, kh_kw_i, num_output_caps, n_channels])
 
     # (N*output_h*output_w, kernel_h*kernel_w*num_input_caps, 1) -> (N, output_h, output_w, kernel_h*kernel_w*num_input_caps, o, n_channels)
     #              (24, 6, 6, 288, 1, 1)
@@ -196,13 +197,13 @@ class EmRouting(tf.keras.layers.Layer):
     # Initialise routing assignments
     # rr (1, 6, 6, 9, 8, 16)
     #  (1, parent_space, parent_space, kk, child_caps, parent_caps)
-    rr = init_rr(spatial_routing_matrix, child_caps,
-                 parent_caps)
+    rr = init_rr(spatial_routing_matrix, num_input_caps,
+                 num_output_caps)
 
     # Need to reshape (1, 6, 6, 9, 8, 16) -> (1, 6, 6, 9*8, 16, 1)
     rr = tf.reshape(
       rr,
-      [1, parent_space, parent_space, kk * child_caps, parent_caps, 1])
+      [1, parent_space, parent_space, kk * num_input_caps, num_output_caps, 1])
 
     # Convert rr from np to tf
     rr = tf.constant(rr, dtype=tf.float32)
