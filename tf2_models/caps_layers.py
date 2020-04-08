@@ -205,7 +205,7 @@ class FcCaps(tf.keras.layers.Layer):
     votes = tf.reshape(
         votes,
         [batch_size, child_space, child_space, child_caps, self.num_output_caps,
-         votes.shape[-1]])
+         tf.shape(votes)[-1]])
     votes = coord_addition(votes)
 
     # Flatten the votes:
@@ -215,7 +215,7 @@ class FcCaps(tf.keras.layers.Layer):
     votes_flat = tf.reshape(
         votes,
         shape=[batch_size, child_space * child_space * child_caps,
-               self.num_output_caps, votes.shape[-1]])
+               self.num_output_caps, tf.shape(votes)[-1]])
     activation_flat = tf.reshape(
         activation,
         shape=[batch_size, child_space * child_space * child_caps, 1])
