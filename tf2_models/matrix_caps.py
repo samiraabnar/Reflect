@@ -94,14 +94,16 @@ class MatrixCaps(tf.keras.Model):
     # activation_out: (64, 5, 5, 32, 1)
     # pose_out: (64, 5, 5, 32, 16)
     outputs_pos, outputs_activations = self.convcaps1(outputs_pos, outputs_activations, training, **kwargs)
-
+    tf.print('convcaps1 outputs_pos', outputs_pos.shape)
+    tf.print('convcaps1 outputs_activations', outputs_activations.shape)
     # ----- Conv Caps 2 -----#
     # activation_in: (64, 7, 7, 8, 1)
     # pose_in: (64, 7, 7, 16, 1)
     # activation_out: (64, 5, 5, 32, 1)
     # pose_out: (64, 5, 5, 32, 16)
     outputs_pos, outputs_activations = self.convcaps2(outputs_pos, outputs_activations, training, **kwargs)
-
+    tf.print('convcaps2 outputs_pos', outputs_pos.shape)
+    tf.print('convcaps2 outputs_activations', outputs_activations.shape)
     # ----- Class Caps -----#
     # activation_in: (64, 5, 5, 32, 1)
     # pose_in: (64, 5, 5, 32, 16)
