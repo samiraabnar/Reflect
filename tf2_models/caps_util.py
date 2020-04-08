@@ -45,7 +45,6 @@ def create_routing_map(child_space, k, s):
 
   return binmap
 
-@tf.function
 def kernel_tile(input, kernel, stride):
   """Tile the children poses/activations so that the children for each parent occur in one axis.
 
@@ -79,13 +78,13 @@ def kernel_tile(input, kernel, stride):
   # Check that dim 1 and 2 correspond to the spatial size
   #assert input_shape[1] == input_shape[2]
 
-  # Check if we have poses or activations
-  if len(input_shape) > 5:
-    # Poses
-    size = input_shape[4] * input_shape[5]
-  else:
-    # Activations
-    size = 1
+  # # Check if we have poses or activations
+  # if len(input_shape) > 5:
+  #   # Poses
+  #   size = input_shape[4] * input_shape[5]
+  # else:
+  #   # Activations
+  #   size = 1
 
   # Matrix showing which children map to which parent. Children are rows,
   # parents are columns.
@@ -104,6 +103,7 @@ def kernel_tile(input, kernel, stride):
   tf.print('input', tf.shape(input))
 
   # Select which children go to each parent capsule
+  tf.print('input', tf.shape(input))
   tiled = tf.gather(input, child_to_parent_idx, axis=1)
 
   tf.print('tiled', tf.shape(tiled))
