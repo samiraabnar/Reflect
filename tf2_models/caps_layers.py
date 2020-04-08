@@ -48,7 +48,7 @@ class ConvCaps(tf.keras.layers.Layer):
 
     tf.print('poses_i', poses_i.shape)
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
-    output = tf.reshape(poses_i, shape=[batch_size, kh_kw_i, 1, 4, 4])
+    output = tf.reshape(poses_i, shape=[batch_size, self.kh_kw_i, 1, 4, 4])
     tf.print('poses_i', poses_i.shape)
 
 
