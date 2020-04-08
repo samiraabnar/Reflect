@@ -182,8 +182,9 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
   parent_caps = shape[5]
 
   # Get spatial dimesion of child capsules
-  child_space_2 = spatial_routing_matrix.shape[0]
-  parent_space_2 =  spatial_routing_matrix.shape[1]
+  srm_shape = tf.shape(spatial_routing_matrix)
+  child_space_2 = srm_shape[0]
+  parent_space_2 =  srm_shape[1]
 
   # Unroll the probs along the spatial dimension
   # e.g. (64, 6, 6, 3*3, 8, 32) -> (64, 6*6, 3*3, 8, 32)
@@ -545,10 +546,11 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
       (1, 5, 5, 9, 8, 32)
   """
 
+  srm_shape = tf.shape(spatial_routing_matrix)
   # Get spatial dimension of parent & child
-  parent_space_2 = tf.cast(spatial_routing_matrix.shape[1], tf.int32)
+  parent_space_2 = tf.cast(srm_shape[1], tf.int32)
   parent_space = tf.cast(tf.math.sqrt(parent_space_2), tf.int32)
-  child_space_2 = tf.cast(spatial_routing_matrix.shape[0], tf.int32)
+  child_space_2 = tf.cast(srm_shape[0], tf.int32)
   child_space = tf.cast(tf.math.sqrt(child_space_2), tf.int32)
 
   # Count the number of parents that each child belongs to
