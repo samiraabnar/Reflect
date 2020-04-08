@@ -421,7 +421,7 @@ class EmRouting(tf.keras.layers.Layer):
       name="o_p_unit0")
 
     o_p_unit2 = - 0.5 * tf.reduce_sum(
-      tf.math.log(2 * tf.math.pi * var_j),
+      tf.math.log(2 * np.pi * var_j),
       axis=-1,
       keepdims=True,
       name="o_p_unit2"
