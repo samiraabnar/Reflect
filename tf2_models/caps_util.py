@@ -29,7 +29,7 @@ def create_routing_map(child_space, k, s):
       for i in np.arange(k):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
-        binmap[(c_idx):(c_idx + k), p_idx] = binmap[(c_idx):(c_idx + k), p_idx] + 1
+        binmap[(c_idx):(c_idx + k), p_idx].assign(binmap[(c_idx):(c_idx + k), p_idx] + 1)
 
   return binmap
 
