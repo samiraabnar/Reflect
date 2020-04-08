@@ -56,7 +56,7 @@ class MatrixCaps(tf.keras.Model):
                               scope='conv_caps1')
     self.convcaps2 = ConvCaps(self.hparams,
                               num_output_caps=self.hparams.D,
-                              kernel=3, stride=1, kh_kw_i=9*8,
+                              kernel=3, stride=1, kh_kw_i=9*16,
                               scope='conv_caps2')
 
 
