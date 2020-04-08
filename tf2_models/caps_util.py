@@ -120,8 +120,8 @@ def group_children_by_parent(bin_routing_map):
       parents are rows, and the indexes in the row are which children belong to       that parent
   """
 
-  tmp = np.where(tf.transpose(bin_routing_map))
-  children_per_parent = np.reshape(tmp[1], [bin_routing_map.shape[1], -1])
+  num_true, true_indexes = tf.where(tf.transpose(bin_routing_map))
+  children_per_parent = tf.reshape(true_indexes[1], [bin_routing_map.shape[1], -1])
 
   return children_per_parent
 
