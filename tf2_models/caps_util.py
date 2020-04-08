@@ -192,13 +192,13 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
   child_sparse_idx = child_sparse_idx[tf.newaxis, ...]
   child_sparse_idx = tf.tile(child_sparse_idx, [batch_size, 1, 1])
 
-  parent_idx = tf.arange(parent_space_2)
+  parent_idx = tf.range(parent_space_2)
   parent_idx = tf.reshape(parent_idx, [-1, 1])
   parent_idx = tf.repeat(parent_idx, kk)
   parent_idx = tf.tile(parent_idx, batch_size)
   parent_idx = tf.reshape(parent_idx, [batch_size, parent_space_2, kk])
 
-  batch_idx = tf.arange(batch_size)
+  batch_idx = tf.range(batch_size)
   batch_idx = tf.reshape(batch_idx, [-1, 1])
   batch_idx = tf.tile(batch_idx, parent_space_2 * kk)
   batch_idx = tf.reshape(batch_idx, [batch_size, parent_space_2, kk])
