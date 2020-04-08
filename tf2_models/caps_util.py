@@ -26,17 +26,22 @@ def create_routing_map(child_space, k, s):
   k = k.numpy()
   s = s.numpy()
 
-  parent_space = int((child_space - k) / s + 1)
-  binmap = np.zeros((child_space ** 2, parent_space ** 2))
+  parent_space = tf.cast((child_space - k) / s + 1, tf.int32)
+  #binmap = np.zeros((child_space ** 2, parent_space ** 2))
+  binmap = tf.TensorArray(size=parent_space ** 2 ,dtype = tf.float32, element_shape =(child_space ** 2))
+  c_eye = tf.eye(child_space ** 2)
   for r in range(parent_space):
     for c in range(parent_space):
       p_idx = r * parent_space + c
       for i in range(k):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
-        binmap[(c_idx):(c_idx + k), p_idx] = binmap[(c_idx):(c_idx + k), p_idx] + 1
+        all_c_idx = tf.range((c_idx),(c_idx + k))
+        binmap[p_idx] = tf.reduce_sum(c_eye[all_c_idx], axis=0)
 
-  return np.float32(binmap)
+  binmap = binmap.stack()
+  tf.print(binmap.shape, child_space ** 2, parent_space ** 2)
+  return binmap
 
 @tf.function
 def kernel_tile(input, kernel, stride):
