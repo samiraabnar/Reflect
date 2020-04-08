@@ -332,18 +332,18 @@ def coord_addition(votes):
   # Generate offset coordinates
   # The difference here is that the coordinate won't be exactly in the middle of
   # the receptive field, but will be evenly spread out
-  w_offset_vals = (tf.range(width) + 0.50)/float(width)
-  h_offset_vals = (tf.range(height) + 0.50)/float(height)
+  w_offset_vals = (np.range(width) + 0.50)/float(width)
+  h_offset_vals = (np.range(height) + 0.50)/float(height)
 
-  w_offset = tf.zeros([width, dims]) # (5, 16)
+  w_offset = np.zeros([width, dims]) # (5, 16)
   w_offset[:,3] = w_offset_vals
   # (1, 1, 5, 1, 1, 16)
-  w_offset = tf.reshape(w_offset, [1, 1, width, 1, 1, dims])
+  w_offset = np.reshape(w_offset, [1, 1, width, 1, 1, dims])
 
-  h_offset = tf.zeros([height, dims])
+  h_offset = np.zeros([height, dims])
   h_offset[:,7] = h_offset_vals
   # (1, 5, 1, 1, 1, 16)
-  h_offset = tf.reshape(h_offset, [1, height, 1, 1, 1, dims])
+  h_offset = np.reshape(h_offset, [1, height, 1, 1, 1, dims])
 
   # Combine w and h offsets using broadcasting
   # w is (1, 1, 5, 1, 1, 16)
