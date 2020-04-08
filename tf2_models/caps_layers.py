@@ -47,7 +47,7 @@ class ConvCaps(tf.keras.layers.Layer):
 
     tf.print('poses_i', tf.shape(poses_i))
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
-    output = tf.reshape(poses_i, shape=[batch_size, self.kh_kw_i, 1, 4, 4])
+    output = tf.reshape(poses_i, shape=[batch_size, self.kh_kw_i, 1, 4, 4], name='input_pos_reshape')
     tf.print('poses_i', tf.shape(poses_i))
 
 
@@ -67,7 +67,7 @@ class ConvCaps(tf.keras.layers.Layer):
     mult = tf.matmul(output, w)
 
     # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
-    votes = tf.reshape(mult, [batch_size, self.kh_kw_i, self.num_output_caps, 16])
+    votes = tf.reshape(mult, [batch_size, self.kh_kw_i, self.num_output_caps, 16], name='vote_reshape')
 
     # tf.summary.histogram('w', w)
 
@@ -105,10 +105,10 @@ class ConvCaps(tf.keras.layers.Layer):
     # (64, 5, 5, 9, 8, 16) -> (64*5*5, 9*8, 16)
     pose_unroll = tf.reshape(
       pose_tiled,
-      shape=[batch_size * parent_space_2, kernel_2 * child_caps, 16])
+      shape=[batch_size * parent_space_2, kernel_2 * child_caps, 16], name='pose_unroll_reshape')
     activation_unroll = tf.reshape(
       activation_tiled,
-      shape=[batch_size * parent_space_2, kernel_2 * child_caps, 1])
+      shape=[batch_size * parent_space_2, kernel_2 * child_caps, 1], name='activation_unroll_reshape')
 
     tf.print('pose_unroll', tf.shape(pose_unroll))
     tf.print('activation_unroll', tf.shape(activation_unroll))

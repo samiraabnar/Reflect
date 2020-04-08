@@ -39,9 +39,9 @@ def create_routing_map(child_space, k, s):
         binmap = binmap.write(p_idx,new_row)
 
   binmap = binmap.stack()
-  tf.print('binmap',binmap.shape, child_space ** 2, parent_space ** 2)
+  tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2)
   binmap = tf.transpose(binmap)
-  tf.print('binmap',binmap.shape, child_space ** 2, parent_space ** 2)
+  tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2)
 
   return binmap
 
@@ -73,6 +73,7 @@ def kernel_tile(input, kernel, stride):
   batch_size = input_shape[0]
   spatial_size = input_shape[1]
   n_capsules = input_shape[3]
+  tf.print('kernel tile', batch_size, spatial_size, n_capsules)
   parent_spatial_size = tf.cast((spatial_size - kernel) / stride + 1, dtype=tf.int32)
 
   # Check that dim 1 and 2 correspond to the spatial size
@@ -89,12 +90,13 @@ def kernel_tile(input, kernel, stride):
   # Matrix showing which children map to which parent. Children are rows,
   # parents are columns.
   child_parent_matrix = create_routing_map(spatial_size, kernel, stride)
-
+  tf.print('child_parent_matrix', tf.shape(child_parent_matrix))
   # Convert from np to tf
   # child_parent_matrix = tf.constant(child_parent_matrix)
 
   # Each row contains the children belonging to one parent
   child_to_parent_idx = group_children_by_parent(child_parent_matrix)
+  tf.print('child_to_parent_idx', tf.shape(child_to_parent_idx))
 
   # Spread out spatial dimension of children
   input = tf.reshape(input, [batch_size, spatial_size * spatial_size, -1])
@@ -103,7 +105,9 @@ def kernel_tile(input, kernel, stride):
   tiled = tf.gather(input, child_to_parent_idx, axis=1)
 
   tiled = tf.squeeze(tiled)
+  tf.print('tiled', tiled)
   tiled = tf.reshape(tiled, [batch_size, parent_spatial_size, parent_spatial_size, kernel * kernel, n_capsules, -1])
+  tf.print('tiled', tiled)
 
   return tiled, child_parent_matrix
 
