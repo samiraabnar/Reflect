@@ -165,7 +165,8 @@ class EmRouting(tf.keras.layers.Layer):
 
     # Calculate kernel size by adding up column of spatial routing matrix
     # Do this before conventing the spatial_routing_matrix to tf
-    kk = tf.reduce_sum(spatial_routing_matrix[:, 0], axis=1)
+    tf.print(spatial_routing_matrix[:, 0].shape)
+    kk = tf.reduce_sum(spatial_routing_matrix[:, 0])
 
     parent_caps = num_ouput_caps
     child_caps = int(kh_kw_i / kk)
