@@ -130,7 +130,7 @@ def group_children_by_parent(bin_routing_map):
   """
 
   true_indexes = tf.where(tf.transpose(bin_routing_map))
-  children_per_parent = tf.reshape(true_indexes, [bin_routing_map.shape[1], -1])
+  children_per_parent = tf.reshape(true_indexes, [tf.shape(bin_routing_map)[1], -1])
   tf.print('true_indexes', true_indexes.shape)
   return children_per_parent
 
