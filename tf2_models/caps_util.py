@@ -98,8 +98,10 @@ def kernel_tile(input, kernel, stride):
   child_to_parent_idx = group_children_by_parent(child_parent_matrix)
   tf.print('child_to_parent_idx', tf.shape(child_to_parent_idx))
 
+  tf.print(input, tf.shape(input), spatial_size, spatial_size * spatial_size)
   # Spread out spatial dimension of children
   input = tf.reshape(input, [batch_size, spatial_size * spatial_size, -1])
+  tf.print(input, tf.shape(input))
 
   # Select which children go to each parent capsule
   tiled = tf.gather(input, child_to_parent_idx, axis=1)
