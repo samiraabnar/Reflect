@@ -130,10 +130,14 @@ class ConvCaps(tf.keras.layers.Layer):
 
 
 class FcCaps(tf.keras.layers.Layer):
-  def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
+  def __init__(self, hparams, kh_kw_i, scope='class_caps', *inputs, **kwargs):
     super(FcCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
     self.hparams  = hparams
     self.num_output_caps = self.hparams.output_dim
+    self.kh_kw_i = self.hparams.D
+    self.w = tf.Variable(name='w',
+                         initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
+                                                                  dtype=tf.float32))
 
   def call(self,pose_in, activation_in, training=True, **kwargs):
     """Fully connected capsule layer.
