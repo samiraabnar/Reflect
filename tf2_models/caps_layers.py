@@ -73,7 +73,7 @@ class ConvCaps(tf.keras.layers.Layer):
 
     return votes
 
-  def call(self, inputs_pose, inputs_activation, kernel, stride=1, training=False, **kwargs):
+  def call(self, inputs_pose, inputs_activation, training=False, **kwargs):
 
     # Get shapes
     shape = inputs_pose.get_shape().as_list()
@@ -81,22 +81,22 @@ class ConvCaps(tf.keras.layers.Layer):
     child_space = shape[1]
     child_space_2 = int(child_space ** 2)
     child_caps = shape[3]
-    parent_space = int(tf.floor((child_space - kernel) / stride + 1))
+    parent_space = int(tf.floor((child_space - self.kernel) / self.stride + 1))
     parent_space_2 = int(parent_space ** 2)
     parent_caps = self.num_output_caps
-    kernel_2 = int(kernel ** 2)
+    kernel_2 = int(self.kernel ** 2)
 
     # Votes
     # Tile poses and activations
     # (64, 7, 7, 8, 16)  -> (64, 5, 5, 9, 8, 16)
     pose_tiled, spatial_routing_matrix = kernel_tile(
       inputs_pose,
-      kernel=kernel,
-      stride=stride)
+      kernel=self.kernel,
+      stride=self.stride)
     activation_tiled, _ = kernel_tile(
       inputs_activation,
-      kernel=kernel,
-      stride=stride)
+      kernel=self.kernel,
+      stride=self.stride)
 
     # Check dimensions of spatial_routing_matrix
     assert spatial_routing_matrix.shape == (child_space_2, parent_space_2)
