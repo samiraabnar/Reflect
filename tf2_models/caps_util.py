@@ -24,7 +24,9 @@ def create_routing_map(child_space, k, s):
 
   parent_space = tf.cast((child_space - k) / s + 1, tf.int32)
   #binmap = np.zeros((child_space ** 2, parent_space ** 2))
-  binmap = tf.TensorArray(size=0, dynamic_size=True ,dtype=tf.float32, infer_shape=True)
+  binmap = tf.TensorArray(size=0, dynamic_size=True ,dtype=tf.float32, infer_shape=True, clear_after_read=False)
+  cpp = tf.TensorArray(size=0, dynamic_size=True ,dtype=tf.int32, infer_shape=True)
+
   c_eye = tf.eye(child_space ** 2)
   for r in range(parent_space):
     for c in range(parent_space):
@@ -38,13 +40,15 @@ def create_routing_map(child_space, k, s):
         new_row = tf.reduce_sum(all_c, axis=0)
         prev = binmap.read(p_idx)
         binmap = binmap.write(p_idx,new_row + prev)
-
+      children = binmap.read(p_idx)
+      cpp = cpp.write(p_idx, tf.where(children))
   binmap = binmap.stack()
+  children_per_parent = cpp.stack()
   tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2)
   binmap = tf.transpose(binmap)
   tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2, tf.reduce_sum(binmap, axis=0))
 
-  return binmap
+  return binmap , children_per_parent
 
 def kernel_tile(input, kernel, stride):
   """Tile the children poses/activations so that the children for each parent occur in one axis.
@@ -91,14 +95,14 @@ def kernel_tile(input, kernel, stride):
   # Matrix showing which children map to which parent. Children are rows,
   # parents are columns.
   # 196 x 36
-  child_parent_matrix = create_routing_map(spatial_size, kernel, stride)
+  child_parent_matrix, child_to_parent_idx = create_routing_map(spatial_size, kernel, stride)
   tf.print('child_parent_matrix', tf.shape(child_parent_matrix))
   # Convert from np to tf
   # child_parent_matrix = tf.constant(child_parent_matrix)
 
   # Each row contains the children belonging to one parent
   # 36 x 6
-  child_to_parent_idx = group_children_by_parent(child_parent_matrix)
+  #child_to_parent_idx = group_children_by_parent(child_parent_matrix)
   tf.print('child_to_parent_idx', tf.shape(child_to_parent_idx)) #36 6
 
   tf.print('input', tf.shape(input), spatial_size, spatial_size * spatial_size)
