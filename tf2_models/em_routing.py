@@ -153,9 +153,9 @@ class EmRouting(tf.keras.layers.Layer):
     # Get dimensions needed to do conversions
     N = batch_size
     votes_shape = tf.shape(votes_ij)
-    output_h = tf.math.sqrt(int(votes_shape[0]) / N)
+    output_h = tf.math.sqrt(tf.cast(votes_shape[0], dtype=tf.int32) / N)
     output_h = tf.cast(output_h, dtype=tf.int32)
-    output_w = tf.math.sqrt(int(votes_shape[0]) / N)
+    output_w = tf.math.sqrt(tf.cast(votes_shape[0], dtype=tf.int32) / N)
     output_w = tf.cast(output_w, tf.int32)
     kh_kw_i = tf.cast(votes_shape[1], tf.int32)
     num_output_caps = tf.cast(votes_shape[2], tf.int32)
@@ -430,8 +430,8 @@ class EmRouting(tf.keras.layers.Layer):
     parent_space = zz_shape[1]
     kh_kw_i = zz_shape[3]
     parent_caps = zz_shape[4]
-    kk = int(tf.reduce_sum(spatial_routing_matrix[:, 0]))
-    child_caps = int(kh_kw_i / kk)
+    kk = tf.cast(tf.reduce_sum(spatial_routing_matrix[:, 0]), dtype=tf.int32)
+    child_caps = tf.cast(kh_kw_i / kk, dtype=tf.int32)
 
     zz = tf.reshape(zz, [batch_size, parent_space, parent_space, kk,
                          child_caps, parent_caps])

@@ -78,12 +78,12 @@ class ConvCaps(tf.keras.layers.Layer):
     shape = tf.shape(inputs_pose)
     batch_size = shape[0]
     child_space = shape[1]
-    child_space_2 = int(child_space ** 2)
+    child_space_2 = tf.cast(child_space ** 2, tf.int32)
     child_caps = shape[3]
-    parent_space = int(tf.floor((child_space - self.kernel) / self.stride + 1))
-    parent_space_2 = int(parent_space ** 2)
+    parent_space = tf.cast(tf.floor((child_space - self.kernel) / self.stride + 1), tf.int32)
+    parent_space_2 = tf.cast(parent_space ** 2, tf.int32)
     parent_caps = self.num_output_caps
-    kernel_2 = int(self.kernel ** 2)
+    kernel_2 = tf.cast(self.kernel ** 2, tf.int32)
 
     # Votes
     # Tile poses and activations

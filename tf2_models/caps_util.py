@@ -57,10 +57,10 @@ def kernel_tile(input, kernel, stride):
   """
 
   input_shape = tf.shape(input)
-  batch_size = int(input_shape[0])
-  spatial_size = int(input_shape[1])
-  n_capsules = int(input_shape[3])
-  parent_spatial_size = int((spatial_size - kernel) / stride + 1)
+  batch_size = input_shape[0]
+  spatial_size = input_shape[1]
+  n_capsules = input_shape[3]
+  parent_spatial_size = tf.cast((spatial_size - kernel) / stride + 1, dtype=tf.int32)
 
   # Check that dim 1 and 2 correspond to the spatial size
   #assert input_shape[1] == input_shape[2]
@@ -173,8 +173,8 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
   parent_caps = shape[5]
 
   # Get spatial dimesion of child capsules
-  child_space_2 = int(spatial_routing_matrix.shape[0])
-  parent_space_2 = int(spatial_routing_matrix.shape[1])
+  child_space_2 = spatial_routing_matrix.shape[0]
+  parent_space_2 =  spatial_routing_matrix.shape[1]
 
   # Unroll the probs along the spatial dimension
   # e.g. (64, 6, 6, 3*3, 8, 32) -> (64, 6*6, 3*3, 8, 32)
@@ -440,7 +440,7 @@ def to_dense(sparse, spatial_routing_matrix):
   parent_caps = shape[5]
 
   # Calculate kernel size by adding up column of spatial routing matrix
-  kk = int(tf.reduce_sum(spatial_routing_matrix[:, 0]))
+  kk = tf.cast(tf.reduce_sum(spatial_routing_matrix[:, 0]), dype=tf.int32)
 
   # Unroll parent spatial dimensions
   # (64, 5, 5, 49, 8, 32) -> (64, 5*5, 49, 8, 32)
@@ -622,40 +622,39 @@ def spread_loss(scores, y):
       (scalar)
   """
 
-  with tf.variable_scope('spread_loss') as scope:
-    batch_size = int(tf.shape(scores)[0])
+  batch_size = tf.shape(scores)[0]
 
-    # AG 17/09/2018: modified margin schedule based on response of authors to
-    # questions on OpenReview.net:
-    # https://openreview.net/forum?id=HJWLfGWRb
-    # "The margin that we set is:
-    # margin = 0.2 + .79 * tf.sigmoid(tf.minimum(10.0, step / 50000.0 - 4))
-    # where step is the training step. We trained with batch size of 64."
-    global_step = tf.to_float(tf.train.get_global_step())
-    m_min = 0.2
-    m_delta = 0.79
-    m = (m_min
-         + m_delta * tf.sigmoid(tf.minimum(10.0, global_step / 50000.0 - 4)))
+  # AG 17/09/2018: modified margin schedule based on response of authors to
+  # questions on OpenReview.net:
+  # https://openreview.net/forum?id=HJWLfGWRb
+  # "The margin that we set is:
+  # margin = 0.2 + .79 * tf.sigmoid(tf.minimum(10.0, step / 50000.0 - 4))
+  # where step is the training step. We trained with batch size of 64."
+  global_step = tf.to_float(tf.train.get_global_step())
+  m_min = 0.2
+  m_delta = 0.79
+  m = (m_min
+       + m_delta * tf.sigmoid(tf.minimum(10.0, global_step / 50000.0 - 4)))
 
-    num_class = int(tf.shape(scores)[-1])
+  num_class = int(tf.shape(scores)[-1])
 
-    y = tf.one_hot(y, num_class, dtype=tf.float32)
+  y = tf.one_hot(y, num_class, dtype=tf.float32)
 
-    # Get the score of the target class
-    # (64, 1, 5)
-    scores = tf.reshape(scores, shape=[batch_size, 1, num_class])
-    # (64, 5, 1)
-    y = tf.expand_dims(y, axis=2)
-    # (64, 1, 5)*(64, 5, 1) = (64, 1, 1)
-    at = tf.matmul(scores, y)
+  # Get the score of the target class
+  # (64, 1, 5)
+  scores = tf.reshape(scores, shape=[batch_size, 1, num_class])
+  # (64, 5, 1)
+  y = tf.expand_dims(y, axis=2)
+  # (64, 1, 5)*(64, 5, 1) = (64, 1, 1)
+  at = tf.matmul(scores, y)
 
-    # Compute spread loss, paper eq (3)
-    loss = tf.square(tf.maximum(0., m - (at - scores)))
+  # Compute spread loss, paper eq (3)
+  loss = tf.square(tf.maximum(0., m - (at - scores)))
 
-    # Sum losses for all classes
-    # (64, 1, 5)*(64, 5, 1) = (64, 1, 1)
-    # e.g loss*[1 0 1 1 1]
-    loss = tf.matmul(loss, 1. - y)
+  # Sum losses for all classes
+  # (64, 1, 5)*(64, 5, 1) = (64, 1, 1)
+  # e.g loss*[1 0 1 1 1]
+  loss = tf.matmul(loss, 1. - y)
 
     # Compute mean
     loss = tf.reduce_mean(loss)
