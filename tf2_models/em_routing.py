@@ -102,7 +102,7 @@ class EmRouting(tf.keras.layers.Layer):
 
 
 
-  def call(self,votes_ij, activations_i, batch_size, spatial_routing_matrix, iter_routing, final_lambda):
+  def call(self,votes_ij, activations_i, batch_size, spatial_routing_matrix):
     """The EM routing between input capsules (i) and output capsules (j).
 
     See Hinton et al. "Matrix Capsules with EM Routing" for detailed description
@@ -198,8 +198,8 @@ class EmRouting(tf.keras.layers.Layer):
     # Convert rr from np to tf
     rr = tf.constant(rr, dtype=tf.float32)
 
-    for it in range(iter_routing):
-      final_lambda = final_lambda
+    for it in range(self.iter_routing):
+      final_lambda = self.hparams.final_lambda
       inverse_temperature = (final_lambda *
                              (1 - tf.math.pow(0.95, tf.cast(it + 1, tf.float32))))
 
