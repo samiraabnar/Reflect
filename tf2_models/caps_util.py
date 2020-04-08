@@ -228,8 +228,8 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
 
   # Checks
   # 1. Shape
-  assert [a for a in tf.shape(sparse)] == [batch_size, parent_space, parent_space, child_space_2, child_caps,
-                                          parent_caps]
+  # assert [a for a in tf.shape(sparse)] == [batch_size, parent_space, parent_space, child_space_2, child_caps,
+  #                                         parent_caps]
 
 
   return sparse
@@ -278,9 +278,9 @@ def normalise_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert ([a for a in tf.shape(rr_updated)]
-          == [batch_size, parent_space, parent_space, child_space_2,
-              child_caps, parent_caps])
+  # assert ([a for a in tf.shape(rr_updated)]
+  #         == [batch_size, parent_space, parent_space, child_space_2,
+  #             child_caps, parent_caps])
 
   # 2. Total of routing weights must equal number of child capsules minus
   # dropped ones.
@@ -382,9 +382,9 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert ([a for a in tf.shape(rr_updated)]
-          == [batch_size, parent_space, parent_space, child_space_2,
-              child_caps, parent_caps])
+  # assert ([a for a in tf.shape(rr_updated)]
+  #         == [batch_size, parent_space, parent_space, child_space_2,
+  #             child_caps, parent_caps])
 
   # 2. Check the total of the routing weights is equal to the number of child
   # capsules
@@ -464,9 +464,9 @@ def to_dense(sparse, spatial_routing_matrix):
 
   # Checks
   # 1. Shape
-  assert ([a for a in tf.shape(dense)]
-          == [batch_size, parent_space, parent_space, kk, child_caps,
-              parent_caps])
+  # assert ([a for a in tf.shape(dense)]
+  #         == [batch_size, parent_space, parent_space, kk, child_caps,
+  #             parent_caps])
 
   #   # 2. Total of dense and sparse must be the same
   #   delta = tf.abs(tf.reduce_sum(dense, axis=[3])
