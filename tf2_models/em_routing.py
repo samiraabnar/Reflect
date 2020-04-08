@@ -29,9 +29,9 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
 
   # Get spatial dimension of parent & child
   parent_space_2 = tf.cast(spatial_routing_matrix.shape[1], tf.int32)
-  parent_space = tf.cast(tf.math.sqrt(parent_space_2), tf.int32)
+  parent_space = tf.cast(tf.math.sqrt(tf.cast(parent_space_2, dtype=tf.float32)), tf.int32)
   child_space_2 = tf.cast(spatial_routing_matrix.shape[0], tf.int32)
-  child_space = tf.cast(tf.math.sqrt(child_space_2), tf.int32)
+  child_space = tf.cast(tf.math.sqrt(tf.cast(child_space_2, dtype=tf.float32)), tf.int32)
 
   # Count the number of parents that each child belongs to
   parents_per_child = tf.reduce_sum(spatial_routing_matrix, axis=1, keepdims=True)
