@@ -138,6 +138,8 @@ class FcCaps(tf.keras.layers.Layer):
     self.w = tf.Variable(name='w',
                          initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
                                                                   dtype=tf.float32))
+    self.em_routing = EmRouting(hparams, num_output_caps=self.num_output_caps)
+
 
   def call(self,pose_in, activation_in, training=True, **kwargs):
     """Fully connected capsule layer.
