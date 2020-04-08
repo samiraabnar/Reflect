@@ -450,9 +450,12 @@ class EmRouting(tf.keras.layers.Layer):
 
     rr_dense = to_dense(rr_sparse, spatial_routing_matrix)
 
+    tf.print('rr_dense', rr_dense.shape)
     rr = tf.reshape(
       rr_dense,
       [batch_size, parent_space, parent_space, kh_kw_i, parent_caps, 1])
+    tf.print('rr', rr.shape)
+
     # ----- End -----#
 
     return rr

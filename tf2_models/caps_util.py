@@ -358,6 +358,7 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   # e.g. (1, 5, 5, 49, 8, 32)
   # (batch_size, parent_space, parent_space, child_space*child_space,
   # child_caps, parent_caps)
+  tf.print('softmax across parents')
   shape = tf.shape(probs_sparse)
   batch_size = shape[0]
   parent_space = shape[1]
@@ -371,17 +372,21 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Combine parent
   # (1, 49, 4, 75)
+  tf.print('sparse', sparse.shape)
   sparse = tf.reshape(sparse, [batch_size, child_space_2, child_caps, -1])
+  tf.print('sparse', sparse.shape)
 
   # Perform softmax across parent capsule dimension
   parent_softmax = tf.nn.softmax(sparse, axis=-1)
 
   # Uncombine parent space and depth
   # (1, 49, 4, 5, 5, 3)
+  tf.print('parent_softmax', parent_softmax.shape)
   parent_softmax = tf.reshape(
     parent_softmax,
     [batch_size, child_space_2, child_caps, parent_space, parent_space,
      parent_caps])
+  tf.print('parent_softmax', parent_softmax.shape)
 
   # Return to original order
   # (1, 5, 5, 49, 8, 32)
@@ -414,6 +419,7 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   #   with tf.control_dependencies([assert_op]):
   #      rr_updated = tf.identity(rr_updated)
 
+  tf.print('end of softmax across parents')
   return rr_updated
 
 
