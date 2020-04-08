@@ -41,8 +41,12 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # "dropped" child capsules, which effectively means child capsules that do not
   # have any parents. This would create a divide by 0 scenario, so need to add
   # 1e-9 to prevent NaNs.
+  tf.print('rr_init')
+  tf.print(parents_per_child)
+  tf.print(parent_caps)
+  tf.print(spatial_routing_matrix)
   rr_initial = (spatial_routing_matrix
-                / (parents_per_child * parent_caps + 1e-9))
+                / (parents_per_child * tf.cast(parent_caps, dtype=tf.float32) + 1e-9))
 
   # Convert the sparse matrix to be compatible with votes.
   # This is done by selecting the child capsules belonging to each parent, which
@@ -189,8 +193,8 @@ class EmRouting(tf.keras.layers.Layer):
     # Initialise routing assignments
     # rr (1, 6, 6, 9, 8, 16)
     #  (1, parent_space, parent_space, kk, child_caps, parent_caps)
-    rr = init_rr(spatial_routing_matrix, tf.cast(child_caps, dtype=tf.int64),
-                 tf.cast(parent_caps, dtype=tf.int64))
+    rr = init_rr(spatial_routing_matrix, child_caps,
+                 parent_caps)
 
     # Need to reshape (1, 6, 6, 9, 8, 16) -> (1, 6, 6, 9*8, 16, 1)
     rr = tf.reshape(
