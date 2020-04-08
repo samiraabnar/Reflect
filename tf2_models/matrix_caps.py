@@ -75,6 +75,7 @@ class MatrixCaps(tf.keras.Model):
     outputs_activations = self.primcaps_activation_conv(outputs)
 
     spatial_size = outputs_pos.get_shape()[1]
+    tf.print(outputs_pos)
     outputs_pos = tf.reshape(outputs_pos, shape=[batch_size, spatial_size, spatial_size,
                                    self.hparams.B, 16], name='pose')
 
