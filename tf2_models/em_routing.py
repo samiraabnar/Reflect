@@ -203,7 +203,7 @@ class EmRouting(tf.keras.layers.Layer):
     # Convert rr from np to tf
     rr = tf.constant(rr, dtype=tf.float32)
 
-    for it in range(self.iter_routing):
+    for it in range(self.hparams.iter_routing):
       final_lambda = self.hparams.final_lambda
       inverse_temperature = (final_lambda *
                              (1 - tf.math.pow(0.95, tf.cast(it + 1, tf.float32))))
