@@ -26,8 +26,6 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
       (1, parent_space, parent_space, kk, child_caps, parent_caps)
       (1, 5, 5, 9, 8, 32)
   """
-  tf.print("child and parent caps")
-  tf.print(child_caps, parent_caps, tf.reduce_sum(spatial_routing_matrix), spatial_routing_matrix.shape)
   # Get spatial dimension of parent & child
   parent_space_2 = tf.cast(spatial_routing_matrix.shape[1], tf.int32)
   parent_space = tf.cast(tf.math.sqrt(tf.cast(parent_space_2, dtype=tf.float32)), tf.int32)
@@ -42,12 +40,9 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # "dropped" child capsules, which effectively means child capsules that do not
   # have any parents. This would create a divide by 0 scenario, so need to add
   # 1e-9 to prevent NaNs.
-  tf.print('rr_init')
   parent_caps = tf.cast(parent_caps, tf.int32)
   parents_per_child = tf.cast(parents_per_child, tf.int32)
-  tf.print(tf.reduce_max(parents_per_child))
-  tf.print(parent_caps)
-  tf.print(spatial_routing_matrix.shape)
+
   rr_initial = (tf.cast(spatial_routing_matrix, dtype=tf.float32)
                 / (tf.cast(parents_per_child * parent_caps, dtype=tf.float32) + 1e-9))
 
@@ -57,11 +52,9 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # combination of two transposes so that order is correct when reshaping
   mask = spatial_routing_matrix.astype(bool)
 
-  tf.print(rr_initial)
-  tf.print(rr_initial.shape)
+
   rr_initial = tf.transpose(rr_initial)[tf.transpose(mask)]
   rr_initial = tf.reshape(rr_initial, [parent_space, parent_space, -1])
-  print(rr_initial.shape)
   # Copy values across depth dimensions
   # i.e. the number of child_caps and the number of parent_caps
   # (5, 5, 9) -> (5, 5, 9, 8, 32)
@@ -171,10 +164,7 @@ class EmRouting(tf.keras.layers.Layer):
     # Calculate kernel size by adding up column of spatial routing matrix
     # Do this before conventing the spatial_routing_matrix to tf
     kk =tf.cast(tf.reduce_sum(spatial_routing_matrix[:, 0]), tf.int32)
-    tf.print("kernel size:", kk)
     num_input_caps = tf.cast(kh_kw_i / kk, dtype=tf.int32)
-    tf.print('child_caps:', num_input_caps)
-    tf.print('kh_kw_i', kh_kw_i)
 
     rt_mat_shape = spatial_routing_matrix.shape
     child_space_2 = tf.cast(rt_mat_shape[0], dtype=tf.int32)

@@ -62,7 +62,7 @@ def kernel_tile(input, kernel, stride):
   parent_spatial_size = int((spatial_size - kernel) / stride + 1)
 
   # Check that dim 1 and 2 correspond to the spatial size
-  assert input_shape[1] == input_shape[2]
+  #assert input_shape[1] == input_shape[2]
 
   # Check if we have poses or activations
   if len(input_shape) > 5:
@@ -194,19 +194,14 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
 
   parent_idx = tf.range(parent_space_2)
   parent_idx = tf.reshape(parent_idx, [-1, 1])
-  tf.print(parent_idx.shape)
   parent_idx = tf.repeat(parent_idx, kk)
-  tf.print(parent_idx.shape)
-  tf.print(batch_size)
   parent_idx = tf.tile(parent_idx, [batch_size])
-  tf.print(parent_idx.shape)
 
   parent_idx = tf.reshape(parent_idx, [batch_size, parent_space_2, kk])
 
   batch_idx = tf.range(batch_size)
   batch_idx = tf.reshape(batch_idx, [-1, 1])
   batch_idx = tf.tile(batch_idx, [1,parent_space_2 * kk])
-  tf.print(batch_idx.shape)
   batch_idx = tf.reshape(batch_idx, [batch_size, parent_space_2, kk])
 
   # Combine the 3 coordinates
