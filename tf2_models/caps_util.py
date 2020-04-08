@@ -207,7 +207,7 @@ def to_sparse(probs, spatial_routing_matrix, sparse_filler=tf.math.log(1e-20)):
 
   # Combine the 3 coordinates
   indices = tf.stack((batch_idx, parent_idx, tf.cast(child_sparse_idx, dtype=tf.int32)), axis=3)
-  indices = tf.constant(indices)
+  #indices = tf.constant(indices)
 
   # Convert each spatial location to sparse
   shape = [batch_size, parent_space_2, child_space_2, child_caps, parent_caps]
