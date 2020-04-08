@@ -656,8 +656,8 @@ def spread_loss(scores, y):
   # e.g loss*[1 0 1 1 1]
   loss = tf.matmul(loss, 1. - y)
 
-    # Compute mean
-    loss = tf.reduce_mean(loss)
+  # Compute mean
+  loss = tf.reduce_mean(loss)
 
   return loss
 
