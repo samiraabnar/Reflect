@@ -48,8 +48,8 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   tf.print(tf.reduce_max(parents_per_child))
   tf.print(parent_caps)
   tf.print(spatial_routing_matrix.shape)
-  rr_initial = (spatial_routing_matrix
-                / (tf.cast(parents_per_child * parent_caps, dtype=tf.float32) + 1e-9))
+  rr_initial = (tf.cast(spatial_routing_matrix, dtype=tf.float64)
+                / (tf.cast(parents_per_child * parent_caps, dtype=tf.float64) + 1e-9))
 
   # Convert the sparse matrix to be compatible with votes.
   # This is done by selecting the child capsules belonging to each parent, which
@@ -83,7 +83,7 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   tf.print('sum_routing_weights')
   tf.print(child_space * child_space, dropped_child_caps, child_caps)
   tf.print(sum_routing_weights, effective_child_cap)
-  assert tf.abs(sum_routing_weights - tf.cast(effective_child_cap, dtype=tf.float32)) < 1e-3
+  assert tf.abs(sum_routing_weights - tf.cast(effective_child_cap, dtype=tf.float64)) < 1e-3
 
   return rr_initial
 
