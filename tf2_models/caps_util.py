@@ -28,11 +28,11 @@ def create_routing_map(child_space, k, s):
   cpp = tf.TensorArray(size=0, dynamic_size=True ,dtype=tf.int64, infer_shape=True)
 
   c_eye = tf.eye(child_space ** 2)
-  for r in range(parent_space):
-    for c in range(parent_space):
+  for r in tf.range(parent_space):
+    for c in tf.range(parent_space):
       p_idx = r * parent_space + c
       binmap = binmap.write(p_idx, tf.zeros(child_space ** 2))
-      for i in range(k):
+      for i in tf.range(k):
         # c_idx stand for child_index; p_idx is parent_index
         c_idx = r * s * child_space + c * s + child_space * i
         all_c_idx = tf.range((c_idx),(c_idx + k))
@@ -45,9 +45,7 @@ def create_routing_map(child_space, k, s):
   binmap = binmap.stack()
   children_per_parent = cpp.stack()
   children_per_parent = tf.reshape(children_per_parent, [parent_space ** 2, k ** 2])
-  tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2)
   binmap = tf.transpose(binmap)
-  tf.print('binmap',tf.shape(binmap), child_space ** 2, parent_space ** 2, tf.reduce_sum(binmap, axis=0))
 
   return binmap , children_per_parent
 
