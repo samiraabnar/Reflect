@@ -4,6 +4,7 @@ from tf2_models.ff import VanillaFF
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM, LmLSTMSharedEmbV2
 from tf2_models.lm_transformer import LmGPT2, LmGPT2SharedWeights, ClassifierGPT2, ClassifierGPT2SharedWeights, \
   ClassifierBERT, ClassifierBERTSharedWeights
+from tf2_models.matrix_caps import MatrixCaps
 
 MODELS = {"lm_lstm": LmLSTM,
           "lm_gpt2": LmGPT2,
@@ -16,4 +17,5 @@ MODELS = {"lm_lstm": LmLSTM,
           'cl_bert_shared': ClassifierBERTSharedWeights,
           'cl_vcnn': VanillaCNN,
           'cl_vff': VanillaFF,
-          'cl_capsule': Capsule}
+          'cl_capsule': Capsule,
+          'matrix_capsule': MatrixCaps}
