@@ -1,0 +1,111 @@
+class ConvCaps(tf.keras.Layer):
+    def __init__(self)
+    
+    
+    
+    def call(self):
+    def conv_caps(activation_in, 
+              pose_in, 
+              kernel, 
+              stride, 
+              ncaps_out, 
+              name='conv_caps', 
+              weights_regularizer=None):
+  """Convolutional capsule layer.
+  
+  "The routing procedure is used between each adjacent pair of capsule layers. 
+  For convolutional capsules, each capsule in layer L + 1 sends feedback only to 
+  capsules within its receptive field in layer L. Therefore each convolutional 
+  instance of a capsule in layer L receives at most kernel size X kernel size 
+  feedback from each capsule type in layer L + 1. The instances closer to the 
+  border of the image receive fewer feedbacks with corner ones receiving only 
+  one feedback per capsule type in layer L + 1."
+  
+  See Hinton et al. "Matrix Capsules with EM Routing" for detailed description 
+  convolutional capsule layer.
+  
+  Author:
+    Ashley Gritzman 27/11/2018
+    
+  Args: 
+    activation_in:
+      (batch_size, child_space, child_space, child_caps, 1)
+      (64, 7, 7, 8, 1) 
+    pose_in:
+      (batch_size, child_space, child_space, child_caps, 16)
+      (64, 7, 7, 8, 16) 
+    kernel: 
+    stride: 
+    ncaps_out: depth dimension of parent capsules
+    
+  Returns:
+    activation_out: 
+      (batch_size, parent_space, parent_space, parent_caps, 1)
+      (64, 5, 5, 32, 1)
+    pose_out:
+      (batch_size, parent_space, parent_space, parent_caps, 16)
+      (64, 5, 5, 32, 16)
+  """
+  
+  with tf.variable_scope(name) as scope:
+    
+    # Get shapes
+    shape = pose_in.get_shape().as_list()
+    batch_size = shape[0]
+    child_space = shape[1]
+    child_space_2 = int(child_space**2)
+    child_caps = shape[3]
+    parent_space = int(np.floor((child_space-kernel)/stride + 1))
+    parent_space_2 = int(parent_space**2)
+    parent_caps = ncaps_out
+    kernel_2 = int(kernel**2)
+    
+    with tf.variable_scope('votes') as scope:
+      # Tile poses and activations
+      # (64, 7, 7, 8, 16)  -> (64, 5, 5, 9, 8, 16)
+      pose_tiled, spatial_routing_matrix = utl.kernel_tile(
+          pose_in, 
+          kernel=kernel, 
+          stride=stride)
+      activation_tiled, _ = utl.kernel_tile(
+          activation_in, 
+          kernel=kernel, 
+          stride=stride)
+
+      # Check dimensions of spatial_routing_matrix
+      assert spatial_routing_matrix.shape == (child_space_2, parent_space_2)
+
+      # Unroll along batch_size and parent_space_2
+      # (64, 5, 5, 9, 8, 16) -> (64*5*5, 9*8, 16)
+      pose_unroll = tf.reshape(
+          pose_tiled, 
+          shape=[batch_size * parent_space_2, kernel_2 * child_caps, 16])
+      activation_unroll = tf.reshape(
+          activation_tiled, 
+          shape=[batch_size * parent_space_2, kernel_2 * child_caps, 1])
+      
+      # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 32, 16)
+      votes = utl.compute_votes(
+          pose_unroll, 
+          parent_caps, 
+          weights_regularizer, 
+          tag=True)
+      logger.info(name + ' votes shape: {}'.format(votes.get_shape()))
+
+    with tf.variable_scope('routing') as scope:
+      # votes (64*5*5, 9*8, 32, 16)
+      # activations (64*5*5, 9*8, 1)
+      # pose_out: (N, OH, OW, o, 4x4)
+      # activation_out: (N, OH, OW, o, 1)
+      pose_out, activation_out = em.em_routing(votes, 
+                           activation_unroll, 
+                           batch_size, 
+                           spatial_routing_matrix)
+  
+    logger.info(name + ' pose_out shape: {}'.format(pose_out.get_shape()))
+    logger.info(name + ' activation_out shape: {}'
+                .format(activation_out.get_shape()))
+
+    tf.summary.histogram(name + "activation_out", activation_out)
+  
+  return activation_out, pose_out
