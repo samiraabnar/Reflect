@@ -308,8 +308,8 @@ class EmRouting(tf.keras.layers.Layer):
     # activ from convcaps2 to classcaps (64, 1, 1, 400, 5, 1) 400/5 = 80 info
     # (N, 1, 1, IH*IW*i, n_classes, 1)
     rr_prime_shape = tf.shape(rr_prime)
-    child_caps = float(rr_prime_shape[-3])
-    parent_caps = float(rr_prime_shape[-2])
+    child_caps = tf.cast(rr_prime_shape[-3], dtype=tf.float32)
+    parent_caps = tf.cast(rr_prime_shape[-2], dtype=tf.float32)
     ratio_child_to_parent = child_caps / parent_caps
     layer_norm_factor = 100 / ratio_child_to_parent
 
