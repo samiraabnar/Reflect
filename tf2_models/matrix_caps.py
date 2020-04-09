@@ -40,6 +40,7 @@ class MatrixCaps(tf.keras.Model):
                                bias_regularizer=self.weights_regularizer,
                                activity_regularizer=None,
                                kernel_constraint=None, bias_constraint=None)
+
     self.primcaps_activation_conv = tf.keras.layers.Conv2D(filters=self.hparams.B, kernel_size=[1,1], strides=(1, 1),
                                padding='valid',
                                activation=tf.nn.sigmoid, use_bias=True,
