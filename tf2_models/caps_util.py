@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+import numpy as np
 
 @tf.function
 def create_routing_map(child_space, k, s):
