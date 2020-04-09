@@ -45,10 +45,8 @@ class ConvCaps(tf.keras.layers.Layer):
 
     batch_size = tf.shape(poses_i)[0] # 64*5*5
 
-    tf.print('poses_i', tf.shape(poses_i))
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
     output = tf.reshape(poses_i, shape=[batch_size, self.kh_kw_i, 1, 4, 4], name='input_pos_reshape')
-    tf.print('poses_i', tf.shape(poses_i))
 
 
     # the output of capsule is miu, the mean of a Gaussian, and activation, the
@@ -101,7 +99,6 @@ class ConvCaps(tf.keras.layers.Layer):
     # Check dimensions of spatial_routing_matrix
     # assert [a for a in tf.shape(spatial_routing_matrix)] == [child_space_2, parent_space_2]
 
-    tf.print('pose_tiled', tf.shape(pose_tiled))
     # Unroll along batch_size and parent_space_2
     # (64, 5, 5, 9, 8, 16) -> (64*5*5, 9*8, 16)
     pose_unroll = tf.reshape(
@@ -111,8 +108,6 @@ class ConvCaps(tf.keras.layers.Layer):
       activation_tiled,
       shape=[batch_size * parent_space_2, kernel_2 * child_caps, 1], name='activation_unroll_reshape')
 
-    tf.print('pose_unroll', tf.shape(pose_unroll))
-    tf.print('activation_unroll', tf.shape(activation_unroll))
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 32, 16)
     votes = self.compute_votes(
       pose_unroll,
@@ -228,17 +223,13 @@ class FcCaps(tf.keras.layers.Layer):
     spatial_routing_matrix, child_to_parent_idx = create_routing_map(child_space=1, k=1, s=1)
 
 
-    tf.print('child_to_parent_idx', child_to_parent_idx)
-    tf.print(spatial_routing_matrix)
     pose_out, activation_out = self.em_routing(votes_flat,
                          activation_flat,
                          batch_size,
                          spatial_routing_matrix,
                          child_to_parent_idx)
 
-    tf.print('activation_out', activation_out.shape)
     activation_out = tf.reshape(activation_out,(batch_size,self.num_output_caps))
-    tf.print('activation_out', activation_out.shape)
 
     return pose_out, activation_out
 

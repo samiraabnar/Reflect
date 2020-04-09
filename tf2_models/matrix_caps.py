@@ -69,7 +69,6 @@ class MatrixCaps(tf.keras.Model):
     inputs_shapes = tf.shape(inputs)
     batch_size = inputs_shapes[0]
     spatial_size = inputs_shapes[1]
-    tf.print(batch_size, spatial_size)
     outputs = self.batch_norm(inputs)
     outputs = self.conv1(outputs)
     outputs_pos = self.primcaps_pose_conv(outputs)
@@ -94,27 +93,19 @@ class MatrixCaps(tf.keras.Model):
     # pose_in: (64, 7, 7, 16, 16)
     # activation_out: (64, 5, 5, 32, 1)
     # pose_out: (64, 5, 5, 32, 16)
-    tf.print("canvcaps1 inputs", outputs_pos.shape, outputs_activations.shape)
     outputs_pos, outputs_activations = self.convcaps1(outputs_pos, outputs_activations, training, **kwargs)
-    tf.print('convcaps1 outputs_pos', outputs_pos.shape)
-    tf.print('convcaps1 outputs_activations', outputs_activations.shape)
     # ----- Conv Caps 2 -----#
     # activation_in: (64, 7, 7, 8, 1)
     # pose_in: (64, 7, 7, 16, 1)
     # activation_out: (64, 5, 5, 32, 1)
     # pose_out: (64, 5, 5, 32, 16)
     outputs_pos, outputs_activations = self.convcaps2(outputs_pos, outputs_activations, training, **kwargs)
-    tf.print('convcaps2 outputs_pos', outputs_pos.shape)
-    tf.print('convcaps2 outputs_activations', outputs_activations.shape)
     # ----- Class Caps -----#
     # activation_in: (64, 5, 5, 32, 1)
     # pose_in: (64, 5, 5, 32, 16)
     # activation_out: (64, 5)
     # pose_out: (64, 5, 16)
     outputs_pos, outputs_activations = self.fc_caps(outputs_pos, outputs_activations, training, **kwargs)
-
-    tf.print('outputs_pos', outputs_pos.shape)
-    tf.print('outputs_activations', outputs_activations.shape)
 
     return outputs_activations
 

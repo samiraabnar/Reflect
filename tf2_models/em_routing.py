@@ -201,7 +201,6 @@ class EmRouting(tf.keras.layers.Layer):
       inverse_temperature = (final_lambda *
                              (1 - tf.math.pow(0.95, tf.cast(it + 1, tf.float32))))
 
-      tf.print('mstep')
       activations_j, mean_j, var_j = self.m_step(
         rr,
         votes_ij,
@@ -213,7 +212,6 @@ class EmRouting(tf.keras.layers.Layer):
       # return the a_j and the mean from the m_stp in the last iteration to
       # compute the output capsule activation and pose matrices
       if it < self.hparams.iter_routing - 1:
-        tf.print('estep')
         rr = self.e_step(votes_ij,
                     activations_j,
                     mean_j,
@@ -454,11 +452,9 @@ class EmRouting(tf.keras.layers.Layer):
 
     rr_dense = to_dense(rr_sparse, spatial_routing_matrix)
 
-    tf.print('rr_dense', rr_dense.shape)
     rr = tf.reshape(
       rr_dense,
       [batch_size, parent_space, parent_space, kh_kw_i, parent_caps, 1])
-    tf.print('rr', rr.shape)
 
     # ----- End -----#
 

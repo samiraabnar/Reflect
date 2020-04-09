@@ -77,7 +77,6 @@ def kernel_tile(input, kernel, stride):
   batch_size = input_shape[0] #2
   spatial_size = input_shape[1] #14
   n_capsules = input_shape[3] # 8
-  tf.print('kernel tile', batch_size, spatial_size, n_capsules)
   # parent_spatial_size ((14 - 3) / 2)+1 --> 6
   parent_spatial_size = tf.cast((spatial_size - kernel) / stride + 1, dtype=tf.int32)
 
@@ -96,29 +95,21 @@ def kernel_tile(input, kernel, stride):
   # parents are columns.
   # 196 x 36
   child_parent_matrix, child_to_parent_idx = create_routing_map(spatial_size, kernel, stride)
-  tf.print('child_parent_matrix', tf.shape(child_parent_matrix))
   # Convert from np to tf
   # child_parent_matrix = tf.constant(child_parent_matrix)
 
   # Each row contains the children belonging to one parent
   # 36 x 6
   #child_to_parent_idx = group_children_by_parent(child_parent_matrix)
-  tf.print('child_to_parent_idx', tf.shape(child_to_parent_idx)) #36 6
 
-  tf.print('input', tf.shape(input), spatial_size, spatial_size * spatial_size)
   # Spread out spatial dimension of children
   input = tf.reshape(input, [batch_size, spatial_size * spatial_size, -1])
-  tf.print('input', tf.shape(input)) #2 14*14 128
 
   # Select which children go to each parent capsule
-  tf.print('input', tf.shape(input))
   tiled = tf.gather(input, child_to_parent_idx, axis=1) #2 196 128
 
-  tf.print('tiled', tf.shape(tiled))
   tiled = tf.squeeze(tiled)
-  tf.print('tiled', tf.shape(tiled))
   tiled = tf.reshape(tiled, [batch_size, parent_spatial_size, parent_spatial_size, kernel * kernel, n_capsules, -1])
-  tf.print('tiled', tf.shape(tiled))
 
   return tiled, child_parent_matrix, child_to_parent_idx
 
@@ -150,7 +141,6 @@ def group_children_by_parent(bin_routing_map):
 
   true_indexes = tf.where(tf.transpose(bin_routing_map))
   children_per_parent = tf.reshape(true_indexes, [tf.shape(bin_routing_map)[1], -1])
-  tf.print('true_indexes', tf.shape(true_indexes))
   return children_per_parent
 
 def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=tf.math.log(1e-20)):
@@ -219,9 +209,7 @@ def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=
   # parent_space_position, child_sparse_position]
   # E.g. [63, 24, 49] maps image 63, parent space 24, sparse position 49
   child_sparse_idx = child_to_parent_idx
-  tf.print('child_sparse_idx', tf.shape(child_to_parent_idx))
   child_sparse_idx = child_sparse_idx[tf.newaxis, ...]
-  tf.print('child_sparse_idx', tf.shape(child_to_parent_idx))
   child_sparse_idx = tf.tile(child_sparse_idx, [batch_size, 1, 1])
 
   parent_idx = tf.range(parent_space_2)
@@ -229,17 +217,13 @@ def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=
   parent_idx = tf.repeat(parent_idx, kk)
   parent_idx = tf.tile(parent_idx, [batch_size])
 
-  tf.print('parent_idx', parent_idx.shape)
   parent_idx = tf.reshape(parent_idx, [batch_size, parent_space_2, kk])
-  tf.print('parent_idx', parent_idx.shape)
 
 
   batch_idx = tf.range(batch_size)
-  tf.print('batch_idx', batch_idx.shape)
   batch_idx = tf.reshape(batch_idx, [-1, 1])
   batch_idx = tf.tile(batch_idx, [1,parent_space_2 * kk])
   batch_idx = tf.reshape(batch_idx, [batch_size, parent_space_2, kk])
-  tf.print('batch_idx', batch_idx.shape)
 
   # Combine the 3 coordinates
   indices = tf.stack((batch_idx, parent_idx, tf.cast(child_sparse_idx, dtype=tf.int32)), axis=3)
@@ -263,7 +247,6 @@ def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=
   # assert [a for a in tf.shape(sparse)] == [batch_size, parent_space, parent_space, child_space_2, child_caps,
   #                                         parent_caps]
 
-  tf.print("end of sparse")
   return sparse
 
 
@@ -379,7 +362,6 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   # e.g. (1, 5, 5, 49, 8, 32)
   # (batch_size, parent_space, parent_space, child_space*child_space,
   # child_caps, parent_caps)
-  tf.print('softmax across parents')
   shape = tf.shape(probs_sparse)
   batch_size = shape[0]
   parent_space = shape[1]
@@ -393,21 +375,17 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
 
   # Combine parent
   # (1, 49, 4, 75)
-  tf.print('sparse', sparse.shape)
   sparse = tf.reshape(sparse, [batch_size, child_space_2, child_caps, -1])
-  tf.print('sparse', sparse.shape)
 
   # Perform softmax across parent capsule dimension
   parent_softmax = tf.nn.softmax(sparse, axis=-1)
 
   # Uncombine parent space and depth
   # (1, 49, 4, 5, 5, 3)
-  tf.print('parent_softmax', parent_softmax.shape)
   parent_softmax = tf.reshape(
     parent_softmax,
     [batch_size, child_space_2, child_caps, parent_space, parent_space,
      parent_caps])
-  tf.print('parent_softmax', parent_softmax.shape)
 
   # Return to original order
   # (1, 5, 5, 49, 8, 32)
@@ -440,7 +418,6 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   #   with tf.control_dependencies([assert_op]):
   #      rr_updated = tf.identity(rr_updated)
 
-  tf.print('end of softmax across parents')
   return rr_updated
 
 
