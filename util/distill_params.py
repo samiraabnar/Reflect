@@ -514,7 +514,7 @@ rpdst_019_crs_slwslw_3_trns = {
 'schedule': 'crs_slw'
 }
 
-rpdst_019_crs_slwfst_2 = {
+rpdst_019_crs_slwfst_5 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 0.0,
 'student_gold_rate' : 0.1,
@@ -524,7 +524,7 @@ rpdst_019_crs_slwfst_2 = {
 'student_hold_base_rate_steps' :  0,
 'student_warmup_steps' : 0,
 'student_optimizer' : 'adam',
-'teacher_learning_rate' : 0.001,
+'teacher_learning_rate' : 0.0001,
 'teacher_decay_steps' : 10000,
 'teacher_warmup_steps' : 0.0,
 'teacher_hold_base_rate_steps' : 0,
@@ -1053,5 +1053,6 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'rpdst_019_crs_slwfst_sst6_2': rpdst_019_crs_slwfst_sst6_2,
                   'rpdst_019_exp_sst10': rpdst_019_exp_sst10,
                   'rpdst_019_exp_sst11': rpdst_019_exp_sst11,
-                  'rpdst_019_exp_sst12': rpdst_019_exp_sst12
+                  'rpdst_019_exp_sst12': rpdst_019_exp_sst12,
+                  'rpdst_019_crs_slwfst_5': rpdst_019_crs_slwfst_5
                   }
