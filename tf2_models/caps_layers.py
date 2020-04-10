@@ -131,8 +131,8 @@ class FcCaps(tf.keras.layers.Layer):
   def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
     super(FcCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
     self.hparams  = hparams
-    self.num_output_caps = self.hparams.output_dim
-    self.kh_kw_i = self.hparams.D
+    self.num_output_caps = tf.constant(self.hparams.output_dim, dtype=tf.int32)
+    self.kh_kw_i = tf.constat(self.hparams.D, dtype=tf.int32)
     self.w = tf.Variable(name='w',
                          initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
                                                                   dtype=tf.float32))

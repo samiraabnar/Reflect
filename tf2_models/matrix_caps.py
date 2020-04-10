@@ -52,12 +52,12 @@ class MatrixCaps(tf.keras.Model):
                                kernel_constraint=None, bias_constraint=None)
 
     self.convcaps1 = ConvCaps(self.hparams,
-                              num_output_caps=self.hparams.C,
-                              kernel=3, stride=2, kh_kw_i=9*self.hparams.B,
+                              num_output_caps=tf.constant(self.hparams.C, dtype=tf.int32),
+                              kernel=tf.constant(3, dtype=tf.int32), stride=tf.constant(2, dtype=tf.int32), kh_kw_i=tf.constant(9*self.hparams.B, dtype=tf.int32),
                               scope='conv_caps1')
     self.convcaps2 = ConvCaps(self.hparams,
-                              num_output_caps=self.hparams.D,
-                              kernel=3, stride=1, kh_kw_i=9*self.hparams.C,
+                              num_output_caps=tf.constant(self.hparams.D, dtype=tf.int32),
+                              kernel=tf.constant(3, dtype=tf.int32), stride=tf.constant(1, dtype=tf.int32), kh_kw_i=tf.constant(9*self.hparams.C, dtype=tf.int32),
                               scope='conv_caps2')
 
 
@@ -65,7 +65,7 @@ class MatrixCaps(tf.keras.Model):
                           scope='class_caps')
 
 
-  #@tf.function(experimental_relax_shapes=True)
+  @tf.function(experimental_relax_shapes=True)
   def call(self, inputs, padding_symbol=None, training=True, **kwargs):
     inputs_shapes = tf.shape(inputs)
     batch_size = inputs_shapes[0]
