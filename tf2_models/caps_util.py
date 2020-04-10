@@ -50,6 +50,7 @@ def create_routing_map(child_space, k, s):
 
   return binmap , children_per_parent
 
+@tf.function(experimental_relax_shapes=True)
 def kernel_tile(input, kernel, stride):
   """Tile the children poses/activations so that the children for each parent occur in one axis.
 
@@ -113,36 +114,7 @@ def kernel_tile(input, kernel, stride):
 
   return tiled, child_parent_matrix, child_to_parent_idx
 
-def group_children_by_parent(bin_routing_map):
-  """Groups children capsules by parent capsule.
-
-  Rearrange the bin_routing_map so that each row represents one parent capsule,
-  and the entries in the row are indexes of the children capsules that route to
-  that parent capsule. This mapping is only along the spatial dimension, each
-  child capsule along in spatial dimension will actually contain many capsules,
-  e.g. 32. The grouping that we are doing here tell us about the spatial
-  routing, e.g. if the lower layer is 7x7 in spatial dimension, with a kernel of
-  3 and stride of 1, then the higher layer will be 5x5 in the spatial dimension.
-  So this function will tell us which children from the 7x7=49 lower capsules
-  map to each of the 5x5=25 higher capsules. One child capsule can be in several
-  different parent capsules, children in the corners will only belong to one
-  parent, but children towards the center will belong to several with a maximum
-  of kernel*kernel (e.g. 9), but also depending on the stride.
-
-  Author:
-    Ashley Gritzman 19/10/2018
-  Args:
-    bin_routing_map:
-      binary routing map with children as rows and parents as columns
-  Returns:
-    children_per_parents:
-      parents are rows, and the indexes in the row are which children belong to that parent
-  """
-
-  true_indexes = tf.where(tf.transpose(bin_routing_map))
-  children_per_parent = tf.reshape(true_indexes, [tf.shape(bin_routing_map)[1], -1])
-  return children_per_parent
-
+@tf.function(experimental_relax_shapes=True)
 def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=tf.math.log(1e-20)):
   """Convert probs tensor to sparse along child_space dimension.
 
@@ -249,7 +221,7 @@ def to_sparse(probs, spatial_routing_matrix, child_to_parent_idx, sparse_filler=
 
   return sparse
 
-
+@tf.function(experimental_relax_shapes=True)
 def normalise_across_parents(probs_sparse, spatial_routing_matrix):
   """Normalise across all parent capsules including spatial and depth.
 
@@ -327,7 +299,7 @@ def normalise_across_parents(probs_sparse, spatial_routing_matrix):
 
   return rr_updated
 
-
+@tf.function(experimental_relax_shapes=True)
 def softmax_across_parents(probs_sparse, spatial_routing_matrix):
   """Softmax across all parent capsules including spatial and depth.
 
@@ -420,7 +392,7 @@ def softmax_across_parents(probs_sparse, spatial_routing_matrix):
 
   return rr_updated
 
-
+@tf.function(experimental_relax_shapes=True)
 def to_dense(sparse, spatial_routing_matrix):
   """Convert sparse back to dense along child_space dimension.
 
@@ -499,7 +471,7 @@ def to_dense(sparse, spatial_routing_matrix):
 
   return dense
 
-
+@tf.function(experimental_relax_shapes=True)
 def logits_one_vs_rest(logits, positive_class=0):
   """Return the logit from the positive class and the maximum logit from the
   other classes.
@@ -529,6 +501,7 @@ def logits_one_vs_rest(logits, positive_class=0):
 
   return logits_one_vs_rest
 
+@tf.function(experimental_relax_shapes=True)
 def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   """Initialise routing weights.
 
@@ -607,102 +580,4 @@ def init_rr(spatial_routing_matrix, child_caps, parent_caps):
   # assert tf.abs(sum_routing_weights - effective_child_cap) < 1e-3
 
   return rr_initial
-
-
-# ------------------------------------------------------------------------------
-# LOSS FUNCTIONS
-# ------------------------------------------------------------------------------
-def spread_loss(scores, y):
-  """Spread loss.
-
-  "In order to make the training less sensitive to the initialization and
-  hyper-parameters of the model, we use “spread loss” to directly maximize the
-  gap between the activation of the target class (a_t) and the activation of the
-  other classes. If the activation of a wrong class, a_i, is closer than the
-  margin, m, to at then it is penalized by the squared distance to the margin."
-
-  See Hinton et al. "Matrix Capsules with EM Routing" equation (3).
-
-  Author:
-    Ashley Gritzman 19/10/2018
-  Credit:
-    Adapted from Suofei Zhang's implementation on GitHub, "Matrix-Capsules-
-    EM-Tensorflow"
-    https://github.com/www0wwwjs1/Matrix-Capsules-EM-Tensorflow
-  Args:
-    scores:
-      scores for each class
-      (batch_size, num_class)
-    y:
-      index of true class
-      (batch_size, 1)
-  Returns:
-    loss:
-      mean loss for entire batch
-      (scalar)
-  """
-
-  batch_size = tf.shape(scores)[0]
-
-  # AG 17/09/2018: modified margin schedule based on response of authors to
-  # questions on OpenReview.net:
-  # https://openreview.net/forum?id=HJWLfGWRb
-  # "The margin that we set is:
-  # margin = 0.2 + .79 * tf.sigmoid(tf.minimum(10.0, step / 50000.0 - 4))
-  # where step is the training step. We trained with batch size of 64."
-  global_step = tf.to_float(tf.train.get_global_step())
-  m_min = 0.2
-  m_delta = 0.79
-  m = (m_min
-       + m_delta * tf.sigmoid(tf.minimum(10.0, global_step / 50000.0 - 4)))
-
-  num_class = int(tf.shape(scores)[-1])
-
-  y = tf.one_hot(y, num_class, dtype=tf.float32)
-
-  # Get the score of the target class
-  # (64, 1, 5)
-  scores = tf.reshape(scores, shape=[batch_size, 1, num_class])
-  # (64, 5, 1)
-  y = tf.expand_dims(y, axis=2)
-  # (64, 1, 5)*(64, 5, 1) = (64, 1, 1)
-  at = tf.matmul(scores, y)
-
-  # Compute spread loss, paper eq (3)
-  loss = tf.square(tf.maximum(0., m - (at - scores)))
-
-  # Sum losses for all classes
-  # (64, 1, 5)*(64, 5, 1) = (64, 1, 1)
-  # e.g loss*[1 0 1 1 1]
-  loss = tf.matmul(loss, 1. - y)
-
-  # Compute mean
-  loss = tf.reduce_mean(loss)
-
-  return loss
-
-
-def cross_ent_loss(logits, y):
-  """Cross entropy loss.
-
-  Author:
-    Ashley Gritzman 06/05/2019
-  Args:
-    logits:
-      logits for each class
-      (batch_size, num_class)
-    y:
-      index of true class
-      (batch_size, 1)
-  Returns:
-    loss:
-      mean loss for entire batch
-      (scalar)
-  """
-  loss = tf.losses.sparse_softmax_cross_entropy(labels=y, logits=logits)
-  loss = tf.reduce_mean(loss)
-
-  return loss
-
-
 
