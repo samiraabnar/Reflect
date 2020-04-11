@@ -32,6 +32,9 @@ def run():
     except RuntimeError as e:
       print(e)
 
+  strategy = tf.distribute.MirroredStrategy()
+
+
 
   log_dir = "logs"
   chkpt_dir = "tf_ckpts"
@@ -50,15 +53,18 @@ def run():
   log_dir = os.path.join(log_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
   ckpt_dir = os.path.join(chkpt_dir,task.name, model.model_name+"_"+str(hparams.model_config)+"_"+str(trainer_params.learning_rate)+"_"+hparams.exp_name)
 
-  trainer = Trainer(hparams,
-                    task=task,
-                    model=model,
-                    train_params=trainer_params,
-                    log_dir=log_dir,
-                    ckpt_dir=ckpt_dir)
+  # Create task
+  with strategy.scope():
+    trainer = Trainer(hparams,
+                      strategy=strategy,
+                      task=task,
+                      model=model,
+                      train_params=trainer_params,
+                      log_dir=log_dir,
+                      ckpt_dir=ckpt_dir)
 
-  trainer.restore()
-  trainer.train()
+    trainer.restore()
+    trainer.train()
 
 
 def main(argv):
