@@ -40,13 +40,14 @@ def run():
   chkpt_dir = "tf_ckpts"
 
   # Create task
-  task = TASKS[hparams.task](get_task_params())
+  with strategy.scope():
+    task = TASKS[hparams.task](get_task_params())
 
-  # Create the Model
-  model_params = get_model_params(task,hparams.model, hparams.model_config)
-  print("model_params: ", model_params.__dict__)
+    # Create the Model
+    model_params = get_model_params(task,hparams.model, hparams.model_config)
+    print("model_params: ", model_params.__dict__)
 
-  model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config))
+    model = MODELS[hparams.model](hparams=get_model_params(task,hparams.model, hparams.model_config))
 
   trainer_params = get_train_params(hparams.train_config)
 
