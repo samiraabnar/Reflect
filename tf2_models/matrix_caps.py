@@ -9,10 +9,10 @@ class MatrixCaps(tf.keras.Model):
     self.hparams = hparams
     self.scope = scope
     self.model_name = '_'.join([self.scope,
-                                'a-' + str(self.hparams.a),
-                                'b-' + str(self.hparams.b),
-                                'c-' + str(self.hparams.c),
-                                'd-' + str(self.hparams.d),
+                                'a-' + str(self.hparams.A),
+                                'b-' + str(self.hparams.B),
+                                'c-' + str(self.hparams.D),
+                                'd-' + str(self.hparams.D),
                                 'itr-' + str(self.hparams.iter_routing)])
 
 
