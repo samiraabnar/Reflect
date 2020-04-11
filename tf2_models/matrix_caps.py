@@ -6,6 +6,12 @@ from tf2_models.caps_layers import FcCaps, ConvCaps
 class MatrixCaps(tf.keras.Model):
   def __init__(self, hparams, scope='matrix_caps', *inputs, **kwargs):
     super(MatrixCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+    self.model_name = '_'.join([self.scope,
+                                'a-' + str(self.hparams.a),
+                                'b-' + str(self.hparams.b),
+                                'c-' + str(self.hparams.c),
+                                'd-' + str(self.hparams.d),
+                                'itr-' + str(self.hparams.iter_routing)])
 
     self.hparams = hparams
 
