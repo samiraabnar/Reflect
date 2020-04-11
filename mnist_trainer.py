@@ -32,7 +32,7 @@ def run():
     except RuntimeError as e:
       print(e)
 
-  strategy = tf.distribute.MirroredStrategy()
+  strategy = tf.distribute.OneDeviceStrategy()
 
 
 
