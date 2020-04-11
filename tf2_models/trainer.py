@@ -18,7 +18,7 @@ class Trainer(object):
     with self.strategy.scope():
       lr_schedule = self.get_lr_schedule()
 
-      self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08, clipnorm=1.0)
+      self.optimizer = OPTIMIZER_DIC[self.train_params.optimizer](learning_rate=lr_schedule, epsilon=1e-08)#, clipnorm=1.0)
 
       self.ckpt = tf.train.Checkpoint(step=tf.Variable(1, name='checkpoint_step'), optimizer=self.optimizer, net=self.model)
       self.manager = tf.train.CheckpointManager(self.ckpt, ckpt_dir,
