@@ -145,7 +145,7 @@ class CapsConfig(object):
     self.B = B
     self.C = C
     self.D = D
-    self.epsilon = epsilon-9
+    self.epsilon = epsilon
     self.l2 = l2
     self.final_lambda = final_lambda
     self.iter_routing = iter_routing
