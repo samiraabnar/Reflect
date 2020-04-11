@@ -532,6 +532,26 @@ rpdst_019_crs_slwfst_5 = {
 'schedule': 'crs_fst'
 }
 
+rpdst_019_crs_slwfst_56 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 0.0,
+'student_gold_rate' : 0.1,
+'student_distill_rep_rate': 0.9,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 20000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_decay_rate': 0.9,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.0001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0.0,
+'teacher_decay_rate': 0.96,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs_fst'
+}
+
 rpdst_019_crs_slwfst_2 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 0.0,
@@ -719,6 +739,26 @@ rpdst_019_crs_slwfst_4 = {
 'student_optimizer' : 'adam',
 'teacher_learning_rate' : 0.001,
 'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0.0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs_fst'
+}
+
+rpdst_019_crs_slwfst_6 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 0.0,
+'student_gold_rate' : 0.1,
+'student_distill_rep_rate': 0.9,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 20000,
+'student_decay_rate': 0.9,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.001,
+'teacher_decay_steps' : 10000,
+'teacher_decay_rate': 0.96,
 'teacher_warmup_steps' : 0.0,
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
@@ -1075,5 +1115,7 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'rpdst_019_exp_sst11': rpdst_019_exp_sst11,
                   'rpdst_019_exp_sst12': rpdst_019_exp_sst12,
                   'rpdst_019_crs_slwfst_5': rpdst_019_crs_slwfst_5,
-                  'rpdst_019_exp_sst13': rpdst_019_exp_sst13
+                  'rpdst_019_crs_slwfst_56': rpdst_019_crs_slwfst_56,
+                  'rpdst_019_exp_sst13': rpdst_019_exp_sst13,
+                  'rpdst_019_crs_slwfst_6': rpdst_019_crs_slwfst_6
                   }
