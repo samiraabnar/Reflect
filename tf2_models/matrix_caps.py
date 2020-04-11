@@ -6,6 +6,7 @@ from tf2_models.caps_layers import FcCaps, ConvCaps
 class MatrixCaps(tf.keras.Model):
   def __init__(self, hparams, scope='matrix_caps', *inputs, **kwargs):
     super(MatrixCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+    self.hparams = hparams
     self.scope = scope
     self.model_name = '_'.join([self.scope,
                                 'a-' + str(self.hparams.a),
@@ -14,7 +15,6 @@ class MatrixCaps(tf.keras.Model):
                                 'd-' + str(self.hparams.d),
                                 'itr-' + str(self.hparams.iter_routing)])
 
-    self.hparams = hparams
 
     # xavier initialization is necessary here to provide higher stability
     # instead of initializing bias with constant 0, a truncated normal
