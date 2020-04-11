@@ -21,7 +21,8 @@ class Mnist(Task):
     return 10
 
   def get_loss_fn(self):
-    return ClassificationLoss(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(-1))
+    return ClassificationLoss(global_batch_size=self.task_params.batch_size,
+                              padding_symbol=tf.constant(-1, dtype=tf.int64))
 
   def get_distill_loss_fn(self, distill_params):
     return DistillLoss(tmp=distill_params.distill_temp)
@@ -30,7 +31,8 @@ class Mnist(Task):
     return get_probs
 
   def metrics(self):
-    return [ClassificationLoss(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(-1)),
+    return [ClassificationLoss(global_batch_size=self.task_params.batch_size,
+                               padding_symbol=tf.constant(-1, dtype=tf.int64)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
   @property
@@ -97,7 +99,8 @@ class AffNistTask(Task):
     return 10
 
   def get_loss_fn(self):
-    return ClassificationLoss(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(-1))
+    return ClassificationLoss(global_batch_size=self.task_params.batch_size,
+                              padding_symbol=tf.constant(-1, dtype=tf.int64))
 
   def get_distill_loss_fn(self, distill_params):
     return DistillLoss(tmp=distill_params.distill_temp)
@@ -106,7 +109,8 @@ class AffNistTask(Task):
     return get_probs
 
   def metrics(self):
-    return [ClassificationLoss(global_batch_size=self.task_params.batch_size, padding_symbol=tf.constant(-1)),
+    return [ClassificationLoss(global_batch_size=self.task_params.batch_size,
+                               padding_symbol=tf.constant(-1, dtype=tf.int64)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
   @property
