@@ -16,6 +16,7 @@ flags.DEFINE_string('model', 'lm_lstm', 'lm_lstm | lm_gpt2 | lm_gpt2_shared | lm
 flags.DEFINE_string('model_config', 'base', 'base | small_lstm ')
 flags.DEFINE_string('train_config', 'radam_fast', 'radam_slow | radam_fast')
 flags.DEFINE_integer('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
+flags.DEFINE_integer('batch_size',16, 'batch_size')
 
 
 hparams = flags.FLAGS

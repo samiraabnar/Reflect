@@ -129,6 +129,27 @@ class GPT2Config(object):
       return self.depth
 
 
+class CapsConfig(object):
+  def __init__(self,
+               output_dim=10,
+               A=32,
+               B=32,
+               C=32,
+               D=32,
+               epsilon=1e-9,
+               l2=0.0000002,
+               final_lambda=0.01,
+               iter_routing=2):
+    self.output_dim = output_dim
+    self.A = A
+    self.B = B
+    self.C = C
+    self.D = D
+    self.epsilon = epsilon-9
+    self.l2 = l2
+    self.final_lambda = final_lambda
+    self.iter_routing = iter_routing
+
 small_gpt = {
   'embedding_dim': 128,
   'resid_pdrop': 0.1,
@@ -682,6 +703,14 @@ caps_base = {'hidden_dim': 16,
                'hidden_dropout_rate': 0.5,
                'input_dropout_rate': 0.2}
 
+mat_caps_base = {'A':32,
+                 'B':32,
+                 'C':32,
+                 'D':32,
+                 'epsilon':1e-9,
+                 'l2':0.0000002,
+                 'final_lambda':0.01,
+                 'iter_routing':2}
 
 MODEL_CONFIGS = {
   'base':{},
@@ -751,5 +780,6 @@ MODEL_CONFIGS = {
   'vcnn_mnist': vcnn_mnist,
   'vcnn_lenet5': vcnn_lenet5,
   'caps_base': caps_base,
-  'biglstm_drop31_v3': biglstm_drop31_v3
+  'biglstm_drop31_v3': biglstm_drop31_v3,
+  'mat_caps_base': mat_caps_base
 }

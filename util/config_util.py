@@ -1,5 +1,5 @@
 from util.distill_params import DISTILL_PARAMS
-from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS
+from util.model_configs import GPT2Config, ModelConfig, MODEL_CONFIGS, CapsConfig
 from util.train_params import TRAIN_PARAMS
 
 
@@ -111,6 +111,9 @@ def get_model_params(task, config_name='', model_config='base'):
     return GPT2Config(vocab_size=task.vocab_size(),
                       output_dim=task.output_size(),
                       num_labels=task.output_size(),
+                      **model_cnfgs)
+  elif 'caps' in config_name:
+    return CapsConfig(output_dim=task.output_size(),
                       **model_cnfgs)
   else:
     return ModelConfig(input_dim=task.vocab_size(),
