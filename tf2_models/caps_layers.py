@@ -2,13 +2,18 @@ import tensorflow as tf
 from tf2_models.caps_util import *
 from tf2_models.em_routing import EmRouting
 
+class WeightVariable(tf.Variable):
+  @property
+  def trainable(self):
+    return True
+
 class Voting(tf.keras.layers.Layer):
   def __init__(self, hparams, num_output_caps, kh_kw_i, *inputs, **kwargs):
     super(Voting, self).__init__(hparams, *inputs, **kwargs)
     self.hparams = hparams
     self.num_output_caps = num_output_caps
     self.kh_kw_i = kh_kw_i
-    self.w = tf.Variable(name='w',
+    self.w = tf.WeightVariable(name='w',
                          initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
                                                                   dtype=tf.float32), trainable=True)
   def call(self, inputs, **kwargs):
