@@ -1,24 +1,17 @@
 import tensorflow as tf
 from tf2_models.caps_util import *
-
 from tf2_models.em_routing import EmRouting
 
-
-class ConvCaps(tf.keras.layers.Layer):
-  def __init__(self, hparams, num_output_caps, kernel, stride, kh_kw_i, scope='conv_caps', *inputs, **kwargs):
-    super(ConvCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+class Voting(tf.keras.layers.Layer):
+  def __init__(self, hparams, num_output_caps, kh_kw_i, *inputs, **kwargs):
+    super(ConvCaps, self).__init__(hparams, *inputs, **kwargs)
     self.hparams = hparams
     self.num_output_caps = num_output_caps
-    self.kernel = kernel
-    self.stride = stride
     self.kh_kw_i = kh_kw_i
-    self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
-    self.w =  tf.Variable(name='w',
-                          initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
-                                                                   dtype=tf.float32), trainable=True)
-    self.em_routing = EmRouting(hparams, num_output_caps=num_output_caps)
-
-  def compute_votes(self, poses_i, tag=False):
+    self.w = tf.Variable(name='w',
+                         initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
+                                                                  dtype=tf.float32), trainable=True)
+  def call(self, inputs, **kwargs):
     """Compute the votes by multiplying input poses by transformation matrix.
 
     Multiply the poses of layer i by the transform matrix to compute the votes for
@@ -43,33 +36,41 @@ class ConvCaps(tf.keras.layers.Layer):
         (64*5*5, 9*8, 32, 16)
     """
 
-    batch_size = tf.shape(poses_i)[0] # 64*5*5
+    batch_size = tf.shape(inputs)[0]  # 64*5*5
 
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
-    output = tf.reshape(poses_i, shape=[batch_size, self.kh_kw_i, 1, 4, 4], name='input_pos_reshape')
-
-
-    # the output of capsule is miu, the mean of a Gaussian, and activation, the
-    # sum of probabilities it has no relationship with the absolute values of w
-    # and votes using weights with bigger stddev helps numerical stability
+    inputs = tf.reshape(inputs, shape=[batch_size, self.kh_kw_i, 1, 4, 4], name='input_pos_reshape')
 
 
     # (1, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
+    self.w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
 
     # (64*5*5, 9*8, 1, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    output = tf.tile(output, [1, 1, self.num_output_caps, 1, 1])
+    inputs = tf.tile(inputs, [1, 1, self.num_output_caps, 1, 1])
 
-    # (64*5*5, 9*8, 32, 4, 4) x (64*5*5, 9*8, 32, 4, 4)
-    # -> (64*5*5, 9*8, 32, 4, 4)
-    mult = tf.matmul(output, w)
+    mult = tf.matmul(inputs, self.w)
 
     # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
     votes = tf.reshape(mult, [batch_size, self.kh_kw_i, self.num_output_caps, 16], name='vote_reshape')
 
-    # tf.summary.histogram('w', w)
-
     return votes
+
+
+class ConvCaps(tf.keras.layers.Layer):
+  def __init__(self, hparams, num_output_caps, kernel, stride, kh_kw_i, scope='conv_caps', *inputs, **kwargs):
+    super(ConvCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+    self.hparams = hparams
+    self.num_output_caps = num_output_caps
+    self.kernel = kernel
+    self.stride = stride
+    self.kh_kw_i = kh_kw_i
+    self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
+    self.voting =  Voting(hparams=hparams,
+                          num_output_caps=self.num_output_caps,
+                          kh_kw_i=self.kh_kw_i,
+                          name='_'.join([self.scope, 'voting']))
+    self.em_routing = EmRouting(hparams, num_output_caps=num_output_caps)
+
 
   def call(self, inputs_pose, inputs_activation, training=False, **kwargs):
 
@@ -109,9 +110,7 @@ class ConvCaps(tf.keras.layers.Layer):
       shape=[batch_size * parent_space_2, kernel_2 * child_caps, 1], name='activation_unroll_reshape')
 
     # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 32, 16)
-    votes = self.compute_votes(
-      pose_unroll,
-      tag=True)
+    votes = self.voting(pose_unroll)
 
     # Routing
     # votes (64*5*5, 9*8, 32, 16)
@@ -133,9 +132,10 @@ class FcCaps(tf.keras.layers.Layer):
     self.hparams  = hparams
     self.num_output_caps = tf.constant(self.hparams.output_dim, dtype=tf.int32)
     self.kh_kw_i = tf.constant(self.hparams.D, dtype=tf.int32)
-    self.w = tf.Variable(name='w',
-                         initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
-                                                                  dtype=tf.float32))
+    self.voting = Voting(hparams=hparams,
+                         num_output_caps=self.num_output_caps,
+                         kh_kw_i=self.kh_kw_i,
+                         name='_'.join([self.scope, 'voting']))
     self.em_routing = EmRouting(hparams, num_output_caps=self.num_output_caps)
 
 
@@ -193,7 +193,7 @@ class FcCaps(tf.keras.layers.Layer):
         name="activation")
 
     # (64*5*5, 32, 16) -> (65*5*5, 32, 5, 16)
-    votes = self.compute_votes(pose)
+    votes = self.voting(pose)
 
     # (65*5*5, 32, 5, 16)
     # assert (
@@ -233,58 +233,6 @@ class FcCaps(tf.keras.layers.Layer):
 
     return pose_out, activation_out
 
-  def compute_votes(self, poses_i, tag=False):
-    """Compute the votes by multiplying input poses by transformation matrix.
-
-    Multiply the poses of layer i by the transform matrix to compute the votes for
-    layer j.
-
-    Author:
-      Ashley Gritzman 19/10/2018
-
-    Credit:
-      Suofei Zhang's implementation on GitHub, "Matrix-Capsules-EM-Tensorflow"
-      https://github.com/www0wwwjs1/Matrix-Capsules-EM-Tensorflow
-
-    Args:
-      poses_i:
-        poses in layer i tiled according to the kernel
-        (N*output_h*output_w, kernel_h*kernel_w*i, 16)
-        (64*5*5, 9*8, 16)
-
-    Returns:
-      votes:
-        (N*output_h*output_w, kernel_h*kernel_w*i, o, 16)
-        (64*5*5, 9*8, 32, 16)
-    """
-
-    batch_size = tf.shape(poses_i)[0] # 64*5*5
-    kh_kw_i = tf.shape(poses_i)[1] # 9*8
-
-    # (64*5*5, 9*8, 16) -> (64*5*5, 9*8, 1, 4, 4)
-    output = tf.reshape(poses_i, shape=[batch_size, kh_kw_i, 1, 4, 4])
-
-    # the output of capsule is miu, the mean of a Gaussian, and activation, the
-    # sum of probabilities it has no relationship with the absolute values of w
-    # and votes using weights with bigger stddev helps numerical stability
-
-
-    # (1, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
-
-    # (64*5*5, 9*8, 1, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    output = tf.tile(output, [1, 1, self.num_output_caps, 1, 1])
-
-    # (64*5*5, 9*8, 32, 4, 4) x (64*5*5, 9*8, 32, 4, 4)
-    # -> (64*5*5, 9*8, 32, 4, 4)
-    mult = tf.matmul(output, w)
-
-    # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
-    votes = tf.reshape(mult, [batch_size, kh_kw_i, self.num_output_caps, 16])
-
-    # tf.summary.histogram('w', w)
-
-    return votes
 
 def coord_addition(votes):
   """Coordinate addition for connecting the last convolutional capsule layer to   the final layer.
