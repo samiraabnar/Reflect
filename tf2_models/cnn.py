@@ -20,7 +20,7 @@ class VanillaCNN(tf.keras.models.Sequential):
     self.create_vars()
 
   def create_vars(self):
-    self.add(tf.keras.layers.ZeroPadding2D((2,2)))
+    #self.add(tf.keras.layers.ZeroPadding2D((2,2)))
     self.add(tf.keras.layers.Dropout(rate=self.hparams.input_dropout_rate))
 
     #width = np.sqrt(self.hparams.input_dim) + 4
