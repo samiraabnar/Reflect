@@ -62,7 +62,7 @@ def masked_batch_perplexity(y_true, y_pred, padding_symbol=0):
 
 #@tf.function(experimental_relax_shapes=True)
 def classification_loss(y_true, y_pred):
-  if len(tf.shape(y_true)) > 1:
+  if len(y_true.shape) > 1:
     y_true = tf.squeeze(y_true, axis=-1)
 
   y_true = tf.cast(y_true, dtype=tf.int64)
