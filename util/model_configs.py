@@ -394,6 +394,15 @@ small_lstm_v5 = {
   'initializer_range': 0.1
 }
 
+small_lstm_v6 = {
+  'hidden_dim': 256,
+  'embedding_dim': 256,
+  'depth': 2,
+  'hidden_dropout_rate': 0.8,
+  'input_dropout_rate': 0.25,
+  'initializer_range': 0.1
+}
+
 tiny_lstm = {
   'hidden_dim': 128,
   'embedding_dim': 128,
@@ -781,5 +790,6 @@ MODEL_CONFIGS = {
   'vcnn_lenet5': vcnn_lenet5,
   'caps_base': caps_base,
   'biglstm_drop31_v3': biglstm_drop31_v3,
-  'mat_caps_base': mat_caps_base
+  'mat_caps_base': mat_caps_base,
+  'small_lstm_v6': small_lstm_v6
 }
