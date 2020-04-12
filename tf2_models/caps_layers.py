@@ -43,12 +43,12 @@ class Voting(tf.keras.layers.Layer):
 
 
     # (1, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
-    self.w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
+    w = tf.tile(self.w, [batch_size, 1, 1, 1, 1])
 
     # (64*5*5, 9*8, 1, 4, 4) -> (64*5*5, 9*8, 32, 4, 4)
     inputs = tf.tile(inputs, [1, 1, self.num_output_caps, 1, 1])
 
-    mult = tf.matmul(inputs, self.w)
+    mult = tf.matmul(inputs, w)
 
     # (64*5*5, 9*8, 32, 4, 4) -> (64*5*5, 9*8, 32, 16)
     votes = tf.reshape(mult, [batch_size, self.kh_kw_i, self.num_output_caps, 16], name='vote_reshape')
