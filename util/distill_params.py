@@ -1065,7 +1065,7 @@ rpdst_019_exp_sst13 = {
 'student_distill_rate' : 0.0,
 'student_gold_rate' : 0.1,
 'student_distill_rep_rate': 0.9,
-'student_learning_rate' : 0.00006,
+'student_learning_rate' : 0.00005,
 'student_decay_steps' : 20000,
 'student_decay_rate': 0.3,
 'student_hold_base_rate_steps' :  10000,
