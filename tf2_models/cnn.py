@@ -23,7 +23,7 @@ class VanillaCNN(tf.keras.models.Sequential):
 
   def create_vars(self):
     self.add(tf.keras.layers.ZeroPadding2D((2,2)))
-    self.add(self.keras.layers.Dropout(rate=self.hparams.input_dropout_rate))
+    self.add(tf.keras.layers.Dropout(rate=self.hparams.input_dropout_rate))
 
     width = np.sqrt(self.hparams.input_dim) + 4
 
@@ -32,7 +32,7 @@ class VanillaCNN(tf.keras.models.Sequential):
                                       activation='relu',
                                       input_shape=(width, width, 1)))
       self.add(tf.keras.layers.MaxPooling2D(self.hparams.pool_size[i]))
-      self.add(self.keras.layers.Dropout(rate=self.hparams.hidden_dropout_rate))
+      self.add(tf.keras.layers.Dropout(rate=self.hparams.hidden_dropout_rate))
 
     self.add(tf.keras.layers.Flatten())
 
