@@ -800,5 +800,6 @@ MODEL_CONFIGS = {
   'caps_base': caps_base,
   'biglstm_drop31_v3': biglstm_drop31_v3,
   'mat_caps_base': mat_caps_base,
-  'small_lstm_v6': small_lstm_v6
+  'small_lstm_v6': small_lstm_v6,
+  'vcnn_svhn': vcnn_svhn
 }
