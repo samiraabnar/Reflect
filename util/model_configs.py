@@ -706,7 +706,7 @@ vcnn_lenet5 = {'hidden_dim': [128, 128],
                'input_dropout_rate': 0.25}
 
 
-vcnn_svhn = {'hidden_dim': [256, 256],
+vcnn_svhn1 = {'hidden_dim': [256, 256],
                'depth': 3,
                'proj_depth': 2,
                'filters': [32, 32,32],
@@ -714,6 +714,33 @@ vcnn_svhn = {'hidden_dim': [256, 256],
                'pool_size': [(2,2), (2,2), (2,2)],
                'hidden_dropout_rate': 0.2,
                'input_dropout_rate': 0.0}
+
+vcnn_svhn2 = {'hidden_dim': [256, 256],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32,32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.1,
+               'input_dropout_rate': 0.0}
+
+vcnn_svhn3 = {'hidden_dim': [256, 256],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32,32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.1}
+
+vcnn_svhn4 = {'hidden_dim': [256, 256],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32,32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.1,
+               'input_dropout_rate': 0.1}
 
 caps_base = {'hidden_dim': 16,
                'routing': 3,
@@ -801,5 +828,8 @@ MODEL_CONFIGS = {
   'biglstm_drop31_v3': biglstm_drop31_v3,
   'mat_caps_base': mat_caps_base,
   'small_lstm_v6': small_lstm_v6,
-  'vcnn_svhn': vcnn_svhn
+  'vcnn_svhn1': vcnn_svhn1,
+  'vcnn_svhn2': vcnn_svhn2,
+  'vcnn_svhn3': vcnn_svhn3,
+  'vcnn_svhn4': vcnn_svhn4
 }
