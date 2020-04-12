@@ -15,7 +15,7 @@ class ConvCaps(tf.keras.layers.Layer):
     self.weights_regularizer = tf.keras.regularizers.l2(self.hparams.l2)
     self.w =  tf.Variable(name='w',
                           initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
-                                                                   dtype=tf.float32))
+                                                                   dtype=tf.float32), trainable=True)
     self.em_routing = EmRouting(hparams, num_output_caps=num_output_caps)
 
   def compute_votes(self, poses_i, tag=False):
