@@ -92,6 +92,14 @@ class AffNistTask(Task):
                                 data_dir=data_dir,
                                 builder_cls=builder_cls)
 
+  def input_shape(self):
+    """
+      To be used when calling model.build(input_shape)
+    :return:
+      #[batch_size, height, width, channels
+    """
+    return [None, 28, 28, 1]
+  
   def vocab_size(self):
     return 40*40
 

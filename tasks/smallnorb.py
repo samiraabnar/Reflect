@@ -14,8 +14,13 @@ class SmallNorb(Task):
                                 builder_cls=None)
 
   def input_shape(self):
-    return [96, 96, 1]
-  
+    """
+      To be used when calling model.build(input_shape)
+    :return:
+      #[batch_size, height, width, channels
+    """
+    return [None, 96, 96, 1]
+
   def vocab_size(self):
     return 96*96
 
