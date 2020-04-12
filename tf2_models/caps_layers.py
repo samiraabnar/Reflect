@@ -13,7 +13,7 @@ class Voting(tf.keras.layers.Layer):
     self.hparams = hparams
     self.num_output_caps = num_output_caps
     self.kh_kw_i = kh_kw_i
-    self.w = tf.WeightVariable(name='w',
+    self.w = WeightVariable(name='w',
                          initial_value=tf.random.truncated_normal(shape=[1, self.kh_kw_i, self.num_output_caps, 4, 4],
                                                                   dtype=tf.float32), trainable=True)
   def call(self, inputs, **kwargs):
