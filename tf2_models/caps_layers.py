@@ -4,7 +4,7 @@ from tf2_models.em_routing import EmRouting
 
 class Voting(tf.keras.layers.Layer):
   def __init__(self, hparams, num_output_caps, kh_kw_i, *inputs, **kwargs):
-    super(ConvCaps, self).__init__(hparams, *inputs, **kwargs)
+    super(Voting, self).__init__(hparams, *inputs, **kwargs)
     self.hparams = hparams
     self.num_output_caps = num_output_caps
     self.kh_kw_i = kh_kw_i
