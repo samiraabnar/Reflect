@@ -13,14 +13,18 @@ class SmallNorb(Task):
                                 data_dir=data_dir,
                                 builder_cls=None)
 
+  def input_shape(self):
+    return [96, 96, 1]
+  
   def vocab_size(self):
     return 96*96
 
   def output_size(self):
-    return 10
+    return 5
 
   def get_loss_fn(self):
-    return ClassificationLoss()
+    return ClassificationLoss(global_batch_size=self.task_params.batch_size,
+                              padding_symbol=tf.constant(-1, dtype=tf.int64))
 
   def get_distill_loss_fn(self, distill_params):
     return DistillLoss(tmp=distill_params.distill_temp)
@@ -29,7 +33,8 @@ class SmallNorb(Task):
     return get_probs
 
   def metrics(self):
-    return [ClassificationLoss(padding_symbol=tf.constant(-1)),
+    return [ClassificationLoss(global_batch_size=self.task_params.batch_size,
+                              padding_symbol=tf.constant(-1, dtype=tf.int64)),
             tf.keras.metrics.SparseCategoricalAccuracy()]
 
   @property
