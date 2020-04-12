@@ -99,7 +99,7 @@ class AffNistTask(Task):
       #[batch_size, height, width, channels
     """
     return [None, 28, 28, 1]
-  
+
   def vocab_size(self):
     return 40*40
 
