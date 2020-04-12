@@ -712,8 +712,8 @@ vcnn_svhn = {'hidden_dim': [128, 128],
                'filters': [32, 32,32],
                'kernel_size': [(3,3), (3,3), (3,3)],
                'pool_size': [(2,2), (2,2), (2,2)],
-               'hidden_dropout_rate': 0.8,
-               'input_dropout_rate': 0.25}
+               'hidden_dropout_rate': 0.5,
+               'input_dropout_rate': 0.2}
 
 caps_base = {'hidden_dim': 16,
                'routing': 3,
