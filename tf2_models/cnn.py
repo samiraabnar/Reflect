@@ -16,27 +16,28 @@ class VanillaCNN(tf.keras.models.Sequential):
                                 'indrop-' + str(self.hparams.input_dropout_rate)])
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
-                                                   l2=0.00001)
-    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
-                                                   l2=0.00001)
+                                                   l2=0.000002)
     self.create_vars()
 
   def create_vars(self):
     self.add(tf.keras.layers.ZeroPadding2D((2,2)))
     self.add(tf.keras.layers.Dropout(rate=self.hparams.input_dropout_rate))
 
-    width = np.sqrt(self.hparams.input_dim) + 4
+    #width = np.sqrt(self.hparams.input_dim) + 4
 
     for i in np.arange(self.hparams.depth):
       self.add(tf.keras.layers.Conv2D(self.hparams.filters[i], self.hparams.kernel_size[i],
                                       activation='relu',
-                                      input_shape=(width, width, 1)))
+                                      #input_shape=(width, width, 1)),
+                                      kernel_regularizer=self.regularizer))
       self.add(tf.keras.layers.MaxPooling2D(self.hparams.pool_size[i]))
       self.add(tf.keras.layers.Dropout(rate=self.hparams.hidden_dropout_rate))
 
     self.add(tf.keras.layers.Flatten())
 
     for i in np.arange(self.hparams.proj_depth):
-      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim[i], activation='relu'))
+      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim[i], activation='relu',
+                                     kernel_regularizer=self.regularizer))
 
-    self.add(tf.keras.layers.Dense(self.hparams.output_dim))
+    self.add(tf.keras.layers.Dense(self.hparams.output_dim,
+                                   kernel_regularizer=self.regularizer))
