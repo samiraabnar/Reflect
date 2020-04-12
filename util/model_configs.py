@@ -696,14 +696,14 @@ vcnn_mnist = {'hidden_dim': [64],
                'hidden_dropout_rate': 0.5,
                'input_dropout_rate': 0.2}
 
-vcnn_lenet5 = {'hidden_dim': [120, 84],
+vcnn_lenet5 = {'hidden_dim': [128, 128],
                'depth': 2,
                'proj_depth': 2,
-               'filters': [32, 32],
+               'filters': [16, 16],
                'kernel_size': [(3,3), (3,3), (3,3)],
                'pool_size': [(2,2), (2,2), (2,2)],
-               'hidden_dropout_rate': 0.5,
-               'input_dropout_rate': 0.2}
+               'hidden_dropout_rate': 0.8,
+               'input_dropout_rate': 0.25}
 
 
 caps_base = {'hidden_dim': 16,
