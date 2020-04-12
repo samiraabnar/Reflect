@@ -59,6 +59,7 @@ class Voting(tf.keras.layers.Layer):
 class ConvCaps(tf.keras.layers.Layer):
   def __init__(self, hparams, num_output_caps, kernel, stride, kh_kw_i, scope='conv_caps', *inputs, **kwargs):
     super(ConvCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+    self.scope = scope
     self.hparams = hparams
     self.num_output_caps = num_output_caps
     self.kernel = kernel
@@ -129,6 +130,7 @@ class ConvCaps(tf.keras.layers.Layer):
 class FcCaps(tf.keras.layers.Layer):
   def __init__(self, hparams, scope='class_caps', *inputs, **kwargs):
     super(FcCaps, self).__init__(hparams, name=scope, *inputs, **kwargs)
+    self.scope = scope
     self.hparams  = hparams
     self.num_output_caps = tf.constant(self.hparams.output_dim, dtype=tf.int32)
     self.kh_kw_i = tf.constant(self.hparams.D, dtype=tf.int32)
