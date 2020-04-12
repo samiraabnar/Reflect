@@ -171,3 +171,11 @@ class AffNistTask(Task):
       batch_size=self.task_params.batch_size)
     self.valid_dataset = self.valid_dataset.prefetch(
       tf.data.experimental.AUTOTUNE)
+
+
+class Svhn(Mnist):
+  def __init__(self, task_params, name='mnist', data_dir='mnist_data'):
+    self.databuilder = tfds.builder("svhn_cropped")
+    super(Mnist, self).__init__(task_params=task_params, name=name,
+                                data_dir=data_dir,
+                                builder_cls=None)
