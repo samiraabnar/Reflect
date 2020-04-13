@@ -59,7 +59,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/repshare_main.py \
 --student_config=big_gpt_v5 \
 --batch_size=64 \
 --distill_mode=rep_online \
---distill_config=rpdst_019_crs_slwfst25 > run_sv_lm5 &
+--distill_config=rpdst_019_crs_slwfst_25 > run_sv_lm5 &
 
 CUDA_VISIBLE_DEVICES=5 python distill/repshare_main.py \
 --task=word_sv_agreement_lm  \
