@@ -174,7 +174,7 @@ class AffNistTask(Task):
 
 
 class Svhn(Mnist):
-  def __init__(self, task_params, name='mnist', data_dir='mnist_data'):
+  def __init__(self, task_params, name='svhn', data_dir='mnist_data'):
     self.databuilder = tfds.builder("svhn_cropped")
     super(Mnist, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,

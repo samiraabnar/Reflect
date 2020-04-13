@@ -11,64 +11,64 @@ CUDA_VISIBLE_DEVICES=0 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
 --model_config=vcnn_svhn1 \
---train_config=radam_slw2 \
---batch_size=64 \
---exp_name=v1 > run1 &
+--train_config=crs_fst \
+--batch_size=128 \
+--exp_name=v16 > run4 &
 
 CUDA_VISIBLE_DEVICES=1 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
 --model_config=vcnn_svhn1 \
---train_config=adam_slw \
---batch_size=64 \
---exp_name=v2 > run2 &
+--train_config=crs_fst_v2 \
+--batch_size=128 \
+--exp_name=v13 > run2 &
 
 CUDA_VISIBLE_DEVICES=2 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
 --model_config=vcnn_svhn1 \
 --train_config=adam_mid \
---batch_size=512 \
---exp_name=v3 > run3 &
+--batch_size=128 \
+--exp_name=v14 > run3 &
 
 CUDA_VISIBLE_DEVICES=3 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
 --model_config=vcnn_svhn1 \
---train_config=crs_slw \
---batch_size=512 \
---exp_name=v4 > run4 &
+--train_config=crs_slw_v2 \
+--batch_size=128 \
+--exp_name=v15 > run4 &
 
 CUDA_VISIBLE_DEVICES=4 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn2 \
---train_config=radam_slw2 \
---batch_size=64 \
---exp_name=v5 > run5 &
+--model_config=vcnn_svhn3 \
+--train_config=adam_slw \
+--batch_size=128 \
+--exp_name=v9 > run5 &
 
 CUDA_VISIBLE_DEVICES=5 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn2 \
---train_config=adam_slw \
---batch_size=64 \
---exp_name=v6 > run6 &
+--model_config=vcnn_svhn3 \
+--train_config=adam_mid \
+--batch_size=128 \
+--exp_name=v10 > run6 &
 
 CUDA_VISIBLE_DEVICES=6 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn2 \
---train_config=adam_mid \
---batch_size=512 \
---exp_name=v7 > run7 &
+--model_config=vcnn_svhn3 \
+--train_config=crs_fst \
+--batch_size=128 \
+--exp_name=v11 > run7 &
 
 CUDA_VISIBLE_DEVICES=7 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn2 \
+--model_config=vcnn_svhn3 \
 --train_config=crs_slw \
---batch_size=512 \
---exp_name=v8 > run8 &
+--batch_size=128 \
+--exp_name=v12 > run8 &
 
 wait
