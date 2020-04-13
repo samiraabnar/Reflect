@@ -21,8 +21,9 @@ class VanillaCNN(tf.keras.models.Sequential):
 
   def create_vars(self):
     #self.add(tf.keras.layers.ZeroPadding2D((2,2)))
-    self.add(tf.keras.layers.Dropout(rate=self.hparams.input_dropout_rate))
 
+    self.add(tf.keras.layers.Dropout(rate=self.hparams.input_dropout_rate))
+    self.add(tf.keras.layers.BatchNormalization())
     #width = np.sqrt(self.hparams.input_dim) + 4
 
     for i in np.arange(self.hparams.depth):
