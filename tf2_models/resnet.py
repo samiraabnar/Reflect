@@ -42,7 +42,7 @@ class Resnet(tf.keras.Model):
   def __init__(self, hparams, scope='resnet', *inputs, **kwargs):
     if 'cl_token' in kwargs:
       del kwargs['cl_token']
-    super(ResnetBlock, self).__init__(name=scope*inputs, **kwargs)
+    super(Resnet, self).__init__(name=scope*inputs, **kwargs)
     self.scope = scope
     self.hparams = hparams
     self.model_name = '_'.join([self.scope,
