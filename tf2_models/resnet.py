@@ -78,14 +78,24 @@ class Resnet(tf.keras.Model):
 
   def call(self, inputs, training=None, **kwargs):
     x = self.batch_norm(inputs, training=training, **kwargs)
+
     x = self.conv1(x, training=training, **kwargs)
+    x = self.batch_norm(x, training=training, **kwargs)
+    x = self.dropout(x, training=training, **kwargs)
+
     x = self.conv2(x, training=training, **kwargs)
+    x = self.batch_norm(x, training=training, **kwargs)
+    x = self.dropout(x, training=training, **kwargs)
+
     x = self.pool2(x, training=training, **kwargs)
     for i in range(self.hparams.num_res_net_blocks):
       x = self.resblocks[i](x, training=training, **kwargs)
       x = self.dropout(x, training=training, **kwargs)
 
     x = self.conv4(x, training=training, **kwargs)
+    x = self.batch_norm(x, training=training, **kwargs)
+    x = self.dropout(x, training=training, **kwargs)
+
     x = self.avgpool(x, training=training, **kwargs)
     x = self.dense(x, training=training, **kwargs)
     x = self.dropout(x, training=training, **kwargs)

@@ -24,9 +24,12 @@ class VanillaFF(tf.keras.models.Sequential):
 
   def create_vars(self):
     self.add(tf.keras.layers.Flatten())
+    self.add(tf.keras.layers.BatchNormalization())
     self.add(tf.keras.layers.Dropout(self.hparams.input_dropout_rate))
+
     for i in np.arange(self.hparams.depth):
       self.add(tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu'))
+      self.add(tf.keras.layers.BatchNormalization())
       self.add(tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate))
 
     self.add(tf.keras.layers.Dense(self.hparams.output_dim))
