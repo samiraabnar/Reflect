@@ -11,64 +11,65 @@ CUDA_VISIBLE_DEVICES=0 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
 --model_config=vcnn_svhn1 \
---train_config=crs_fst \
+--train_config=svhn_adam_mid \
 --batch_size=128 \
---exp_name=v16 > run4 &
+--exp_name=v17 > run1 &
+
 
 CUDA_VISIBLE_DEVICES=1 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
 --model_config=vcnn_svhn1 \
---train_config=crs_fst_v2 \
+--train_config=svhn_radam_mid \
 --batch_size=128 \
---exp_name=v13 > run2 &
+--exp_name=v18 > run2 &
 
 CUDA_VISIBLE_DEVICES=2 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
 --model_config=vcnn_svhn1 \
---train_config=adam_mid \
+--train_config=svhn_crs_slw \
 --batch_size=128 \
---exp_name=v14 > run3 &
+--exp_name=v19 > run3 &
 
 CUDA_VISIBLE_DEVICES=3 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn1 \
---train_config=crs_slw_v2 \
+--model_config=vcnn_svhn4 \
+--train_config=svhn_crs_slw \
 --batch_size=128 \
---exp_name=v15 > run4 &
+--exp_name=v20 > run4 &
 
 CUDA_VISIBLE_DEVICES=4 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn3 \
---train_config=adam_slw \
+--model_config=vcnn_svhn4 \
+--train_config=svhn_radam_mid \
 --batch_size=128 \
---exp_name=v9 > run5 &
+--exp_name=v21 > run5 &
 
 CUDA_VISIBLE_DEVICES=5 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn3 \
---train_config=adam_mid \
+--model_config=vcnn_svhn4 \
+--train_config=svhn_adam_mid \
 --batch_size=128 \
---exp_name=v10 > run6 &
+--exp_name=v22 > run6 &
 
 CUDA_VISIBLE_DEVICES=6 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn3 \
---train_config=crs_fst \
+--model_config=vcnn_svhn4 \
+--train_config=adam_mid \
 --batch_size=128 \
---exp_name=v11 > run7 &
+--exp_name=v23 > run7 &
 
 CUDA_VISIBLE_DEVICES=7 python mnist_trainer.py \
 --model=cl_vcnn \
 --task=svhn \
---model_config=vcnn_svhn3 \
---train_config=crs_slw \
+--model_config=vcnn_svhn4 \
+--train_config=radam_mid \
 --batch_size=128 \
---exp_name=v12 > run8 &
+--exp_name=v24 > run8 &
 
 wait

@@ -96,6 +96,29 @@ mnist_adam = {'optimizer': 'adam',
               'num_train_epochs': 20
               }
 
+svhn_adam_mid = {
+'learning_rate': 0.0005,
+'optimizer': 'adam',
+'hold_base_rate_steps': 1000,
+'num_train_epochs': 100
+}
+
+svhn_radam_mid = {
+'learning_rate': 0.0005,
+'optimizer': 'radam',
+'hold_base_rate_steps': 1000,
+'num_train_epochs': 100
+}
+
+svhn_crs_slw = {
+'learning_rate': 0.0005,
+'optimizer': 'adam',
+'hold_base_rate_steps': 0,
+'num_train_epochs': 100,
+'decay_steps': 10000,
+'schedule': 'crs_slw'
+}
+
 TRAIN_PARAMS = {'radam_slw': radam_slw,
                 'radam_fst': radam_fst,
                 'adam_slw':  adam_slw,
@@ -110,4 +133,7 @@ TRAIN_PARAMS = {'radam_slw': radam_slw,
                 'crs_slw_v3': crs_slw_v3,
                 'crs_fst_v2': crs_fst_v2,
                 'mnist_adam': mnist_adam,
-                'radam_slw2': radam_slw2}
+                'radam_slw2': radam_slw2,
+                'svhn_adam_mid': svhn_adam_mid,
+                'svhn_radam_mid': svhn_radam_mid,
+                'svhn_crs_slw': svhn_crs_slw}
