@@ -3,7 +3,7 @@ import tensorflow as tf
 class ResnetBlock(tf.keras.layers.Layer):
   def __init__(self, filters, kernel_size, activation='relu',*inputs, **kwargs):
     super(ResnetBlock, self).__init__(*inputs, **kwargs)
-    self.filter = filters
+    self.filters = filters
     self.kernel_size = kernel_size
     self.activation = activation
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
