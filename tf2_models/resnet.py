@@ -71,8 +71,8 @@ class Resnet(tf.keras.Model):
 
     self.conv4 = tf.keras.layers.Conv2D(self.hparams.filters[3], self.hparams.kernel_size[3], activation='relu')
     self.avgpool = tf.keras.layers.GlobalAveragePooling2D()
-    self.dense = tf.keras.layers.Dense(self.hidden_dim, activation='relu')
-    self.dropout = tf.keras.layers.Dropout(self.hidden_dropout_rate)
+    self.dense = tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu')
+    self.dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
     self.project = tf.keras.layers.Dense(self.hparams.output_dim, activation=None)
 
   def call(self, inputs, training=None, **kwargs):
