@@ -709,7 +709,7 @@ vcnn_lenet5 = {'hidden_dim': [128, 128],
 vcnn_svhn1 = {'hidden_dim': [256, 256],
                'depth': 3,
                'proj_depth': 2,
-               'filters': [32, 32,32],
+               'filters': [32, 32, 32],
                'kernel_size': [(3,3), (3,3), (3,3)],
                'pool_size': [(2,2), (2,2), (2,2)],
                'hidden_dropout_rate': 0.2,
@@ -741,6 +741,15 @@ vcnn_svhn4 = {'hidden_dim': [256, 256],
                'pool_size': [(2,2), (2,2), (2,2)],
                'hidden_dropout_rate': 0.1,
                'input_dropout_rate': 0.1}
+
+vcnn_svhn5 = {'hidden_dim': [512, 512],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32, 32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.0}
 
 caps_base = {'hidden_dim': 16,
                'routing': 3,
@@ -831,5 +840,6 @@ MODEL_CONFIGS = {
   'vcnn_svhn1': vcnn_svhn1,
   'vcnn_svhn2': vcnn_svhn2,
   'vcnn_svhn3': vcnn_svhn3,
-  'vcnn_svhn4': vcnn_svhn4
+  'vcnn_svhn4': vcnn_svhn4,
+  'vcnn_svhn5': vcnn_svhn5
 }
