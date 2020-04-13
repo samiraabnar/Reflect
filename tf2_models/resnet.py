@@ -65,10 +65,10 @@ class Resnet(tf.keras.Model):
 
 
     self.conv1 = tf.keras.layers.Conv2D(self.hparams.filters[0], self.hparams.kernel_size[0],
-                                  activation='None',
+                                  activation=None,
                                   kernel_regularizer=self.regularizer)
     self.conv2 = tf.keras.layers.Conv2D(self.hparams.filters[1], self.hparams.kernel_size[1],
-                                  activation='None',
+                                  activation=None,
                                   kernel_regularizer=self.regularizer)
     self.pool2 = tf.keras.layers.MaxPooling2D(self.hparams.pool_size)
 
@@ -77,7 +77,7 @@ class Resnet(tf.keras.Model):
       self.resblocks.append(ResnetBlock(self.hparams.filters[2], self.hparams.kernel_size[2]))
 
     self.conv4 = tf.keras.layers.Conv2D(self.hparams.filters[3], self.hparams.kernel_size[3],
-                                        activation='None')
+                                        activation=None)
     self.avgpool = tf.keras.layers.GlobalAveragePooling2D()
     self.dense = tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu')
     self.dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
