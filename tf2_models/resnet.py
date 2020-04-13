@@ -57,13 +57,13 @@ class Resnet(tf.keras.Model):
 
 
   def create_layers(self):
-    self.conv1 = tf.layers.Conv2D(self.hparams.filters[0], self.hparams.kernel_size[0],
+    self.conv1 = tf.keras.layers.Conv2D(self.hparams.filters[0], self.hparams.kernel_size[0],
                                   activation='relu',
                                   kernel_regularizer=self.regularizer)
-    self.conv2 = tf.layers.Conv2D(self.hparams.filters[1], self.hparams.kernel_size[1],
+    self.conv2 = tf.keras.layers.Conv2D(self.hparams.filters[1], self.hparams.kernel_size[1],
                                   activation='relu',
                                   kernel_regularizer=self.regularizer)
-    self.pool2 = tf.layers.MaxPooling2D(self.hparams.pool_size)
+    self.pool2 = tf.keras.layers.MaxPooling2D(self.hparams.pool_size)
 
     self.resblocks = []
     for i in range(self.hparams.num_res_net_blocks):
