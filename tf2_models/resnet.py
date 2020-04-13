@@ -57,7 +57,12 @@ class Resnet(tf.keras.Model):
 
 
   def create_layers(self):
-    self.batch_norm = tf.keras.layers.BatchNormalization()
+    self.batch_norm1 = tf.keras.layers.BatchNormalization()
+    self.batch_norm2 = tf.keras.layers.BatchNormalization()
+    self.batch_norm3 = tf.keras.layers.BatchNormalization()
+    self.batch_norm4 = tf.keras.layers.BatchNormalization()
+
+
     self.conv1 = tf.keras.layers.Conv2D(self.hparams.filters[0], self.hparams.kernel_size[0],
                                   activation='relu',
                                   kernel_regularizer=self.regularizer)
@@ -77,14 +82,14 @@ class Resnet(tf.keras.Model):
     self.project = tf.keras.layers.Dense(self.hparams.output_dim, activation=None)
 
   def call(self, inputs, training=None, **kwargs):
-    x = self.batch_norm(inputs, training=training, **kwargs)
+    x = self.batch_norm1(inputs, training=training, **kwargs)
 
     x = self.conv1(x, training=training, **kwargs)
-    x = self.batch_norm(x, training=training, **kwargs)
+    x = self.batch_norm2(x, training=training, **kwargs)
     x = self.dropout(x, training=training, **kwargs)
 
     x = self.conv2(x, training=training, **kwargs)
-    x = self.batch_norm(x, training=training, **kwargs)
+    x = self.batch_norm3(x, training=training, **kwargs)
     x = self.dropout(x, training=training, **kwargs)
 
     x = self.pool2(x, training=training, **kwargs)
@@ -93,7 +98,7 @@ class Resnet(tf.keras.Model):
       x = self.dropout(x, training=training, **kwargs)
 
     x = self.conv4(x, training=training, **kwargs)
-    x = self.batch_norm(x, training=training, **kwargs)
+    x = self.batch_norm4(x, training=training, **kwargs)
     x = self.dropout(x, training=training, **kwargs)
 
     x = self.avgpool(x, training=training, **kwargs)
