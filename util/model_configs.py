@@ -150,6 +150,17 @@ class CapsConfig(object):
     self.final_lambda = final_lambda
     self.iter_routing = iter_routing
 
+class ResnetConfig(object):
+  def __init__(self, **kwargs):
+    self.hidden_dim = kwargs.get('hidden_dim', 512)
+    self.pool_size = kwargs.get('pool_size', 3)
+    self.filters = kwargs.get('filters', [32, 32, 32, 32])
+    self.kernel_size = kwargs.get('kernel_size', [(3, 3), (3, 3), (3, 3), (3, 3)])
+    self.hidden_dropout_rate = kwargs.get('hidden_dropout_rate', 0.2)
+    self.input_dropout_rate = kwargs.get('input_dropout_rate', 0.0)
+    self.num_res_net_blocks = kwargs.get('num_res_net_blocks', 2)
+
+
 small_gpt = {
   'embedding_dim': 128,
   'resid_pdrop': 0.1,
@@ -751,6 +762,14 @@ vcnn_svhn5 = {'hidden_dim': [512, 512],
                'hidden_dropout_rate': 0.2,
                'input_dropout_rate': 0.0}
 
+rsnt_svhn1 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 2}
+
 caps_base = {'hidden_dim': 16,
                'routing': 3,
                'filters': 10,
@@ -841,5 +860,6 @@ MODEL_CONFIGS = {
   'vcnn_svhn2': vcnn_svhn2,
   'vcnn_svhn3': vcnn_svhn3,
   'vcnn_svhn4': vcnn_svhn4,
-  'vcnn_svhn5': vcnn_svhn5
+  'vcnn_svhn5': vcnn_svhn5,
+  'rsnt_svhn1': rsnt_svhn1
 }

@@ -100,14 +100,14 @@ svhn_adam_mid = {
 'learning_rate': 0.0005,
 'optimizer': 'adam',
 'hold_base_rate_steps': 1000,
-'num_train_epochs': 100
+'num_train_epochs': 100,
 }
 
 svhn_radam_mid = {
 'learning_rate': 0.0005,
 'optimizer': 'radam',
 'hold_base_rate_steps': 1000,
-'num_train_epochs': 100
+'num_train_epochs': 200
 }
 
 svhn_crs_slw = {
@@ -116,7 +116,8 @@ svhn_crs_slw = {
 'hold_base_rate_steps': 0,
 'num_train_epochs': 100,
 'decay_steps': 10000,
-'schedule': 'crs_slw'
+'schedule': 'crs_slw',
+'num_train_epochs': 200
 }
 
 TRAIN_PARAMS = {'radam_slw': radam_slw,
