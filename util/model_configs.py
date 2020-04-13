@@ -152,6 +152,7 @@ class CapsConfig(object):
 
 class ResnetConfig(object):
   def __init__(self, **kwargs):
+    self.output_dim =kwargs.get('output_dim', 1)
     self.hidden_dim = kwargs.get('hidden_dim', 512)
     self.pool_size = kwargs.get('pool_size', 3)
     self.filters = kwargs.get('filters', [32, 32, 32, 32])
