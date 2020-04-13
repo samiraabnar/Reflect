@@ -53,6 +53,9 @@ class Resnet(tf.keras.Model):
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.000000002)
+    self.create_layers()
+
+
   def create_layers(self):
     self.conv1 = tf.layers.Conv2D(self.hparams.filters[0], self.hparams.kernel_size[0],
                                   activation='relu',
