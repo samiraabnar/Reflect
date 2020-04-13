@@ -115,7 +115,7 @@ def get_model_params(task, config_name='', model_config='base'):
   elif 'caps' in config_name:
     return CapsConfig(output_dim=task.output_size(),
                       **model_cnfgs)
-  elif 'rsnt' in config_name:
+  elif 'resnet' in config_name:
     return ResnetConfig(output_dim=task.output_size(),
                       **model_cnfgs)
   else:
