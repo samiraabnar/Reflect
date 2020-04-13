@@ -3,7 +3,7 @@ import tensorflow as tf
 class ResnetBlock(tf.keras.layers.Layer):
   def __init__(self, filters, kernel_size, activation='relu',*inputs, **kwargs):
     super(ResnetBlock, self).__init__(*inputs, **kwargs)
-    self.filters = filters
+    self.filter = filters
     self.kernel_size = kernel_size
     self.activation = activation
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
@@ -19,12 +19,12 @@ class ResnetBlock(tf.keras.layers.Layer):
                                         padding='same',
                                         kernel_regularizer=self.regularizer)
     self.batch_norm1 = tf.keras.layers.BatchNormalization()
-    self.conv2 = tf.keras.Conv2D(self.filters, self.kernel_size,
+    self.conv2 = tf.keras.layers.Conv2D(self.filters, self.kernel_size,
                                  activation=None,
                                  padding='same',
                                  kernel_regularizer=self.regularizer)
     self.batch_norm2 = tf.keras.layers.BatchNormalization()
-    self.add = tf.keras.Add()
+    self.add = tf.keras.layers.Add()
     self.activation = tf.keras.Activation('relu')
 
   def call(self, inputs, training=None, **kwargs):
