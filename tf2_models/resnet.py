@@ -67,7 +67,7 @@ class Resnet(tf.keras.Model):
 
     self.resblocks = []
     for i in range(self.hparams.num_res_net_blocks):
-      self.resblocks.append[ResnetBlock(self.hparams.filters[2], self.hparams.kernel_size[2])]
+      self.resblocks.append(ResnetBlock(self.hparams.filters[2], self.hparams.kernel_size[2]))
 
     self.conv4 = tf.keras.layers.Conv2D(self.hparams.filters[3], self.hparams.kernel_size[3], activation='relu')
     self.avgpool = tf.keras.layers.GlobalAveragePooling2D()
