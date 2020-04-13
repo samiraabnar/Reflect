@@ -13,7 +13,7 @@ CUDA_VISIBLE_DEVICES=0 python mnist_trainer.py \
 --model_config=rsnt_svhn3 \
 --train_config=svhn_adam_mid \
 --batch_size=128 \
---exp_name=v25 > run1 &
+--exp_name=v1 > run1 &
 
 
 CUDA_VISIBLE_DEVICES=1 python mnist_trainer.py \
@@ -22,7 +22,7 @@ CUDA_VISIBLE_DEVICES=1 python mnist_trainer.py \
 --model_config=rsnt_svhn3 \
 --train_config=svhn_radam_mid \
 --batch_size=128 \
---exp_name=v26> run2 &
+--exp_name=v2 > run2 &
 
 CUDA_VISIBLE_DEVICES=2 python mnist_trainer.py \
 --model=resnet \
@@ -30,7 +30,7 @@ CUDA_VISIBLE_DEVICES=2 python mnist_trainer.py \
 --model_config=rsnt_svhn3 \
 --train_config=svhn_crs_slw \
 --batch_size=128 \
---exp_name=v27 > run3 &
+--exp_name=v3 > run3 &
 
 CUDA_VISIBLE_DEVICES=3 python mnist_trainer.py \
 --model=resnet \
@@ -38,38 +38,38 @@ CUDA_VISIBLE_DEVICES=3 python mnist_trainer.py \
 --model_config=rsnt_svhn3 \
 --train_config=crs_fst \
 --batch_size=128 \
---exp_name=v28 > run4 &
+--exp_name=v4 > run4 &
 
 CUDA_VISIBLE_DEVICES=4 python mnist_trainer.py \
 --model=resnet \
 --task=svhn \
---model_config=rsnt_svhn4 \
+--model_config=rsnt_svhn5 \
 --train_config=svhn_radam_mid \
 --batch_size=128 \
---exp_name=v29 > run5 &
+--exp_name=v5 > run5 &
 
 CUDA_VISIBLE_DEVICES=5 python mnist_trainer.py \
 --model=resnet \
 --task=svhn \
---model_config=rsnt_svhn4 \
+--model_config=rsnt_svhn5 \
 --train_config=svhn_adam_mid \
 --batch_size=128 \
---exp_name=v30 > run6 &
+--exp_name=v6 > run6 &
 
 CUDA_VISIBLE_DEVICES=6 python mnist_trainer.py \
 --model=resnet \
 --task=svhn \
---model_config=rsnt_svhn4 \
+--model_config=rsnt_svhn5 \
 --train_config=crs_fst \
 --batch_size=128 \
---exp_name=v31 > run7 &
+--exp_name=v7 > run7 &
 
 CUDA_VISIBLE_DEVICES=7 python mnist_trainer.py \
 --model=resnet \
 --task=svhn \
---model_config=rsnt_svhn4 \
+--model_config=rsnt_svhn5 \
 --train_config=svhn_crs_slw \
 --batch_size=128 \
---exp_name=v32 > run8 &
+--exp_name=v8 > run8 &
 
 wait

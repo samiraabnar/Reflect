@@ -61,13 +61,14 @@ class Resnet(tf.keras.Model):
     self.batch_norm2 = tf.keras.layers.BatchNormalization()
     self.batch_norm3 = tf.keras.layers.BatchNormalization()
     self.batch_norm4 = tf.keras.layers.BatchNormalization()
+    self.activation = tf.keras.layers.Activation('relu')
 
 
     self.conv1 = tf.keras.layers.Conv2D(self.hparams.filters[0], self.hparams.kernel_size[0],
-                                  activation='relu',
+                                  activation='None',
                                   kernel_regularizer=self.regularizer)
     self.conv2 = tf.keras.layers.Conv2D(self.hparams.filters[1], self.hparams.kernel_size[1],
-                                  activation='relu',
+                                  activation='None',
                                   kernel_regularizer=self.regularizer)
     self.pool2 = tf.keras.layers.MaxPooling2D(self.hparams.pool_size)
 
@@ -75,7 +76,8 @@ class Resnet(tf.keras.Model):
     for i in range(self.hparams.num_res_net_blocks):
       self.resblocks.append(ResnetBlock(self.hparams.filters[2], self.hparams.kernel_size[2]))
 
-    self.conv4 = tf.keras.layers.Conv2D(self.hparams.filters[3], self.hparams.kernel_size[3], activation='relu')
+    self.conv4 = tf.keras.layers.Conv2D(self.hparams.filters[3], self.hparams.kernel_size[3],
+                                        activation='None')
     self.avgpool = tf.keras.layers.GlobalAveragePooling2D()
     self.dense = tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu')
     self.dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
@@ -86,10 +88,12 @@ class Resnet(tf.keras.Model):
 
     x = self.conv1(x, training=training, **kwargs)
     x = self.batch_norm2(x, training=training, **kwargs)
+    x = self.activation(x)
     x = self.dropout(x, training=training, **kwargs)
 
     x = self.conv2(x, training=training, **kwargs)
     x = self.batch_norm3(x, training=training, **kwargs)
+    x = self.activation(x)
     x = self.dropout(x, training=training, **kwargs)
 
     x = self.pool2(x, training=training, **kwargs)
@@ -99,6 +103,7 @@ class Resnet(tf.keras.Model):
 
     x = self.conv4(x, training=training, **kwargs)
     x = self.batch_norm4(x, training=training, **kwargs)
+    x = self.activation(x)
     x = self.dropout(x, training=training, **kwargs)
 
     x = self.avgpool(x, training=training, **kwargs)
