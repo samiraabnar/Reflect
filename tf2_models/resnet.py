@@ -25,7 +25,7 @@ class ResnetBlock(tf.keras.layers.Layer):
                                  kernel_regularizer=self.regularizer)
     self.batch_norm2 = tf.keras.layers.BatchNormalization()
     self.add = tf.keras.layers.Add()
-    self.activation = tf.keras.Activation('relu')
+    self.activation = tf.keras.layers.Activation('relu')
 
   def call(self, inputs, training=None, **kwargs):
     outputs = self.conv1(inputs, training=training, **kwargs)
