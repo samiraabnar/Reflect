@@ -771,6 +771,22 @@ rsnt_svhn1 = {'hidden_dim': 512,
               'input_dropout_rate': 0.0,
               'num_res_net_blocks': 2}
 
+rsnt_svhn2 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.25,
+              'input_dropout_rate': 0.1,
+              'num_res_net_blocks': 2}
+
+rsnt_svhn3 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.25,
+              'input_dropout_rate': 0.1,
+              'num_res_net_blocks': 3}
+
 caps_base = {'hidden_dim': 16,
                'routing': 3,
                'filters': 10,
@@ -862,5 +878,7 @@ MODEL_CONFIGS = {
   'vcnn_svhn3': vcnn_svhn3,
   'vcnn_svhn4': vcnn_svhn4,
   'vcnn_svhn5': vcnn_svhn5,
-  'rsnt_svhn1': rsnt_svhn1
+  'rsnt_svhn1': rsnt_svhn1,
+  'rsnt_svhn2': rsnt_svhn2,
+  'rsnt_svhn3': rsnt_svhn3
 }
