@@ -80,7 +80,7 @@ class Resnet(tf.keras.Model):
     x = self.conv2(x, training=training, **kwargs)
     x = self.pool2(x, training=training, **kwargs)
     for i in range(self.hparams.num_res_net_blocks):
-      x = self.res_net_blocks[i](x, training=training, **kwargs)
+      x = self.resblocks[i](x, training=training, **kwargs)
     x = self.conv4(x, training=training, **kwargs)
     x = self.avgpool(x, training=training, **kwargs)
     x = self.dense(x, training=training, **kwargs)
