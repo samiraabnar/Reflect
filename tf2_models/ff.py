@@ -28,11 +28,15 @@ class VanillaFF(tf.keras.models.Sequential):
     self.add(tf.keras.layers.Dropout(self.hparams.input_dropout_rate))
 
     for i in np.arange(self.hparams.depth):
-      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim, activation='relu'))
+      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim,
+                                     activation='relu',
+                                     kernel_regularizer=self.regularizer),
+               )
       self.add(tf.keras.layers.BatchNormalization())
       self.add(tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate))
 
-    self.add(tf.keras.layers.Dense(self.hparams.output_dim))
+    self.add(tf.keras.layers.Dense(self.hparams.output_dim,
+                                   kernel_regularizer=self.regularizer))
 
   def call(self, inputs, padding_symbol=None, **kwargs):
     return super(VanillaFF, self).call(inputs, **kwargs)
