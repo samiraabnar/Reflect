@@ -47,7 +47,10 @@ hparams = flags.FLAGS
 
 
 def create_and_load_models():
-  cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+  if task.databuilder.sentence_encoder():
+    cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+  else:
+    cl_token = 0
   teacher_model = MODELS[hparams.teacher_model](
     hparams=get_model_params(task, hparams.teacher_model, hparams.teacher_config), cl_token=cl_token)
   student_model = MODELS[hparams.student_model](
