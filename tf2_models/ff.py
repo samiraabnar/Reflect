@@ -34,3 +34,6 @@ class VanillaFF(tf.keras.models.Sequential):
 
     self.add(tf.keras.layers.Dense(self.hparams.output_dim))
 
+  def call(self, inputs, padding_symbol=None, **kwargs):
+    super(VanillaFF, self).call(inputs, **kwargs)
+

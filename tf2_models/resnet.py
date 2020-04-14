@@ -83,7 +83,7 @@ class Resnet(tf.keras.Model):
     self.dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
     self.project = tf.keras.layers.Dense(self.hparams.output_dim, activation=None)
 
-  def call(self, inputs, training=None, **kwargs):
+  def call(self, inputs, training=None, padding_symbol=None, **kwargs):
     x = self.batch_norm1(inputs, training=training, **kwargs)
 
     x = self.conv1(x, training=training, **kwargs)
