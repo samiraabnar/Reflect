@@ -699,6 +699,11 @@ ff_mnist = {'hidden_dim': 256,
                    'hidden_dropout_rate': 0.5,
                    'input_dropout_rate': 0.2}
 
+ff_svhn = {'hidden_dim': 512,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.5,
+                   'input_dropout_rate': 0.0}
+
 vcnn_mnist = {'hidden_dim': [64],
                'depth': 3,
                'proj_depth': 1,
@@ -898,5 +903,6 @@ MODEL_CONFIGS = {
   'rsnt_svhn2': rsnt_svhn2,
   'rsnt_svhn3': rsnt_svhn3,
   'rsnt_svhn4': rsnt_svhn4,
-  'rsnt_svhn5': rsnt_svhn5
+  'rsnt_svhn5': rsnt_svhn5,
+  'ff_svhn': ff_svhn,
 }
