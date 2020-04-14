@@ -47,14 +47,14 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--train_config=crs_slw \
 #--batch_size=128 \
 #--exp_name=v5 > run4 &
-
-CUDA_VISIBLE_DEVICES=5 python mnist_trainer.py \
---model=cl_vff \
---task=svhn \
---model_config=ff_mnist \
---train_config=svhn_crs_slw \
---batch_size=128 \
---exp_name=v6 > run6
+#
+#CUDA_VISIBLE_DEVICES=5 python mnist_trainer.py \
+#--model=cl_vff \
+#--task=svhn \
+#--model_config=ff_mnist \
+#--train_config=svhn_crs_slw \
+#--batch_size=128 \
+#--exp_name=v6 > run6 &
 
 CUDA_VISIBLE_DEVICES=6 python mnist_trainer.py \
 --model=cl_vff \
@@ -62,7 +62,7 @@ CUDA_VISIBLE_DEVICES=6 python mnist_trainer.py \
 --model_config=ff_mnist \
 --train_config=svhn_adam_mid \
 --batch_size=128 \
---exp_name=v6 > run6
+--exp_name=v6 > run6 &
 
 CUDA_VISIBLE_DEVICES=7 python mnist_trainer.py \
 --model=cl_vff \
@@ -70,6 +70,6 @@ CUDA_VISIBLE_DEVICES=7 python mnist_trainer.py \
 --model_config=ff_mnist \
 --train_config=svhn_radam_mid \
 --batch_size=128 \
---exp_name=v7 > run7
+--exp_name=v7 > run7 &
 
 wait
