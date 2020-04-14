@@ -694,7 +694,7 @@ lstm2_big_drop30_v2 = {
   'initializer_range': 0.01
 }
 
-ff_mnist = {'hidden_dim': 128,
+ff_mnist = {'hidden_dim': 256,
                    'depth': 3,
                    'hidden_dropout_rate': 0.5,
                    'input_dropout_rate': 0.2}
