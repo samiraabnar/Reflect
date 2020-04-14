@@ -47,7 +47,7 @@ hparams = flags.FLAGS
 
 
 def create_and_load_models():
-  if task.databuilder.sentence_encoder():
+  if hasattr(task.databuilder, 'sentence_encoder'):
     cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
   else:
     cl_token = 0
