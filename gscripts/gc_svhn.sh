@@ -81,6 +81,7 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn1 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl5_4_crs_fst > o_run1 &
 
 
@@ -93,6 +94,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn1 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl_1 > o_run2 &
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
@@ -104,6 +106,7 @@ CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn1 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl_2 > o_run3 &
 
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py \
@@ -115,6 +118,7 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn1 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl_3 > o_run4 &
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
@@ -126,6 +130,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn1 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl_4 > o_run5 &
 
 CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
@@ -137,6 +142,7 @@ CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn1 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl_5 > o_run6 &
 
 CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py \
@@ -148,6 +154,7 @@ CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn1 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl_6 > o_run7 &
 
 CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py \
@@ -159,5 +166,6 @@ CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py \
 --teacher_config=ff_mnist \
 --student_config=rsnt_svhn5 \
 --distill_mode=online \
+--batch_size=128 \
 --distill_config=pure_dstl5_4_crs_fst > o_run8 &
 wait
