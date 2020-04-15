@@ -23,7 +23,6 @@ class VanillaFF(tf.keras.models.Sequential):
 
 
 
-  @tf.function
   def create_vars(self):
     self.flat = tf.keras.layers.Flatten()
     self.batch_norm = tf.keras.layers.BatchNormalization()
