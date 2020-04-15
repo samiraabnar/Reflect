@@ -141,6 +141,6 @@ class AffNist(tfds.core.GeneratorBasedBuilder):
     for image, label in zip(images, labels):
       example_id += 1
       yield example_id, {
-        "image": image[:,None],
+        "image": image[...,None],
         "label": label
       }
