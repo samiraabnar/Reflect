@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#SBATCH --job-name=fd_lm
+#SBATCH --time=20:00:00
+#SBATCH --partition=gpu_shared
+#SBATCH --gres=gpu:1
+#SBATCH --mem=60G
+
+module load 2019
+module load CUDA/10.0.130
+module load cuDNN/7.6.3-CUDA-10.0.130
+
+source ~/anaconda3/etc/profile.d/conda.sh
+conda init
+conda activate indist
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/sw/arch/Debian9/EB_production/2019/software/CUDA/10.0.130/extras/CUPTI/lib64/
+
+
+HEAD_DIR="/home/samigpu/Codes/InDist"
+CODE_DIR=$HEAD_DIR/
+DATA_DIR=$HEAD_DIR/data
+LOGS_DIR=$HEAD_DIR/logs
+
+export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
+
+# 130, 131,132 0.001_samira_offlineteacher_v11
+# 135, 136,137 0.001_samira_offlineteacher_v5
+
+
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/distill/distill_main.py \
+--task=word_sv_agreement_vp \
+--teacher_model=cl_lstm \
+--teacher_exp_name=0.001_samira_offlineteacher_v11 \
+--student_model=cl_lstm \
+--student_exp_name=lisa_fd130 \
+--teacher_config=small_lstm_v4 \
+--student_config=small_lstm_v4 \
+--distill_mode=offline \
+--distill_config=dstl_6_crs_slw

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#SBATCH --job-name=vp_gpt2
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --time=20:00:00
+#SBATCH --partition=gpu_shared
+#SBATCH --gres=gpu:1
+
+
+module load 2019
+module load CUDA/10.0.130
+module load cuDNN/7.6.3-CUDA-10.0.130
+
+source ~/anaconda3/etc/profile.d/conda.sh
+conda init
+conda activate indist
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/sw/arch/Debian9/EB_production/2019/software/CUDA/10.0.130/extras/CUPTI/lib64/
+
+HEAD_DIR="/home/samigpu/Codes/InDist"
+CODE_DIR=$HEAD_DIR/
+DATA_DIR=$HEAD_DIR/data
+LOGS_DIR=$HEAD_DIR/logs
+
+export PYTHONPATH=$PYTHONPATH:$HEAD_DIR
+
+CUDA_VISIBLE_DEVICES=0 python $CODE_DIR/keras_trainer.py \
+--model=cl_gpt2 \
+--task=word_sv_agreement_vp \
+--model_config=small_gpt_v9 \
+--train_config=crs_slw \
+--keep_checkpoint_every_n_hours=1 \
+--exp_name=lisa_crs_slw_offlineteacher_v20
