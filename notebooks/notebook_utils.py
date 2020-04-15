@@ -16,8 +16,8 @@ dependency_fields = ['sentence', 'orig_sentence', 'pos_sentence',
                      'max_depth', 'all_nouns', 'nouns_up_to_verb']
 
 
-def get_model(config, task, hparams, cl_token):
-    model = MODELS[config['model_name']](hparams=hparams, cl_token=cl_token)
+def get_model(config, task, hparams, cl_token, **kwargs):
+    model = MODELS[config['model_name']](hparams=hparams, cl_token=cl_token, **kwargs)
 
 
     ckpt_dir = os.path.join(config['chkpt_dir'],task.name,
