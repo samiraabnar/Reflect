@@ -98,7 +98,7 @@ class AffNistTask(Task):
     :return:
       #[batch_size, height, width, channels
     """
-    return [None, 28, 28, 1]
+    return [None, 32, 32, 1]
 
   def vocab_size(self):
     return 40*40
@@ -179,3 +179,14 @@ class Svhn(Mnist):
     super(Mnist, self).__init__(task_params=task_params, name=name,
                                 data_dir=data_dir,
                                 builder_cls=None)
+
+  def vocab_size(self):
+    return 32 * 32
+
+  def input_shape(self):
+    """
+      To be used when calling model.build(input_shape)
+    :return:
+      #[batch_size, height, width, channels
+    """
+    return [None, 32, 32, 1]
