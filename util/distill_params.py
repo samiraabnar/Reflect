@@ -666,22 +666,42 @@ rpdst_019_crs_slwfst_5 = {
 'schedule': 'crs_fst'
 }
 
-rpdst_00199_crs_slwfst_550 = {
+rpdst_00199_crs_slw_550 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 0.0,
 'student_gold_rate' : 0.01,
 'student_distill_rep_rate': 0.99,
-'student_learning_rate' : 0.001,
-'student_decay_steps' : 10000,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 100000,
+'student_decay_rate': 0.1,
 'student_hold_base_rate_steps' :  0,
 'student_warmup_steps' : 0,
-'student_optimizer' : 'radam',
+'student_optimizer' : 'adam',
 'teacher_learning_rate' : 0.0001,
 'teacher_decay_steps' : 10000,
 'teacher_warmup_steps' : 0.0,
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
-'schedule': 'exp'
+'schedule': 'crs_slw'
+}
+
+rpdst_00199_crs_fst_550 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 0.0,
+'student_gold_rate' : 0.01,
+'student_distill_rep_rate': 0.99,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 20000,
+'student_decay_rate': 0.1,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.0001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0.0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs_fst'
 }
 
 rpdst_019_crs_slwfst_51 = {
@@ -1446,7 +1466,8 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'rpdst_019_crs_slwfst_7': rpdst_019_crs_slwfst_7,
                   'rpdst_019_exp_sst14': rpdst_019_exp_sst14,
                   'rpdst_019_exp_sst15': rpdst_019_exp_sst15,
-                  'rpdst_00199_crs_slwfst_550': rpdst_00199_crs_slwfst_550,
+                  'rpdst_00199_crs_fst_550': rpdst_00199_crs_fst_550,
+                  'rpdst_00199_crs_slw_550': rpdst_00199_crs_slw_550,
                   'rpdst_019_crs_slwfst_25': rpdst_019_crs_slwfst_25,
                   'rpdst_019_exp_sst16': rpdst_019_exp_sst16,
                   'pure_dstl5_4_crs_fst': pure_dstl5_4_crs_fst,
