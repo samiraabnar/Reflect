@@ -23,21 +23,53 @@ class VanillaFF(tf.keras.models.Sequential):
 
 
   def create_vars(self):
-    self.add(tf.keras.layers.Flatten())
-    self.add(tf.keras.layers.BatchNormalization())
-    self.add(tf.keras.layers.Dropout(self.hparams.input_dropout_rate))
+    self.flat = tf.keras.layers.Flatten()
+    self.batch_norm = tf.keras.layers.BatchNormalization()
+    self.indrop = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
 
+    self.hidden_layers = []
+    self.hidden_batch_norms = []
+    self.hidden_dropouts = []
     for i in np.arange(self.hparams.depth):
-      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim,
+      self.hidden_layers.append(tf.keras.layers.Dense(self.hparams.hidden_dim,
                                      activation='relu',
-                                     kernel_regularizer=self.regularizer),
-               )
-      self.add(tf.keras.layers.BatchNormalization())
-      self.add(tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate))
+                                     kernel_regularizer=self.regularizer))
+      self.hidden_batch_norms.append(tf.keras.layers.BatchNormalization())
+      self.hidden_dropouts.append(tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate))
 
-    self.add(tf.keras.layers.Dense(self.hparams.output_dim,
-                                   kernel_regularizer=self.regularizer))
+    self.final_dense = tf.keras.layers.Dense(self.hparams.output_dim,
+                                   kernel_regularizer=self.regularizer)
 
   def call(self, inputs, padding_symbol=None, **kwargs):
-    return super(VanillaFF, self).call(inputs, **kwargs)
+    x = self.flat(inputs, **kwargs)
+    x = self.batch_norm(x, **kwargs)
+    x = self.indrop(x, **kwargs)
+
+    for i in np.arange(self.hparams.depth):
+      x = self.hidden_batch_norms[i](x, **kwargs)
+      x = self.hidden_batch_norms[i](x, **kwargs)
+      x = self.hidden_dropouts[i](x, **kwargs)
+
+    logits = self.final_dense(x, **kwargs)
+
+    return logits
+
+
+  def detailed_call(self, inputs, padding_symbol=None, **kwargs):
+    layer_activations = []
+    x = self.flat(inputs, **kwargs)
+    x = self.batch_norm(x, **kwargs)
+    x = self.indrop(x, **kwargs)
+    layer_activations.append(x)
+
+    for i in np.arange(self.hparams.depth):
+      x = self.hidden_batch_norms[i](x, **kwargs)
+      x = self.hidden_batch_norms[i](x, **kwargs)
+      x = self.hidden_dropouts[i](x, **kwargs)
+      layer_activations.append(x)
+
+    pnltimt = x
+    logits = self.final_dense(x, **kwargs)
+
+    return logits, pnltimt, layer_activations
 

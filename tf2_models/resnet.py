@@ -83,7 +83,7 @@ class Resnet(tf.keras.Model):
     self.dropout = tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate)
     self.project = tf.keras.layers.Dense(self.hparams.output_dim, activation=None)
 
-  def call(self, inputs, training=None, padding_symbol=None, **kwargs):
+  def call(self, inputs, padding_symbol=None, training=None, **kwargs):
     x = self.batch_norm1(inputs, training=training, **kwargs)
 
     x = self.conv1(x, training=training, **kwargs)
@@ -112,3 +112,44 @@ class Resnet(tf.keras.Model):
     outputs = self.project(x, training=training, **kwargs)
 
     return outputs
+
+
+  def detailed_call(self, inputs, padding_symbol=None, training=None, **kwargs):
+    self.layer_activations = []
+    x = self.batch_norm1(inputs, training=training, **kwargs)
+
+    x = self.conv1(x, training=training, **kwargs)
+    x = self.batch_norm2(x, training=training, **kwargs)
+    x = self.activation(x)
+    x = self.dropout(x, training=training, **kwargs)
+    self.layer_activations.append(x)
+
+    x = self.conv2(x, training=training, **kwargs)
+    x = self.batch_norm3(x, training=training, **kwargs)
+    x = self.activation(x)
+    x = self.dropout(x, training=training, **kwargs)
+    self.layer_activations.append(x)
+
+    x = self.pool2(x, training=training, **kwargs)
+
+
+    for i in range(self.hparams.num_res_net_blocks):
+      x = self.resblocks[i](x, training=training, **kwargs)
+      x = self.dropout(x, training=training, **kwargs)
+      self.layer_activations.append(x)
+
+    x = self.conv4(x, training=training, **kwargs)
+    x = self.batch_norm4(x, training=training, **kwargs)
+    x = self.activation(x)
+    x = self.dropout(x, training=training, **kwargs)
+    self.layer_activations.append(x)
+
+
+    x = self.avgpool(x, training=training, **kwargs)
+    x = self.dense(x, training=training, **kwargs)
+    x = self.dropout(x, training=training, **kwargs)
+    self.layer_activations.append(x)
+    pnltimt = x
+    outputs = self.project(x, training=training, **kwargs)
+
+    return outputs, pnltimt, self.layer_activations
