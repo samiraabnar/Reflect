@@ -133,7 +133,26 @@ pure_dstl5_4_crs_slw = {
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs_slw',
-'n_epochs': 120,
+'n_epochs': 300,
+}
+
+
+pure_dstl5_4_crs_slw_2 = {
+'distill_temp' : 5.0,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 100000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 1000,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.0001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs_slw',
+'n_epochs': 300,
 }
 
 pure_dstl5_4_crs_fst_2 = {
@@ -144,6 +163,7 @@ pure_dstl5_4_crs_fst_2 = {
 'student_decay_steps' : 1000,
 'student_hold_base_rate_steps' :  0,
 'student_warmup_steps' : 0,
+'student_decay_rate': 0.6,
 'student_optimizer' : 'adam',
 'teacher_learning_rate' : 0.0005,
 'teacher_decay_steps' : 10000,
@@ -151,7 +171,26 @@ pure_dstl5_4_crs_fst_2 = {
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs',
-'n_epochs': 120,
+'n_epochs': 300,
+}
+
+pure_dstl5_4_crs_fst_3 = {
+'distill_temp' : 5.0,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
+'student_learning_rate' : 0.0005,
+'student_decay_steps' : 1000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 1000,
+'student_decay_rate': 0.6,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.0005,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs',
+'n_epochs': 300,
 }
 
 pure_dstl5_4_crs_fst = {
@@ -169,7 +208,7 @@ pure_dstl5_4_crs_fst = {
 'teacher_hold_base_rate_steps' : 0,
 'teacher_optimizer' : 'radam',
 'schedule': 'crs',
-'n_epochs': 120,
+'n_epochs': 300,
 }
 
 pure_dstl_4_crs_slw = {
@@ -1396,5 +1435,7 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'rpdst_019_crs_slwfst_52': rpdst_019_crs_slwfst_52,
                   'rpdst_019_crs_slwfst_53': rpdst_019_crs_slwfst_53,
                   'pure_dstl5_4_crs_fst_2': pure_dstl5_4_crs_fst_2,
-                  'pure_dstl5_4_crs_slw': pure_dstl5_4_crs_slw
+                  'pure_dstl5_4_crs_fst_3': pure_dstl5_4_crs_fst_3,
+                  'pure_dstl5_4_crs_slw': pure_dstl5_4_crs_slw,
+                  'pure_dstl5_4_crs_slw_2': pure_dstl5_4_crs_slw_2
                   }
