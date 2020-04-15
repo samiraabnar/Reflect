@@ -1,6 +1,7 @@
 from tf2_models.capnet import Capsule
 from tf2_models.cnn import VanillaCNN
 from tf2_models.ff import VanillaFF
+from tf2_models.ff_resnet import FFResnet
 from tf2_models.lm_lstm import LmLSTM, LmLSTMSharedEmb, ClassifierLSTM, LmLSTMSharedEmbV2
 from tf2_models.lm_transformer import LmGPT2, LmGPT2SharedWeights, ClassifierGPT2, ClassifierGPT2SharedWeights, \
   ClassifierBERT, ClassifierBERTSharedWeights
@@ -20,4 +21,5 @@ MODELS = {"lm_lstm": LmLSTM,
           'cl_vff': VanillaFF,
           'cl_capsule': Capsule,
           'matrix_capsule': MatrixCaps,
-          'resnet': Resnet}
+          'resnet': Resnet,
+          'resnet_ff': FFResnet}
