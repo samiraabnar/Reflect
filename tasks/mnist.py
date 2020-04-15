@@ -190,3 +190,31 @@ class Svhn(Mnist):
       #[batch_size, height, width, channels
     """
     return [None, 32, 32, 1]
+
+
+
+  class Mnist40(Mnist):
+    def __init__(self, task_params, name='mnist', data_dir='mnist_data'):
+      self.databuilder = tfds.builder("mnist")
+      super(Mnist, self).__init__(task_params=task_params, name=name,
+                                  data_dir=data_dir,
+                                  builder_cls=None)
+
+    def vocab_size(self):
+      return 40 * 40
+
+    def output_size(self):
+      return 10
+
+    def input_shape(self):
+      """
+        To be used when calling model.build(input_shape)
+      :return:
+        #[batch_size, height, width, channels
+      """
+      return [None, 32, 32, 1]
+
+    def convert_examples(self, examples):
+      return tf.cast(examples['image'], dtype=tf.float32), tf.cast(
+        examples['label'], dtype=tf.int32)
+

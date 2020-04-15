@@ -109,7 +109,7 @@ class AffNist(tfds.core.GeneratorBasedBuilder):
       tfds.core.SplitGenerator(
         name=tfds.Split.TRAIN,
         gen_kwargs={
-          "input_file_path": os.path.join("../tmp/training_batches/*.mat"),
+          "input_file_path": os.path.join("../tmp/training_batches/1.mat"),
         },
       ),
       tfds.core.SplitGenerator(
