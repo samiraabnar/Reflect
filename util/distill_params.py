@@ -607,12 +607,12 @@ rpdst_019_crs_slwfst_5 = {
 'schedule': 'crs_fst'
 }
 
-rpdst_019_crs_slwfst_55 = {
+rpdst_00199_crs_slwfst_550 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 0.0,
-'student_gold_rate' : 0.1,
-'student_distill_rep_rate': 0.9,
-'student_learning_rate' : 0.0001,
+'student_gold_rate' : 0.01,
+'student_distill_rep_rate': 0.99,
+'student_learning_rate' : 0.001,
 'student_decay_steps' : 10000,
 'student_hold_base_rate_steps' :  0,
 'student_warmup_steps' : 0,
