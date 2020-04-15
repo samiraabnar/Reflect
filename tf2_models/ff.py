@@ -19,15 +19,15 @@ class VanillaFF(tf.keras.models.Sequential):
 
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.00001)
-    self.create_vars()
+    self.create_vars(**kwargs)
 
 
 
   @tf.function
-  def create_vars(self):
-    self.flat = tf.keras.layers.Flatten()
-    self.batch_norm = tf.keras.layers.BatchNormalization()
-    self.indrop = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
+  def create_vars(self, **kwargs):
+    self.flat = tf.keras.layers.Flatten(**kwargs)
+    self.batch_norm = tf.keras.layers.BatchNormalization(**kwargs)
+    self.indrop = tf.keras.layers.Dropout(self.hparams.input_dropout_rate, **kwargs)
 
     self.hidden_layers = []
     self.hidden_batch_norms = []
@@ -35,12 +35,12 @@ class VanillaFF(tf.keras.models.Sequential):
     for i in np.arange(self.hparams.depth):
       self.hidden_layers.append(tf.keras.layers.Dense(self.hparams.hidden_dim,
                                      activation='relu',
-                                     kernel_regularizer=self.regularizer))
-      self.hidden_batch_norms.append(tf.keras.layers.BatchNormalization())
-      self.hidden_dropouts.append(tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate))
+                                     kernel_regularizer=self.regularizer), **kwargs)
+      self.hidden_batch_norms.append(tf.keras.layers.BatchNormalization(), **kwargs)
+      self.hidden_dropouts.append(tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate), **kwargs)
 
     self.final_dense = tf.keras.layers.Dense(self.hparams.output_dim,
-                                   kernel_regularizer=self.regularizer)
+                                   kernel_regularizer=self.regularizer, **kwargs)
 
 
   def call(self, inputs, padding_symbol=None, **kwargs):
