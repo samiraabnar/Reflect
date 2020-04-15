@@ -703,7 +703,18 @@ ff_svhn = {'hidden_dim': 512,
                    'depth': 3,
                    'hidden_dropout_rate': 0.5,
                    'input_dropout_rate': 0.0}
+
 ff_svhn2 = {'hidden_dim': 512,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.2,
+                   'input_dropout_rate': 0.0}
+
+ff_svhn3 = {'hidden_dim': 256,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.2,
+                   'input_dropout_rate': 0.0}
+
+ff_svhn4 = {'hidden_dim': 128,
                    'depth': 3,
                    'hidden_dropout_rate': 0.2,
                    'input_dropout_rate': 0.0}
@@ -812,6 +823,30 @@ rsnt_svhn5 = {'hidden_dim': 128,
               'input_dropout_rate': 0.0,
               'num_res_net_blocks': 3}
 
+rsnt_mnist1 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 2}
+
+rsnt_mnist2 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 3}
+
+rsnt_mnist3 = {'hidden_dim': 128,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 3}
+
 caps_base = {'hidden_dim': 16,
                'routing': 3,
                'filters': 10,
@@ -909,5 +944,10 @@ MODEL_CONFIGS = {
   'rsnt_svhn4': rsnt_svhn4,
   'rsnt_svhn5': rsnt_svhn5,
   'ff_svhn': ff_svhn,
-  'ff_svhn2': ff_svhn2
-}
+  'ff_svhn2': ff_svhn2,
+  'ff_svhn3': ff_svhn3,
+  'ff_svhn4': ff_svhn4,
+  'rsnt_mnist1': rsnt_mnist1,
+  'rsnt_mnist2': rsnt_mnist2,
+  'rsnt_mnist3': rsnt_mnist3,
+  }
