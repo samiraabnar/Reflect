@@ -32,7 +32,7 @@ class VanillaFF(tf.keras.models.Sequential):
     self.hidden_layers = []
     self.hidden_batch_norms = []
     self.hidden_dropouts = []
-    for i in tf.range(self.hparams.depth):
+    for i in np.arange(self.hparams.depth):
       self.hidden_layers.append(tf.keras.layers.Dense(self.hparams.hidden_dim,
                                      activation='relu',
                                      kernel_regularizer=self.regularizer))
@@ -48,7 +48,7 @@ class VanillaFF(tf.keras.models.Sequential):
     x = self.batch_norm(x, **kwargs)
     x = self.indrop(x, **kwargs)
 
-    for i in tf.range(self.hparams.depth):
+    for i in np.arange(self.hparams.depth):
       x = self.hidden_layers[i](x, **kwargs)
       x = self.hidden_batch_norms[i](x, **kwargs)
       x = self.hidden_dropouts[i](x, **kwargs)
