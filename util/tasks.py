@@ -1,5 +1,5 @@
 from tasks.lm1b import Lm1B
-from tasks.mnist import Mnist, AffNistTask, Svhn
+from tasks.mnist import Mnist, AffNistTask, Svhn, Mnist40
 from tasks.smallnorb import SmallNorb
 from tasks.sst import ClassifySST2, LmSST2
 from tasks.sv_agreement import SvAgreementLM, WordSvAgreementLM, WordSvAgreementVP
@@ -16,5 +16,6 @@ TASKS = {
   'lm_sst2': LmSST2,
   'lm1b': Lm1B,
   'wikilm': WikiLM,
-  'svhn': Svhn
+  'svhn': Svhn,
+  'mnist40': Mnist40
 }
