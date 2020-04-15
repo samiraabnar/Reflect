@@ -20,6 +20,8 @@ class VanillaFF(tf.keras.models.Sequential):
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.00001)
     self.create_vars()
+    self.rep_index = 1
+    self.rep_layer = -1
 
 
 

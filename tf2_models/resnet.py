@@ -10,6 +10,8 @@ class ResnetBlock(tf.keras.layers.Layer):
                                                    l2=0.000000002)
 
     self.create_layer()
+    self.rep_index = 1
+    self.rep_layer = -1
 
 
 
