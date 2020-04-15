@@ -27,6 +27,7 @@ class VanillaFF(tf.keras.models.Sequential):
   def create_vars(self):
     self.flat = tf.keras.layers.Flatten()
     self.batch_norm = tf.keras.layers.BatchNormalization()
+    self.batch_norm.trainable = True
     self.indrop = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
 
     self.hidden_layers = []
@@ -37,6 +38,7 @@ class VanillaFF(tf.keras.models.Sequential):
                                      activation='relu',
                                      kernel_regularizer=self.regularizer))
       self.hidden_batch_norms.append(tf.keras.layers.BatchNormalization())
+      self.hidden_batch_norms[i].trainable = True
       self.hidden_dropouts.append(tf.keras.layers.Dropout(self.hparams.hidden_dropout_rate))
 
     self.final_dense = tf.keras.layers.Dense(self.hparams.output_dim,
