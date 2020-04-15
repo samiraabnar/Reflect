@@ -40,14 +40,14 @@ class Distiller(object):
           student_initial_learning_rate,
           first_decay_steps=self.distill_params.student_decay_steps,
           t_mul=5.0, #0.2
-          m_mul=self.hparams.student_decay_rate,
+          m_mul=self.distill_params.student_decay_rate,
           alpha=0.001,
         ))
     else:
       lr_schedule = ExponentialDecayWithWarmpUp(
         initial_learning_rate=student_initial_learning_rate,
         decay_steps=self.distill_params.student_decay_steps,
-        decay_rate=0.96,
+        decay_rate=self.distill_params.student_decay_rate,
         warmup_steps=self.distill_params.student_warmup_steps,
         hold_base_rate_steps=self.distill_params.student_hold_base_rate_steps)
     self.student_optimizer = OPTIMIZER_DIC[self.distill_params.student_optimizer](
