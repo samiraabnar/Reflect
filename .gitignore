@@ -16,3 +16,5 @@ tmp
 tf_ckpts
 tf_ckpts/*
 tacl*
+run*
+

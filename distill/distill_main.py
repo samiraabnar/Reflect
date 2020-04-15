@@ -41,13 +41,18 @@ flags.DEFINE_string('teacher_config', 'base', 'base | small_lstm ')
 
 flags.DEFINE_string('distill_mode', 'offline', 'offline | online | off_schdld | on_schdld')
 flags.DEFINE_string('keep_checkpoint_every_n_hours',None, 'keep_checkpoint_every_n_hours passed to training manager')
+flags.DEFINE_integer('batch_size', 64, 'batch_size')
+
 
 FLAGS(sys.argv)
 hparams = flags.FLAGS
 
 
 def create_and_load_models():
-  cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+  if hasattr(task.databuilder, 'sentence_encoder'):
+    cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
+  else:
+    cl_token = 0
   teacher_model = MODELS[hparams.teacher_model](
     hparams=get_model_params(task, hparams.teacher_model, hparams.teacher_config), cl_token=cl_token)
   student_model = MODELS[hparams.student_model](
@@ -74,7 +79,7 @@ DISTILLER = {'offline': Distiller,
 
 if __name__ == '__main__':
   # Create task
-  task = TASKS[hparams.task](get_task_params())
+  task = TASKS[hparams.task](get_task_params(batch_size=hparams.batch_size))
 
   # Create the Model
   teacher_model, student_model, \

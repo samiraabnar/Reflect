@@ -98,7 +98,7 @@ class AffNistTask(Task):
     :return:
       #[batch_size, height, width, channels
     """
-    return [None, 28, 28, 1]
+    return [None, 32, 32, 1]
 
   def vocab_size(self):
     return 40*40
@@ -127,7 +127,7 @@ class AffNistTask(Task):
     raise NotImplementedError
 
   def convert_examples(self, examples):
-    return tf.cast(examples['image'], dtype=tf.float32), tf.cast(examples['label'], dtype=tf.int32)
+    return tf.cast(examples['image'], dtype=tf.float32)/255, tf.cast(examples['label'], dtype=tf.int32)
 
 
   def setup_datasets(self):
@@ -171,3 +171,53 @@ class AffNistTask(Task):
       batch_size=self.task_params.batch_size)
     self.valid_dataset = self.valid_dataset.prefetch(
       tf.data.experimental.AUTOTUNE)
+
+
+class Svhn(Mnist):
+  def __init__(self, task_params, name='svhn', data_dir='mnist_data'):
+    self.databuilder = tfds.builder("svhn_cropped")
+    super(Mnist, self).__init__(task_params=task_params, name=name,
+                                data_dir=data_dir,
+                                builder_cls=None)
+
+  def vocab_size(self):
+    return 32 * 32
+
+  def input_shape(self):
+    """
+      To be used when calling model.build(input_shape)
+    :return:
+      #[batch_size, height, width, channels
+    """
+    return [None, 32, 32, 1]
+
+
+
+class Mnist40(Mnist):
+  def __init__(self, task_params, name='mnist40', data_dir='mnist_data'):
+    self.databuilder = tfds.builder("mnist")
+    super(Mnist, self).__init__(task_params=task_params, name=name,
+                                data_dir=data_dir,
+                                builder_cls=None)
+
+  def vocab_size(self):
+    return 40 * 40
+
+  def output_size(self):
+    return 10
+
+  def input_shape(self):
+    """
+      To be used when calling model.build(input_shape)
+    :return:
+      #[batch_size, height, width, channels
+    """
+    return [None, 32, 32, 1]
+
+  def convert_examples(self, examples):
+    pad_length = int((40 - 28) / 2)
+    return tf.pad(tf.cast(examples['image'], dtype=tf.float32) / 255,
+                  ([pad_length, pad_length], [pad_length, pad_length],
+                   [0, 0])), tf.cast(
+      examples['label'], dtype=tf.int32)
+

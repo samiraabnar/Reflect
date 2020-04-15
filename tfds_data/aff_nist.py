@@ -82,8 +82,8 @@ class AffNist(tfds.core.GeneratorBasedBuilder):
       description=("This is the AFFnist dataset"),
       # tfds.features.FeatureConnectors
       features=tfds.features.FeaturesDict({
-        "image": tfds.features.Image(shape=MNIST_IMAGE_SHAPE),
-        "label": tfds.features.ClassLabel(num_classes=MNIST_NUM_CLASSES),
+        "image": tfds.features.Image(shape=(40, 40, 1)),
+        "label": tfds.features.ClassLabel(num_classes=10),
       }),
 
       # If there's a common (input, target) tuple from the features,
@@ -115,13 +115,13 @@ class AffNist(tfds.core.GeneratorBasedBuilder):
       tfds.core.SplitGenerator(
         name=tfds.Split.VALIDATION,
         gen_kwargs={
-          "input_file_path": os.path.join("../tmp/test_batches/1.mat"),
+          "input_file_path": os.path.join("../tmp/validation.mat"),
         },
       ),
       tfds.core.SplitGenerator(
         name=tfds.Split.TEST,
         gen_kwargs={
-          "input_file_path": os.path.join("../tmp/test_batches/1.mat"),
+          "input_file_path": os.path.join("../tmp/test.mat"),
         },
       ),
     ]
@@ -132,15 +132,17 @@ class AffNist(tfds.core.GeneratorBasedBuilder):
     :param input_file_path:
     :return: example
     """
-    print(input_file_path)
-    # Read the input data out of the source files
-    images, labels = load_affNIST(input_file_path)
-    print(images.shape)
-    # And yield examples as feature dictionaries
-    example_id = 0
-    for image, label in zip(images, labels):
-      example_id += 1
-      yield example_id, {
-        "image": image,
-        "label": label
-      }
+    for name in tf.io.gfile.glob(input_file_path):
+
+      print(name)
+      # Read the input data out of the source files
+      images, labels = load_affNIST(input_file_path)
+      print(images.shape)
+      # And yield examples as feature dictionaries
+      example_id = 0
+      for image, label in zip(images, labels):
+        example_id += 1
+        yield example_id, {
+          "image": image[...,None],
+          "label": label
+        }

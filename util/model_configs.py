@@ -150,6 +150,18 @@ class CapsConfig(object):
     self.final_lambda = final_lambda
     self.iter_routing = iter_routing
 
+class ResnetConfig(object):
+  def __init__(self, **kwargs):
+    self.output_dim =kwargs.get('output_dim', 1)
+    self.hidden_dim = kwargs.get('hidden_dim', 512)
+    self.pool_size = kwargs.get('pool_size', 3)
+    self.filters = kwargs.get('filters', [32, 32, 32, 32])
+    self.kernel_size = kwargs.get('kernel_size', [(3, 3), (3, 3), (3, 3), (3, 3)])
+    self.hidden_dropout_rate = kwargs.get('hidden_dropout_rate', 0.2)
+    self.input_dropout_rate = kwargs.get('input_dropout_rate', 0.0)
+    self.num_res_net_blocks = kwargs.get('num_res_net_blocks', 2)
+
+
 small_gpt = {
   'embedding_dim': 128,
   'resid_pdrop': 0.1,
@@ -391,6 +403,15 @@ small_lstm_v5 = {
   'depth': 2,
   'hidden_dropout_rate': 0.6,
   'input_dropout_rate': 0.2,
+  'initializer_range': 0.1
+}
+
+small_lstm_v6 = {
+  'hidden_dim': 256,
+  'embedding_dim': 256,
+  'depth': 2,
+  'hidden_dropout_rate': 0.8,
+  'input_dropout_rate': 0.25,
   'initializer_range': 0.1
 }
 
@@ -673,10 +694,30 @@ lstm2_big_drop30_v2 = {
   'initializer_range': 0.01
 }
 
-ff_mnist = {'hidden_dim': 128,
+ff_mnist = {'hidden_dim': 256,
                    'depth': 3,
                    'hidden_dropout_rate': 0.5,
                    'input_dropout_rate': 0.2}
+
+ff_svhn = {'hidden_dim': 512,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.5,
+                   'input_dropout_rate': 0.0}
+
+ff_svhn2 = {'hidden_dim': 512,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.2,
+                   'input_dropout_rate': 0.0}
+
+ff_svhn3 = {'hidden_dim': 256,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.2,
+                   'input_dropout_rate': 0.0}
+
+ff_svhn4 = {'hidden_dim': 128,
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.2,
+                   'input_dropout_rate': 0.0}
 
 vcnn_mnist = {'hidden_dim': [64],
                'depth': 3,
@@ -687,15 +728,124 @@ vcnn_mnist = {'hidden_dim': [64],
                'hidden_dropout_rate': 0.5,
                'input_dropout_rate': 0.2}
 
-vcnn_lenet5 = {'hidden_dim': [120, 84],
+vcnn_lenet5 = {'hidden_dim': [128, 128],
                'depth': 2,
                'proj_depth': 2,
-               'filters': [6, 16],
+               'filters': [16, 16],
                'kernel_size': [(3,3), (3,3), (3,3)],
                'pool_size': [(2,2), (2,2), (2,2)],
-               'hidden_dropout_rate': 0.5,
-               'input_dropout_rate': 0.2}
+               'hidden_dropout_rate': 0.8,
+               'input_dropout_rate': 0.25}
 
+
+vcnn_svhn1 = {'hidden_dim': [256, 256],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32, 32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.0}
+
+vcnn_svhn2 = {'hidden_dim': [256, 256],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32,32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.1,
+               'input_dropout_rate': 0.0}
+
+vcnn_svhn3 = {'hidden_dim': [256, 256],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32,32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.1}
+
+vcnn_svhn4 = {'hidden_dim': [256, 256],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32,32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.1,
+               'input_dropout_rate': 0.1}
+
+vcnn_svhn5 = {'hidden_dim': [512, 512],
+               'depth': 3,
+               'proj_depth': 2,
+               'filters': [32, 32, 32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(2,2), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.0}
+
+rsnt_svhn1 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 2}
+
+rsnt_svhn2 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.25,
+              'input_dropout_rate': 0.1,
+              'num_res_net_blocks': 2}
+
+rsnt_svhn3 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.5,
+              'input_dropout_rate': 0.2,
+              'num_res_net_blocks': 3}
+
+rsnt_svhn4 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.4,
+              'input_dropout_rate': 0.1,
+              'num_res_net_blocks': 3}
+
+rsnt_svhn5 = {'hidden_dim': 128,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.3,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 3}
+
+rsnt_mnist1 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 2}
+
+rsnt_mnist2 = {'hidden_dim': 512,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 3}
+
+rsnt_mnist3 = {'hidden_dim': 128,
+              'pool_size': 3,
+              'filters': [32, 32, 32, 32],
+              'kernel_size': [(3,3), (3,3), (3,3), (3,3)],
+              'hidden_dropout_rate': 0.2,
+              'input_dropout_rate': 0.0,
+              'num_res_net_blocks': 3}
 
 caps_base = {'hidden_dim': 16,
                'routing': 3,
@@ -781,5 +931,23 @@ MODEL_CONFIGS = {
   'vcnn_lenet5': vcnn_lenet5,
   'caps_base': caps_base,
   'biglstm_drop31_v3': biglstm_drop31_v3,
-  'mat_caps_base': mat_caps_base
-}
+  'mat_caps_base': mat_caps_base,
+  'small_lstm_v6': small_lstm_v6,
+  'vcnn_svhn1': vcnn_svhn1,
+  'vcnn_svhn2': vcnn_svhn2,
+  'vcnn_svhn3': vcnn_svhn3,
+  'vcnn_svhn4': vcnn_svhn4,
+  'vcnn_svhn5': vcnn_svhn5,
+  'rsnt_svhn1': rsnt_svhn1,
+  'rsnt_svhn2': rsnt_svhn2,
+  'rsnt_svhn3': rsnt_svhn3,
+  'rsnt_svhn4': rsnt_svhn4,
+  'rsnt_svhn5': rsnt_svhn5,
+  'ff_svhn': ff_svhn,
+  'ff_svhn2': ff_svhn2,
+  'ff_svhn3': ff_svhn3,
+  'ff_svhn4': ff_svhn4,
+  'rsnt_mnist1': rsnt_mnist1,
+  'rsnt_mnist2': rsnt_mnist2,
+  'rsnt_mnist3': rsnt_mnist3,
+  }
