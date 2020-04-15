@@ -109,7 +109,7 @@ class AffNist(tfds.core.GeneratorBasedBuilder):
       tfds.core.SplitGenerator(
         name=tfds.Split.TRAIN,
         gen_kwargs={
-          "input_file_path": os.path.join("../tmp/training.mat"),
+          "input_file_path": os.path.join("../tmp/training_batches/1.mat"),
         },
       ),
       tfds.core.SplitGenerator(
@@ -132,15 +132,17 @@ class AffNist(tfds.core.GeneratorBasedBuilder):
     :param input_file_path:
     :return: example
     """
-    print(input_file_path)
-    # Read the input data out of the source files
-    images, labels = load_affNIST(input_file_path)
-    print(images.shape)
-    # And yield examples as feature dictionaries
-    example_id = 0
-    for image, label in zip(images, labels):
-      example_id += 1
-      yield example_id, {
-        "image": image[...,None],
-        "label": label
-      }
+    for name in tf.io.gfile.glob(input_file_path):
+
+      print(name)
+      # Read the input data out of the source files
+      images, labels = load_affNIST(input_file_path)
+      print(images.shape)
+      # And yield examples as feature dictionaries
+      example_id = 0
+      for image, label in zip(images, labels):
+        example_id += 1
+        yield example_id, {
+          "image": image[...,None],
+          "label": label
+        }
