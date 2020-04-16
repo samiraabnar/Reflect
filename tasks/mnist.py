@@ -41,7 +41,7 @@ class Mnist(Task):
     raise NotImplementedError
 
   def convert_examples(self, examples):
-    return tf.cast(examples['image'], dtype=tf.float32), tf.cast(examples['label'], dtype=tf.int32)
+    return tf.cast(examples['image'], dtype=tf.float32)/255, tf.cast(examples['label'], dtype=tf.int32)
 
   def setup_datasets(self):
     self.info = self.databuilder.info
