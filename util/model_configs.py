@@ -721,7 +721,7 @@ ff_mnist4 = {'hidden_dim': [512, 128, 32],
 
 ff_mnist5 = {'hidden_dim': [512, 512, 64, 32],
                    'depth': 4,
-                   'hidden_dropout_rate': 02,
+                   'hidden_dropout_rate': 0.2,
                    'input_dropout_rate': 0.0}
 
 ff_svhn = {'hidden_dim': 512,
