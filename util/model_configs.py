@@ -973,5 +973,6 @@ MODEL_CONFIGS = {
   'rsnt_mnist3': rsnt_mnist3,
   'ff_mnist1': ff_mnist1,
   'ff_mnist2': ff_mnist2,
-  'ff_mnist3': ff_mnist3
+  'ff_mnist3': ff_mnist3,
+  'ff_mnist4': ff_mnist4
   }
