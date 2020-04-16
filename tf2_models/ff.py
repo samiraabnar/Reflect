@@ -17,7 +17,7 @@ class VanillaFF(tf.keras.models.Sequential):
                                 'hdrop-' + str(self.hparams.hidden_dropout_rate),
                                 'indrop-' + str(self.hparams.input_dropout_rate)])
 
-    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
+    self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00001,
                                                    l2=0.00001)
     self.create_vars()
     self.rep_index = 1
@@ -27,16 +27,17 @@ class VanillaFF(tf.keras.models.Sequential):
 
   def create_vars(self):
     self.flat = tf.keras.layers.Flatten()
-    self.batch_norm = tf.keras.layers.BatchNormalization()
-    self.batch_norm.trainable = True
+    # self.batch_norm = tf.keras.layers.BatchNormalization()
+    # self.batch_norm.trainable = True
     self.indrop = tf.keras.layers.Dropout(self.hparams.input_dropout_rate)
+    self.activation = tf.keras.layers.Activation('relu')
 
     self.hidden_layers = []
     self.hidden_batch_norms = []
     self.hidden_dropouts = []
     for i in np.arange(self.hparams.depth):
       self.hidden_layers.append(tf.keras.layers.Dense(self.hparams.hidden_dim[i],
-                                     activation='relu',
+                                     activation=None, #'relu',
                                      kernel_regularizer=self.regularizer))
       self.hidden_batch_norms.append(tf.keras.layers.BatchNormalization())
       self.hidden_batch_norms[i].trainable = True
@@ -48,11 +49,12 @@ class VanillaFF(tf.keras.models.Sequential):
 
   def call(self, inputs, padding_symbol=None, training=None, **kwargs):
     x = self.flat(inputs, **kwargs)
-    x = self.batch_norm(x, training=training, **kwargs)
+    # x = self.batch_norm(x, training=training, **kwargs)
     x = self.indrop(x, training=training, **kwargs)
 
     for i in np.arange(self.hparams.depth):
       x = self.hidden_layers[i](x, training=training, **kwargs)
+      x = self.activation(x)
       x = self.hidden_batch_norms[i](x, training=training, **kwargs)
       x = self.hidden_dropouts[i](x, training=training, **kwargs)
 
