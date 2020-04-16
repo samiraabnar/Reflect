@@ -699,6 +699,27 @@ ff_mnist = {'hidden_dim': 256,
                    'hidden_dropout_rate': 0.5,
                    'input_dropout_rate': 0.2}
 
+ff_mnist1 = {'hidden_dim': [512, 256, 128],
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.3,
+                   'input_dropout_rate': 0.0}
+
+ff_mnist2 = {'hidden_dim': [1024, 256, 64],
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.3,
+                   'input_dropout_rate': 0.0}
+
+ff_mnist3 = {'hidden_dim': [512, 128, 64],
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.3,
+                   'input_dropout_rate': 0.0}
+
+ff_mnist4 = {'hidden_dim': [512, 128, 32],
+                   'depth': 3,
+                   'hidden_dropout_rate': 0.1,
+                   'input_dropout_rate': 0.0}
+
+
 ff_svhn = {'hidden_dim': 512,
                    'depth': 3,
                    'hidden_dropout_rate': 0.5,
@@ -950,4 +971,7 @@ MODEL_CONFIGS = {
   'rsnt_mnist1': rsnt_mnist1,
   'rsnt_mnist2': rsnt_mnist2,
   'rsnt_mnist3': rsnt_mnist3,
+  'ff_mnist1': ff_mnist1,
+  'ff_mnist2': ff_mnist2,
+  'ff_mnist3': ff_mnist3
   }
