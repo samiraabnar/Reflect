@@ -66,14 +66,14 @@ class VanillaFF(tf.keras.models.Sequential):
   def detailed_call(self, inputs, padding_symbol=None, training=None, **kwargs):
     layer_activations = []
     x = self.flat(inputs, **kwargs)
-    x = self.batch_norm(x, training=training, **kwargs)
     x = self.indrop(x, training=None, **kwargs)
     layer_activations.append(x)
 
     for i in np.arange(self.hparams.depth):
-      x = self.hidden_layers[i](x, training=None, **kwargs)
-      x = self.hidden_batch_norms[i](x, training=None, **kwargs)
-      x = self.hidden_dropouts[i](x, training=None, **kwargs)
+      x = self.hidden_layers[i](x, training=training, **kwargs)
+      x = self.activation(x)
+      x = self.hidden_batch_norms[i](x, training=training, **kwargs)
+      x = self.hidden_dropouts[i](x, training=training, **kwargs)
       layer_activations.append(x)
 
     pnltimt = x
