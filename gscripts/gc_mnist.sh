@@ -72,11 +72,85 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--batch_size=128 \
 #--exp_name=v8 > run7 &
 
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=resnet \
+#--student_model=cl_vff \
+#--student_exp_name=gc_f_std100 \
+#--teacher_exp_name=gc_o_dtchr100 \
+#--teacher_config=rsnt_mnist1 \
+#--student_config=ff_mnist4 \
+#--distill_mode=offline \
+#--batch_size=128 \
+#--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
+#
+#
+#CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=resnet \
+#--student_model=cl_vff \
+#--student_exp_name=gc_f_std101 \
+#--teacher_exp_name=gc_o_dtchr101 \
+#--teacher_config=rsnt_mnist1 \
+#--student_config=ff_mnist4 \
+#--distill_mode=offline \
+#--batch_size=128 \
+#--distill_config=pure_dstl5_4_crs_slw_2 > o_run2 &
+#
+#CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=resnet \
+#--student_model=cl_vff \
+#--student_exp_name=gc_f_std102 \
+#--teacher_exp_name=gc_o_dtchr102 \
+#--teacher_config=rsnt_mnist1 \
+#--student_config=ff_mnist4 \
+#--distill_mode=offline \
+#--batch_size=128 \
+#--distill_config=pure_dstl2_4_crs_slw_3 > o_run3 &
+#
+#CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=resnet \
+#--student_model=cl_vff \
+#--student_exp_name=gc_o_std104 \
+#--teacher_exp_name=gc_o_dtchr104 \
+#--teacher_config=rsnt_mnist3 \
+#--student_config=ff_mnist4 \
+#--distill_mode=online \
+#--batch_size=128 \
+#--distill_config=pure_dst2_4_crs_slw_3 > o_run4 &
+#
+#CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=cl_vff \
+#--student_model=cl_vff \
+#--student_exp_name=gc_o_std202 \
+#--teacher_exp_name=gc_o_tchr202 \
+#--teacher_config=ff_mnist4 \
+#--student_config=ff_mnist4 \
+#--distill_mode=online \
+#--batch_size=128 \
+#--distill_config=pure_dstl2_4_crs_slw_3 > o_run5 &
+#
+#CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=cl_vff \
+#--student_model=resnet \
+#--student_exp_name=gc_o_std201 \
+#--teacher_exp_name=gc_o_dtchr201 \
+#--teacher_config=ff_mnist4 \
+#--student_config=rsnt_mnist1 \
+#--distill_mode=online \
+#--batch_size=128 \
+#--distill_config=pure_dstl2_4_crs_slw_3 > o_run6 &
+
+
 CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=resnet \
 --student_model=cl_vff \
---student_exp_name=gc_f_std100 \
+--student_exp_name=gc_f_std110 \
 --teacher_exp_name=gc_o_dtchr100 \
 --teacher_config=rsnt_mnist1 \
 --student_config=ff_mnist4 \
@@ -84,66 +158,66 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
 --batch_size=128 \
 --distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
 
-
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=resnet \
 --student_model=cl_vff \
---student_exp_name=gc_f_std101 \
+--student_exp_name=gc_f_std111 \
 --teacher_exp_name=gc_o_dtchr101 \
 --teacher_config=rsnt_mnist1 \
 --student_config=ff_mnist4 \
 --distill_mode=offline \
 --batch_size=128 \
---distill_config=pure_dstl5_4_crs_slw_2 > o_run2 &
+--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=resnet \
 --student_model=cl_vff \
---student_exp_name=gc_f_std102 \
+--student_exp_name=gc_f_std112 \
 --teacher_exp_name=gc_o_dtchr102 \
 --teacher_config=rsnt_mnist1 \
 --student_config=ff_mnist4 \
 --distill_mode=offline \
 --batch_size=128 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run3 &
+--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
+
 
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py \
 --task=mnist \
---teacher_model=resnet \
+--teacher_model=cl_vff \
 --student_model=cl_vff \
---student_exp_name=gc_o_std104 \
---teacher_exp_name=gc_o_dtchr104 \
---teacher_config=rsnt_mnist3 \
+--student_exp_name=gc_o_std210 \
+--teacher_exp_name=gc_o_dtchr210 \
+--teacher_config=ff_mnist4 \
 --student_config=ff_mnist4 \
 --distill_mode=online \
 --batch_size=128 \
---distill_config=pure_dst2_4_crs_slw_3 > o_run4 &
+--distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=cl_vff \
 --student_model=cl_vff \
---student_exp_name=gc_o_std202 \
---teacher_exp_name=gc_o_tchr202 \
+--student_exp_name=gc_o_std211 \
+--teacher_exp_name=gc_o_dtchr211 \
 --teacher_config=ff_mnist4 \
 --student_config=ff_mnist4 \
 --distill_mode=online \
 --batch_size=128 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run5 &
+--distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
 
 CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=cl_vff \
---student_model=resnet \
---student_exp_name=gc_o_std201 \
---teacher_exp_name=gc_o_dtchr201 \
+--student_model=cl_vff \
+--student_exp_name=gc_o_std212 \
+--teacher_exp_name=gc_o_dtchr212 \
 --teacher_config=ff_mnist4 \
---student_config=rsnt_mnist1 \
+--student_config=ff_mnist4 \
 --distill_mode=online \
 --batch_size=128 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run6 &
+--distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
 
 
 wait
