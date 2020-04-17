@@ -229,7 +229,7 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
 --student_config=ff_mnist4 \
 --distill_mode=offline \
 --batch_size=128 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
+--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
 --task=mnist \
@@ -241,7 +241,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
 --student_config=ff_mnist4 \
 --distill_mode=offline \
 --batch_size=128 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
+--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
 --task=mnist \
@@ -253,7 +253,7 @@ CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
 --student_config=ff_mnist4 \
 --distill_mode=offline \
 --batch_size=128 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
+--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
 
 
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py \
