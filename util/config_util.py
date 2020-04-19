@@ -102,6 +102,7 @@ def get_task_params(**kwargs):
 def get_model_params(task, config_name='', model_config='base'):
   print("model config:", model_config)
   if model_config in MODEL_CONFIGS:
+    print(model_config)
     model_cnfgs = MODEL_CONFIGS.get(model_config)
   else:
     model_cnfgs = MODEL_CONFIGS.get('base')
@@ -119,6 +120,7 @@ def get_model_params(task, config_name='', model_config='base'):
     return ResnetConfig(output_dim=task.output_size(),
                       **model_cnfgs)
   else:
+    print(model_cnfgs)
     return ModelConfig(input_dim=task.vocab_size(),
                        output_dim=task.output_size(),**model_cnfgs)
 
