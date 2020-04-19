@@ -47,3 +47,7 @@ class VanillaCNN(tf.keras.models.Sequential):
 
     self.add(tf.keras.layers.Dense(self.hparams.output_dim,
                                    kernel_regularizer=self.regularizer))
+
+
+    def call(inputs, padding_symbol=None, **kwargs):
+      super(VanillaCNN, self).call(inputs, **kwargs)
