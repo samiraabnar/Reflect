@@ -10,7 +10,8 @@ class VanillaCNN(tf.keras.models.Sequential):
     self.scope = scope
 
     self.model_name = '_'.join([self.scope,
-                                'h-' + '.'.join([str(h) for h in self.hparams.hidden_dim]),
+                                'hc-' + '.'.join([str(h) for h in self.hparams.hidden_dim]),
+                                'hfc-' + '.'.join([str(h) for h in self.hparams.fc_dim]),
                                 'd-' + str(self.hparams.depth),
                                 'hdrop-' + str(self.hparams.hidden_dropout_rate),
                                 'indrop-' + str(self.hparams.input_dropout_rate)])
@@ -26,17 +27,18 @@ class VanillaCNN(tf.keras.models.Sequential):
 
     for i in np.arange(self.hparams.depth):
       self.add(tf.keras.layers.Conv2D(self.hparams.filters[i], self.hparams.kernel_size[i],
-                                      activation='relu',
+                                      activation=None,
                                       kernel_regularizer=self.regularizer))
       self.add(tf.keras.layers.BatchNormalization())
+      self.add(tf.keras.layers.Actication('relu'))
       self.add(tf.keras.layers.MaxPooling2D(self.hparams.pool_size[i]))
       self.add(tf.keras.layers.Dropout(rate=self.hparams.hidden_dropout_rate))
-
     self.add(tf.keras.layers.Flatten())
 
-    for i in np.arange(self.hparams.proj_depth):
-      self.add(tf.keras.layers.Dense(self.hparams.hidden_dim[i], activation='relu',
+    for i in np.arange(self.hparams.fc_depth):
+      self.add(tf.keras.layers.Dense(self.hparams.fc_dim[i], activation='relu',
                                      kernel_regularizer=self.regularizer))
+
 
     self.add(tf.keras.layers.Dense(self.hparams.output_dim,
                                    kernel_regularizer=self.regularizer))
