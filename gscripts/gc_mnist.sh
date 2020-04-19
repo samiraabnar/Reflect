@@ -301,16 +301,16 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
 --batch_size=128 \
 --distill_config=pure_dstl2_4_crs_slw_3 > o_run5 &
 
-CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
---task=mnist \
---teacher_model=cl_vcnn \
---student_model=cl_vcnn \
---student_exp_name=gc_o_std17 \
---teacher_exp_name=gc_o_tchr17 \
---teacher_config=vcnn_mnist7 \
---student_config=vcnn_mnist7 \
---distill_mode=online \
---batch_size=128 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run6 &
+#CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=cl_vcnn \
+#--student_model=cl_vcnn \
+#--student_exp_name=gc_o_std17 \
+#--teacher_exp_name=gc_o_tchr17 \
+#--teacher_config=vcnn_mnist7 \
+#--student_config=vcnn_mnist7 \
+#--distill_mode=online \
+#--batch_size=128 \
+#--distill_config=pure_dstl2_4_crs_slw_3 > o_run6 &
 
 wait
