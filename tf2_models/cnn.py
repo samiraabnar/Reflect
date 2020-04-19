@@ -35,7 +35,7 @@ class VanillaCNN(tf.keras.models.Sequential):
       self.add(tf.keras.layers.Dropout(rate=self.hparams.hidden_dropout_rate))
     self.add(tf.keras.layers.Flatten())
 
-    for i in np.arange(self.hparams.fc_depth):
+    for i in np.arange(self.hparams.proj_depth):
       self.add(tf.keras.layers.Dense(self.hparams.fc_dim[i], activation='relu',
                                      kernel_regularizer=self.regularizer))
 
