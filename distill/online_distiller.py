@@ -43,11 +43,11 @@ class OnlineDistiller(Distiller):
     self.teacher_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
                                             optimizer=self.teacher_optimizer,
                                             net=self.teacher_model)
-    self.teacher_manager = tf.train.CheckpointManager(self.teacher_ckpt, teacher_ckpt_dir, max_to_keep=2)
+    self.teacher_manager = tf.train.CheckpointManager(self.teacher_ckpt, teacher_ckpt_dir, max_to_keep=self.hparams.max_checkpoints)
     self.student_ckpt = tf.train.Checkpoint(step=tf.Variable(1),
                                             optimizer=self.student_optimizer,
                                             net=self.student_model)
-    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=2)
+    self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir, max_to_keep=self.hparams.max_checkpoints)
 
     # Init summary
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
@@ -167,7 +167,7 @@ class OnlineDistiller(Distiller):
 
     with self.summary_writer.as_default():
       num_epochs = self.distill_params.n_epochs
-      for _ in tf.range(num_epochs):
+      for epoch in tf.range(num_epochs):
         epoch_loop()
 
         teacher_eval_results = self.teacher_model.evaluate(self.task.valid_dataset,
@@ -185,8 +185,14 @@ class OnlineDistiller(Distiller):
           for i, m_name in enumerate(self.student_model.metrics_names):
             tf.summary.scalar(m_name, student_eval_results[i])
 
-        self.save_student()
-        self.save_teacher()
+        if self.hparams.keep_some_checkpoints:
+          if int(np.sqrt(epoch)) == int(np.sqrt(epoch)) * int(np.sqrt(epoch)):
+            self.save_student()
+            self.save_teacher()
+        else:
+          self.save_student()
+          self.save_teacher()
+
 
   def save_teacher(self):
     self.teacher_ckpt.step.assign_add(1)

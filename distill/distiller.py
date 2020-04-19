@@ -63,7 +63,7 @@ class Distiller(object):
                                             net=self.student_model)
     self.student_manager = tf.train.CheckpointManager(self.student_ckpt, student_ckpt_dir,
                                                       keep_checkpoint_every_n_hours=self.hparams.keep_checkpoint_every_n_hours,
-                                                      max_to_keep=self.hparams.max_checkpoint)
+                                                      max_to_keep=self.hparams.max_checkpoints)
 
     # Init summary
     student_summary_dir = os.path.join(student_log_dir, 'summaries')
@@ -196,6 +196,8 @@ class Distiller(object):
         if self.hparams.keep_some_checkpoints:
           if int(np.sqrt(epoch)) == int(np.sqrt(epoch)) * int(np.sqrt(epoch)):
             self.save_student()
+        else:
+          self.save_student()
 
 
 
