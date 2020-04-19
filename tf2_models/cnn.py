@@ -41,6 +41,8 @@ class VanillaCNN(tf.keras.models.Model):
     self.regularizer = tf.keras.regularizers.l1_l2(l1=0.00,
                                                    l2=0.000000002)
     self.create_vars()
+    self.rep_index = 1
+    self.rep_layer = -1
 
   def create_vars(self):
 

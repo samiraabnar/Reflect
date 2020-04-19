@@ -72,7 +72,7 @@ class VanillaFF(tf.keras.models.Sequential):
     for i in np.arange(self.hparams.depth):
       x = self.hidden_layers[i](x, training=training, **kwargs)
       x = self.activation(x)
-      #x = self.hidden_batch_norms[i](x, training=training, **kwargs)
+      x = self.hidden_batch_norms[i](x, training=training, **kwargs)
       x = self.hidden_dropouts[i](x, training=training, **kwargs)
       layer_activations.append(x)
 
