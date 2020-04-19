@@ -86,7 +86,7 @@ class Resnet(tf.keras.Model):
     self.project = tf.keras.layers.Dense(self.hparams.output_dim, activation=None)
 
   def call(self, inputs, padding_symbol=None, training=None, **kwargs):
-    x = self.batch_norm1(inputs, training=training, **kwargs)
+    x = inputs  #self.batch_norm1(inputs, training=training, **kwargs)
 
     x = self.conv1(x, training=training, **kwargs)
     x = self.batch_norm2(x, training=training, **kwargs)
