@@ -23,7 +23,7 @@ class VanillaCNN(tf.keras.models.Sequential):
   def create_vars(self):
 
     self.add(tf.keras.layers.Dropout(rate=self.hparams.input_dropout_rate))
-    self.add(tf.keras.layers.BatchNormalization())
+    #self.add(tf.keras.layers.BatchNormalization())
 
     for i in np.arange(self.hparams.depth):
       self.add(tf.keras.layers.Conv2D(self.hparams.filters[i], self.hparams.kernel_size[i],
@@ -33,11 +33,16 @@ class VanillaCNN(tf.keras.models.Sequential):
       self.add(tf.keras.layers.Activation('relu'))
       self.add(tf.keras.layers.MaxPooling2D(self.hparams.pool_size[i]))
       self.add(tf.keras.layers.Dropout(rate=self.hparams.hidden_dropout_rate))
+
     self.add(tf.keras.layers.Flatten())
 
     for i in np.arange(self.hparams.proj_depth):
-      self.add(tf.keras.layers.Dense(self.hparams.fc_dim[i], activation='relu',
+      self.add(tf.keras.layers.Dense(self.hparams.fc_dim[i], activation=None,
                                      kernel_regularizer=self.regularizer))
+      self.add(tf.keras.layers.BatchNormalization())
+      self.add(tf.keras.layers.Activation('relu'))
+
+
 
 
     self.add(tf.keras.layers.Dense(self.hparams.output_dim,
