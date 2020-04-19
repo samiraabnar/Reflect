@@ -30,7 +30,7 @@ class VanillaCNN(tf.keras.models.Sequential):
                                       activation=None,
                                       kernel_regularizer=self.regularizer))
       self.add(tf.keras.layers.BatchNormalization())
-      self.add(tf.keras.layers.Actication('relu'))
+      self.add(tf.keras.layers.Activation('relu'))
       self.add(tf.keras.layers.MaxPooling2D(self.hparams.pool_size[i]))
       self.add(tf.keras.layers.Dropout(rate=self.hparams.hidden_dropout_rate))
     self.add(tf.keras.layers.Flatten())
