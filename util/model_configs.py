@@ -9,6 +9,7 @@ class ModelConfig(object):
                input_dropout_rate=0.2,
                initializer_range=None,
                filters=[32],
+               maxout_size=[32],
                kernel_size=[(3,3)],
                pool_size=[(2,2)],
                proj_depth=1,
@@ -27,6 +28,7 @@ class ModelConfig(object):
     self.initializer_range = initializer_range
     self.kernel_size = kernel_size
     self.filters = filters
+    self.maxout_size = maxout_size
     self.pool_size = pool_size
     self.output_hidden_states = kwargs.pop('output_hidden_states', False)
     self.output_embeddings = kwargs.pop('output_embeddings', False)
@@ -745,36 +747,94 @@ ff_svhn4 = {'hidden_dim': 128,
                    'hidden_dropout_rate': 0.2,
                    'input_dropout_rate': 0.0}
 
-vcnn_mnist1 = {'hidden_dim': [32, 32, 32],
-              'fc_dim': [128, 128],
-               'depth': 2,
-               'proj_depth': 2,
-               'filters': [32, 32, 32],
+vcnn_mnist1 = {
+               'fc_dim': [128],
+               'depth': 3,
+               'proj_depth': 1,
+               'filters': [128, 64, 32],
+               'maxout_size': [128, 64, 32],
                'kernel_size': [(3,3), (3,3), (3,3)],
-               'pool_size': [(2,2), (2,2), (2,2)],
+               'pool_size': [(1,1), (2,2), (2,2)],
                'hidden_dropout_rate': 0.2,
-               'input_dropout_rate': 0.1}
+               'input_dropout_rate': 0.1,
+              }
 
-vcnn_mnist2 = {'hidden_dim': [64, 64, 64],
+vcnn_mnist2 = {
               'fc_dim': [128, 128],
                'depth': 2,
                'proj_depth': 2,
-               'filters': [32, 32, 32],
+               'filters': [64, 64, 64],
+               'maxout_size': [64, 64, 64],
                'kernel_size': [(3,3), (3,3), (3,3)],
                'pool_size': [(2,2), (2,2), (2,2)],
                'hidden_dropout_rate': 0.3,
                'input_dropout_rate': 0.1}
 
-vcnn_mnist3 = {'hidden_dim': [64, 32, 32],
-              'fc_dim': [128, 128],
-               'depth': 2,
-               'proj_depth': 2,
-               'filters': [32, 32, 32],
+vcnn_mnist3 = {
+               'fc_dim': [],
+               'depth': 3,
+               'proj_depth': 0,
+               'filters': [128, 64, 32],
+               'maxout_size': [128, 64, 32],
                'kernel_size': [(3,3), (3,3), (3,3)],
-               'pool_size': [(2,2), (2,2), (2,2)],
+               'pool_size': [(1,1), (2,2), (2,2)],
                'hidden_dropout_rate': 0.2,
                'input_dropout_rate': 0.1}
 
+vcnn_mnist4 = {
+               'fc_dim': [128],
+               'depth': 3,
+               'proj_depth': 1,
+               'filters': [128, 64, 32],
+               'maxout_size': [128, 64, 32],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(1,1), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.0}
+
+vcnn_mnist5 = {
+               'fc_dim': [],
+               'depth': 3,
+               'proj_depth': 0,
+               'filters': [128, 64, 64],
+               'maxout_size': [128, 64, 16],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(1,1), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.0}
+
+vcnn_mnist6 = {
+               'fc_dim': [],
+               'depth': 3,
+               'proj_depth': 0,
+               'filters': [128, 64, 64],
+               'maxout_size': [128, 64, 8],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(1,1), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.2,
+               'input_dropout_rate': 0.0}
+
+vcnn_mnist7 = {
+               'fc_dim': [],
+               'depth': 3,
+               'proj_depth': 0,
+               'filters': [128, 64, 64],
+               'maxout_size': [128, 64, 16],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(1,1), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.3,
+               'input_dropout_rate': 0.0}
+
+vcnn_mnist8 = {
+               'fc_dim': [],
+               'depth': 3,
+               'proj_depth': 0,
+               'filters': [128, 64, 64],
+               'maxout_size': [128, 64, 8],
+               'kernel_size': [(3,3), (3,3), (3,3)],
+               'pool_size': [(1,1), (2,2), (2,2)],
+               'hidden_dropout_rate': 0.3,
+               'input_dropout_rate': 0.0}
 
 vcnn_lenet5 = {'hidden_dim': [128, 128],
                'depth': 2,
