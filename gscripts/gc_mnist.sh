@@ -235,12 +235,27 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--distill_config=pure_dstl5_4_crs_slw_3 > o_run6 &
 
 
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
+#--task=mnist \
+#--teacher_model=cl_vcnn \
+#--student_model=cl_vcnn \
+#--student_exp_name=gc_f_std18 \
+#--teacher_exp_name=gc_o_tchr18 \
+#--teacher_config=vcnn_mnist7 \
+#--student_config=vcnn_mnist7 \
+#--distill_mode=offline \
+#--batch_size=128 \
+#--keep_some_checkpoints=True \
+#--max_checkpoints=15 \
+#--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
+
+
 CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=cl_vcnn \
 --student_model=cl_vcnn \
---student_exp_name=gc_f_std18 \
---teacher_exp_name=gc_o_tchr18 \
+--student_exp_name=gc_f_std16 \
+--teacher_exp_name=gc_o_tchr16 \
 --teacher_config=vcnn_mnist7 \
 --student_config=vcnn_mnist7 \
 --distill_mode=offline \
@@ -248,71 +263,42 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py \
 --keep_some_checkpoints=True \
 --max_checkpoints=15 \
 --distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
-
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=cl_vcnn \
 --student_model=cl_vcnn \
---student_exp_name=gc_o_std16 \
---teacher_exp_name=gc_o_tchr16 \
---teacher_config=vcnn_mnist7 \
---student_config=vcnn_mnist7 \
---distill_mode=online \
---batch_size=128 \
---keep_some_checkpoints=True \
---max_checkpoints=15 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
-
-CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
---task=mnist \
---teacher_model=cl_vcnn \
---student_model=cl_vcnn \
---student_exp_name=gc_o_std15 \
+--student_exp_name=gc_f_std15 \
 --teacher_exp_name=gc_o_tchr15 \
 --teacher_config=vcnn_mnist7 \
 --student_config=vcnn_mnist7 \
---distill_mode=online \
+--distill_mode=offline \
 --batch_size=128 \
-#--keep_some_checkpoints=True \
-#--max_checkpoints=15 \
---distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
+--keep_some_checkpoints=True \
+--max_checkpoints=15 \
+--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
+
+
+CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
+--task=mnist \
+--teacher_model=cl_vff \
+--student_model=cl_vcnn \
+--student_exp_name=gc_f_std102 \
+--teacher_exp_name=gc_o_tchr102 \
+--teacher_config=ff_mnist4 \
+--student_config=vcnn_mnist7 \
+--distill_mode=offline \
+--batch_size=128 \
+--keep_some_checkpoints=True \
+--max_checkpoints=15 \
+--distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
 
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=cl_vff \
 --student_model=cl_vcnn \
---student_exp_name=gc_f_std100 \
---teacher_exp_name=gc_o_dtchr100 \
---teacher_config=ff_mnist4 \
---student_config=vcnn_mnist7 \
---distill_mode=offline \
---batch_size=128 \
---keep_some_checkpoints=True \
---max_checkpoints=15 \
---distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
-
-CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
---task=mnist \
---teacher_model=cl_vff \
---student_model=cl_vcnn \
---student_exp_name=gc_f_std101 \
---teacher_exp_name=gc_o_tchr101 \
---teacher_config=ff_mnist4 \
---student_config=vcnn_mnist7 \
---distill_mode=offline \
---batch_size=128 \
---keep_some_checkpoints=True \
---max_checkpoints=15 \
---distill_config=pure_dstl5_4_crs_slw_3 > o_run1 &
-
-
-CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
---task=mnist \
---teacher_model=cl_vff \
---student_model=cl_vcnn \
---student_exp_name=gc_o_std102 \
---teacher_exp_name=gc_o_tchr102 \
+--student_exp_name=gc_o_std103 \
+--teacher_exp_name=gc_o_tchr103 \
 --teacher_config=ff_mnist4 \
 --student_config=vcnn_mnist7 \
 --distill_mode=online \
@@ -320,20 +306,20 @@ CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py \
 --keep_some_checkpoints=True \
 --max_checkpoints=15 \
 --distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
-#
-#CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
-#--task=mnist \
-#--teacher_model=cl_vff \
-#--student_model=cl_vcnn \
-#--student_exp_name=gc_o_std103 \
-#--teacher_exp_name=gc_o_tchr103 \
-#--teacher_config=ff_mnist4 \
-#--student_config=vcnn_mnist7 \
-#--distill_mode=online \
-#--batch_size=128 \
-#--keep_some_checkpoints=True \
-#--max_checkpoints=15 \
-#--distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
 
+
+CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py \
+--task=mnist \
+--teacher_model=cl_vcnn \
+--student_model=cl_vff \
+--student_exp_name=gc_o_std1000 \
+--teacher_exp_name=gc_o_dtchr1000 \
+--teacher_config=vcnn_mnist7 \
+--student_config=ff_mnist4 \
+--distill_mode=online \
+--batch_size=128 \
+--keep_some_checkpoints=True \
+--max_checkpoints=15 \
+--distill_config=pure_dstl2_4_crs_slw_3 > o_run1 &
 
 wait
