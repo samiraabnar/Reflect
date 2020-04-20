@@ -194,7 +194,7 @@ class Distiller(object):
         summarize(teacher_eval_results, student_eval_results)
 
         if self.hparams.keep_some_checkpoints:
-          if int(np.sqrt(epoch)) == int(np.sqrt(epoch)) * int(np.sqrt(epoch)):
+          if epoch & (epoch-1) == 0 or epoch == (self.distill_params.n_epochs - 1):
             self.save_student()
         else:
           self.save_student()

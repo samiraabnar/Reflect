@@ -186,7 +186,8 @@ class OnlineDistiller(Distiller):
             tf.summary.scalar(m_name, student_eval_results[i])
 
         if self.hparams.keep_some_checkpoints:
-          if int(np.sqrt(epoch)) == int(np.sqrt(epoch)) * int(np.sqrt(epoch)):
+          if epoch & (epoch - 1) == 0 or epoch == (
+                  self.distill_params.n_epochs - 1):
             self.save_student()
             self.save_teacher()
         else:
