@@ -193,8 +193,9 @@ class Distiller(object):
                                                            steps=self.task.n_valid_batches)
         summarize(teacher_eval_results, student_eval_results)
 
+        pow2 = [0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
         if self.hparams.keep_some_checkpoints:
-          if ((epoch & (epoch-1)) == 0) or (epoch == (self.distill_params.n_epochs - 1)):
+          if (epoch in pow2) or (epoch == (self.distill_params.n_epochs - 1)):
             self.save_student()
         else:
           self.save_student()

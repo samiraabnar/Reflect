@@ -185,8 +185,9 @@ class OnlineDistiller(Distiller):
           for i, m_name in enumerate(self.student_model.metrics_names):
             tf.summary.scalar(m_name, student_eval_results[i])
 
+        pow2 = [0,1,2,4,8,16,32,64,128,256,512]
         if self.hparams.keep_some_checkpoints:
-          if ((epoch & (epoch-1)) == 0) or (epoch == (self.distill_params.n_epochs - 1)):
+          if (epoch in pow2) or (epoch == (self.distill_params.n_epochs - 1)):
             self.save_student()
             self.save_teacher()
         else:
