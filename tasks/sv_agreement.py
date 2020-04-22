@@ -85,7 +85,7 @@ class WordSvAgreementVP(Task):
 
     sentences = tf.concat([sentences, eos], axis=-1)
 
-    verb_position = examples['verb_position']+1  #+1 because of adding bos.
+    verb_position = examples['verb_position']
 
     # The verb it self is also masked
     mask = tf.cast(tf.sequence_mask(verb_position,maxlen=tf.shape(sentences)[0]), dtype=tf.int64)
