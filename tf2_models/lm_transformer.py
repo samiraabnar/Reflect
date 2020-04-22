@@ -239,11 +239,14 @@ class ClassifierBERT(tf.keras.Model):
   def call_with_embeddings(self, input_embeddings, input_shape, padding_mask, past , **kwargs):
 
 
-    outputs = self.transformer.call_with_embeddings(input_embeddings=input_embeddings,
+    transformer_outputs = self.transformer.call_with_embeddings(input_embeddings=input_embeddings,
                                                     input_shape=input_shape, padding_mask=padding_mask,
                                                     past=past, **kwargs)
-    return outputs
+    hidden_states = transformer_outputs[0][:, 0]
+    cl_logits = self.e2c(hidden_states)
+    return cl_logits, hidden_states
 
+    
 class ClassifierBERTSharedWeights(ClassifierBERT):
   def __init__(self, hparams, scope='cl_bert_shared', *inputs, **kwargs):
     super(ClassifierBERTSharedWeights, self).__init__(hparams, scope=scope, *inputs, **kwargs)
