@@ -14,7 +14,7 @@ def get_adjmat(mat, input_tokens):
 
     for i in np.arange(1,n_layers+1):
         for k_f in np.arange(length):
-            index_from = i*length+k_f
+            index_from = (i)*length+k_f
             label = "L"+str(i)+"_"+str(k_f)
             labels_to_index[label] = index_from
             for k_t in np.arange(length):
