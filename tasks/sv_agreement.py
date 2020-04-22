@@ -80,10 +80,10 @@ class WordSvAgreementVP(Task):
   @tf.function
   def convert_examples(self, examples):
     sentences = examples['sentence']
-    bos = self.databuilder.sentence_encoder().encode(constants.bos)
+    #bos = self.databuilder.sentence_encoder().encode(constants.bos)
     eos = self.databuilder.sentence_encoder().encode(constants.eos)
 
-    sentences = tf.concat([bos, sentences, eos], axis=-1)
+    sentences = tf.concat([sentences, eos], axis=-1)
 
     verb_position = examples['verb_position']+1  #+1 because of adding bos.
 

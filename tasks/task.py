@@ -11,6 +11,7 @@ class Task(object):
     self.data_dir = data_dir
     self.builder_cls = builder_cls
     self.num_replicas_in_sync = num_replicas_in_sync
+    self.add_cls = True
     if builder_cls:
       self.databuilder = self.builder_cls(data_dir=self.data_dir)
 
