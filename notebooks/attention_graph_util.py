@@ -88,11 +88,11 @@ def compute_flows(G, labels_to_index, input_nodes, length):
 def compute_node_flow(G, labels_to_index, input_nodes, output_nodes,length):
     number_of_nodes = len(labels_to_index)
     flow_values=np.zeros((number_of_nodes,number_of_nodes))
-    for key in output_nodes:
-        if key not in input_nodes:
-            current_layer = int(labels_to_index[key] / length)
+    for o_key in output_nodes:
+        if o_key not in input_nodes:
+            current_layer = int(labels_to_index[o_key] / length)
             pre_layer = current_layer - 1
-            u = labels_to_index[key]
+            u = labels_to_index[o_key]
             for inp_node_key in input_nodes:
                 v = labels_to_index[inp_node_key]
                 flow_value = nx.maximum_flow_value(G,u,v, flow_func=nx.algorithms.flow.edmonds_karp)
