@@ -11,33 +11,33 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_lstm \
---student_exp_name=gc_o_std11 \
+--student_exp_name=gc_f_std11 \
 --teacher_exp_name=gc_o_tchr11 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_lstm_v4 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl5_4_crs_slw > run0 &
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_lstm \
---student_exp_name=gc_o_std12 \
+--student_exp_name=gc_f_std12 \
 --teacher_exp_name=gc_o_tchr12 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_lstm_v4 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl_4_crs_slw > run1 &
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_lstm \
---student_exp_name=gc_o_std13 \
+--student_exp_name=gc_f_std13 \
 --teacher_exp_name=gc_o_tchr13 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_lstm_v4 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl_4_crs_fst > run2 &
 
 
@@ -45,11 +45,11 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_lstm \
---student_exp_name=gc_o_std14 \
+--student_exp_name=gc_f_std14 \
 --teacher_exp_name=gc_o_tchr14 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_lstm_v4 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl5_4_crs_fst > run3 &
 
 
@@ -57,33 +57,33 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_gpt2_shared \
---student_exp_name=gc_o_std15 \
+--student_exp_name=gc_f_std15 \
 --teacher_exp_name=gc_o_tchr15 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_lstm_v4 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl5_4_crs_slw > run4 &
 
 CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_gpt2_shared \
---student_exp_name=gc_o_std16 \
+--student_exp_name=gc_f_std16 \
 --teacher_exp_name=gc_o_tchr16 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl_4_crs_slw > run5 &
 
 CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_gpt2_shared \
---student_exp_name=gc_o_std17 \
+--student_exp_name=gc_f_std17 \
 --teacher_exp_name=gc_o_tchr17 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl_4_crs_fst > run6 &
 
 
@@ -91,9 +91,9 @@ CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_gpt2_shared \
---student_exp_name=gc_o_std18 \
+--student_exp_name=gc_f_std18 \
 --teacher_exp_name=gc_o_tchr18 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
---distill_mode=online \
+--distill_mode=offline \
 --distill_config=pure_dstl5_4_crs_fst > run7 &
