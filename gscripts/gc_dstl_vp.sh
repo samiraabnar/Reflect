@@ -7,16 +7,16 @@ cd ~/Codes/InDist
 export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 
 
-CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
---task=word_sv_agreement_vp \
---teacher_model=cl_bert \
---student_model=cl_gpt2_shared \
---student_exp_name=gc_o_std104 \
---teacher_exp_name=gc_o_tchr104 \
---teacher_config=small_gpt_v9 \
---student_config=small_gpt_v9 \
---distill_mode=online \
---distill_config=pure_dstl_4_crs_slw > run0 &
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_bert \
+#--student_model=cl_gpt2_shared \
+#--student_exp_name=gc_f_std104 \
+#--teacher_exp_name=gc_o_tchr104 \
+#--teacher_config=small_gpt_v9 \
+#--student_config=small_gpt_v9 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_slw > run0 &
 #
 #CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 #--task=word_sv_agreement_vp \
@@ -66,10 +66,10 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
---teacher_model=cl_bert_shared \
+--teacher_model=cl_gpt2_shared \
 --student_model=cl_bert \
---student_exp_name=gc_f_std126 \
---teacher_exp_name=gc_o_tchr126 \
+--student_exp_name=gc_f_std132 \
+--teacher_exp_name=gc_o_tchr132 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
 --distill_mode=offline \
@@ -77,10 +77,10 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
 --task=word_sv_agreement_vp \
---teacher_model=cl_bert_shared \
+--teacher_model=cl_gpt2_shared \
 --student_model=cl_bert \
---student_exp_name=gc_f_std127 \
---teacher_exp_name=gc_o_tchr127 \
+--student_exp_name=gc_f_std133 \
+--teacher_exp_name=gc_o_tchr133 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
 --distill_mode=offline \
@@ -89,10 +89,10 @@ CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py \
 
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
---teacher_model=cl_bert_shared \
+--teacher_model=cl_gpt2_shared \
 --student_model=cl_bert \
---student_exp_name=gc_f_std128 \
---teacher_exp_name=gc_o_tchr128 \
+--student_exp_name=gc_f_std134 \
+--teacher_exp_name=gc_o_tchr134 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
 --distill_mode=offline \
@@ -100,36 +100,36 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
---teacher_model=cl_bert_shared \
+--teacher_model=cl_gpt2_shared \
 --student_model=cl_bert \
---student_exp_name=gc_f_std129 \
---teacher_exp_name=gc_o_tchr129 \
+--student_exp_name=gc_f_std135 \
+--teacher_exp_name=gc_o_tchr135 \
 --teacher_config=small_gpt_v9 \
 --student_config=small_gpt_v9 \
 --distill_mode=offline \
 --distill_config=pure_dstl_4_crs_slw > run8 &
 
 
-CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
---task=word_sv_agreement_vp \
---teacher_model=cl_lstm \
---student_model=cl_lstm \
---student_exp_name=gc_o_std130 \
---teacher_exp_name=gc_o_tchr130 \
---teacher_config=small_lstm_v4 \
---student_config=small_lstm_v4 \
---distill_mode=online \
---distill_config=pure_dstl_4_crs_slw > run3 &
-#
 #CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
 #--task=word_sv_agreement_vp \
 #--teacher_model=cl_lstm \
 #--student_model=cl_lstm \
-#--student_exp_name=gc_f_std125 \
-#--teacher_exp_name=gc_o_tchr125 \
+#--student_exp_name=gc_o_std130 \
+#--teacher_exp_name=gc_o_tchr130 \
 #--teacher_config=small_lstm_v4 \
 #--student_config=small_lstm_v4 \
-#--distill_mode=offline \
+#--distill_mode=online \
+#--distill_config=pure_dstl_4_crs_slw > run3 &
+##
+#CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_lstm \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_o_std131 \
+#--teacher_exp_name=gc_o_tchr131 \
+#--teacher_config=small_lstm_v4 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=online \
 #--distill_config=pure_dstl_4_crs_slw > run4 &
 
 wait
