@@ -56,29 +56,29 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--distill_config=pure_dstl_4_crs_fst3 > o_run0 &
 #
 #
-##Transformer to Transformer
-#CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
-#--task=word_sv_agreement_lm \
-#--teacher_model=lm_gpt2 \
-#--student_model=lm_gpt2 \
-#--student_exp_name=gc_o_std17 \
-#--teacher_exp_name=gc_o_tchr17 \
-#--teacher_config=very_big_gpt_v10 \
-#--student_config=very_big_gpt_v10 \
-#--distill_mode=online \
-#--distill_config=pure_dstl_4_adamfst > o_run0 &
-
-
-CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
+#Transformer to Transformer
+CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
 --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
 --student_model=lm_gpt2 \
---student_exp_name=gc_o_std18 \
---teacher_exp_name=gc_o_tchr18 \
---teacher_config=big_gpt_v5 \
---student_config=big_gpt_v5 \
+--student_exp_name=gc_o_std17 \
+--teacher_exp_name=gc_o_tchr17 \
+--teacher_config=very_big_gpt_v10 \
+--student_config=very_big_gpt_v10 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_fst3 > o_run0 &
+--distill_config=pure_dstl_4_adamfst > o_run0 &
+
+
+#CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_gpt2 \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_o_std18 \
+#--teacher_exp_name=gc_o_tchr18 \
+#--teacher_config=big_gpt_v5 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=online \
+#--distill_config=pure_dstl_4_crs_fst3 > o_run0 &
 
 
 wait
