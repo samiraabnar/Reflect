@@ -171,6 +171,43 @@ pure_dstl_4_crs_fst3 = {
 }
 
 
+schdl1_dstl_4_crs_fst3 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
+'student_learning_rate' : 0.001,
+'student_decay_steps' : 1000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs',
+'distill_schedule': 'exp'
+}
+
+schdl2_dstl_4_crs_fst3 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
+'student_learning_rate' : 0.001,
+'student_decay_steps' : 1000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 0,
+'teacher_hold_base_rate_steps' : 0,
+'teacher_optimizer' : 'radam',
+'schedule': 'crs',
+'distill_schedule': 'crs'
+}
+
+
 pure_dstl_4_crs_fst4 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
@@ -1618,5 +1655,7 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'pure_dstl_4_crs_fst3': pure_dstl_4_crs_fst3,
                   'pure_dstl_4_crs_fst4': pure_dstl_4_crs_fst4,
                   'pure_dstl_4_crs_fst5': pure_dstl_4_crs_fst5,
-                  'pure_dstl_4_adamfst': pure_dstl_4_adamfst
+                  'pure_dstl_4_adamfst': pure_dstl_4_adamfst,
+                  'schdl1_dstl_4_crs_fst3': schdl1_dstl_4_crs_fst3,
+                  'schdl2_dstl_4_crs_fst3': schdl2_dstl_4_crs_fst3
                   }
