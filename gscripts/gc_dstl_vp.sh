@@ -75,50 +75,50 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--distill_mode=offline \
 #--distill_config=pure_dstl_4_crs_slw > run5 &
 
-CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
---task=word_sv_agreement_vp \
---teacher_model=cl_gpt2_shared \
---student_model=cl_lstm \
---student_exp_name=gc_f_std144 \
---teacher_exp_name=gc_o_tchr144 \
---teacher_config=small_gpt_v9 \
---student_config=small_lstm_v4 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_slw > run5 &
-
-CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
---task=word_sv_agreement_vp \
---teacher_model=cl_gpt2_shared \
---student_model=cl_lstm \
---student_exp_name=gc_f_std145 \
---teacher_exp_name=gc_o_tchr145 \
---teacher_config=small_gpt_v9 \
---student_config=small_lstm_v4 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_slw > run6 &
-
-
-CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
---task=word_sv_agreement_vp \
---teacher_model=cl_gpt2_shared \
---student_model=cl_lstm \
---student_exp_name=gc_f_std146 \
---teacher_exp_name=gc_o_tchr146 \
---teacher_config=small_gpt_v9 \
---student_config=small_lstm_v4 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_slw > run7 &
-
-CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
---task=word_sv_agreement_vp \
---teacher_model=cl_gpt2_shared \
---student_model=cl_lstm \
---student_exp_name=gc_f_std147 \
---teacher_exp_name=gc_o_tchr147 \
---teacher_config=small_gpt_v9 \
---student_config=small_lstm_v4 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_slw > run8 &
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_gpt2_shared \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_f_std144 \
+#--teacher_exp_name=gc_o_tchr144 \
+#--teacher_config=small_gpt_v9 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_slw > run5 &
+#
+#CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_gpt2_shared \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_f_std145 \
+#--teacher_exp_name=gc_o_tchr145 \
+#--teacher_config=small_gpt_v9 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_slw > run6 &
+#
+#
+#CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_gpt2_shared \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_f_std146 \
+#--teacher_exp_name=gc_o_tchr146 \
+#--teacher_config=small_gpt_v9 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_slw > run7 &
+#
+#CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_gpt2_shared \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_f_std147 \
+#--teacher_exp_name=gc_o_tchr147 \
+#--teacher_config=small_gpt_v9 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_slw > run8 &
 #
 #
 #CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
