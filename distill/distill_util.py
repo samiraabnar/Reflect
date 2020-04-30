@@ -84,7 +84,7 @@ def get_distill_scheduler(schedule, min=0.0, max=1.0, decay_steps=10000):
   elif schedule is 'crs':
     scheduler = tf.keras.experimental.CosineDecayRestarts(
       max,
-      max,
+      decay_steps,
       t_mul=2.0,
       m_mul=0.9,
       alpha=0.001,
