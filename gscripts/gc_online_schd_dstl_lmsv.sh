@@ -27,25 +27,25 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --distill_mode=offline \
 --distill_config=schdl2_dstl_4_crs_fst3 > os_run1 &
 
-CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_std3 \
---teacher_exp_name=gc_tchr3 \
---teacher_config=biglstm_drop31_v2 \
---student_config=biglstm_drop31_v2 \
---distill_mode=offline \
---distill_config=schdl1_dstl_4_crs_fst3 > os_run0 &
-
-CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_std4 \
---teacher_exp_name=gc_tchr4 \
---teacher_config=biglstm_drop31_v2 \
---student_config=biglstm_drop31_v2 \
---distill_mode=offline \
---distill_config=schdl2_dstl_4_crs_fst3 > os_run1 &
+#CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_std3 \
+#--teacher_exp_name=gc_tchr3 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=biglstm_drop31_v2 \
+#--distill_mode=offline \
+#--distill_config=schdl1_dstl_4_crs_fst3 > os_run0 &
+#
+#CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_std4 \
+#--teacher_exp_name=gc_tchr4 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=biglstm_drop31_v2 \
+#--distill_mode=offline \
+#--distill_config=schdl2_dstl_4_crs_fst3 > os_run1 &
 
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
