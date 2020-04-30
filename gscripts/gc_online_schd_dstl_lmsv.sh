@@ -78,15 +78,15 @@ CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  --task=word_sv_agreement_
 --distill_mode=offline \
 --distill_config=schdl1_dstl_4_crs_fst3 > os_run0 &
 
-CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_std8 \
---teacher_exp_name=gc_tchr8 \
---teacher_config=lstm_drop31_v2 \
---student_config=biglstm_drop31_v2 \
---distill_mode=offline \
---distill_config=schdl2_dstl_4_crs_fst3 > os_run1 &
+#CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_std8 \
+#--teacher_exp_name=gc_tchr8 \
+#--teacher_config=lstm_drop31_v2 \
+#--student_config=biglstm_drop31_v2 \
+#--distill_mode=offline \
+#--distill_config=schdl2_dstl_4_crs_fst3 > os_run1 &
 
 
 wait
