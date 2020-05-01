@@ -142,16 +142,16 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--distill_mode=online \
 #--distill_config=pure_dstl_4_crs_slw > run8 &
 
-CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
---task=word_sv_agreement_vp \
---teacher_model=cl_gpt2 \
---student_model=cl_gpt2_shared \
---student_exp_name=gc_f_std154 \
---teacher_exp_name=gc_o_tchr154 \
---teacher_config=small_gpt_v9 \
---student_config=small_gpt_v9 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_slw > run8 &
+#CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_gpt2 \
+#--student_model=cl_gpt2_shared \
+#--student_exp_name=gc_f_std154 \
+#--teacher_exp_name=gc_o_tchr154 \
+#--teacher_config=small_gpt_v9 \
+#--student_config=small_gpt_v9 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_slw > run8 &
 
 #
 #
@@ -167,27 +167,27 @@ CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
 #--distill_config=pure_dstl_4_crs_slw > run3 &
 
 
-#CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
-#--task=word_sv_agreement_vp \
-#--teacher_model=cl_lstm \
-#--student_model=cl_gpt2_shared \
-#--student_exp_name=gc_o_std151 \
-#--teacher_exp_name=gc_o_tchr151 \
-#--teacher_config=small_lstm_v4 \
-#--student_config=small_gpt_v9 \
-#--distill_mode=online \
-#--distill_config=pure_dstl_4_crs_slw > run4 &
-#
-#
-#CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
-#--task=word_sv_agreement_vp \
-#--teacher_model=cl_lstm \
-#--student_model=cl_gpt2_shared \
-#--student_exp_name=gc_f_std150 \
-#--teacher_exp_name=gc_o_tchr150 \
-#--teacher_config=small_lstm_v4 \
-#--student_config=small_gpt_v9 \
-#--distill_mode=offline \
-#--distill_config=pure_dstl_4_crs_slw > run4 &
+CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
+--task=word_sv_agreement_vp \
+--teacher_model=cl_lstm \
+--student_model=cl_gpt2_shared \
+--student_exp_name=gc_o_std151 \
+--teacher_exp_name=gc_o_tchr151 \
+--teacher_config=small_lstm_v4 \
+--student_config=small_gpt_v9 \
+--distill_mode=online \
+--distill_config=pure_dstl_4_crs_slw > run4 &
+
+
+CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
+--task=word_sv_agreement_vp \
+--teacher_model=cl_lstm \
+--student_model=cl_gpt2_shared \
+--student_exp_name=gc_f_std150 \
+--teacher_exp_name=gc_o_tchr150 \
+--teacher_config=small_lstm_v4 \
+--student_config=small_gpt_v9 \
+--distill_mode=offline \
+--distill_config=pure_dstl_4_crs_slw > run4 &
 
 wait
