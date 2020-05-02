@@ -10,27 +10,27 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 
 
 
-CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
---task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_o_std113 \
---teacher_exp_name=gc_o_tchr113 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=online \
---distill_config=pure_dstl_4_crs_fst4 > o_run0 &
-
-CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
---task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_o_std114 \
---teacher_exp_name=gc_o_tchr114 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=online \
---distill_config=pure_dstl_4_crs_fst3 > o_run0 &
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_o_std113 \
+#--teacher_exp_name=gc_o_tchr113 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=online \
+#--distill_config=pure_dstl_4_crs_fst4 > o_run0 &
+#
+#CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_o_std114 \
+#--teacher_exp_name=gc_o_tchr114 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=online \
+#--distill_config=pure_dstl_4_crs_fst3 > o_run0 &
 
 
 #CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
@@ -55,16 +55,16 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 #--distill_mode=online \
 #--distill_config=pure_dstl_4_crs_fst4 > o_run0 &
 #
-#CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
-#--task=word_sv_agreement_lm \
-#--teacher_model=lm_lstm_shared_emb \
-#--student_model=lm_gpt2 \
-#--student_exp_name=gc_o_std107 \
-#--teacher_exp_name=gc_o_tchr107 \
-#--teacher_config=biglstm_drop31_v2 \
-#--student_config=very_big_gpt_v10 \
-#--distill_mode=online \
-#--distill_config=pure_dstl_4_crs_fst4 > o_run0 &
+CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
+--task=word_sv_agreement_lm \
+--teacher_model=lm_lstm_shared_emb \
+--student_model=lm_gpt2 \
+--student_exp_name=gc_o_std107 \
+--teacher_exp_name=gc_o_tchr107 \
+--teacher_config=biglstm_drop31_v2 \
+--student_config=very_big_gpt_v10 \
+--distill_mode=offline \
+--distill_config=pure_dstl_4_crs_fst4 > o_run0 &
 #
 #
 ##
