@@ -65,7 +65,7 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_exp_name=gc_tchr301 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=big_gpt_v5 \
---distill_mode=offline \
+--distill_mode=online \
 --distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
 
 
@@ -76,7 +76,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_exp_name=gc_tchr302 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=big_gpt_v5 \
---distill_mode=offline \
+--distill_mode=online \
 --distill_config=schdl2_dstl_4_crs_fst4 > os_run0 &
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
@@ -86,7 +86,7 @@ CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_exp_name=gc_tchr303 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=big_gpt_v5 \
---distill_mode=offline \
+--distill_mode=online \
 --distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
 
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
@@ -96,7 +96,7 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_
 --teacher_exp_name=gc_tchr304 \
 --teacher_config=biglstm_drop31_v2 \
 --student_config=big_gpt_v5 \
---distill_mode=offline \
+--distill_mode=online \
 --distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
