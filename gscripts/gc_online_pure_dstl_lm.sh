@@ -14,46 +14,46 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
 --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
---student_exp_name=gc_f_std113 \
---teacher_exp_name=gc_o_tchr113 \
---teacher_config=biglstm_drop31_v2 \
+--student_exp_name=gc_o_std120 \
+--teacher_exp_name=gc_o_tchr120 \
+--teacher_config=lstm_drop31_v2 \
 --student_config=big_gpt_v5 \
---distill_mode=offline \
+--distill_mode=online \
 --distill_config=pure_dstl_4_crs_fst4 > o_run0 &
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 --task=word_sv_agreement_lm \
 --teacher_model=lm_lstm_shared_emb \
 --student_model=lm_gpt2 \
---student_exp_name=gc_f_std114 \
---teacher_exp_name=gc_o_tchr114 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_fst3 > o_run0 &
-
-
-CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
---task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_o_std115 \
---teacher_exp_name=gc_o_tchr115 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=online \
---distill_config=pure_dstl_4_crs_fst4 > o_run0 &
-
-CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
---task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_o_std116 \
---teacher_exp_name=gc_o_tchr116 \
---teacher_config=biglstm_drop31_v2 \
+--student_exp_name=gc_o_std121 \
+--teacher_exp_name=gc_o_tchr121 \
+--teacher_config=lstm_drop31_v2 \
 --student_config=big_gpt_v5 \
 --distill_mode=online \
 --distill_config=pure_dstl_4_crs_fst3 > o_run0 &
+
+
+#CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_o_std115 \
+#--teacher_exp_name=gc_o_tchr115 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=online \
+#--distill_config=pure_dstl_4_crs_fst4 > o_run0 &
+#
+#CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_o_std116 \
+#--teacher_exp_name=gc_o_tchr116 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=online \
+#--distill_config=pure_dstl_4_crs_fst3 > o_run0 &
 
 
 #CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
@@ -67,16 +67,16 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
 #--distill_mode=offline \
 #--distill_config=pure_dstl_4_crs_fst4 > o_run0 &
 #
-CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
---task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_o_std106 \
---teacher_exp_name=gc_o_tchr106 \
---teacher_config=biglstm_drop31_v2 \
---student_config=very_big_gpt_v10 \
---distill_mode=online \
---distill_config=pure_dstl_4_crs_fst4 > o_run0 &
+#CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_o_std106 \
+#--teacher_exp_name=gc_o_tchr106 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=very_big_gpt_v10 \
+#--distill_mode=online \
+#--distill_config=pure_dstl_4_crs_fst4 > o_run0 &
 #
 #CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
 #--task=word_sv_agreement_lm \
@@ -105,28 +105,28 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
 #
 #
 ##LSTM to Transformer
-CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
---task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_f_std109 \
---teacher_exp_name=gc_o_tchr109 \
---teacher_config=biglstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_fst3 > o_run0 &
-
-
-CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
---task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_f_std110 \
---teacher_exp_name=gc_o_tchr110 \
---teacher_config=biglstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
---distill_mode=offline \
---distill_config=pure_dstl_4_crs_fst3 > o_run0 &
+#CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_f_std109 \
+#--teacher_exp_name=gc_o_tchr109 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=lstm_drop31_v2 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_fst3 > o_run0 &
+#
+#
+#CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
+#--task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_f_std110 \
+#--teacher_exp_name=gc_o_tchr110 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=lstm_drop31_v2 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_crs_fst3 > o_run0 &
 
 
 #CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  \
@@ -176,16 +176,16 @@ CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
 #--distill_mode=online \
 #--distill_config=pure_dstl_4_crs_fst5 > o_run3 &
 #
-#CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  \
-#--task=word_sv_agreement_lm \
-#--teacher_model=lm_gpt2 \
-#--student_model=lm_lstm_shared_emb \
-#--student_exp_name=gc_f_std207 \
-#--teacher_exp_name=gc_o_tchr207 \
-#--teacher_config=very_big_gpt_v10 \
-#--student_config=biglstm_drop31_v2 \
-#--distill_mode=offline \
-#--distill_config=pure_dstl_4_crs_fst5 > o_run4 &
+CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  \
+--task=word_sv_agreement_lm \
+--teacher_model=lm_gpt2 \
+--student_model=lm_lstm_shared_emb \
+--student_exp_name=gc_f_std210 \
+--teacher_exp_name=gc_o_tchr210 \
+--teacher_config=big_gpt_v5 \
+--student_config=lstm_drop31_v2 \
+--distill_mode=online \
+--distill_config=pure_dstl_4_crs_fst5 > o_run4 &
 
 
 wait
