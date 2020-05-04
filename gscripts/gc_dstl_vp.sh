@@ -16,7 +16,7 @@ CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
 --teacher_config=small_lstm_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 
 CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
@@ -28,7 +28,7 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 --teacher_config=small_lstm_v4 \
 --student_config=small_gpt_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 
 CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
@@ -40,7 +40,7 @@ CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
 --teacher_config=small_gpt_v4 \
 --student_config=small_gpt_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
@@ -51,7 +51,7 @@ CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
 --teacher_config=small_gpt_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
@@ -63,7 +63,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
 --teacher_config=small_gpt_v4 \
 --student_config=small_gpt_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
@@ -74,7 +74,7 @@ CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
 --teacher_config=small_gpt_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 
 CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
@@ -86,7 +86,7 @@ CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
 --teacher_config=small_gpt_v4 \
 --student_config=small_gpt_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
@@ -97,6 +97,6 @@ CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  \
 --teacher_config=small_gpt_v4 \
 --student_config=small_lstm_v4 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_slw_hld > run0 &
+--distill_config=pure_dstl_4_crs_slw_hld2 > run0 &
 
 wait
