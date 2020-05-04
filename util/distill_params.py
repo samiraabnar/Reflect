@@ -1751,5 +1751,6 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'schdl1_dstl_4_crs_fst3': schdl1_dstl_4_crs_fst3,
                   'schdl2_dstl_4_crs_fst3': schdl2_dstl_4_crs_fst3,
                   'schdl1_dstl_4_crs_fst4': schdl1_dstl_4_crs_fst4,
-                  'schdl2_dstl_4_crs_fst4': schdl2_dstl_4_crs_fst4
+                  'schdl2_dstl_4_crs_fst4': schdl2_dstl_4_crs_fst4,
+                  'pure_dstl_4_crs_slw_hld': pure_dstl_4_crs_slw_hld
                   }
