@@ -327,16 +327,16 @@ CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 #--distill_mode=offline \
 #--distill_config=pure_dstl5_4_crs_slw > run4 &
 #
-#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
-#--task=word_sv_agreement_vp \
-#--teacher_model=cl_lstm \
-#--student_model=cl_bert \
-#--student_exp_name=gc_o_std172 \
-#--teacher_exp_name=gc_o_tchr172 \
-#--teacher_config=small_lstm_v4 \
-#--student_config=small_gpt_v9 \
-#--distill_mode=online \
-#--distill_config=pure_dstl_4_crs_slw > run4 &
+CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+--task=word_sv_agreement_vp \
+--teacher_model=cl_lstm \
+--student_model=cl_bert \
+--student_exp_name=gc_f_std172 \
+--teacher_exp_name=gc_o_tchr172 \
+--teacher_config=small_lstm_v4 \
+--student_config=small_gpt_v9 \
+--distill_mode=offline \
+--distill_config=pure_dstl_4_crs_slw > run4 &
 
 
 #CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
