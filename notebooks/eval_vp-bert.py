@@ -27,12 +27,12 @@ models = {}
 labels = []
 
 
-config={'student_exp_name':'gc_f_std124',
-    'teacher_exp_name':'gc_o_tchr124',
+config={'student_exp_name':'gc_f_std157',
+    'teacher_exp_name':'gc_o_tchr157',
     'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_lstm',
+    'teacher_model':'cl_gpt2',
     'student_model':'cl_lstm',
-    'teacher_config':'small_lstm_v4',
+    'teacher_config':'small_gpt_v9',
     'student_config':'small_lstm_v4',
     'distill_config':'pure_dstl_4_crs_slw',
     'distill_mode':'offline',
@@ -43,38 +43,16 @@ config={'student_exp_name':'gc_f_std124',
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, _ = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-models['lstm_124'] = teacher_model
-labels.append('lstm_124')
+models['gpt_157'] = teacher_model
+labels.append('gpt_157')
 
 
-config={'student_exp_name':'gc_f_std125',
-    'teacher_exp_name':'gc_o_tchr125',
+config={'student_exp_name':'gc_f_std158',
+    'teacher_exp_name':'gc_o_tchr158',
     'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_lstm',
+    'teacher_model':'cl_gpt2',
     'student_model':'cl_lstm',
-    'teacher_config':'small_lstm_v4',
-    'student_config':'small_lstm_v4',
-    'distill_config':'pure_dstl_4_crs_slw',
-    'distill_mode':'offline',
-    'chkpt_dir':'../tf_ckpts',
-     }
-
-
-
-tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
-teacher_model, _ = get_teacher_model(config, task, tchr_hparams, cl_token)
-
-models['lstm_125'] = teacher_model
-labels.append('lstm_125')
-
-
-
-config={'student_exp_name':'gc_f_std130',
-    'teacher_exp_name':'gc_o_tchr130',
-    'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_lstm',
-    'student_model':'cl_lstm',
-    'teacher_config':'small_lstm_v4',
+    'teacher_config':'small_gpt_v9',
     'student_config':'small_lstm_v4',
     'distill_config':'pure_dstl_4_crs_slw',
     'distill_mode':'offline',
@@ -86,16 +64,17 @@ config={'student_exp_name':'gc_f_std130',
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, _ = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-models['lstm_130'] = teacher_model
-labels.append('lstm_130')
+models['gpt_158'] = teacher_model
+labels.append('gpt_158')
 
 
-config={'student_exp_name':'gc_f_std131',
-    'teacher_exp_name':'gc_o_tchr131',
+
+config={'student_exp_name':'gc_f_std159',
+    'teacher_exp_name':'gc_o_tchr159',
     'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_lstm',
+    'teacher_model':'cl_gpt2',
     'student_model':'cl_lstm',
-    'teacher_config':'small_lstm_v4',
+    'teacher_config':'small_gpt_v9',
     'student_config':'small_lstm_v4',
     'distill_config':'pure_dstl_4_crs_slw',
     'distill_mode':'offline',
@@ -107,8 +86,29 @@ config={'student_exp_name':'gc_f_std131',
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, _ = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-models['lstm_131'] = teacher_model
-labels.append('lstm_131')
+models['gpt_159'] = teacher_model
+labels.append('gpt_159')
+
+
+config={'student_exp_name':'gc_f_std160',
+    'teacher_exp_name':'gc_o_tchr160',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_gpt2',
+    'student_model':'cl_lstm',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_lstm_v4',
+    'distill_config':'pure_dstl_4_crs_slw',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+
+
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model, _ = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+models['gpt_160'] = teacher_model
+labels.append('gpt_160')
 
 
 
