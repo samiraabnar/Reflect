@@ -235,7 +235,7 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--distill_config=pure_dstl_4_crs_fst5 > o_run4 &
 #
 #
-CUDA_VISIBLE_DEVICE=5 python distill/distill_main.py  \
+CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  \
 --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
 --student_model=lm_lstm_shared_emb \
@@ -246,7 +246,7 @@ CUDA_VISIBLE_DEVICE=5 python distill/distill_main.py  \
 --distill_mode=online \
 --distill_config=pure_dstl_4_crs_fst5 > o_run4 &
 
-CUDA_VISIBLE_DEVICE=6 python distill/distill_main.py  \
+CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  \
 --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
 --student_model=lm_lstm_shared_emb \
@@ -258,7 +258,7 @@ CUDA_VISIBLE_DEVICE=6 python distill/distill_main.py  \
 --distill_config=pure_dstl_4_crs_fst5 > o_run4 &
 
 
-CUDA_VISIBLE_DEVICE=7 python distill/distill_main.py  \
+CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  \
 --task=word_sv_agreement_lm \
 --teacher_model=lm_gpt2 \
 --student_model=lm_lstm_shared_emb \
