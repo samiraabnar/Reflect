@@ -65,7 +65,7 @@ CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
 --teacher_config=lstm_drop31_v2 \
 --student_config=lstm_drop31_v2 \
 --distill_mode=online \
---distill_config=pure_dstl_4_crs_fst4 > o_run0 &
+--distill_config=pure_dstl_4_crs_fst3 > o_run0 &
 
 #
 #CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  \
