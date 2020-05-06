@@ -557,6 +557,25 @@ pure_dstl_4_crs_slw_hld30 = {
 'schedule': 'crs'
 }
 
+pure_dstl_4_crs_slw_hld31 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
+'student_learning_rate' : 0.0001,
+'student_decay_steps' : 10000,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.0001,
+'teacher_decay_steps' : 10000,
+'teacher_warmup_steps' : 5000,
+'teacher_hold_base_rate_steps' : 1000,
+'teacher_decay_rate': 0.8,
+'teacher_optimizer' : 'adam',
+'schedule': 'crs'
+}
+
+
 
 pure_dstl_4_crs_slw_hld4 = {
 'distill_temp' : 1.0,
@@ -1846,5 +1865,6 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'pure_dstl_4_crs_slw_hld2': pure_dstl_4_crs_slw_hld2,
                   'pure_dstl_4_crs_slw_hld3': pure_dstl_4_crs_slw_hld3,
                   'pure_dstl_4_crs_slw_hld4': pure_dstl_4_crs_slw_hld4,
-                  'pure_dstl_4_crs_slw_hld30': pure_dstl_4_crs_slw_hld30
+                  'pure_dstl_4_crs_slw_hld30': pure_dstl_4_crs_slw_hld30,
+                  'pure_dstl_4_crs_slw_hld31': pure_dstl_4_crs_slw_hld31
                   }
