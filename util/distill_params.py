@@ -552,7 +552,8 @@ pure_dstl_4_crs_slw_vp1 = {
 'teacher_decay_steps' : 1000,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 
@@ -569,7 +570,8 @@ pure_dstl_4_crs_slw_vp2 = {
 'teacher_decay_steps' : 1000,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 pure_dstl_4_crs_slw_vp3 = {
@@ -585,7 +587,8 @@ pure_dstl_4_crs_slw_vp3 = {
 'teacher_decay_steps' : 1000,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 
@@ -602,7 +605,9 @@ pure_dstl_4_crs_slw_vp4 = {
 'teacher_decay_steps' : 1000,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
+
 }
 
 pure_dstl_4_crs_slw_vp5 = {
@@ -619,7 +624,8 @@ pure_dstl_4_crs_slw_vp5 = {
 'teacher_decay_steps' : 1000,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 
@@ -637,7 +643,8 @@ pure_dstl_4_crs_slw_vp6 = {
 'teacher_decay_steps' : 1000,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 pure_dstl_4_crs_slw_vp7 = {
@@ -655,7 +662,8 @@ pure_dstl_4_crs_slw_vp7 = {
 'teacher_decay_rate': 0.5,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 
@@ -674,7 +682,8 @@ pure_dstl_4_crs_slw_vp8 = {
 'teacher_decay_rate': 0.5,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 pure_dstl_4_crs_slw_vp9 = {
@@ -692,7 +701,8 @@ pure_dstl_4_crs_slw_vp9 = {
 'teacher_decay_rate': 0.7,
 'teacher_hold_base_rate_steps' : 1000,
 'teacher_optimizer' : 'adam',
-'schedule': 'crs'
+'schedule': 'crs',
+'n_epochs': 30
 }
 
 pure_dstl_4_crs_slw_hld31 = {
