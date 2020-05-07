@@ -27,36 +27,12 @@ modelz = {}
 ckptz = {}
 
 
-config={'student_exp_name':'gc_f_std100',
-    'teacher_exp_name':'gc_o_tchr100',
+
+
+config={'student_exp_name':'gc_f_std144',
+    'teacher_exp_name':'gc_o_tchr144',
     'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_bert',
-    'student_model':'cl_lstm',
-    'teacher_config':'small_lstm_v4',
-    'student_config':'small_lstm_v4',
-    'distill_config':'pure_dstl_4_crs_slw',
-    'distill_mode':'offline',
-    'chkpt_dir':'../tf_ckpts',
-     }
-
-std_hparams=get_model_params(task, config['student_model'], config['student_config'])
-model, ckpt = get_student_model(config, task, std_hparams, cl_token)
-
-modelz['l2l_std100'] = model
-ckptz['l2l_std100'] = ckpt
-
-tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
-teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
-
-modelz['l2l_tchr100'] = teacher_model
-ckptz['l2l_tchr100'] = teacger_ckpt
-
-
-
-config={'student_exp_name':'gc_f_std101',
-    'teacher_exp_name':'gc_o_tchr101',
-    'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_bert',
+    'teacher_model':'cl_gpt2_shared',
     'student_model':'cl_lstm',
     'teacher_config':'small_gpt_v9',
     'student_config':'small_lstm_v4',
@@ -65,24 +41,24 @@ config={'student_exp_name':'gc_f_std101',
     'chkpt_dir':'../tf_ckpts',
      }
 
-std_hparams=get_model_params(task, config['student_model'], config['student_config'])
-model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+# std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+# model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 
-modelz['l2l_std101'] = model
-ckptz['l2l_std101'] = ckpt
+# modelz['g2l_std144'] = model
+# ckptz['g2l_std144'] = ckpt
 
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-modelz['l2l_tchr101'] = teacher_model
-ckptz['l2l_tchr101'] = teacger_ckpt
+modelz['ug2l_tchr144'] = teacher_model
+ckptz['ug2l_tchr144'] = teacger_ckpt
 
 
 
-config={'student_exp_name':'gc_f_std102',
-    'teacher_exp_name':'gc_o_tchr102',
+config={'student_exp_name':'gc_f_std145',
+    'teacher_exp_name':'gc_o_tchr145',
     'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_bert',
+    'teacher_model':'cl_gpt2_shared',
     'student_model':'cl_lstm',
     'teacher_config':'small_gpt_v9',
     'student_config':'small_lstm_v4',
@@ -91,24 +67,24 @@ config={'student_exp_name':'gc_f_std102',
     'chkpt_dir':'../tf_ckpts',
      }
 
-std_hparams=get_model_params(task, config['student_model'], config['student_config'])
-model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+# std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+# model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 
-modelz['l2l_std102'] = model
-ckptz['l2l_std102'] = ckpt
+# modelz['g2l_std145'] = model
+# ckptz['g2l_std145'] = ckpt
 
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-modelz['l2l_tchr102'] = teacher_model
-ckptz['l2l_tchr102'] = teacger_ckpt
+modelz['ug2l_tchr145'] = teacher_model
+ckptz['ug2l_tchr145'] = teacger_ckpt
 
 
 
-config={'student_exp_name':'gc_f_std103',
-    'teacher_exp_name':'gc_o_tchr103',
+config={'student_exp_name':'gc_f_std146',
+    'teacher_exp_name':'gc_o_tchr146',
     'task_name':'word_sv_agreement_vp',
-    'teacher_model':'cl_bert',
+    'teacher_model':'cl_gpt2_shared',
     'student_model':'cl_lstm',
     'teacher_config':'small_gpt_v9',
     'student_config':'small_lstm_v4',
@@ -117,19 +93,45 @@ config={'student_exp_name':'gc_f_std103',
     'chkpt_dir':'../tf_ckpts',
      }
 
-std_hparams=get_model_params(task, config['student_model'], config['student_config'])
-model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+# std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+# model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 
-modelz['l2l_std103'] = model
-ckptz['l2l_std103'] = ckpt
+# modelz['g2l_std146'] = model
+# ckptz['g2l_std146'] = ckpt
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+modelz['ug2l_tchr146'] = teacher_model
+ckptz['ug2l_tchr146'] = teacger_ckpt
+
+
+
+config={'student_exp_name':'gc_f_std147',
+    'teacher_exp_name':'gc_o_tchr147',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_gpt2_shared',
+    'student_model':'cl_lstm',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_lstm_v4',
+    'distill_config':'pure_dstl_4_crs_slw',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+
+# std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+# model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+# modelz['g2l_std147'] = model
+# ckptz['g2l_std147'] = ckpt
 
 
 
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-modelz['l2l_tchr103'] = teacher_model
-ckptz['l2l_tchr103'] = teacger_ckpt
+modelz['ug2l_tchr147'] = teacher_model
+ckptz['ug2l_tchr147'] = teacger_ckpt
 
 
 

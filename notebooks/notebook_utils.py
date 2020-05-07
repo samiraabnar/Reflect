@@ -171,7 +171,7 @@ def compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_t
   print("Macro accuracy (intervenings):", np.mean(dif_acc))
 
     
-def evaluate_vp_cl(model, verb_infl, noun_infl, task, split='test', batch_size=1000):
+def evaluate_vp_cl(model, verb_infl, noun_infl, task, split='test', batch_size=1000, cls=False):
     distance_hits = Counter()
     distance_total = Counter()
     diff_hits = Counter()
@@ -179,15 +179,16 @@ def evaluate_vp_cl(model, verb_infl, noun_infl, task, split='test', batch_size=1
 
     test_data = task.databuilder.as_dataset(split=split, batch_size=batch_size)
     e = 0
-    for examples in tqdm(test_data):
+    for examples in test_data:
         e += 1
+        print(e, end="\r")
         sentences = examples['sentence']
-        bos = tf.cast(task.databuilder.sentence_encoder().encode(constants.bos) * tf.ones((sentences.shape[0],1)), dtype=tf.int64)
+        #bos = tf.cast(task.databuilder.sentence_encoder().encode(constants.bos) * tf.ones((sentences.shape[0],1)), dtype=tf.int64)
         eos = tf.cast(task.databuilder.sentence_encoder().encode(constants.eos) *tf.ones((sentences.shape[0],1)), dtype=tf.int64)
 
-        sentences = tf.concat([bos, sentences, eos], axis=-1)
+        sentences = tf.concat([sentences, eos], axis=-1)
 
-        verb_position = examples['verb_position']+1  #+1 because of adding bos.
+        verb_position = examples['verb_position']+int(cls)  #+1 because of adding bos.
         # The verb it self is also masked
         mask = tf.cast(tf.sequence_mask(verb_position,maxlen=tf.shape(sentences)[1]), dtype=tf.int64)
         max_length = tf.reduce_max(verb_position + 1)
@@ -197,27 +198,24 @@ def evaluate_vp_cl(model, verb_infl, noun_infl, task, split='test', batch_size=1
 
         inputs = (sentences * mask + last_index_mask)[:,:max_length]
 
-
         s_shape = tf.shape(inputs)
         batch_size, length = s_shape[0], s_shape[1]
         verb_classes = examples['verb_class']
         actual_verbs = examples['verb']
-        inflected_verbs = [verb_infl[v.decode("utf-8")] for v in actual_verbs.numpy()]
+        #inflected_verbs = [verb_infl[v.decode("utf-8")] for v in actual_verbs.numpy()]
 
         distances = examples['distance'].numpy()
         nz = examples['n_intervening'].numpy()
         n_diffs = examples['n_diff_intervening'].numpy()
 
         actual_verb_indexes = [task.databuilder.sentence_encoder().encode(v)[0] for v in actual_verbs.numpy()]
-        inflected_verb_indexes = [task.databuilder.sentence_encoder().encode(v)[0] for v in inflected_verbs]
 
-
-        predictions = model(inputs)
+        predictions = model(inputs, training=False)
         predictions = np.argmax(predictions, axis=-1)
         corrects = predictions == verb_classes
 
         for i, c in enumerate(corrects):
-            if actual_verb_indexes[i] == 10035:
+            if actual_verb_indexes[i] == 10035 or actual_verb_indexes[i] == 2:
                 continue
             if nz[i] > 4 or distances[i] > 16:
                 continue
