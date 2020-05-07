@@ -43,11 +43,11 @@ CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  \
 CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
---student_model=cl_lstm \
+--student_model=cl_gpt2_shared \
 --student_exp_name=gc_o_std8332 \
 --teacher_exp_name=gc_o_tchr8332 \
 --teacher_config=small_gpt_v9 \
---student_config=small_lstm_v4 \
+--student_config=small_gpt_v9 \
 --distill_mode=online \
 --distill_config=pure_dstl_4_exp_vp8 > run0 &
 
