@@ -11,12 +11,48 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--task=word_sv_agreement_vp \
 #--teacher_model=cl_lstm \
 #--student_model=cl_lstm \
-#--student_exp_name=gc_o_std5000 \
+#--student_exp_name=gc_of_std5000 \
 #--teacher_exp_name=gc_o_tch5000 \
 #--teacher_config=small_lstm_v4 \
 #--student_config=small_lstm_v4 \
-#--distill_mode=online \
+#--distill_mode=offline \
 #--distill_config=pure_dstl_4_exp_vp5 > run0 &
+
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_lstm \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_f_std5001 \
+#--teacher_exp_name=gc_o_tch5010 \
+#--teacher_config=small_lstm_v4 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_exp_vp5 > run0 &
+
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_lstm \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_f_std5002 \
+#--teacher_exp_name=gc_o_tch5020 \
+#--teacher_config=small_lstm_v4 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_exp_vp5 > run0 &
+
+
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+#--task=word_sv_agreement_vp \
+#--teacher_model=cl_lstm \
+#--student_model=cl_lstm \
+#--student_exp_name=gc_f_std5003 \
+#--teacher_exp_name=gc_o_tch5030 \
+#--teacher_config=small_lstm_v4 \
+#--student_config=small_lstm_v4 \
+#--distill_mode=offline \
+#--distill_config=pure_dstl_4_exp_vp5 > run0 &
+
+############################################################
 
 #CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  \
 #--task=word_sv_agreement_vp \
