@@ -225,6 +225,15 @@ small_gpt_v9 = {
   'initializer_range': 0.05
 }
 
+
+small_ugpt_v9 = {
+  'embedding_dim': 256,
+  'resid_pdrop': 0.4,
+  'embd_pdrop': 0.2,
+  'attn_pdrop': 0.6,
+  'initializer_range': 0.05
+}
+
 short_gpt_v9 = {
   'embedding_dim': 128,
   'resid_pdrop': 0.4,
@@ -1021,6 +1030,7 @@ MODEL_CONFIGS = {
   'small_gpt_v7': small_gpt_v7,
   'small_gpt_v8': small_gpt_v8,
   'small_gpt_v9': small_gpt_v9,
+  'small_ugpt_v9': small_ugpt_v9,
   'small_lstm_v4': small_lstm_v4,
   'big_gpt_v9': big_gpt_v9,
   'very_big_gpt_v10': very_big_gpt_v10,
