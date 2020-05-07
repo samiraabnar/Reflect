@@ -7,7 +7,7 @@ cd ~/Codes/InDist
 export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 
 
-#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
+CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  \
 --task=word_sv_agreement_vp \
 --teacher_model=cl_bert \
 --student_model=cl_lstm \
