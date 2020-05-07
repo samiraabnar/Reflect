@@ -42,14 +42,14 @@ config={'student_exp_name':'gc_f_std100',
 std_hparams=get_model_params(task, config['student_model'], config['student_config'])
 model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 
-modelz['l2l_std100'] = model
-ckptz['l2l_std100'] = ckpt
+modelz['b2l_std100'] = model
+ckptz['b2l_std100'] = ckpt
 
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-modelz['l2l_tchr100'] = teacher_model
-ckptz['l2l_tchr100'] = teacger_ckpt
+modelz['b2l_tchr100'] = teacher_model
+ckptz['b2l_tchr100'] = teacger_ckpt
 
 
 
@@ -68,14 +68,14 @@ config={'student_exp_name':'gc_f_std101',
 std_hparams=get_model_params(task, config['student_model'], config['student_config'])
 model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 
-modelz['l2l_std101'] = model
-ckptz['l2l_std101'] = ckpt
+modelz['b2l_std101'] = model
+ckptz['b2l_std101'] = ckpt
 
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-modelz['l2l_tchr101'] = teacher_model
-ckptz['l2l_tchr101'] = teacger_ckpt
+modelz['b2l_tchr101'] = teacher_model
+ckptz['b2l_tchr101'] = teacger_ckpt
 
 
 
@@ -120,16 +120,16 @@ config={'student_exp_name':'gc_f_std103',
 std_hparams=get_model_params(task, config['student_model'], config['student_config'])
 model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 
-modelz['l2l_std103'] = model
-ckptz['l2l_std103'] = ckpt
+modelz['b2l_std103'] = model
+ckptz['b2l_std103'] = ckpt
 
 
 
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, teacger_ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
-modelz['l2l_tchr103'] = teacher_model
-ckptz['l2l_tchr103'] = teacger_ckpt
+modelz['b2l_tchr103'] = teacher_model
+ckptz['b2l_tchr103'] = teacger_ckpt
 
 
 
