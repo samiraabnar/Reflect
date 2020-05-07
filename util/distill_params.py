@@ -704,6 +704,26 @@ pure_dstl_4_crs_slw_vp8 = {
 'n_epochs': 30
 }
 
+pure_dstl_4_exp_vp8 = {
+'distill_temp' : 1.0,
+'student_distill_rate' : 1.0,
+'student_gold_rate' : 0.0,
+'student_learning_rate' : 0.001,
+'student_decay_steps' : 10000,
+'student_decay_rate': 0.8,
+'student_hold_base_rate_steps' :  0,
+'student_warmup_steps' : 0,
+'student_optimizer' : 'adam',
+'teacher_learning_rate' : 0.001,
+'teacher_decay_steps' : 1000,
+'teacher_decay_rate': 0.5,
+'teacher_hold_base_rate_steps' : 1000,
+'teacher_optimizer' : 'adam',
+'schedule': 'exp',
+'n_epochs': 40
+}
+
+
 pure_dstl_4_crs_slw_vp9 = {
 'distill_temp' : 1.0,
 'student_distill_rate' : 1.0,
@@ -2101,5 +2121,6 @@ DISTILL_PARAMS = {'pure_dstl_1' :  pure_dstl_1,
                   'pure_dstl_4_exp_slw_vp6': pure_dstl_4_exp_slw_vp6,
                   'pure_dstl_4_exp_slw_vp9': pure_dstl_4_exp_slw_vp9,
                   'pure_dstl_4_exp_vp3': pure_dstl_4_exp_vp3,
-                  'pure_dstl_4_exp_vp4': pure_dstl_4_exp_vp4
+                  'pure_dstl_4_exp_vp4': pure_dstl_4_exp_vp4,
+                  'pure_dstl_4_exp_vp8': pure_dstl_4_exp_vp8
                   }
