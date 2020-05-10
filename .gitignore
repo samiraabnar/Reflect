@@ -17,4 +17,4 @@ tf_ckpts
 tf_ckpts/*
 tacl*
 run*
-
+.DS_STORE
