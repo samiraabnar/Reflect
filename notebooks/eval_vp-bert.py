@@ -24,6 +24,7 @@ task = TASKS['word_sv_agreement_vp'](task_params=get_task_params(batch_size=512)
 cl_token = task.databuilder.sentence_encoder().encode(constants.bos)
 
 
+students = []
 models = []
 labels = []
 
@@ -54,6 +55,7 @@ student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
+students.append(student_model)
 models.append(teacher_model)
 labels.append('bert2lstm_1')
 
@@ -81,6 +83,7 @@ student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
+students.append(student_model)
 models.append(teacher_model)
 labels.append('bert2lstm_2')
 
@@ -109,6 +112,7 @@ student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
+students.append(student_model)
 models.append(teacher_model)
 labels.append('bert2lstm_3')
 
@@ -136,9 +140,340 @@ student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
 tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
 teacher_model, ckpt = get_teacher_model(config, task, tchr_hparams, cl_token)
 
+students.append(student_model)
 models.append(teacher_model)
 labels.append('bert2lstm_4')
 
+
+
+config={'student_exp_name':'gc_f_std8331',
+    'teacher_exp_name':'gc_o_tchr8321',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2_shared',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_ugpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2ugpt_1')
+
+config={'student_exp_name':'gc_f_std8332',
+    'teacher_exp_name':'gc_o_tchr8322',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2_shared',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_ugpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2ugpt_2')
+
+config={'student_exp_name':'gc_f_std8333',
+    'teacher_exp_name':'gc_o_tchr8323',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2_shared',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_ugpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2ugpt_3')
+
+config={'student_exp_name':'gc_f_std8334',
+    'teacher_exp_name':'gc_o_tchr8324',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2_shared',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_ugpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2ugpt_4')
+
+
+config={'student_exp_name':'gc_f_std8311',
+    'teacher_exp_name':'gc_o_tchr8311',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_bert',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2bert_1')
+
+config={'student_exp_name':'gc_f_std8312',
+    'teacher_exp_name':'gc_o_tchr8322',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_bert',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2bert_2')
+
+config={'student_exp_name':'gc_f_std8313',
+    'teacher_exp_name':'gc_o_tchr8323',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_bert',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2bert_3')
+
+config={'student_exp_name':'gc_f_std8314',
+    'teacher_exp_name':'gc_o_tchr8324',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_bert',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2bert_4')
+
+
+
+config={'student_exp_name':'gc_f_std8321',
+    'teacher_exp_name':'gc_o_tchr8321',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2gpt_1')
+
+config={'student_exp_name':'gc_f_std8322',
+    'teacher_exp_name':'gc_o_tchr8322',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2gpt_2')
+
+config={'student_exp_name':'gc_f_std8323',
+    'teacher_exp_name':'gc_o_tchr8323',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2gpt_3')
+
+config={'student_exp_name':'gc_f_std8324',
+    'teacher_exp_name':'gc_o_tchr8324',
+    'task_name':'word_sv_agreement_vp',
+    'teacher_model':'cl_bert',
+    'student_model':'cl_gpt2',
+    'teacher_config':'small_gpt_v9',
+    'student_config':'small_gpt_v9',
+    'distill_config':'pure_dstl_4_exp_vp8',
+    'distill_mode':'offline',
+    'chkpt_dir':'../tf_ckpts',
+     }
+# config['distill_mode'] = 'online'
+# config['student_exp_name'] = config['student_exp_name'].replace('_f_', '_o_')
+
+std_hparams=get_model_params(task, config['student_model'], config['student_config'])
+std_hparams.output_attentions = True
+std_hparams.output_embeddings = True
+
+student_model, ckpt = get_student_model(config, task, std_hparams, cl_token)
+
+tchr_hparams=get_model_params(task, config['teacher_model'], config['teacher_config'])
+teacher_model = get_teacher_model(config, task, tchr_hparams, cl_token)
+
+students.append(student_model)
+models.append(teacher_model[0])
+labels.append('bert2gpt_4')
 
 
 
@@ -179,37 +514,45 @@ def test_for_calibration(model, task, n_bins=10):
     return model_accuracy, predicted_class_probs, correct_class_probs, pred_logits, y_trues
 
 
-# for key in keys:
-#     model = models[key]
-#     print('##################################')
-#     train = model.evaluate(task.train_dataset, steps=task.n_train_batches)
-#     valid = model.evaluate(task.valid_dataset, steps=task.n_valid_batches)
-#     test = model.evaluate(task.test_dataset, steps=task.n_test_batches)
-#     print(key)
-#     print(train[0],'\t',train[1],'\t',train[2],'\t', valid[0],'\t', valid[1],'\t', valid[2], '\t', test[0], '\t', test[1], '\t', test[2])
+for key,model in zip(labels, students):
+    print('##################################')
+    train = model.evaluate(task.train_dataset, steps=task.n_train_batches,verbose=0)
+    valid = model.evaluate(task.valid_dataset, steps=task.n_valid_batches,verbose=0)
+    test = model.evaluate(task.test_dataset, steps=task.n_test_batches,verbose=0)
+    print(key)
+    print(train[0],'\t',train[1],'\t',train[2],'\t', valid[0],'\t', valid[1],'\t', valid[2], '\t', test[0], '\t', test[1], '\t', test[2])
     
-# for key in keys:
-#     model = models[key]
+# print("Teachers:")
+# for key,model in zip(labels, models):
 #     print('##################################')
-
 #     model_accuracy, predicted_class_probs, correct_class_probs, model_logits, model_trues= test_for_calibration(model, task, n_bins=20)
 #     model_ece = tfp.stats.expected_calibration_error(
-#         1000000,
+#         20,
 #         logits=model_logits,
 #         labels_true=model_trues,
 #     )
-#     print(model_ece.numpy())
-        
-    
-infl_eng = inflect.engine()
-verb_infl, noun_infl = gen_inflect_from_vocab(infl_eng, 'wiki.vocab')
+#     print(key, model_ece.numpy())
 
-
-print(labels)
-for key,model in zip(labels,models):
+print("Students:")
+for key,model in zip(labels, students):
     print('##################################')
-    print(key)
-    distance_hits, distance_total, diff_hits, diff_total = evaluate_vp_cl(model, verb_infl, noun_infl, task)
-    compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_total)
+    model_accuracy, predicted_class_probs, correct_class_probs, model_logits, model_trues= test_for_calibration(model, task, n_bins=20)
+    model_ece = tfp.stats.expected_calibration_error(
+        20,
+        logits=model_logits,
+        labels_true=model_trues,
+    )
+    print(key, model_ece.numpy())
+    
+# infl_eng = inflect.engine()
+# verb_infl, noun_infl = gen_inflect_from_vocab(infl_eng, 'wiki.vocab')
+
+
+# print(labels)
+# for key,model in zip(labels, models):
+#     print('##################################')
+#     print(key)
+#     distance_hits, distance_total, diff_hits, diff_total = evaluate_vp_cl(model, verb_infl, noun_infl, task)
+#     compute_and_print_acc_stats(distance_hits, distance_total, diff_hits, diff_total)
     
     
