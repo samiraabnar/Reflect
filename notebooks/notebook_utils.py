@@ -181,7 +181,6 @@ def evaluate_vp_cl(model, verb_infl, noun_infl, task, split='test', batch_size=1
     e = 0
     for examples in test_data:
         e += 1
-        print(e, end="\r")
         sentences = examples['sentence']
         #bos = tf.cast(task.databuilder.sentence_encoder().encode(constants.bos) * tf.ones((sentences.shape[0],1)), dtype=tf.int64)
         eos = tf.cast(task.databuilder.sentence_encoder().encode(constants.eos) *tf.ones((sentences.shape[0],1)), dtype=tf.int64)
