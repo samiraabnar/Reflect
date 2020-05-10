@@ -28,25 +28,25 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
 #
 #
-#CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
-#--teacher_model=lm_lstm_shared_emb \
-#--student_model=lm_gpt2 \
-#--student_exp_name=gc_std211 \
-#--teacher_exp_name=gc_tchr211 \
-#--teacher_config=biglstm_drop31_v2 \
-#--student_config=very_big_gpt_v10 \
-#--distill_mode=offline \
-#--distill_config=schdl2_dstl_4_crs_fst4 > os_run0 &
-#
-#CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
-#--teacher_model=lm_lstm_shared_emb \
-#--student_model=lm_gpt2 \
-#--student_exp_name=gc_std213 \
-#--teacher_exp_name=gc_tchr213 \
-#--teacher_config=biglstm_drop31_v2 \
-#--student_config=very_big_gpt_v10 \
-#--distill_mode=offline \
-#--distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
+CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
+--teacher_model=lm_lstm_shared_emb \
+--student_model=lm_gpt2 \
+--student_exp_name=gc_std217 \
+--teacher_exp_name=gc_tchr217 \
+--teacher_config=biglstm_drop31_v2 \
+--student_config=very_big_gpt_v10 \
+--distill_mode=online \
+--distill_config=schdl2_dstl_4_crs_fst4 > os_run0 &
+
+CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
+--teacher_model=lm_lstm_shared_emb \
+--student_model=lm_gpt2 \
+--student_exp_name=gc_std215 \
+--teacher_exp_name=gc_tchr215 \
+--teacher_config=biglstm_drop31_v2 \
+--student_config=very_big_gpt_v10 \
+--distill_mode=online \
+--distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
 
 #CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_lm \
 #--teacher_model=lm_lstm_shared_emb \
@@ -58,86 +58,86 @@ export PYTHONPATH=$PYTHONPATH:/home/dehghani/Codes/InDist
 #--distill_mode=offline \
 #--distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
 #
-CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_std301 \
---teacher_exp_name=gc_tchr301 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=offline \
---distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
-
-
-CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_std302 \
---teacher_exp_name=gc_tchr302 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=offline \
---distill_config=schdl2_dstl_4_crs_fst4 > os_run0 &
-
-CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_std303 \
---teacher_exp_name=gc_tchr303 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=offline \
---distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
-
-CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_gpt2 \
---student_exp_name=gc_std304 \
---teacher_exp_name=gc_tchr304 \
---teacher_config=biglstm_drop31_v2 \
---student_config=big_gpt_v5 \
---distill_mode=offline \
---distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
-
-CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_std204 \
---teacher_exp_name=gc_tchr204 \
---teacher_config=biglstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
---distill_mode=online \
---distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
-
-CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_std205 \
---teacher_exp_name=gc_tchr205 \
---teacher_config=biglstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
---distill_mode=online \
---distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
-
-CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_std206 \
---teacher_exp_name=gc_tchr206 \
---teacher_config=biglstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
---distill_mode=online \
---distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
-
-CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  --task=word_sv_agreement_lm \
---teacher_model=lm_lstm_shared_emb \
---student_model=lm_lstm_shared_emb \
---student_exp_name=gc_std207 \
---teacher_exp_name=gc_tchr207 \
---teacher_config=biglstm_drop31_v2 \
---student_config=lstm_drop31_v2 \
---distill_mode=online \
---distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
+#CUDA_VISIBLE_DEVICES=0 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_std301 \
+#--teacher_exp_name=gc_tchr301 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=offline \
+#--distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
+#
+#
+#CUDA_VISIBLE_DEVICES=1 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_std302 \
+#--teacher_exp_name=gc_tchr302 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=offline \
+#--distill_config=schdl2_dstl_4_crs_fst4 > os_run0 &
+#
+#CUDA_VISIBLE_DEVICES=2 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_std303 \
+#--teacher_exp_name=gc_tchr303 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=offline \
+#--distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
+#
+#CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_gpt2 \
+#--student_exp_name=gc_std304 \
+#--teacher_exp_name=gc_tchr304 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=big_gpt_v5 \
+#--distill_mode=offline \
+#--distill_config=schdl2_dstl_4_crs_fst4 > os_run1 &
+#
+#CUDA_VISIBLE_DEVICES=4 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_std204 \
+#--teacher_exp_name=gc_tchr204 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=lstm_drop31_v2 \
+#--distill_mode=online \
+#--distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
+#
+#CUDA_VISIBLE_DEVICES=5 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_std205 \
+#--teacher_exp_name=gc_tchr205 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=lstm_drop31_v2 \
+#--distill_mode=online \
+#--distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
+#
+#CUDA_VISIBLE_DEVICES=6 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_std206 \
+#--teacher_exp_name=gc_tchr206 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=lstm_drop31_v2 \
+#--distill_mode=online \
+#--distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
+#
+#CUDA_VISIBLE_DEVICES=7 python distill/distill_main.py  --task=word_sv_agreement_lm \
+#--teacher_model=lm_lstm_shared_emb \
+#--student_model=lm_lstm_shared_emb \
+#--student_exp_name=gc_std207 \
+#--teacher_exp_name=gc_tchr207 \
+#--teacher_config=biglstm_drop31_v2 \
+#--student_config=lstm_drop31_v2 \
+#--distill_mode=online \
+#--distill_config=schdl2_dstl_4_crs_fst3 > os_run0 &
 
 #CUDA_VISIBLE_DEVICES=3 python distill/distill_main.py  --task=word_sv_agreement_lm \
 #--teacher_model=lm_lstm_shared_emb \
