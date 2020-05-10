@@ -1,12 +1,0 @@
-Vocab len:  10032
-model config: small_gpt_v9
-Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_gpt2_shared_weights_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr144/ckpt-60
-model config: small_gpt_v9
-Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_gpt2_shared_weights_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr145/ckpt-60
-model config: small_gpt_v9
-Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_gpt2_shared_weights_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr146/ckpt-60
-model config: small_gpt_v9
-Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_gpt2_shared_weights_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr147/ckpt-60
-##################################
-ug2l_tchr144 <tensorflow.python.training.tracking.util.Checkpoint object at 0x7f0af40f7950>
-12
