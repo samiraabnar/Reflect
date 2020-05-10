@@ -1,0 +1,110 @@
+Vocab len:  10032
+model config: small_lstm_v4
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9303
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9303/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323/ckpt-40
+model config: small_lstm_v4
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9304
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9304/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324/ckpt-40
+model config: small_lstm_v4
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr9301_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9301
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr9301_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9301/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr9301/ckpt-40
+model config: small_lstm_v4
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr9302_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9302
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp9_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr9302_student_cl_lstm_em-256_h-256_d-2_hdrop-0.8_indrop-0.2_small_lstm_v4_gc_f_std9302/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr9302/ckpt-40
+model config: small_ugpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8321_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8331
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8321_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8331/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8321/ckpt-40
+model config: small_ugpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8332
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8332/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322/ckpt-40
+model config: small_ugpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8333
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8333/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323/ckpt-40
+model config: small_ugpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8334
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_gpt2_shared_weights_h-256_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_ugpt_v9_gc_f_std8334/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8311_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8311
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8311_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8311/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8311/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8312
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8312/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8313
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8313/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8314
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8314/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8321_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8321
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8321_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8321/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8321/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8322
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8322/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8322/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8323
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8323/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8323/ckpt-40
+model config: small_gpt_v9
+model config: small_gpt_v9
+student_checkpoint: ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8324
+Restored student from ../tf_ckpts/word_sv_agreement_vp/offline_pure_dstl_4_exp_vp8_teacher_cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324_student_cl_gpt2_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_f_std8324/ckpt-40
+model config: small_gpt_v9
+Restored student from ../tf_ckpts/word_sv_agreement_vp/cl_bert_h-128_d-6_rdrop-0.4_adrop-0.6_indrop-0.2_small_gpt_v9_gc_o_tchr8324/ckpt-40
+##################################
+bert2lstm_1
+0.10054336534208291 	 0.059912663 	 0.9768859 	 0.16602317243814468 	 0.12539248 	 0.9563802 	 0.16639637447477734 	 0.12576565 	 0.95582205
+##################################
+bert2lstm_2
+0.10337310707704588 	 0.062999606 	 0.9760488 	 0.17870916724205016 	 0.13833566 	 0.95553386 	 0.18250288807782583 	 0.14212912 	 0.9541233
+##################################
+bert2lstm_3
+0.10658423046206499 	 0.066262156 	 0.97426695 	 0.16795670638481777 	 0.12763463 	 0.95325524 	 0.17423142511254894 	 0.13390921 	 0.95195144
+##################################
+bert2lstm_4
+0.10697462368611392 	 0.06607436 	 0.97463477 	 0.16772061387697856 	 0.12682036 	 0.95501304 	 0.16778552372637826 	 0.12688532 	 0.9546356
+##################################
