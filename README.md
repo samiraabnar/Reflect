@@ -4,8 +4,6 @@ Reflect aims at exploring the power of knowledge distillation in transfering ind
 To read more about our findings in this project checkout this blog post on ["Distilling Inductive Biases"](https://samiraabnar.github.io/articles/2020-05/indist), or our paper on "Transferring Inductive Biases Through Knowledge Distillation".
 
 
-This project is implemented with Tensorflow 2.
-
 #### How to use our codes to train a model through distillation:
 ```
 python distill/distill_main.py \
