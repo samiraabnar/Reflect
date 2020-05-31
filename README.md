@@ -43,6 +43,7 @@ python distill/distill_main.py \
   --exp_name=tral1
 ```
 
+We will make some of our pre-trained models available soon.
 
 ------------- 
 This repo borrows and adapts code from:
