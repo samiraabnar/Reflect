@@ -20,6 +20,7 @@ python distill/distill_main.py \
 
 
 #### How to use our  code to  train a model independently:
+For Image processing  models:
 python mnist_trainer.py \
 --model=cl_vff \
 --task=mnist \
@@ -27,6 +28,15 @@ python mnist_trainer.py \
 --train_config=adam_mid \
 --batch_size=128 \
 --exp_name=trial1
+
+For language processing models:
+python keras_trainer.py \
+--model=lm_lstm_shared_emb \
+--task=word_sv_agreement_lm \
+--model_config=lstm_drop31_v3 \
+--train_config=radam_slw2 \
+--batch_size=512 \
+--exp_name=tral1
 
 
 
