@@ -43,6 +43,8 @@ python distill/distill_main.py \
   --exp_name=tral1
 ```
 
+* Evaluation and analysis scrips can be found under the notebook directory. 
+
 ------------- 
 This repo borrows and adapts code from:
 1. The [Transformers library of HuggingFace](https://github.com/huggingface/transformers)
