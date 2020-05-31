@@ -4,6 +4,7 @@ Reflect aims at exploring the power of knowledge distillation in transfering ind
 To read more about our findings in this project checkout this blog post on ["Distilling Inductive Biases"](https://samiraabnar.github.io/articles/2020-05/indist), or our paper on "Transferring Inductive Biases Through Knowledge Distillation".
 
 #### How to use our codes to train a model through distillation:
+```
 python distill/distill_main.py \
 --task=mnist \
 --teacher_model=cl_vff \
@@ -17,11 +18,11 @@ python distill/distill_main.py \
 --keep_some_checkpoints=True \
 --max_checkpoints=15 \
 --distill_config=pure_dstl5_4_crs_slw_3 
-
+```
 
 #### How to use our  code to  train a model independently:
 * For Image processing  models:
-
+```
   python mnist_trainer.py \
   --model=cl_vff \
   --task=mnist \
@@ -29,9 +30,9 @@ python distill/distill_main.py \
   --train_config=adam_mid \
   --batch_size=128 \
   --exp_name=trial1
-
+```
 * For language processing models:
-
+```
   python keras_trainer.py \
   --model=lm_lstm_shared_emb \
   --task=word_sv_agreement_lm \
@@ -39,7 +40,7 @@ python distill/distill_main.py \
   --train_config=radam_slw2 \
   --batch_size=512 \
   --exp_name=tral1
-
+```
 
 
 ------------- 
