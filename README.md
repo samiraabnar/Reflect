@@ -21,6 +21,7 @@ python distill/distill_main.py \
 
 #### How to use our  code to  train a model independently:
 For Image processing  models:
+
 python mnist_trainer.py \
 --model=cl_vff \
 --task=mnist \
@@ -30,6 +31,7 @@ python mnist_trainer.py \
 --exp_name=trial1
 
 For language processing models:
+
 python keras_trainer.py \
 --model=lm_lstm_shared_emb \
 --task=word_sv_agreement_lm \
