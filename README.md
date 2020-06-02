@@ -40,7 +40,7 @@ python distill/distill_main.py \
   --model_config=lstm_drop31_v3 \
   --train_config=radam_slw2 \
   --batch_size=512 \
-  --exp_name=tral1
+  --exp_name=trial1
 ```
 
 * Evaluation and analysis scrips can be found under the notebook directory. 
